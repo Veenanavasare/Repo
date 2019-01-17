@@ -1,0 +1,774 @@
+<apex:page controller="QuotesAndOrdersDashboardController" docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" id="thePage" action="{!initQuoteAndDashboardPage}">
+
+    <apex:includeScript value="{!$Resource.ATnT_AES}" />
+    <apex:includeScript value="{!$Resource.ATnT_mode_ecb_min}" />
+
+    <style> 
+        .disabledLink{color:gray !important;cursor: default;}
+        .disabledLinkTd a:hover{color:gray !important;}
+        .tooltip-inner {
+            color: #000 !important;
+            background-color: #fff !important;
+            text-align:left;
+        }
+        .tooltip.right .tooltip-arrow{
+            border-right-color: #fff !important;   
+        }        
+        .reorder_btn{
+            margin-right: -1px !important;
+        }
+        .errorText {
+            color: #a94442;
+        }
+        table a {
+            cursor: pointer;
+        }
+        .dataTables_length {
+            display: none;
+        }
+        .dataTables_info {
+            bottom: 22px;
+            position: absolute;
+            left: 0;
+            width: 50%;
+        }
+        .manage_user_name {
+            width: 17% !important;
+        }
+        #manage_content .pagination > a {
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #056fab;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+            cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+            cursor: no-drop !important;
+        }
+        .adjust-select-small {
+            width: 230px;
+        }
+        .adjust-select-small select {
+            padding: 0 5px;
+            line-height: 17px;
+        }
+        h1 {
+            font-family: omnesatt_iiregular;
+        }
+        #headerNav3,
+        #headerNav4,
+        #headerNav5 {
+            background: #edf8fd;
+        }
+        .tHeadNavType ul {
+            padding-left: 10px;
+            min-width: 300px;
+        }
+        .tHeadNavStatus ul {
+            /*-webkit-column-count: 2;*/
+            padding-left: 10px;
+            min-width: 300px;
+        }
+        .tHeadNavProduct ul {
+            /*-webkit-column-count: 2;*/
+            padding-left: 10px;
+            min-width: 300px;
+        }
+        .tHeadNavPricing ul {
+            /*-webkit-column-count: 2;*/
+            padding-left: 10px;
+            min-width: 300px;
+        }
+        .dataTables_wrapper tbody td { border-style: dashed !important; }
+        .newManageQuotesDatatableSearchButton {
+            position: absolute;
+            display: inline;
+            top: 13px;
+            z-index: 9;
+        }
+        .newManageQuotesDatatableSearch {
+            width: 300px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        .newManageQuotesDatatable thead th:nth-child(1) {
+            
+        }
+        .newManageQuotesDatatable thead th:nth-child(2) {
+            width: 115px !important;
+        }
+        .newManageQuotesDatatable thead th:nth-child(3) {
+            width: 145px !important;
+        }
+        .newManageQuotesDatatable thead th:nth-child(4) {
+            width: 150px !important;
+        }
+        .newManageQuotesDatatable thead th:nth-child(5) {
+            width: 140px !important;
+        }
+        .newManageQuotesDatatable thead th:nth-child(6) {
+            width: 120px !important;
+        }
+        .newManageQuotesDatatable thead th:nth-child(7) {
+            width: 165px !important;
+        }
+        .newManageQuotesDatatable thead th:nth-child(8) {
+            width: 0px !important;
+        }
+        .newManageQuotesDatatable thead th:nth-child(9) {
+         width: 163px !important;     
+        }       
+        .newManageQuotesDatatable thead th:nth-child(11) {
+            width: 120px !important;
+        }
+        .newManageQuotesDatatable thead th:nth-child(12) {
+            width: 120px !important;
+        }
+        .newManageQuotesDatatable .searchField {
+            width: 370px !important;margin-top: -8px;margin-bottom: 10px;
+        }
+        .newManageQuotesDatatable thead th:nth-child(1), 
+        .newManageQuotesDatatable tbody td:nth-child(1), 
+        .newManageQuotesDatatable thead th:nth-child(8), 
+        .newManageQuotesDatatable tbody td:nth-child(8) {
+            display: none;
+        }
+        .dataTables_length {
+        display: none;
+        }
+        .manageQuotesPage .dataTables_info {
+            bottom: 22px;
+            position: absolute;
+            left: 15px;
+        }
+        .paginate_active {
+        z-index: 2;
+        color: #fff;
+        cursor: default;
+        background-color: #428bca;
+        border-color: #428bca;
+    }
+    .paginate_button_disabled {
+        cursor: no-drop !important;
+        color: #cfcfcf !important;
+    }
+    .paginate_button, .paginate_active {
+        float: left;
+        padding: 3px 12px;
+        margin-left: -1px;
+        line-height: 1.42857143;
+        color: #428bca;
+        text-decoration: none;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        cursor: pointer;
+    }
+    .paginate_active {
+        z-index: 2;
+        color: #fff;
+        cursor: default;
+        background-color: #428bca;
+        border-color: #428bca;
+    }
+    .table-hover>tbody>tr:hover>td, .table-hover>tbody>tr:hover>th {
+        background-color: #f5f5f5;
+    }
+        .newManageQuotesDatatable th {
+            vertical-align: top !important;
+        }
+        #manage_content, .manage_content {
+            padding: 0 0 0 40px;
+        }
+         .customDropdownMenu {
+            right: 0 !important;
+            width: 330px;
+            padding: 10px;
+            margin-top: 10px;
+            left: inherit;
+            top: 80%;
+        }
+        .dataTableManageCustSearchButton {
+            position: absolute;
+            display: inline;
+            top: 13px;
+            z-index: 9;
+        }
+        .manageQuotesPage .styled-select-small {
+            height: auto; overflow: visible; width: 520px; border: none; background-color: transparent !important;
+        }
+        .manageQuotesPage .customDropdownMenu li a{
+            font-size: 20px; border-bottom: 1px solid #ddd; padding: 5px;
+        }
+        .manageQuotesPage .customDropdownMenu li:last-child a {
+            border-bottom: 0;
+        }
+                
+        .disable_link{      
+                
+            pointer-events:none;        
+            cursor:default;     
+            color: #000000 !important;      
+        }
+        
+        .greyout{
+            color:grey;
+        }
+        
+        .dropdown-menu > span> li > a:hover, .dropdown-menu > span> li > a:focus        
+        {       
+                
+        color: #262626;     
+        text-decoration: none;      
+        background-color: #F5F5F5       
+                
+        }       
+        .dropdown-menu > span> li > a       
+        {       
+        display: block;     
+        padding: 3px 20px;      
+        clear: both;        
+        font-weight: 400;       
+        line-height: 1.42857143;        
+        color: #333;        
+        white-space: nowrap;        
+                
+        }
+        
+        .table {
+            table-layout:fixed;
+         }
+            
+     .td_ellipsis {
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+    </style>
+    <script>
+        var pageLoad = true;
+        function showSelectedRecords(val) {
+            var selctdVal = val;
+            showSelectedRecords1(selctdVal);
+        }
+    </script>
+    <div class="bootstrap">
+        <div class="content_container manageQuotesPage">
+            <apex:form id="frmNew">
+                <div id="manage_content" class="page">
+                    <div class="dropdown styled-select-small" style="">
+                        <h1 class="dropdown-toggle" data-toggle="dropdown">Manage Quotes &amp; Orders</h1>
+                        <ul class="dropdown-menu customDropdownMenu">
+                            <apex:outputPanel rendered="{!$User.Approve_Contracts__c}">
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" href="javascript:void(0);"  onClick="callManageQO('true');">
+                                        My Approvals
+                                    </a>
+                                </li>
+                            </apex:outputPanel> 
+                            <apex:outputPanel rendered="{!$User.Approve_Contracts__c == false}">
+                                <li>
+                                    <a role="menuitem" >
+                                        My Approvals
+                                    </a>
+                                </li>
+                            </apex:outputPanel> 
+                            <li role="presentation">
+                                <a role="menuitem" tabindex="-1" href="javascript:void(0);" onClick="callManageQO('false');">
+                                    Quotes &amp; Orders
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <hr class="blue_hr" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="searchField input-group w50p">
+                                <span class="dataTableManageCustSearchButton search_button"></span>
+                                <input type="text" class="custom_filter newManageQuotesDatatableSearch" placeholder="Search by Name or Order #" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <apex:pageBlock id="quoteBlock">
+                            <apex:outputPanel id="thePanel">
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="manage_quotes_table">
+                                        <div id="manage_users_table_wrapper" class="dataTables_wrapper" role="grid">
+                                            <table class="newManageQuotesDatatable list dataTable table table-bordered table-striped table-hover">
+                                                    <thead>
+                                                        <th>&nbsp;</th>
+                                                        <th><a>Order #</a></th>
+                                                        <th><a>Customer</a></th>
+                                                        <th><a>Quote Name</a></th>
+                                                        <th class="no-sort">Type</th>
+                                                        <th class="no-sort">Status</th>
+                                                        <th class="no-sort">Product</th>
+                                                        <th>Pricing Status</th>
+                                                        <th class="no-sort"><a>Pricing Status</a></th>
+                                                        <th style="display: none;"><a>buyflow</a></th>
+                                                        <th style="display: none;">Expiry Date</th>
+                                                        <th style="display: none;">ASE MACD Lock</th>
+                                                        <th style="display: none;">ASE MACD Deal</th>
+                                                        <th style="display: none;">Contract Renewal Lock</th>
+                                                        <th style="display: none;">Contract Renewal LockBy UserId</th>
+                                                        <th class="no-sort"><a>Action</a></th>
+                                                    </thead>
+                                                    <tbody></tbody>
+                                                </table>
+                                            <!--    Should be uncommented when duplicate is called -->
+                                            <apex:actionFunction name="callDuplicate" action="{!callDuplicate}" status="loading" rerender="frmNew" >
+                                                    <apex:param name="duplicateQuoteID" value="" />
+                                            </apex:actionFunction>
+                                             
+                                            <apex:actionFunction name="callDelete" action="{!callDelete}" status="loading" rerender="frmNew" oncomplete="callNewManageQuotesDatatable('loadSearch', 'false');">
+                                                    <apex:param name="callDeleteID" value="" />
+                                            </apex:actionFunction>
+                                             
+                                            <!-- HIde content for showing thead labels-->
+                                            <div class="dropdown tHeadNavType">
+                                                <a id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Type<span class="caret"></span></a>
+                                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                                        <li>
+                                                            <apex:repeat value="{!typeCountList}" var="listItem">
+                                                                <a href="javascript:void(0);" onclick="destroyDatatable();callNewManageQuotesDatatable('loadSearch', '{!listItem.itemName}');">
+                                                                    <span class="custSearchTerm">{!listItem.itemName}</span>
+                                                                    <span>({!listItem.itemQuantity})</span>
+                                                                </a>
+                                                            </apex:repeat>
+                                                        </li>                       
+                                                    </ul>
+                                            </div>
+                                            <div class="dropdown tHeadNavStatus">
+                                                <a id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Status<span class="caret"></span></a>
+                                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                                        <li>
+                                                            <apex:repeat value="{!statusCountList}" var="listItem">
+                                                                <a href="javascript:void(0);" onclick="destroyDatatable();callNewManageQuotesDatatable('loadSearch', '{!listItem.itemName}');">
+                                                                    <span class="custSearchTerm">{!listItem.itemName}</span>
+                                                                    <span>({!listItem.itemQuantity})</span>
+                                                                </a>
+                                                            </apex:repeat>
+                                                        </li>                      
+                                                    </ul>
+                                            </div>
+                                            <div class="dropdown tHeadNavProduct">
+                                                <a id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Product<span class="caret"></span></a>
+                                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                                        <li>
+                                                            <apex:repeat value="{!productsCountList}" var="listItem">
+                                                                <a href="javascript:void(0);" onclick="destroyDatatable();callNewManageQuotesDatatable('loadSearch', '{!listItem.itemName}');">
+                                                                    <span class="custSearchTerm">{!listItem.itemName}</span>
+                                                                    <span>({!listItem.itemQuantity})</span>
+                                                                </a>
+                                                            </apex:repeat>
+                                                        </li>                   
+                                                    </ul>
+                                            </div>
+                                              <div class="dropdown tHeadNavPricing">
+                                                <a id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Pricing Status<span class="caret"></span></a>
+                                                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                                        <li>
+                                                            <apex:repeat value="{!pricingStatusCountList}" var="listItem">
+                                                                <a href="javascript:void(0);" onclick="destroyDatatable();callNewManageQuotesDatatable('loadSearch', '{!listItem.itemName}');">
+                                                                    <span class="custSearchTerm">{!listItem.itemName}</span>
+                                                                    <span>({!listItem.itemQuantity})</span>
+                                                                </a>
+                                                            </apex:repeat>
+                                                        </li>                   
+                                                    </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-12">
+                                        <div class="manage_users_table">
+                                            <div id="manage_users_table_wrapper_2" class="dataTables_wrapper" role="grid">
+                                                <apex:pageBlockTable id="manage_quote_table_2" value="{!quoteDetails}" rendered="{!(quoteDetails.size = 0)}" var="qoo" styleClass="manage_quote_table_2list dataTable table table-bordered table-striped manageQuoteDataTable" style="font-size: 15px !important; min-width: 935px; background: #fff; font-family: 'omnes_att_iimedium';" width="100%">
+                                                    <apex:column headerValue="Order #" value="{!qoo.Name}" />
+                                                    <apex:column headerValue="Customer" value="{!qoo.End_Customer__c}" />
+                                                    <apex:column headerValue="Product" value="{!qoo.Product_New_Name__c}" />
+                                                    <apex:column headerValue="Pricing Status">
+                                                        <apex:outputField value="{!qoo.Pricing_Status__c}" />
+                                                    </apex:column>
+                                                </apex:pageBlockTable>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <apex:outputText rendered="{!(quoteDetails.size = 0)}" value="Click Begin Quote to start a quote." style="text-align:center;"></apex:outputText>
+                            </apex:outputPanel>
+                        </apex:pageBlock>
+                    </div>
+                </div>
+                <apex:actionFunction action="{!ToggleManagepicklist}" reRender="quoteBlock" name="showSelectedRecords1" oncomplete="callNewManageQuotesDatatable('loadDefault', 'false');">
+                    <apex:param value="" assignTo="{!selectedVal1}" name="selectedvalue"></apex:param>
+                </apex:actionFunction>
+                
+                <!-- Modal to display confirm delete -->
+                <div class="modal" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModal" aria-hidden="true" style="z-index: 9999;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="border-bottom: 0;">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="text-center">
+                                    Are you sure you want to delete this quote and record?
+                                </p>
+                            </div>
+                            <div class="modal-footer text-center" style="border-top: 0;">
+                                <div style="width: 160px; margin: 0 auto;">
+                                    <input type="button" value="No" styleClass="btn btn-secondary enabled" data-dismiss="modal" style="width: auto !important; margin-right: 20px; padding: 5px 20px;" />
+                                    <input type="button" value="Yes" id="yesDeleteBtn" onclick="callDeleteFunc();" Class="btn btn-primary enabled" style="width: auto !important; padding: 5px 20px;" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal --> 
+                <apex:actionFunction name="buyflowNavigateExecute" id="buyflowNavigateExecuteId" action="{!checkBuyFlowStatusAndRedirect}" status="loading" reRender="frmNew" oncomplete="callNewManageQuotesDatatable('loadDefault', 'false');">
+                    <apex:param name="quotID" value="" />
+                </apex:actionFunction>
+                
+                <apex:actionFunction name="callLoginDispatchServiceQO" id="callLoginDispatchServiceId" action="{!callLoginDispatchServiceQO}" rerender="openPremier" status="loading">
+                    <apex:param name="quotID" value="" />
+                </apex:actionFunction>
+            </apex:form>
+        </div>
+    </div>
+    <apex:outputPanel id="openPremier">
+        <script>
+            var deEncryptedUrlX = "{!finalDeencryptedUrl}";
+            if(pageLoad){
+                pageLoad = false;
+            }else{
+             openNewWindowForPremier(deEncryptedUrlX,'Dashboard');
+            }
+        </script>
+    </apex:outputPanel>    
+    <script>
+        selectedQuoteId = '';
+        function setQuoteId(quoteId,status) {
+            selectedQuoteId = quoteId;
+            if(status == 'true'){
+                $('#confirmDeleteModal').modal('show');
+            } else if(status == 'false'){
+                callDuplicate(selectedQuoteId);
+            }
+        }
+
+        function callDeleteFunc() {
+            callDelete(selectedQuoteId);
+        }
+
+        $( "#confirmDeleteBtn" ).click(function() {
+            $('#confirmDeleteModal').modal('show');
+        }); 
+
+        function getSelectedContact() {
+            var $radio = $('input[name=group1]:checked');
+            var updateDay = $radio.val();
+            var id = $radio.attr('id');
+            if (customerId != null && customerId != '') {
+                CreateQuote(customerId);
+            }
+        }
+
+        function updateTableHeader(){
+            var currentUserId = '{!currentUserId}';
+            $('.newManageQuotesDatatable thead tr th:eq(4),.newManageQuotesDatatable thead tr th:eq(5),.newManageQuotesDatatable thead tr th:eq(6),.newManageQuotesDatatable thead tr th:eq(8),.newManageQuotesDatatable thead tr th:eq(11)').addClass('no-sort').children('.reorder_btn').remove();
+            $('.newManageQuotesDatatable thead th:eq(4),.newManageQuotesDatatable thead th:eq(5),.newManageQuotesDatatable thead th:eq(6),.newManageQuotesDatatable thead th:eq(8)').html('');
+            $('.tHeadNavType').clone().prependTo('.newManageQuotesDatatable thead th:eq(4)');
+            $('.tHeadNavStatus').clone().prependTo('.newManageQuotesDatatable thead th:eq(5)');
+            $('.tHeadNavProduct').clone().prependTo('.newManageQuotesDatatable thead th:eq(6)');
+             $('.tHeadNavPricing').clone().prependTo('.newManageQuotesDatatable thead th:eq(8)');
+            if($('.tHeadNavType').length > 1) {
+                $('.no-sort div.tHeadNavType, .no-sort div.tHeadNavStatus, .no-sort div.tHeadNavProduct, .no-sort div.tHeadNavPricing').removeClass('hide');
+                $('div.tHeadNavType, div.tHeadNavStatus, div.tHeadNavProduct,div.tHeadNavPricing').not('.no-sort div.tHeadNavType, .no-sort div.tHeadNavStatus, .no-sort div.tHeadNavProduct, .no-sort div.tHeadNavPricing').addClass('hide');
+            }
+
+            $('.newManageQuotesDatatable thead tr').append('<th role="columnheader" rowspan="1" colspan="1" class="customAction no-sort"><a>Action</a></th>');
+            $(".newManageQuotesDatatable tbody tr").append(
+                '<td style="display: table-cell;text-align: center;vertical-align: middle;">'+
+                '<div class="dropdown actionDataContent">'+
+                    '<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">'+
+                        'Select'+
+                        '<span class="caret"></span>'+
+                    '</button>'+
+                    '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">'+   
+                        '<li role="presentation">'+
+                            '<a role="menuitem" tabindex="-1" id="confirmDeleteBtn" class="deleteMenuParam" href="javascript:void(0);" data-toggle="modal">'+
+                               ' Delete'+
+                            '</a>'+
+                        '</li>'+
+                    '</ul>'+
+                '</div>'+
+            '</td>'
+            );
+            $('.newManageQuotesDatatable thead tr th:eq(7)').children('.reorder_btn').remove();
+            $('.newManageQuotesDatatable thead tr th:eq(15)').remove();
+                           
+            $('.newManageQuotesDatatable tbody tr td:last-child').each(function(){
+                var quoteId = $(this).parent('tr').children('td:eq(0)').text();
+                //var targetParamDupTd = $(this).find('.duplicateMenuParam');
+                $//(targetParamDupTd).attr('onclick', 'setQuoteId("'+quoteId+'","false")');
+                var targetParamDelTd = $(this).find('.deleteMenuParam');
+                $(targetParamDelTd).attr('onclick', 'setQuoteId("'+quoteId+'","true")');
+            }); 
+
+            $('.newManageQuotesDatatable tbody tr td:nth-child(2)').each(function(){
+                var currentChild = $(this);                
+                var quoteId = $(this).parent('tr').children('td:nth-child(1)').text();
+                var quoteName = $(this).text();
+                var typeVal = $(this).parent('tr').children('td:nth-child(5)').text();
+                var statusVal = $(this).parent('tr').children('td:nth-child(6)').text();
+                var prodVal = $(this).parent('tr').children('td:nth-child(7)').text();    
+                var buyflow = $(this).parent('tr').children('td:nth-child(10)').text(); 
+                var quoteExpiryDate = $(this).parent('tr').children('td:nth-child(11)').text();
+                var disableMACD = $(this).parent('tr').children('td:nth-child(12)').text();
+                var isASEMACDDeal = $(this).parent('tr').children('td:nth-child(13)').text(); 
+                var contractRenewalLock = $(this).parent('tr').children('td:nth-child(14)').text();
+                var contractRenewalLockedByUserId = $(this).parent('tr').children('td:nth-child(15)').text();
+                $(this).parent('tr').children('td:nth-child(10)').hide(); 
+                $(this).parent('tr').children('td:nth-child(11)').hide();
+                $(this).parent('tr').children('td:nth-child(12)').hide(); 
+                $(this).parent('tr').children('td:nth-child(13)').hide();
+                $(this).parent('tr').children('td:nth-child(14)').hide();
+                $(this).parent('tr').children('td:nth-child(15)').hide();
+                
+                //Adding Navigation Logic to QuoteID
+                if(statusVal !='Deleted') {
+                    if(prodVal == 'AT&T Wireless' || prodVal == 'Wireless') {
+                        var navExecMethod = "buyflowNavigateWirelessExecute('"+quoteId+"')";
+                    } else {
+                        var navExecMethod = "buyflowNavigateExecute('"+quoteId+"')";
+                    }
+                    var newCreateField = '<a href="javascript:void(0);" onclick="'+navExecMethod+'">'+quoteName+'</a>';
+                } else {
+                    var newCreateField = quoteName;
+                }            
+                $(this).html(newCreateField);
+                
+                //Disabling Quote ID column
+                if (statusVal=="Expired" || disableMACD=="true" || (statusVal=="Cancelled") || statusVal=="Cancellation Order Completed" || (contractRenewalLock == 'true' &&  contractRenewalLockedByUserId != currentUserId)){
+                    $(this).addClass('disabledLinkTd').find('a').addClass("disabledLink");
+                }
+                
+                //Disabling Status column
+                if (statusVal=="Cancellation Order Completed"){    
+                    $(this).parent('tr').children('td:nth-child(6)').addClass("disabledLink");
+                }
+                
+                //Adding Tooltip to Disabled Quote ID column
+                if (disableMACD=="true" || contractRenewalLock == "true"){
+                    if(disableMACD=="true"){
+                        $(this).parent('tr').children('td:nth-child(2)').find('a').attr("title","This Quote is currently being worked on by another user. Please try later.");                        
+                    }else if(contractRenewalLock == 'true' &&  contractRenewalLockedByUserId != currentUserId){                    
+                        $(this).parent('tr').children('td:nth-child(2)').find('a').attr("title","This contract is currently being worked on by another user. Please try later.");
+                    }
+                    $(this).parent('tr').children('td:nth-child(2)').find('a').attr({"data-toggle":"tooltip","data-container":"body","data-placement":"right"}); 
+                }
+                $('[data-toggle="tooltip"]').tooltip();
+                
+                //Disabling Action Dropdown
+                if((typeVal == 'Orders' && statusVal =='Submitted') || prodVal == 'AT&T Wireless' || prodVal == 'Wireless' || (typeVal == 'Orders' && statusVal =='Active' && prodVal == 'AT&T Network-Based IP-VPN Remote Access') || (contractRenewalLock == 'true' &&  contractRenewalLockedByUserId != currentUserId)){                 
+                    $(this).parent('tr').find('.dropdown-toggle').addClass('disabled').parent().css('cursor','no-drop'); 
+                }
+
+                //Disable Duplicate option of Action Dropdown for all products
+                //$(this).parent('tr').find('.duplicateMenuParam').addClass('disabledLink').css('pointer-events','none').parent('li').css('cursor','no-drop');                
+
+                //Disable Delete option of Action Dropdown
+                if((typeVal == 'Quote' && statusVal =='Deleted') || (statusVal =='Saved' && isASEMACDDeal == 'true')){
+                    $(this).parent('tr').find('.deleteMenuParam').addClass('disabledLink').css('pointer-events','none').parent('li').css('cursor','no-drop');                
+                }                
+                
+                //Removing onclick events for disabled <a> tags
+                $(this).parent('tr').find('.disabledLink').removeAttr('onclick');
+                
+                if(statusVal =='Accepted'){  
+                    if(quoteExpiryDate != null && quoteExpiryDate != ''){
+                        var timestamp = quoteExpiryDate.substring(0, quoteExpiryDate.length-3);
+                        var newDate = new Date(timestamp*1000);                       
+                        var formatDate = ("0" + (newDate.getMonth() + 1)).slice(-2) +'/'+ ("0" + (newDate.getDate()+1)).slice(-2) +'/'+ newDate.getFullYear();
+                        var dateNowTime = Date.now();
+                        dateNowTimeStr = dateNowTime.toString().substring(0, dateNowTime.toString().length-3)
+                        var  dateNow = new Date(dateNowTimeStr*1000);
+                        dateNow = dateNow.setDate(dateNow.getDate()+30);
+                        
+                        if(newDate < dateNow ){  
+                            var newLastModText = '<span>'+statusVal +'</span><br/><span style="color:#cf2a2a;font-size: 11px;">'+'Expires '+formatDate+'</span>';
+                            $(this).children('td:eq(8)').html(newLastModText);               
+                            $(this).parent('tr').children('td:nth-child(6)').html(newLastModText);
+                        } 
+                    }
+                }                                                
+            });
+
+            $('.newManageQuotesDatatable tbody tr').each(function(){
+                var lastModText = $(this).children('td:eq(7)').text();
+                var dateModText = $(this).children('td:eq(8)').text();                    
+                var timestamp = dateModText.substring(0, dateModText.length-3);
+                var newDate = new Date(timestamp*1000);
+                var formatDate = ("0" + (newDate .getMonth() + 1)).slice(-2) +'/'+ ("0" + newDate.getDate()).slice(-2) +'/'+ newDate.getFullYear();
+                var newLastModText = '<span>'+lastModText+'</span><br/><span style="color:#cf2a2a;font-size: 10px;">'+dateModText+'</span>';
+                $(this).children('td:eq(8)').html(newLastModText);
+
+                $.each(this.cells, function(){
+                    $(this).attr("title",$(this).text());
+                    $(this).addClass("td_ellipsis");
+                });
+                
+                if($(this).children('td:last')){
+                    $(this).children('td:last').removeAttr("title");
+                    $(this).children('td:last').removeClass("td_ellipsis");
+                }                
+            });
+        }
+
+        function buyflowNavigateWirelessExecute(wirelessQTId){
+            callLoginDispatchServiceQO(wirelessQTId);
+        }
+
+        function callNewManageQuotesDatatable(searchCalled, custSearchTerm) {
+           var quoteFields = ['Id', 'Name', 'End_Customer_Name__c', 'Apttus_Proposal__Proposal_Name__c', 'Quote_Type__c', 'SP_Status__c', 'Product_New_Name__c', 'Pricing_Status__c', 'Lowest_Promotion_Expiry_Date__c','Buyflow_Step__c','QuoteExpirationDate__c','ASE_MACD_Lock__c','ASE_MACD_Deal__c','Contract_Renewal_Lock__c','Contract_Renewal_LockedBy_UserId__c'];
+
+            searchTextManageQuote = '';
+            var aoColumns = [];
+            var myApprStatus = 'false';
+            if(searchCalled == 'loadSearch') {
+                if(custSearchTerm != 'false') {
+                    searchTextManageQuote = custSearchTerm;                    
+                } else {
+                    searchTextManageQuote = $('.newManageQuotesDatatableSearch').val();
+                }
+            } else if(searchCalled == 'loadMyApvl') {
+                myApprStatus = 'true';
+            }
+            for (var i = 0; i < quoteFields.length; i++) {
+                aoColumns.push({'mData': quoteFields[i]});
+            }
+            
+            /************************ Data table code starts ******************************/
+            $('.newManageQuotesDatatable').dataTable({
+                "iDisplayLength": 8,
+                "aoColumnDefs": [
+                    {
+                        "bSortable": false,
+                        //"bDestroy": true,
+                        "aTargets": ["no-sort"]
+                    }
+                ],
+                "oLanguage": {
+                    "sInfo": "Showing _START_ - _END_ of _TOTAL_",
+                    "sZeroRecords": "Click Begin Quote to start a quote",
+                    "sProcessing": '<div class="waitingSearchDiv" id="loadingDatatable" style="background-color: #fbfbfb;height: 10000px;opacity: 0.65;width: 10000px;position: fixed;z-index: 999999;left: 0;top: 0;"><div class="waitingHolder" style="top: 200px; left:700px; width: 91px; position: fixed;"><img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" /></div></div>'
+                },
+                'bPaginate': true,
+                'sPaginationType': 'full_numbers',
+                'aoColumns': aoColumns,
+                'bProcessing': true,
+                'bServerSide': true,
+                'bFilter': false,
+                'bDestroy': false,
+                'bLengthChange': false,
+                'sAjaxSource': 'fakeUrl',
+                'fnServerData': function(sSource, aoData, fnCallback) {
+                    
+                    //Set the search text in aoData
+                    if(myApprStatus == 'true') {
+                        myApprStatus = 'false';
+                        aoData.push({"name":"searchStringMyApproval","value":myApprStatus});
+                    }
+                    aoData.push({"name":"searchStringDefault","value":searchTextManageQuote});
+                    QuotesAndOrdersDashboardController.fetchQuoteRecords(aoData, function(result, event) {
+                        if (event.type != 'exception') {
+                            for (var i = 0; i < result.aaData.length; i++) {
+                                var r = result.aaData[i];
+                                for (var j = 0; j < quoteFields.length; j++) {
+                                    var field = quoteFields[j];
+                                    if (r[field] == undefined) {
+                                        // DataTables pops a dialog for undefined values
+                                        r[field] = null;
+                                    }
+                                }
+                            }                                    
+                            // Call back into the DataTable function
+                            fnCallback(result);
+                        } else {
+                            console.log(event.type+'-----'+event.message);
+                        }                        
+                    });
+                    
+                },
+                'fnDrawCallback': function (oSettings) {
+                    $(".newManageQuotesDatatable").css( "width","100%" );
+                    updateTableHeader();                    
+                    $('.dataTables_empty').attr('style', 'display: table-cell');                    
+                    $('.dataTables_empty').each(function(index, obj){
+                        if($(obj).text()!=null && $(obj).text()=="Click Begin Quote to start a quote") {
+                            $(obj).attr('colspan', '8');                            
+                        }                                                             
+                    });
+                    $('.dataTables_empty').parent('tr').children('td:last').remove();
+                }                   
+            });
+            /************************ Data table code ends ******************************/
+            
+            $('.newManageQuotesDatatable .reorder_btn').remove();
+            $('.newManageQuotesDatatable thead th').not('.newManageQuotesDatatable thead th:eq(4), .newManageQuotesDatatable thead th:eq(5)').addClass('sorting').append('<div class="reorder_btn"></div>');
+            $('.dataTables_paginate').addClass('pagination');
+        }
+ 
+        function destroyDatatable() {
+            $('.newManageQuotesDatatable').dataTable().fnDestroy();
+        }
+
+        function initiateSearchManageQuotes() {
+            //donetyping method is defined in the header
+            $('.newManageQuotesDatatableSearch').donetyping(function(){
+                destroyDatatable();
+                callNewManageQuotesDatatable('loadSearch', 'false');
+            });
+            $('.custom_filter').on("keyup keypress", function(e) {
+                var code = e.keyCode || e.which; 
+                if (code  == 13) {               
+                    e.preventDefault();
+                    return false;
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            callNewManageQuotesDatatable('loadSearch', 'false'); 
+            initiateSearchManageQuotes();
+            $('#DataTables_Table_0_paginate').click(function(){
+                $('html, body').animate({
+                    scrollTop: 0
+                },1000);
+            }); 
+        });     
+        
+        function callManageQO(status) {
+            destroyDatatable();
+            if(status =='true') {
+                callNewManageQuotesDatatable('loadMyApvl', 'false');
+            } else{
+                callNewManageQuotesDatatable('loadDefault', 'false');
+            }
+        }
+
+    </script>
+</apex:page>

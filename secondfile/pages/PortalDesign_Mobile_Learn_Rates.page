@@ -1,0 +1,163 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    <style type="text/css">
+        .rates .promo .promo-border {
+            border-color: #71c5e8;
+        }
+        .rates .promo {
+            color: #000;
+            border: 2px solid #71c5e8;
+        }
+     
+        
+}
+
+    </style>
+    <div class="rates">
+
+        <!-- Intro -->
+        <h2>Select from a variety of business rate plans to create the ideal package for your end&nbsp;customer.</h2>
+        <p>Whether it’s pooled, shared or individual rate plans, AT&amp;T Partner Exchange<sup>&reg;</sup> gives you the flexibility to design and manage your customers’ data, voice and text usage.</p>
+
+        <!-- Promo Rate Plan Graphics -->
+        <!-- TODO: need to add height detection on the row so each col in the row has same height -->
+        <div class="row text-center rate-plans">
+            <div class="col-sm-4">
+                <div class="promo">
+                    <h5>POOLING</h5> 
+                    <span class="promo-border"></span>
+                    <apex:image value="{!URLFOR($Resource.ImgStatic,'/graphic-mobile-plan-pooling-blue.png')}" styleClass="img-responsive" />
+                    <span class="promo-border"></span>
+                    <ol class="numbered footnotes">
+                        <li>Each device brings its own data to the pool</li>
+                        <li>Customers that are comfortable managing data usage and breakage risk with larger groups that fluctuate in users</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="promo">
+                    <h5>SHARING</h5> 
+                    <span class="promo-border"></span>
+                    <apex:image value="{!URLFOR($Resource.ImgStatic,'/graphic-mobile-plan-sharing.png')}" styleClass="img-responsive" />
+                    <span class="promo-border"></span>
+                    <ol class="numbered footnotes">
+                        <li>Data allotment is fixed and shared among all users</li>
+                        <li>Customers with higher usage or that are comfortable with managing usage among</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="promo">
+                    <h5>INDIVIDUAL</h5>
+                    <span class="promo-border"></span>
+                    <apex:image value="{!URLFOR($Resource.ImgStatic,'/graphic-mobile-plan-individual.png')}" styleClass="img-responsive" />
+                    <span class="promo-border"></span>
+                    <ol class="numbered footnotes">
+                        <li>Separate individual plans for voice, data and text</li>
+                        <li>Customers that prefer to have separate data, voice and text plans and/or wish to manage usage on an individual plan basis</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <hr class="blue_hr" />
+
+        <!-- Document Group 1: Pooling -->
+        <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-checklist.svg')}" />Pooling Rate Plans</h3>        
+        <!-- Section 1 Documents: Mobile Select -->
+        <span class="doc-sub-cat"><strong>Mobile Select</strong> - Allows you to pool voice, text and data together at one price point per line.</span>
+        <apex:outputPanel >   
+            <apex:repeat value="{!DocMapPooling}" var="docMap"> 
+                <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                    <div class="document-row">
+                        <div class="file-type file-{!docMap.type}"></div>
+                        <div class="details">
+                            <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                            <p><apex:outputText value="{!docMap.description}"/></p>
+                        </div>
+                    </div>
+                </apex:outputLink>        
+            </apex:repeat>    
+        </apex:outputPanel>            
+
+        <!-- Document List: Business Connect -->
+        <span class="doc-sub-cat"><strong>Business Connect</strong> - Wirelessly enable your data network.</span>
+        <apex:outputPanel >   
+            <apex:repeat value="{!DocMapBusinessConnect}" var="docMap"> 
+                <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                    <div class="document-row">
+                        <div class="file-type file-{!docMap.type}"></div>
+                        <div class="details">
+                            <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                            <p><apex:outputText value="{!docMap.description}"/></p>
+                        </div>
+                    </div>
+                </apex:outputLink>        
+            </apex:repeat>    
+        </apex:outputPanel>             
+
+        <!-- Document List: Business Pooled -->
+        <span class="doc-sub-cat"><strong>Business Pooled</strong> - Pick from voice, data or text, or combine all three to create individualized pooling plans. Smartphones require both voice and data.</span>
+        <apex:outputPanel >   
+            <apex:repeat value="{!DocMapBusinessPooled}" var="docMap"> 
+                 <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                    <div class="document-row">
+                        <div class="file-type file-{!docMap.type}"></div>
+                        <div class="details">
+                            <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                            <p><apex:outputText value="{!docMap.description}"/></p>
+                        </div>
+                    </div>
+                </apex:outputLink>        
+            </apex:repeat>    
+        </apex:outputPanel>              
+
+        <hr class="blue_hr" />
+
+        <!-- Document Group 2: Sharing -->
+        <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/icon-head-mob-share.svg')}" />Sharing Rate Plans</h3>
+        <!-- Document List: Mobile Share Value -->
+        <!-- Robyn 8/22/16: change text for PE Request C0822_1230 -->
+        <span class="doc-sub-cat"><strong>Mobile Share Advantage</strong> - Share data allotment among all users in a BAN.</span>
+        <apex:outputPanel >   
+            <apex:repeat value="{!DocMapSharing}" var="docMap"> 
+                <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                    <div class="document-row">
+                        <div class="file-type file-{!docMap.type}"></div>
+                        <div class="details">
+                            <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                            <p><apex:outputText value="{!docMap.description}"/></p>
+                        </div>
+                    </div>
+                </apex:outputLink>        
+            </apex:repeat>    
+        </apex:outputPanel>              
+
+        <hr class="blue_hr" />
+
+        <!-- Document Group 3: Individual -->
+        <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-voice-plan.svg')}" />Individual Rate Plans</h3>
+
+        <!-- Document List: Standalone Plans-->
+        <span class="doc-sub-cat"><strong>Standalone Plans</strong> - Pick data, voice, messaging, or all of the above. Does not pool, all are individualized plans. Smartphones require both voice and data.</span>
+        <apex:outputPanel >   
+            <apex:repeat value="{!DocMapIndividual}" var="docMap"> 
+                <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                    <div class="document-row">
+                        <div class="file-type file-{!docMap.type}"></div>
+                        <div class="details">
+                            <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                            <p><apex:outputText value="{!docMap.description}"/></p>
+                        </div>
+                    </div>
+                </apex:outputLink>        
+            </apex:repeat>    
+        </apex:outputPanel>           
+
+        <!-- Link to Pricing section, shown only if user has begin quote permission --> 
+        <!-- FIXME: clicking the link to Pricing should close the Learn More nested menu on the side nav -->
+        <!-- wrap the paragraph in the outputPanel once fixed -->
+        <apex:outputPanel rendered="{!$User.Begin_Quote__c}"></apex:outputPanel>
+        <p>View <a data-page="PortalDesign_Mobile_Pricing" role="menuitem" >Pricing</a> to see the rate card.</p>
+       
+    </div>
+</apex:page>

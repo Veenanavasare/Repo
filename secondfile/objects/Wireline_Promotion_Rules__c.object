@@ -1,0 +1,783 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Master Promotions object to store all the promotions created so that Promotion Engine can consume them part of execution.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
+    <fields>
+        <fullName>Active__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Promos are only active when tested and certified. Certified Promos will be made Active/Deactive by the system on Start/End Date(s).</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Promos are only active when tested and certified. Certified Promos will be made Active/Deactive by the system on Start/End Date(s).</inlineHelpText>
+        <label>Promotion Active</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Bulk_Criteria_Field_Name__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Field Name of Criteria on which the Bulk Promotion will be running.</inlineHelpText>
+        <label>Bulk Criteria Field Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Street</fullName>
+                    <default>false</default>
+                    <label>Street</label>
+                </value>
+                <value>
+                    <fullName>City</fullName>
+                    <default>false</default>
+                    <label>City</label>
+                </value>
+                <value>
+                    <fullName>State</fullName>
+                    <default>false</default>
+                    <label>State</label>
+                </value>
+                <value>
+                    <fullName>Zip Code</fullName>
+                    <default>false</default>
+                    <label>Zip Code</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Bulk_Criteria_Field_Value__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Values of the Bulk Criteria Field to be used to determine promotion eligibility.</inlineHelpText>
+        <label>Bulk Criteria</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Bulk_Promotion__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Bulk is required mode when values are more than 100 for single criteria. Example: Address with combination of fields is not supported in Bulk mode.</inlineHelpText>
+        <label>Bulk Mode</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Configured_Fields_After__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Configured Fields After</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Configured_Fields_Before__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Configured Fields Before</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Configured_Fields_Number__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Configured Fields Number</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Discount_Percentage__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Mandatory: Discount Percentage applicable for promotion. Enter up to 2 decimal places.</inlineHelpText>
+        <label>Discount Percentage</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Display_Promotion_End_Date__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>When checked, promotion end date is displayed to SP users.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>When checked, promotion end date is displayed to SP users.</inlineHelpText>
+        <label>Display Promotion End Date</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Do_Not_Run__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This deactivates promotion regardless of other promotion parameters.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This deactivates promotion regardless of other promotion parameters.</inlineHelpText>
+        <label>Stop Promotion Now</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Early_Stop_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Optional: This stops an existing running Promotion on a scheduled end of the date.</inlineHelpText>
+        <label>Early Stop Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>End_Date__c</fullName>
+        <description>Mandatory: Last day on which promotion will be active in portal and APIs.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Mandatory: Last day on which promotion will be active in portal and APIs.</inlineHelpText>
+        <label>End Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Expired__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>To check the status of the whether the promotion is expired.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>To check the status of the whether the promotion is expired.</inlineHelpText>
+        <label>Expired</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Expiry_Notification__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>When checked, SP users will receive notification of the promotion’s pending expiration in their portal dashboards.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>When checked, SP users will receive notification of the promotion’s pending expiration in their portal dashboards.</inlineHelpText>
+        <label>Dashboard Notifications</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Field_Inputs__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This will hold the key value pairs for each dynamic field configured for this promotion</inlineHelpText>
+        <label>Field Inputs</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Field_input_values_JSON__c</fullName>
+        <externalId>false</externalId>
+        <label>Field input values JSON</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>For_Testing__c</fullName>
+        <defaultValue>true</defaultValue>
+        <description>Promos will be applied to test accounts only. NOTE: All promotions must be tested and certified before activation.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Promos will be applied to test accounts only. NOTE: All promotions must be tested and certified before activation.</inlineHelpText>
+        <label>Test Accounts Only</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Hierarchy__c</fullName>
+        <description>Read-Only: Populated with Map/Site/Deal based on Promo Type selected</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Read-Only: Populated with Map/Site/Deal based on Promo Type selected</inlineHelpText>
+        <label>Hierarchy</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Import_Bulk_Criteria_Promo__c</fullName>
+        <externalId>false</externalId>
+        <label>Import Bulk Criteria Promo</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Access</fullName>
+                    <default>false</default>
+                    <label>Access</label>
+                </value>
+                <value>
+                    <fullName>Port</fullName>
+                    <default>false</default>
+                    <label>Port</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Keys_Used__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Keys Used</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Priority_Number__c</fullName>
+        <defaultValue>1</defaultValue>
+        <description>Read-Only: Populated with 1/2/3/4/5/6/7/8/9 based on Promo Type selected</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Read-Only: Populated with 1/2/3/4/5/6/7/8/9 based on Promo Type selected</inlineHelpText>
+        <label>Priority Number</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Priority__c</fullName>
+        <description>Read-Only: Populated with M1/M2/S1/S2/S3/S4/D1/D2/D3 based on Promo Type selected</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Read-Only: Populated with M1/M2/S1/S2/S3/S4/D1/D2/D3 based on Promo Type selected</inlineHelpText>
+        <label>Priority</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Promo_Certified_Date__c</fullName>
+        <description>Promo Certified Date</description>
+        <externalId>false</externalId>
+        <label>Promo Certified Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Promo_Configurator_Lookup__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Dummy lookup relationship with Promo Meta Data Object</inlineHelpText>
+        <label>Promo Configurator Lookup</label>
+        <referenceTo>Wireline_Promo_Meta_Data__c</referenceTo>
+        <relationshipLabel>Wireline Promotion Rules</relationshipLabel>
+        <relationshipName>Wireline_Promotion_Rules</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Promo_Configured_Fields__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Comma separated API Names of the dynamic fields configured for the promotion</inlineHelpText>
+        <label>Promo Configured Fields</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Promo_Expiration_Date__c</fullName>
+        <description>Promo Expiration Date</description>
+        <externalId>false</externalId>
+        <label>Promo Expiration Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Promo_Stopped_Date__c</fullName>
+        <description>Promo Stopped Date</description>
+        <externalId>false</externalId>
+        <label>Promo Stopped Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Promo_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Type of Promotion</inlineHelpText>
+        <label>Promotion Type</label>
+        <required>true</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Rate Card Map</fullName>
+                    <default>false</default>
+                    <label>Rate Card Map</label>
+                </value>
+                <value>
+                    <fullName>SP Tier-Term</fullName>
+                    <default>false</default>
+                    <label>SP Tier-Term</label>
+                </value>
+                <value>
+                    <fullName>Port</fullName>
+                    <default>false</default>
+                    <label>Port</label>
+                </value>
+                <value>
+                    <fullName>Access</fullName>
+                    <default>false</default>
+                    <label>Access</label>
+                </value>
+                <value>
+                    <fullName>Feature</fullName>
+                    <default>false</default>
+                    <label>Feature</label>
+                </value>
+                <value>
+                    <fullName>One-Time Charge</fullName>
+                    <default>false</default>
+                    <label>One-Time Charge</label>
+                </value>
+                <value>
+                    <fullName>SP</fullName>
+                    <default>false</default>
+                    <label>SP</label>
+                </value>
+                <value>
+                    <fullName>Order</fullName>
+                    <default>false</default>
+                    <label>Order</label>
+                </value>
+                <value>
+                    <fullName>Deal Reg</fullName>
+                    <default>false</default>
+                    <label>Deal Reg</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Promotion_Certified_By__c</fullName>
+        <description>Name of user who approved the promotion</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Name of user who approved the promotion</inlineHelpText>
+        <label>Promotion Certified By</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Promotion_Certified__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Once tested, a promotion must be certified by checking this box. NOTE: This is required for promotion to become active.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Once tested, a promotion must be certified by checking this box. NOTE: This is required for promotion to become active.</inlineHelpText>
+        <label>Promotion Certified</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Promotion_Name__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Mandatory: 20 Characters limit. Visible to all SP users in portal and APIs.</inlineHelpText>
+        <label>Promotion Name</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Promotion_Notification__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>When checked, promotion name and discount percentage is displayed to SP users.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>When checked, promotion name and discount percentage is displayed to SP users.</inlineHelpText>
+        <label>Display Promotion</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Promotion_Tag__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Mandatory: 30 Character limit. Visible to all SP users on Config page load.</inlineHelpText>
+        <label>Promotion Tag</label>
+        <length>30</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Rank__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Mandatory: Order in which Promotions are applied within the selected Promo Type. Ranks of existing Promos will automatically adjust.</inlineHelpText>
+        <label>Rank</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Rule_Description__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Mandatory: 1000 Characters limit. Visible to internal users only.</inlineHelpText>
+        <label>Promotion Description</label>
+        <length>1000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Select_Fields_Json__c</fullName>
+        <externalId>false</externalId>
+        <label>Select Fields for Json</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Selected_Fields__c</fullName>
+        <externalId>false</externalId>
+        <label>Selected Fields</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Stackable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>When checked, the promotion can be applied in combination with other promotions within the promo type.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>When checked, the promotion can be applied in combination with other promotions within the promo type.</inlineHelpText>
+        <label>Stackable</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Start_Date__c</fullName>
+        <description>Mandatory: Date on which promotion will become active in portal and APIs.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Mandatory: Date on which promotion will become active in portal and APIs.</inlineHelpText>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Test_SP__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Test SPs to which the promotion will be applied if For Testing flag is set to true</inlineHelpText>
+        <label>Test SP</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <label>Wireline Promotion Rules</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Promotion_Name__c</columns>
+        <columns>Promo_Type__c</columns>
+        <columns>Rank__c</columns>
+        <columns>Discount_Percentage__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Active__c</columns>
+        <columns>Promotion_Certified__c</columns>
+        <columns>Stackable__c</columns>
+        <columns>Promotion_Notification__c</columns>
+        <columns>Expiry_Notification__c</columns>
+        <columns>For_Testing__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>LAST_UPDATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All_Records</fullName>
+        <columns>NAME</columns>
+        <columns>Promotion_Name__c</columns>
+        <columns>Promo_Type__c</columns>
+        <columns>Rank__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>Active__c</columns>
+        <columns>Discount_Percentage__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Stackable__c</columns>
+        <columns>Start_Date__c</columns>
+        <columns>End_Date__c</columns>
+        <columns>Field_Inputs__c</columns>
+        <columns>For_Testing__c</columns>
+        <columns>Do_Not_Run__c</columns>
+        <columns>Promotion_Notification__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Records</label>
+    </listViews>
+    <nameField>
+        <displayFormat>Promo-{0000}</displayFormat>
+        <label>Promotion ID</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Wireline Promotion Rules</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Promo_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>For_Testing__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Promotion_Certified__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Do_Not_Run__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Start_Date__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Discount_should_be_between_0_and_100</fullName>
+        <active>true</active>
+        <description>Discount Percentage must be between 0 and 100</description>
+        <errorConditionFormula>OR(ISBLANK(Discount_Percentage__c),
+Discount_Percentage__c &lt;= 0.00,
+Discount_Percentage__c &gt; 1.00)</errorConditionFormula>
+        <errorDisplayField>Discount_Percentage__c</errorDisplayField>
+        <errorMessage>Discount Percentage must be between 0 and 100</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Display_Promotion_End_Date_Check_Access</fullName>
+        <active>true</active>
+        <description>Display Promotion End Date field cannot be checked when Display Promotion field is unchecked for Access Promo Type.</description>
+        <errorConditionFormula>IF( AND(Promotion_Notification__c==false,Display_Promotion_End_Date__c== true, ISPICKVAL(Promo_Type__c, &apos;Access&apos;)), true, false)</errorConditionFormula>
+        <errorDisplayField>Display_Promotion_End_Date__c</errorDisplayField>
+        <errorMessage>Display Promotion End Date field cannot be checked when Display Promotion field is unchecked for Access Promo Type.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Display_Promotion_End_Date_Uncheck_Acces</fullName>
+        <active>true</active>
+        <description>Display Promotion End Date field cannot be unchecked when Display Promotion field is checked for Access Promo Type.</description>
+        <errorConditionFormula>IF( AND(Promotion_Notification__c==true,Display_Promotion_End_Date__c== false, ISPICKVAL(Promo_Type__c, &apos;Access&apos;)), true, false)</errorConditionFormula>
+        <errorDisplayField>Display_Promotion_End_Date__c</errorDisplayField>
+        <errorMessage>Display Promotion End Date field cannot be unchecked when Display Promotion field is checked for Access Promo Type.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Early_Stop_Date_Validation</fullName>
+        <active>true</active>
+        <description>Early Stop Date Validation</description>
+        <errorConditionFormula>ISCHANGED(Early_Stop_Date__c ) &amp;&amp; ((Early_Stop_Date__c &lt; Start_Date__c) || (Early_Stop_Date__c &gt;= End_Date__c) || (Early_Stop_Date__c &lt; TODAY()))</errorConditionFormula>
+        <errorDisplayField>Early_Stop_Date__c</errorDisplayField>
+        <errorMessage>Select any date greater than or equal to today which is between Start date and End Date of the promotion.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>End_Date_cannot_be_left_blank</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK(End_Date__c)</errorConditionFormula>
+        <errorDisplayField>End_Date__c</errorDisplayField>
+        <errorMessage>End Date cannot be left blank.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>End_Date_greater_than_Start_Date</fullName>
+        <active>false</active>
+        <description>End Date should be greater than or equal to Start Date</description>
+        <errorConditionFormula>End_Date__c &lt; Start_Date__c</errorConditionFormula>
+        <errorDisplayField>End_Date__c</errorDisplayField>
+        <errorMessage>End Date should be greater than or equal to Start Date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Hierarchy_must_be_selected</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK(Hierarchy__c)</errorConditionFormula>
+        <errorDisplayField>Hierarchy__c</errorDisplayField>
+        <errorMessage>Select Promo Type to populate Hierarchy.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Priority_Number_must_not_be_blank</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK(Priority_Number__c)</errorConditionFormula>
+        <errorDisplayField>Priority_Number__c</errorDisplayField>
+        <errorMessage>Select Promo Type to populate Priority Number.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Priority_must_not_be_blank</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK(Priority__c)</errorConditionFormula>
+        <errorDisplayField>Priority__c</errorDisplayField>
+        <errorMessage>Select Promo Type to populate Priority.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Promotion_Certified</fullName>
+        <active>true</active>
+        <description>Promotions can only be active if promotion is certified</description>
+        <errorConditionFormula>IF( AND(Promotion_Certified__c == false,Active__c == true) , true, false)</errorConditionFormula>
+        <errorDisplayField>Active__c</errorDisplayField>
+        <errorMessage>Promotions can only be active if Promotion Certified field is checked.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Promotion_Name_cannot_be_left_blank</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK(Promotion_Name__c)</errorConditionFormula>
+        <errorDisplayField>Promotion_Name__c</errorDisplayField>
+        <errorMessage>Promotion Name cannot be left blank.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Promotion_Tag_Validation_for_Port_Promos</fullName>
+        <active>true</active>
+        <description>Please provide Promotion Tag information.</description>
+        <errorConditionFormula>ISBLANK(Promotion_Tag__c) &amp;&amp; ((ISPICKVAL(Promo_Type__c,&apos;Port&apos;)) || (ISPICKVAL(Promo_Type__c,&apos;Access&apos;)))</errorConditionFormula>
+        <errorDisplayField>Promotion_Tag__c</errorDisplayField>
+        <errorMessage>Please provide Promotion Tag information.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Rank_cannot_be_left_blank</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK(Rank__c)</errorConditionFormula>
+        <errorDisplayField>Rank__c</errorDisplayField>
+        <errorMessage>Rank cannot be left blank.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Rule_Description_cannot_be_left_blank</fullName>
+        <active>true</active>
+        <description>Rule Description cannot be left blank</description>
+        <errorConditionFormula>ISBLANK(Rule_Description__c)</errorConditionFormula>
+        <errorDisplayField>Rule_Description__c</errorDisplayField>
+        <errorMessage>Rule Description cannot be left blank.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Start_Date_cannot_be_left_blank</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISBLANK(Start_Date__c)</errorConditionFormula>
+        <errorDisplayField>Start_Date__c</errorDisplayField>
+        <errorMessage>Start Date cannot be left blank.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Start_Date_should_be_after_todays_date</fullName>
+        <active>false</active>
+        <description>Start Date should be after Today&apos;s date</description>
+        <errorConditionFormula>AND(ISNEW(),Start_Date__c &lt; (Today() + 1))</errorConditionFormula>
+        <errorDisplayField>Start_Date__c</errorDisplayField>
+        <errorMessage>Start Date should be after Today&apos;s date</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

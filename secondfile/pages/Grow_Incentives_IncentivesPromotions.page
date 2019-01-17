@@ -1,0 +1,141 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetGrowPdfsCtrl">
+  <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />
+    <apex:stylesheet value="{!$Resource.products_css}"/>
+    <apex:includeScript value="{!URLFOR($Resource.productMobileMenuJS)}" />
+    <apex:stylesheet value="{!$Resource.peCustom}" />
+    <style>
+    /* Robyn 6/8/16: removed inline hero style */
+        .grow-body .leftNavCol .leftNav, .products-body .leftNavCol .leftNav {
+            width: 180px;
+        }
+    </style>
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="grow-incentives jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+            <div class="hero_badge">
+                <h1 class="hero_badge_1">Incentives &amp; Promotions</h1>
+                <h2 class="hero_badge_2">Help to win more deals with offers and incentives to support your success.</h2>
+            </div>
+            </div>
+        <div class="col-sm-2"></div>
+        </div>
+    </div>  
+    <!-- END HERO SLICE -->
+   <div class="products-body col-sm-10 col-sm-offset-1 product-page Incentives">
+        <div class="row">           
+            <div class="contentCol col-sm-12 body-load-content">
+              <div>
+    <!-- User without Begin Quote Permission -->
+        <apex:outputPanel rendered="{!!$User.Begin_Quote__c}">
+            <h2>Find offers and incentives for AT&amp;T solutions</h2>
+            <p class="mb-30">We’re sorry. You need permission to access this content. Ask your <a href="/apex/manage_users">Admin </a> for details.</p>
+        </apex:outputPanel>
+    <!-- User with Begin Quote Permission -->
+        <apex:outputPanel rendered="{!$User.Begin_Quote__c}"> 
+            <h2>Find offers and incentives for AT&amp;T solutions</h2>
+            <p>AT&amp;T Partner Exchange provides offers, incentives and promotions to help you succeed in the marketplace. From competitive pricing to product offers, special promotions help you position AT&amp;T solutions to your customers. Learn more about our competitive offers and incentives and how you can gain additional value
+by selling AT&amp;T solutions.</p>
+            
+    <!-- Network Services -->
+            <apex:outputPanel rendered="{!networkSize!= 0}">
+                <hr class="blue_hr mt-40" /> 
+                <h3>Network Services</h3>                  
+                <apex:repeat value="{!networkList}" var="cp">                       
+                    <apex:repeat value="{!cp.Attachments}" var="a">    
+                        <apex:outputLink value="{!URLFOR($Action.Attachment.Download, a)}" target="_blank" styleClass="document-file">         
+                            <div class="document-row">
+                                <div class="file-type file-pdf"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!cp.name}"/></h4>
+                                    <p><apex:outputText value="{!cp.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>
+                    </apex:repeat>
+                </apex:repeat>         
+            </apex:outputPanel>
+    <!-- Network Services -->
+    <!-- Mobility Services -->
+            <apex:outputPanel rendered="{!mobilitySize!= 0}">
+            <hr class="blue_hr mt-40" />
+                <h3>Mobility Services</h3>   
+                <apex:repeat value="{!mobilityList}" var="cp">                
+                    <apex:repeat value="{!cp.Attachments}" var="a">    
+                        <apex:outputLink value="{!URLFOR($Action.Attachment.Download, a)}" target="_blank" styleClass="document-file">         
+                            <div class="document-row">
+                                <div class="file-type file-pdf"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!cp.name}"/></h4>
+                                    <p><apex:outputText value="{!cp.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>
+                    </apex:repeat>
+                </apex:repeat>         
+            </apex:outputPanel>
+    <!-- Mobility Services -->
+    <!-- Hosting & Security Services -->
+            <apex:outputPanel rendered="{!hostingSize!= 0}">
+                <hr class="blue_hr mt-40" />
+                <h3>Hosting &amp; Security Services</h3>                   
+                <apex:repeat value="{!hostingList}" var="cp">                
+                    <apex:repeat value="{!cp.Attachments}" var="a">    
+                        <apex:outputLink value="{!URLFOR($Action.Attachment.Download, a)}" target="_blank" styleClass="document-file">         
+                            <div class="document-row">
+                                <div class="file-type file-pdf"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!cp.name}"/></h4>
+                                    <p><apex:outputText value="{!cp.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>
+                    </apex:repeat>
+                </apex:repeat>         
+            </apex:outputPanel>
+    <!-- Hosting & Security Services -->
+    <!-- Trip Incentive-->
+            <apex:outputPanel rendered="{!tripSize!= 0}">
+                <hr class="blue_hr mt-40" />
+                <h3>Trip Incentive</h3>  
+                    <apex:repeat value="{!tripList}" var="cp">                
+                        <apex:repeat value="{!cp.Attachments}" var="a">    
+                            <apex:outputLink value="{!URLFOR($Action.Attachment.Download, a)}" target="_blank" styleClass="document-file">         
+                                <div class="document-row">
+                                    <div class="file-type file-pdf"></div>
+                                    <div class="details">
+                                        <h4><apex:outputText value="{!cp.name}"/></h4>
+                                        <p><apex:outputText value="{!cp.description}"/></p>
+                                    </div>
+                                </div>
+                            </apex:outputLink>
+                        </apex:repeat>
+                    </apex:repeat>         
+            </apex:outputPanel>
+      <!--Trip Incentive -->   
+      <!-- General Incentives-->
+        <apex:outputPanel rendered="{!generalSize!= 0}">
+                <hr class="blue_hr mt-40" />
+                <h3>General Incentives</h3> 
+                <apex:repeat value="{!generalList}" var="cp">                       
+                    <apex:repeat value="{!cp.Attachments}" var="a">    
+                        <apex:outputLink value="{!URLFOR($Action.Attachment.Download, a)}" target="_blank" styleClass="document-file">         
+                            <div class="document-row">
+                                <div class="file-type file-pdf"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!cp.name}"/></h4>
+                                    <p><apex:outputText value="{!cp.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>
+                    </apex:repeat>
+                </apex:repeat>       
+            </apex:outputPanel> 
+    <!-- General Incentives -->
+        </apex:outputPanel>
+    </div> 
+   </div>
+   </div>
+   </div> 
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />   
+</apex:page>

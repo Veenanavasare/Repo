@@ -1,0 +1,50 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" Controller="GetGrowPdfsCtrl">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />
+    <apex:stylesheet value="{!$Resource.products_css}"/>
+    <apex:includeScript value="{!URLFOR($Resource.productMobileMenuJS)}" />
+    <apex:stylesheet value="{!$Resource.peCustom}" />
+             
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="grow-getting-started jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                   <h1 class="hero_badge_1">Program Resources</h1>
+                    <h2 class="hero_badge_2">A reseller program designed around you.</h2>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+   <div class="products-body col-sm-10 col-sm-offset-1 product-page Grow_GettingStarted">
+        <div class="row">           
+            <div class="contentCol col-sm-12 body-load-content">
+                <div>
+   
+        <h2>Program Resources for the AT&amp;T Partner Exchange program.</h2>
+            <apex:outputPanel >
+                <hr class="blue_hr mb-40" />
+            <apex:outputPanel >   
+                <div class="details">
+                    <apex:repeat value="{!DocMapGROWGuides}" var="docMap"> 
+                    <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                        <div class="document-row">
+                            <div class="file-type file-{!docMap.type}"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                <p><apex:outputText value="{!docMap.description}"/></p>
+                            </div>
+                        </div>
+                    </apex:outputLink>        
+                     </apex:repeat>    
+                </div>
+                </apex:outputPanel> 
+                </apex:outputPanel>
+                
+            </div>
+           </div>
+           </div>     
+    </div>
+      <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+</apex:page>

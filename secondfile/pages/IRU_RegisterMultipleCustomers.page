@@ -1,0 +1,96 @@
+<apex:page standardStylesheets="false" docType="html-5.0" sidebar="false" showHeader="false" Controller="GetPdfsController">
+
+    <style>
+        .remove-regSheet-att {
+            display: none;
+        }
+    </style>
+
+    <apex:form >
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h2 class="modal-title">Register Multiple End Customers</h2>
+        </div>
+        
+        <!-- Modal Body -->
+        <div class="modal-body">
+            <p>Download the Multiple End Customer Registration Sheet to register 5 or more end customers in the Employee Sponsorship Program. Once you complete the sheet, upload the file below.</p>
+            <p><apex:outputLink value="{!fileURL}+{!docId}" target="_blank"><apex:outputText value="Multiple End Customer Registration Sheet"/></apex:outputLink></p>
+            <br />
+
+            <!-- Form Section 1: Bulk Upload -->
+            <div class="row">
+                <div class="col-sm-12">
+                    <apex:outputLabel value="Upload Registration Sheet" for="iru-contact-city" styleClass="control-label"></apex:outputLabel> (Required) <span class="help-text">Supported file format: .xls, .xlsx Maximum file size: 1MB</span><br/>
+                </div>
+                <div class="col-sm-6 form-group ">
+                    <apex:inputFile fileName="{!mulFileName}" title="ChooseFile" value="{!mulCustUpload}" styleClass="regSheet-att"/><br/>
+                    <span><a class="remove-regSheet-att" href="javascript:void(0)">Remove Attachment</a></span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer">
+            <!-- FIXME: button should trigger the email for Register Multiple Customers -->
+            <apex:commandButton action="{!sendEmail}" value="Submit" styleClass="pull-right btn btn-primary submit-button-multiple" />
+            <button type="button" class="pull-right cancel-button" data-dismiss="modal">Cancel</button>
+        </div>    
+    </apex:form> 
+    
+    <script>
+        $(document).ready( function (){
+            $(".submit-button-multiple").attr("disabled","disabled");
+           /////////////// FORM VALIDATION///////////////
+            function Validate() {
+                validator = 0;
+
+                $("[validate='required']:visible, [title='ChooseFile']:visible").each( function () {
+                    if($(this).val() != ""){                    
+                        validator += 1;
+                        console.log(validator);
+                    } else if($(this).val() == "") {
+                        validator -= 1;
+                        console.log(validator);
+                    }
+                    var vCheck = $("[validate='required']:visible").length + $("[title='ChooseFile']:visible").length;
+                    console.log("vCheck is: "+vCheck);
+                    if(validator != vCheck){
+                        $(".submit-button-multiple").attr("disabled", "disabled");
+                    }
+                    else if(validator == vCheck){
+                        $(".submit-button-multiple").removeAttr("disabled");
+                    }
+                }); 
+            }
+
+            
+            $(document).delegate("[validate='required']:visible", "keyup", Validate);
+            $(document).delegate("[title='ChooseFile']:visible", "change", function() {
+                Validate();
+                var myClass = $(this).attr("class");
+                if($(this).val() == ""){
+                    $(".remove-"+myClass+"").hide();
+                }else if($(this).val() != ""){
+                    $(".remove-"+myClass+"").show();
+                }
+            });
+            $(document).delegate(".add-domain, .remove-regSheet-att", "click", Validate);
+            $(document).delegate(":checkbox", "click", function () {
+                setTimeout(function () {
+                    Validate();
+                }, 400)
+            });
+            /////////////// END FORM VALIDATION///////////////  
+            $(".remove-regSheet-att").click( function () {
+                $(this).hide();
+                $(".regSheet-att").val("");
+            });
+
+  
+        });
+    </script>
+
+</apex:page>

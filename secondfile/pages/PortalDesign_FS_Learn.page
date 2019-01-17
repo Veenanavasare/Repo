@@ -1,0 +1,160 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" Controller="GetPdfsController">
+    <style>
+        .bg-heading img {top:0;}
+    </style>
+    <div class="learnmore">
+        <!-- Intro -->
+        <h2>Learn more about {!$Label.Field_Solutions}.</h2>
+        
+        <p class="mb-40">Explore the benefits of effective, efficient field solutions.</p> 
+           <div class="row mt-25">
+            <div class="col-lg-6 ">
+               <div class="unclickable text-center "> 
+                   <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/ico-head-ptt.svg')}" /> 
+                    <h4>{!$Label.Enhanced_Push_to_Talk} (EPTT)</h4>
+                   <p>Coordinate people and processes with near-real-time, one-touch&nbsp;communication</p>
+               </div>
+             </div>
+             <div class="col-lg-6">
+                <div class="unclickable text-center mb-40">
+                   <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/ico-head-fleet-management.svg')}" /> 
+                    <h4>AT&amp;T Fleet Complete<sup>&reg;</sup></h4>
+                    <p>GPS-based vehicle tracking and fleet management, delivering information when you need it</p>
+                </div>
+            </div>
+          </div> 
+        
+        <hr class="blue_hr mt-0 mb-40" /> 
+      
+        <div class="spacingContent">
+            <div class="row">
+                <div class="col-lg-6 mb-30">
+                    <a href="javascript:void(0)" class="promo promo-link text-center bg-dk-blue dk-blue-arrow stepTab" id="step1">
+                        <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-sales-report.svg')}" /> 
+                        <h4>{!$Label.heading_sales}</h4>
+                        <p class="paraSet">Our sales resources will provide an overview of<br />{!$Label.Field_Solutions}.</p>
+                        <span class="transp-bg learn-more">Learn More</span>
+                    </a>
+                </div>
+                <div class="col-lg-6 mb-30">
+                    <a href="javascript:void(0)" class="promo promo-link text-center bg-dk-gray dk-gray-arrow stepTab" id="step2">
+                         <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-settings.svg')}" /> 
+                        <h4>{!$Label.heading_technical}</h4>
+                        <p class="paraSet">Our technical information will provide a deeper look into<br />{!$Label.Field_Solutions}.</p>
+                        <span class="transp-bg learn-more">Learn More</span>
+                    </a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        
+        <div class="clearfix"></div>
+        
+        <!-- Sales Resources -->
+        <div class="stepCont step1-cont">
+            <h3 class="step-heading bg-dk-blue">
+                {!$Label.heading_sales}
+                <p>Review our sales resources for an overview of product details.</p>
+            </h3>
+            <div class="step-body">
+                <h4 class="bg-heading"> <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/ico-head-ptt.svg')}" /> {!$Label.Enhanced_Push_to_Talk} (EPTT)</h4>
+                <p class="bg-heading">AT&amp;T EPTT is a one-button approach to nearly instantaneous voice communication.</p>   
+                <!-- Document List: Sales Resources EPTT -->
+                <apex:outputPanel >
+                    <apex:repeat value="{!DocMapFSLearnSales}" var="docMap">
+                        <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                            <div class="document-row">
+                                <div class="file-type file-{!docMap.type}"></div>
+                                <div class="details">
+                                    <h4>
+                                        <apex:outputText value="{!docMap.Name}" />
+                                    </h4>
+                                    <p>
+                                        <apex:outputText value="{!docMap.description}" />
+                                    </p>
+                                </div>
+                            </div>
+                        </apex:outputLink>
+                    </apex:repeat>
+                </apex:outputPanel>
+                                             
+                <h4 class="bg-heading">  <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/ico-head-fleet-management.svg')}" />AT&amp;T Fleet Complete</h4>
+                <p class="bg-heading">AT&amp;T Fleet Complete is a GPS-based fleet tracking and management solution.</p>
+                <!-- Document List: Sales Resources Fleet Complete -->
+                <apex:outputPanel > 
+                    <apex:repeat value="{!DocMapFSLearnSalesFleet }" var="docMap"> 
+                        <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                            <div class="document-row">
+                                <div class="file-type file-{!docMap.type}"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                    <p><apex:outputText value="{!docMap.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>        
+                    </apex:repeat>    
+                </apex:outputPanel>
+                <p class="mt-40">Please view the <a href="{!$Page.PortalDesign_WWAN}">{!$Label.WWAN}</a> portal page for more information on AccessMyLAN<sup>&reg;</sup> from AT&amp;T</p>
+            </div>
+        </div>
+     
+        <!-- Technical Information -->
+        <div class="stepCont step2-cont">
+            <h3 class="step-heading bg-dk-gray">
+                {!$Label.heading_technical}
+                <p>Take a deeper dive with our technical information.</p>
+            </h3>
+            <div class="step-body">
+                <h4 class="bg-heading"> <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/ico-head-ptt.svg')}" /> {!$Label.Enhanced_Push_to_Talk} (EPTT)</h4>
+                <p class="bg-heading">AT&amp;T EPTT is a one-button approach to nearly instantaneous voice communication.</p>   
+                <!-- Document List: Technical Information EPTT -->    
+                <apex:outputPanel >
+                    <apex:repeat value="{!DocMapFSLearnTechnical}" var="docMap">
+                        <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                            <div class="document-row">
+                                <div class="file-type file-{!docMap.type}"></div>
+                                <div class="details">
+                                    <h4>
+                                        <apex:outputText value="{!docMap.Name}" />
+                                    </h4>
+                                    <p>
+                                        <apex:outputText value="{!docMap.description}" />
+                                    </p>
+                                </div>
+                            </div>
+                        </apex:outputLink>
+                    </apex:repeat>
+                </apex:outputPanel>
+                
+                  <h4 class="bg-heading">  <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/ico-head-fleet-management.svg')}" />AT&amp;T Fleet Complete</h4>
+                <p class="bg-heading">AT&amp;T Fleet Complete is a GPS-based fleet tracking and management solution.</p>
+                <!-- Document List: Technical Information Fleet Complete -->
+                <apex:outputPanel > 
+                    <apex:repeat value="{!DocMapFSLearnTechnicalFleet }" var="docMap"> 
+                        <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                            <div class="document-row">
+                                <div class="file-type file-{!docMap.type}"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                    <p><apex:outputText value="{!docMap.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>        
+                    </apex:repeat>    
+                </apex:outputPanel>
+            </div>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".stepTab").click(function() {
+                var myId = $(this).attr("id");
+                $(".stepTab.active").removeClass("active");
+                $(this).addClass("active");
+                $(".stepCont").not("." + myId + "-cont").hide();
+                $("." + myId + "-cont").show();
+            });
+        });
+    </script>
+</apex:page>

@@ -1,0 +1,273 @@
+<apex:page controller="DealRegController" sidebar="false" showChat="false" standardStylesheets="false" showHeader="false" docType="html-5.0">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCss}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCSSDetails}" />
+    <apex:includeScript value="{!$Resource.jQueryMin}" />
+    <apex:includeScript value="{!$Resource.atombootstrapminjs}" />
+    <apex:stylesheet value="{!$Resource.TextStylesCSS}"/>
+    
+    <style>
+    
+    .centerAlignTab{
+        padding-left:30% !important;
+    }
+    .leftAlignTab{
+        padding-left:54px !important;
+        padding-right:0px !important;
+    }
+    .active .circlenum{
+        margin-right:5px !important;
+        font-size:16px;
+        font-weight:bold;
+        line-height:20px !important;
+    }
+    
+    .circlenum{
+        margin-right:5px !important;
+    }
+    
+   .circlenum1 {
+        float: left;
+        margin: -4px 0px 0px;
+        width: 25px;
+        height: 25px;
+        border-radius: 15px;
+        font-size: 16px;
+        line-height: 20px;
+        text-align: center;
+        border: 1px solid #666;
+        color: rgb(102, 102, 102);
+        margin-right:5px !important;
+    }
+        body {
+            background: #f7f7f7;
+        }
+        .tabbed_menu li {
+            width: 33.33% !important;
+            text-align: center;
+        }
+        .tabbed_menu .active a {
+            color: #fff !important;
+        }
+        .container {
+            width: 98% !important;
+        }
+        .navContainer {
+            width: 98% !important;
+        }
+        div#footerDiv .btn {
+            text-align: left;
+        }
+        blockquote {
+            background: #f7f7f7;
+            margin: 0 10px 10px 10px;
+            padding: 10px 20px;
+            border-left: 5px solid #eee;
+        }
+        .row {
+            margin: 10px 0;
+        }
+        .tabbed_menu .active {
+            background: #056fab;
+            height: 58px;
+        }
+        .tabbed_menu li {
+            padding: 0;
+        }
+        .tabbed_menu li a {
+            padding: 20px 50px;
+            display: block;
+            cursor: default !important;
+            text-align:left;
+        }
+        .dataTables_length {
+            display: none;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+            cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+            cursor: no-drop;
+        }
+        .tabbed_menu first-child a {
+            color: #428bca;
+        }
+        .tabbed_menu .disabled {
+            background: #fff;
+        }
+        .tabbed_menu .disabled a {
+            color: #356fab;
+        }
+        .tabbed_menu first-child {
+            background: #fff !important;
+        }
+        #manage_content {
+            margin: 10px auto;
+            padding: 0;
+            max-width: 1168px;
+        }
+        .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge{
+            background-size: 900px 900px;
+        }
+        /* User Avatar Image Alignment */
+        .user_badge {
+            margin-top: 6px;
+            position: relative;
+            top: 0;
+        }
+        .navbar-logo {
+            margin-left: -13px !important;
+            margin-top: 1px;            
+        }
+        .navbar-nav > li > a {
+            padding: 11px 17.75px;
+            line-height: 27px;
+        }
+        .m-b-40 {
+            margin-bottom: 40px !important;
+        }
+        th {
+            font-family: omnes_att_iimedium;
+            font-size: 18px;
+        }
+        .tabbed_menu .mainnav li.active::after {
+            content: ' ';
+            display: inline;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            position: absolute;
+            border-top: 14px solid #056fab;
+            /*bottom: -12px;
+            left: 9%; 
+            margin-left: 8%;*/
+            z-index: 99999;
+            cursor: default;
+            text-align:left;
+        }
+        .btn{
+            height: 38px !important;
+        }
+        .btn-primary:hover{
+            color: #FFF;
+        }
+        .panel-heading {display:none;}
+        .specialPricing { background:Grey;}
+        .panel-default > .panel-heading + .panel-collapse > .panel-body {
+            background: #F7F7F7;
+        }
+        .panel-default>.panel-heading+.panel-collapse>.panel-body{
+            border-top-color:#f7f7f7;
+        }
+        .collapse.in {
+            margin-top: -20px;
+            margin-left: -15px;
+        }
+        
+         ul.mainnav li.disabled a, ul.mainnav li.disabled a:hover
+        {
+            cursor: default !important;
+            color: #666 !important;
+            border: 1px solid #a3a3a3 ;
+            text-align:left;
+            font-weight:bold;
+        }
+        tbody tr:nth-child(odd),tbody tr:nth-child(even) {
+            background: none !important;
+        }
+        
+        .dividerHr {
+            background-color: #1b81ad;
+            border: 0 none;
+            height: 3px;
+            margin: 35px 0;
+            page-break-after: always;
+            width: 100%;
+            clear:both;
+        }
+        #slice_footer{
+            margin-top: 30px !important;
+        }
+        
+    </style>
+
+    <div class="content_container">
+        <apex:outputPanel rendered="{!AIAProduct}">
+            <div id="hero_banner" class="hero_manage jumbotronContainer ng-scope" style="margin-bottom: 25px;">
+                <div >
+                    <div class="col-sm-12"></div>
+                </div>
+            </div>
+            <br/>
+        </apex:outputPanel>
+        <div id="manage_content" class="page">
+            <div id="main" class="row">
+                    <div class="row tabbed_menu" style="margin-bottom:25px;">
+                        <div class="row">
+                            <ul class="mainnav" role="tablist">
+                                <li class="active">
+                                    <a class="centerAlignTab" href="javascript:void(0);" data-name="genQuoteTab">
+                                        <div class="circlenum">1</div>{!$Label.First_Tab_Label}</a>
+                                </li>
+                                <li class="disabled">
+                                    <a class="centerAlignTab" href="javascript:void(0);" data-name="reviewDealRegTab">
+                                        <div class="circlenum1">2</div>{!$Label.Second_Tab_Label}</a>
+                                </li>
+                                <li class="disabled">
+                                    <a class="leftAlignTab" href="javascript:void(0);" data-name="submitOrderTab">
+                                        <div class="circlenum1">3</div>{!$Label.Third_Tab_Label}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade in active">
+                        <apex:include pageName="{!pageToLoad}"/> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footerDiv">
+        <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+    </div>
+    
+    <script type="text/javascript">
+        function activeTabIcon() {
+            var tabName = $('.tabbed_menu li.active a').attr('data-tabname');
+            $('.manage_content-header').text(tabName);
+            var okIcon = '<span class="glyphicon glyphicon-ok" style="font-size:10px;"  ></span>';
+            $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);
+        }
+    
+        var j$ = jQuery.noConflict();        
+        var aiaProd = '{!AIAProduct}';
+        if(aiaProd == 'true'){
+            $('.tabbed_menu').hide();
+            $('body').css('margin-top','-7px');
+        }
+        
+        //Global Variables
+        customerId = '';
+        generatedQuoteId = '';
+        counter = 0;
+        mode = '';
+        mode = '{!$CurrentPage.parameters.mode}';
+        UrlQuoteId = '{!$CurrentPage.parameters.quoteId}';
+        UrlintetvalTime = '{!$CurrentPage.parameters.intervalTime}';
+        if (UrlQuoteId && counter == 0) {
+            counter = 1;
+            generatedQuoteId = UrlQuoteId;
+            $("a[data-name='reviewDealRegTab'],a[data-name='submitOrderTab']").parent('li').css("background","#e1e1e1");
+            if (mode == "TNC" || mode == 'contract' || mode == 'ipflexTNC' || mode == 'orderConf') {
+                $("a[data-name='genQuoteTab']").parent('li').removeClass("active").addClass("disabled");
+                $("a[data-name='reviewDealRegTab']").parent('li').addClass("active").removeClass("disabled").removeAttr("style");
+                $("a[data-name='reviewDealRegTab']").find("div").removeClass("circlenum1").addClass("circlenum") ;
+            }
+            activeTabIcon();
+        }
+    </script>
+</apex:page>

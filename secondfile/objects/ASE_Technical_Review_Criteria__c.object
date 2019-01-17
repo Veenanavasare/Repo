@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>true</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
+    <fields>
+        <fullName>CIR_Operator__c</fullName>
+        <externalId>false</externalId>
+        <label>CIR Operator</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Field__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>&gt;</fullName>
+                    <default>false</default>
+                    <label>&gt;</label>
+                </value>
+                <value>
+                    <fullName>&lt;</fullName>
+                    <default>false</default>
+                    <label>&lt;</label>
+                </value>
+                <value>
+                    <fullName>=</fullName>
+                    <default>false</default>
+                    <label>=</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Port Price</controllingFieldValue>
+                <controllingFieldValue>CIR Price</controllingFieldValue>
+                <controllingFieldValue>ASE Basic CIR Downstream Mbps Speed</controllingFieldValue>
+                <controllingFieldValue>ASE Broadband CIR Downstream Mbps Speed</controllingFieldValue>
+                <valueName>&gt;</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Port Price</controllingFieldValue>
+                <controllingFieldValue>CIR Price</controllingFieldValue>
+                <controllingFieldValue>ASE Basic CIR Downstream Mbps Speed</controllingFieldValue>
+                <controllingFieldValue>ASE Broadband CIR Downstream Mbps Speed</controllingFieldValue>
+                <valueName>&lt;</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Port Price</controllingFieldValue>
+                <controllingFieldValue>CIR Price</controllingFieldValue>
+                <controllingFieldValue>ASE Basic CIR Downstream Mbps Speed</controllingFieldValue>
+                <controllingFieldValue>ASE Broadband CIR Downstream Mbps Speed</controllingFieldValue>
+                <valueName>=</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>CIR_Speed__c</fullName>
+        <externalId>false</externalId>
+        <label>CIR Speed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CIR_Value__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+AND(
+ NOT(ISBLANK( TEXT( CIR_Operator__c ) ) ),
+ NOT(ISBLANK(  CIR_Speed__c  ) ) 
+)
+,  TEXT(CIR_Operator__c) + TEXT(CIR_Speed__c), &apos;&apos;)</formula>
+        <label>CIR Value</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Checkbox_Value__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Select a value when field selected is BAN Check</inlineHelpText>
+        <label>Checkbox Value</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Field__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Checked</fullName>
+                    <default>false</default>
+                    <label>Checked</label>
+                </value>
+                <value>
+                    <fullName>Unchecked</fullName>
+                    <default>false</default>
+                    <label>Unchecked</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>BAN Check</controllingFieldValue>
+                <valueName>Checked</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>BAN Check</controllingFieldValue>
+                <valueName>Unchecked</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Field__c</fullName>
+        <externalId>false</externalId>
+        <label>Field</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>BAN Check</fullName>
+                    <default>false</default>
+                    <label>BAN Check</label>
+                </value>
+                <value>
+                    <fullName>CNUM Type</fullName>
+                    <default>false</default>
+                    <label>CNUM Type</label>
+                </value>
+                <value>
+                    <fullName>Service Type</fullName>
+                    <default>false</default>
+                    <label>Service Type</label>
+                </value>
+                <value>
+                    <fullName>Port Speed</fullName>
+                    <default>false</default>
+                    <label>Port Speed</label>
+                </value>
+                <value>
+                    <fullName>ASE Basic CIR Downstream Mbps Speed</fullName>
+                    <default>false</default>
+                    <label>ASE Basic CIR Downstream Mbps Speed</label>
+                </value>
+                <value>
+                    <fullName>ASE Broadband CIR Downstream Mbps Speed</fullName>
+                    <default>false</default>
+                    <label>ASE Broadband CIR Downstream Mbps Speed</label>
+                </value>
+                <value>
+                    <fullName>Network Type</fullName>
+                    <default>false</default>
+                    <label>Network Type</label>
+                </value>
+                <value>
+                    <fullName>LATA</fullName>
+                    <default>false</default>
+                    <label>LATA</label>
+                </value>
+                <value>
+                    <fullName>Config Type</fullName>
+                    <default>false</default>
+                    <label>Config Type</label>
+                </value>
+                <value>
+                    <fullName>Site Designation</fullName>
+                    <default>false</default>
+                    <label>Site Designation</label>
+                </value>
+                <value>
+                    <fullName>Port/VLAN Based</fullName>
+                    <default>false</default>
+                    <label>Port/VLAN Based</label>
+                </value>
+                <value>
+                    <fullName>MAC Addresses</fullName>
+                    <default>false</default>
+                    <label>MAC Addresses</label>
+                </value>
+                <value>
+                    <fullName>Port Price</fullName>
+                    <default>false</default>
+                    <label>Port Price</label>
+                </value>
+                <value>
+                    <fullName>CIR Price</fullName>
+                    <default>false</default>
+                    <label>CIR Price</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Is_Active__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Active</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Multi__c</fullName>
+        <externalId>false</externalId>
+        <label>Multi Options</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <controllingField>Field__c</controllingField>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>100 Mbps Port</fullName>
+                    <default>false</default>
+                    <label>100 Mbps Port</label>
+                </value>
+                <value>
+                    <fullName>1 Gbps Port</fullName>
+                    <default>false</default>
+                    <label>1 Gbps Port</label>
+                </value>
+                <value>
+                    <fullName>10 Gbps Port</fullName>
+                    <default>false</default>
+                    <label>10 Gbps Port</label>
+                </value>
+                <value>
+                    <fullName>ASE Basic</fullName>
+                    <default>false</default>
+                    <label>ASE Basic</label>
+                </value>
+                <value>
+                    <fullName>ASE Broadband</fullName>
+                    <default>false</default>
+                    <label>ASE Broadband</label>
+                </value>
+                <value>
+                    <fullName>Base</fullName>
+                    <default>false</default>
+                    <label>Base</label>
+                </value>
+                <value>
+                    <fullName>Promotion</fullName>
+                    <default>false</default>
+                    <label>Promotion</label>
+                </value>
+                <value>
+                    <fullName>Single End Customer</fullName>
+                    <default>false</default>
+                    <label>Single End Customer</label>
+                </value>
+                <value>
+                    <fullName>Multi End Customer</fullName>
+                    <default>false</default>
+                    <label>Multi End Customer</label>
+                </value>
+                <value>
+                    <fullName>Inter LATA</fullName>
+                    <default>false</default>
+                    <label>Inter LATA</label>
+                </value>
+                <value>
+                    <fullName>Intra LATA</fullName>
+                    <default>false</default>
+                    <label>Intra LATA</label>
+                </value>
+                <value>
+                    <fullName>Point To Point</fullName>
+                    <default>false</default>
+                    <label>Point To Point</label>
+                </value>
+                <value>
+                    <fullName>Multi Point</fullName>
+                    <default>false</default>
+                    <label>Multi Point</label>
+                </value>
+                <value>
+                    <fullName>Hub &amp; Spoke</fullName>
+                    <default>false</default>
+                    <label>Hub &amp; Spoke</label>
+                </value>
+                <value>
+                    <fullName>Hub</fullName>
+                    <default>false</default>
+                    <label>Hub</label>
+                </value>
+                <value>
+                    <fullName>Spoke</fullName>
+                    <default>false</default>
+                    <label>Spoke</label>
+                </value>
+                <value>
+                    <fullName>Port Based</fullName>
+                    <default>false</default>
+                    <label>Port Based</label>
+                </value>
+                <value>
+                    <fullName>VLAN Based</fullName>
+                    <default>false</default>
+                    <label>VLAN Based</label>
+                </value>
+                <value>
+                    <fullName>64</fullName>
+                    <default>false</default>
+                    <label>64</label>
+                </value>
+                <value>
+                    <fullName>250</fullName>
+                    <default>false</default>
+                    <label>250</label>
+                </value>
+                <value>
+                    <fullName>251 - 500</fullName>
+                    <default>false</default>
+                    <label>251 - 500</label>
+                </value>
+                <value>
+                    <fullName>abcd</fullName>
+                    <default>false</default>
+                    <label>abcd</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Port/VLAN Based</controllingFieldValue>
+                <valueName>Port Based</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Port/VLAN Based</controllingFieldValue>
+                <valueName>VLAN Based</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>MAC Addresses</controllingFieldValue>
+                <valueName>64</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>MAC Addresses</controllingFieldValue>
+                <valueName>250</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>MAC Addresses</controllingFieldValue>
+                <valueName>251 - 500</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>CNUM Type</controllingFieldValue>
+                <valueName>Base</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>CNUM Type</controllingFieldValue>
+                <valueName>Promotion</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Service Type</controllingFieldValue>
+                <valueName>ASE Basic</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Service Type</controllingFieldValue>
+                <valueName>ASE Broadband</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Port Speed</controllingFieldValue>
+                <valueName>100 Mbps Port</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Port Speed</controllingFieldValue>
+                <valueName>1 Gbps Port</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Port Speed</controllingFieldValue>
+                <valueName>10 Gbps Port</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Network Type</controllingFieldValue>
+                <valueName>Single End Customer</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Network Type</controllingFieldValue>
+                <valueName>Multi End Customer</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>LATA</controllingFieldValue>
+                <valueName>Inter LATA</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>LATA</controllingFieldValue>
+                <valueName>Intra LATA</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Config Type</controllingFieldValue>
+                <valueName>Point To Point</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Config Type</controllingFieldValue>
+                <valueName>Multi Point</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Config Type</controllingFieldValue>
+                <valueName>Hub &amp; Spoke</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Site Designation</controllingFieldValue>
+                <valueName>Hub</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Site Designation</controllingFieldValue>
+                <valueName>Spoke</valueName>
+            </valueSettings>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Price_Operator_Values__c</fullName>
+        <externalId>false</externalId>
+        <label>Price Operator</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Field__c</controllingField>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>&gt;</fullName>
+                    <default>false</default>
+                    <label>&gt;</label>
+                </value>
+                <value>
+                    <fullName>&lt;</fullName>
+                    <default>false</default>
+                    <label>&lt;</label>
+                </value>
+                <value>
+                    <fullName>=</fullName>
+                    <default>false</default>
+                    <label>=</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Port Price</controllingFieldValue>
+                <controllingFieldValue>CIR Price</controllingFieldValue>
+                <valueName>&gt;</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Port Price</controllingFieldValue>
+                <controllingFieldValue>CIR Price</controllingFieldValue>
+                <valueName>&lt;</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Port Price</controllingFieldValue>
+                <controllingFieldValue>CIR Price</controllingFieldValue>
+                <valueName>=</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Price_Value__c</fullName>
+        <externalId>false</externalId>
+        <label>Price Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Priority__c</fullName>
+        <externalId>false</externalId>
+        <label>Priority</label>
+        <precision>18</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Field__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Checkbox</fullName>
+                    <default>false</default>
+                    <label>Checkbox</label>
+                </value>
+                <value>
+                    <fullName>Multi select</fullName>
+                    <default>false</default>
+                    <label>Multi select</label>
+                </value>
+                <value>
+                    <fullName>Text &amp; Number</fullName>
+                    <default>false</default>
+                    <label>Text &amp; Number</label>
+                </value>
+                <value>
+                    <fullName>Picklist</fullName>
+                    <default>false</default>
+                    <label>Picklist</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Port/VLAN Based</controllingFieldValue>
+                <controllingFieldValue>MAC Addresses</controllingFieldValue>
+                <controllingFieldValue>CNUM Type</controllingFieldValue>
+                <controllingFieldValue>Service Type</controllingFieldValue>
+                <controllingFieldValue>Port Speed</controllingFieldValue>
+                <controllingFieldValue>Network Type</controllingFieldValue>
+                <controllingFieldValue>LATA</controllingFieldValue>
+                <controllingFieldValue>Config Type</controllingFieldValue>
+                <controllingFieldValue>Site Designation</controllingFieldValue>
+                <valueName>Multi select</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Port Price</controllingFieldValue>
+                <controllingFieldValue>CIR Price</controllingFieldValue>
+                <controllingFieldValue>ASE Basic CIR Downstream Mbps Speed</controllingFieldValue>
+                <controllingFieldValue>ASE Broadband CIR Downstream Mbps Speed</controllingFieldValue>
+                <valueName>Text &amp; Number</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>BAN Check</controllingFieldValue>
+                <valueName>Checkbox</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <label>ASE Technical Review Criteria</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Priority__c</columns>
+        <columns>Field__c</columns>
+        <columns>Type__c</columns>
+        <columns>Is_Active__c</columns>
+        <columns>Checkbox_Value__c</columns>
+        <columns>Multi__c</columns>
+        <columns>CIR_Operator__c</columns>
+        <columns>CIR_Speed__c</columns>
+        <columns>CIR_Value__c</columns>
+        <columns>Price_Operator_Values__c</columns>
+        <columns>Price_Value__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <listViews>
+        <fullName>All1</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>ASE TRC - {000000}</displayFormat>
+        <label>ASE Technical Review Criteria Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>ASE Technical Review Criterias</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>BAN_Validation_for_ASE</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND( 
+ISPICKVAL( Field__c , &apos;BAN Check&apos;), 
+ISBLANK(TEXT(Checkbox_Value__c)), 
+ISBLANK(TEXT(Type__c)) 
+)</errorConditionFormula>
+        <errorMessage>For BAN Check, fill the values for the fields : Checkbox Value,Type</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

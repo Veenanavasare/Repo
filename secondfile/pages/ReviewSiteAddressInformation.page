@@ -1,0 +1,1045 @@
+<apex:page id="reviewAddressPageId" controller="SiteAddressInformationController" standardStylesheets="false" sidebar="false" action="{!fetchCustomerSiteinfo}" showHeader="false" cache="false" >
+ 
+<style>
+    .disableSelect{filter:grayscale(100%) invert(20%);}
+    #reviewAddressInstructionsDiv div {display:table;vertical-align: middle;}      
+    #reviewAddressInstructionsDiv span {vertical-align: middle;display: table-cell;padding-left: 7px;}
+     .tooltipTrigger + .tooltip > .tooltip-inner {
+        background-color: #fff;
+        color:#000;
+        font-family:omnes_att_iimedium;
+        text-align: left;
+        font-weight: normal; 
+        max-width:200px !important;
+        white-space: normal !important;
+    }
+    .tooltipTrigger + .tooltip.top > .tooltip-arrow {
+        border-top-color:#fff; 
+        left: 76% !important;
+    }
+    
+    .tooltipTrigger + .tooltip.top{
+        width:195px;
+    }
+    .tooltipTrigger + .tooltip.right > .tooltip-arrow {
+        border-right-color:#fff; 
+        border-right:10px solid #fff;
+        
+    }
+    .tooltipTrigger.glyphicon.glyphicon-info-sign.reviewQuoteInfoIcon {
+            margin: -47px 13px;
+            float: right;
+        }
+     .tooltipTrigger + .tooltip.top {
+            left: 1060.5px !important;
+        }
+        .tooltip.fade.top.in {
+            margin-left: -129px !important;
+        }
+     .headerClass{
+        border: 1px solid black;
+        font-weight:bold;
+        
+    }
+    .headerClass  td {
+        border: 1px solid black;
+    }
+    /*.first tr {
+        background: #41AB4A;
+    }*/
+    #exportSiteDivTable td
+    {
+        border: 1px solid black;
+    }
+    
+    #configureProducBtntId {
+        margin: 0 -2px !important;
+    }
+    
+    .rememberMessage {
+        margin: 0 -30px;
+    }
+    
+    
+    #manage_content input.btn-primary[disabled], div.removeSiteActionModal input.btn-primary{           
+        font-family: omnes_att_iimedium !important;
+        background-color: #0568ad !important;
+        border-color: #0568ad !important;
+        height: 40px;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+        min-width: 175px !important;
+        width: auto;
+    }
+    #manage_content div.removePop input.btn-primary{           
+        font-family: omnes_att_iimedium !important;
+        background-color: #0568ad !important;
+        border-color: #0568ad !important;
+        height: 40px;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+        width: 175px !important;
+    }
+    #manage_content input.btn-primary[disabled], div.removeSiteActionModal input.btn-primary[disabled]{
+        background: #d1d1d1 !important;
+        border: 1px solid #d1d1d1;
+        border-color: #d1d1d1 !important;
+    }
+    .cancelLink{
+        float: left;
+        padding: 8px 38px 4px 4px;
+        font-family: omnes_att_iimedium;
+        font-size: 19px;
+        color:  #0568ad !important;
+    }
+    .cancelLink:hover{
+        color:  #70c4e8 !important;
+    }
+    div.removeSiteActionModal p{
+        font-family: omnes_att_iimedium;
+            font-size: 26px !important;
+            line-height: 0.8em;
+            font-weight: 500;
+    }
+    div.removePop p{
+        font-family: omnes_att_iimedium;
+        font-size: 26px !important;
+        line-height: 1.2em;
+    }
+    #successMsgSection{
+        margin: 32px 0 !important;
+    }
+    .tableDataSection .table>tbody>tr>td.putDollarSign{
+        font-size: 16px;
+        text-align: right;
+        white-space: nowrap;
+    }
+    .tableDataSection .table>tbody>tr>td.highlightPriceUpdate{
+        font-size: 16px;
+        white-space: nowrap;
+        background: #ea740070 !important;
+    }
+    span.listPrice{
+        text-decoration-line: line-through;
+        color: #00000087;
+    }
+    .pricingSummary{
+        padding-top: 10px;
+    }
+    .dropDivider{
+        color:#595959;
+        border-top: 1px solid #939393;
+    }
+    div.removeSiteActionModal .modal-body{
+        padding: 14px 30px;
+        white-space: nowrap;
+        margin-top: 7px;
+    }
+    div.removePop .modal-body{
+        position: relative !important;
+        padding: 0 32px !important;
+        padding-bottom: 4px !important;
+    }
+    div.removeSiteActionModal .modal-header{
+        border: 0;
+        padding-top: 9px;
+        width: 950px;
+    }
+    div.removePop .modal-header{
+        border: 0;
+        padding-top: 9px;
+        width: 750px;
+    }
+    div.removeSiteActionModal button.close{
+        background:none;
+        position: initial;
+        margin-top: 10px;
+        margin-right: 35px;
+    }
+    div.removeSiteActionModal .modal-footer{
+        padding: 2px 35px 37px 0;
+    }
+    div.removePop .modal-footer{
+        padding: 20px 35px 40px 0;
+    }
+    .sitesDataTable {
+        width: 100% !important;
+        font-family: omnes_att_iimedium;
+    }
+    div.removeSiteActionModal .modal-content{
+        top: 200px;
+        width: 950px;
+        right: 160px;
+    }
+    div.removePop .modal-content{
+        top: 200px;
+        width: 750px;
+        right: 100px;
+    }
+    .table.subTotalSummary{
+        margin-bottom: 8px !important;
+        margin-top: 20px;
+    }
+    
+    .promotionAppliedData{
+        display:none;
+        background: #fff;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-left: 10px;
+        margin-bottom: 24px;
+    }
+    .promotionAppliedData h5{
+        margin-bottom: 10px;
+    }
+    table.promoTable td:first-child{           
+        width:200px !important;
+        max-width: 200px;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: 0 0px;
+    }
+    
+    table.promoTable td:nth-child(2){
+        color: #ea7400 !important;
+    }
+    
+    table.promoTable td:last-child{
+        color: red !important;
+        font-size: 10px;
+        padding: 5px 10px;
+        vertical-align: top;
+    }
+    
+    table.promoTable td{
+        padding: 2px 0px;
+        white-space: nowrap;
+        font-size: 14px;
+        line-height: 1.2em;
+        font-family: omnes_light;
+        background: #fff;
+        font-weight: 700 !important;
+    }
+    .additionalDiscount{
+        color:#ea7200;          
+    }
+    div.promotionAppliedData h5{
+        font-family: omnes_att_iimedium;
+        font-size: 18px;
+    }
+    span.quoteSummaryTitle{
+        font-size: 28px !important;
+        font-weight: 700;
+        font-family: omnes_light;
+    }
+    .grey_hr{
+        border-bottom:1px solid #000;
+        height: 1px;
+        background: #000;
+        margin-left: 10px;
+        margin-bottom: -11px;
+        margin-top: 8px;
+    }
+    .pricingSummarydiv{
+        margin-top: 15px;
+        padding: 0;
+        margin-bottom: -55px;
+    }
+    .registerQuote{
+        border:1px solid #939393 !important;
+        border-right:none !important;
+        width: 138px !important;
+        border-top-right-radius: 0 !important;
+        border-bottom-right-radius: 0 !important;
+        padding: 7px 12px !important;
+        color: #fff !important;
+        margin-right: -4px;
+    }
+    
+    .dropdownStyling{
+            font-size: 18px;
+    }
+    .continueButton{
+        font-family: omnes_att_iimedium !important;
+        background-color: #0568ad !important;
+        border-color: #0568ad !important;
+        height: 40px;
+        font-size: 16px;
+        text-align: center;
+        vertical-align: middle;
+        width: 175px !important;
+        color: white;
+    }
+
+    h1.manage_content-header {display: none;}
+    #compdatatable td {border-style: dashed;}
+    .dataTables_filter input {width: 100% !important;}
+    table.dataTable{min-width:100%;font-family: omnes_att_iimedium;background:#fff;}
+    #compdatatable_info{font-family: omnes_att_iimedium;}
+    .reorder_btn{float: right;position: inherit;margin-top: 3px;}
+    .selectSiteStatusStyle{display:none;position:absolute;background:#fff;z-index-1;font-family:omnes_att_iimedium;border: inherit;margin-top: 10px;padding: 5px;margin-left: -9px;box-shadow: 1px 2px 15px 0px rgba(0,0,0,0.75);}
+    
+    .statusImgSucess{background-image: url("{!URLFOR($Resource.legendicons_blue,'icon_circle_check.png')}");}
+    .statusImgWarning{background-image: url("{!URLFOR($Resource.legendicons_blue,'icon_circle_warning.png')}");}
+    .statusImgUnAvail{background-image: url("{!URLFOR($Resource.legendicons_blue,'icon_circle_unavailable.png')}");}
+    .statusImgClose{background-image: url("{!URLFOR($Resource.legendicons_blue,'icon_circle_close.png')}");}
+    .current {background-color: #428bca !important;color: #fff !important;border: 1px solid #428bca !important;}           
+     #compdatatable_paginate .disabled {cursor: no-drop !important;color: #cfcfcf !important;}
+    .statusImgSize{background-size: 25px 25px;background-repeat: no-repeat;background-position: center;color:transparent;font-size:0px!important; }
+    #dataTableDiv .dataTables_length{display:block;}  
+    .anchorTag{cursor: pointer;color: #3bc1f4;}
+    .pipeClass{padding:2px;color:#000} 
+    .noAnchorTag{cursor: default;color: #000;} 
+    .serviceUnavailableContentonModal{display:none;}  
+    #closeMatch #addressSuggestions{margin-bottom:5px;}
+    #closeMatch .address{margin-left:5px;}
+    #closeMatch{
+        /* CSS to prevent selection of text on double click on overlay */
+        -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+        -moz-user-select: none; /* mozilla browsers */
+        -khtml-user-select: none; /* webkit (konqueror) browsers */
+        -ms-user-select: none;
+    }
+    
+    /* override for the caret */
+    .caret {
+        color: #1E6FAB;
+        float: right;
+        position: inherit;
+        margin-top: 9px;
+        border-top: 5px solid;
+        border-right: 5px solid transparent;
+        border-left: 5px solid transparent;
+    }
+    .tooltip.fade.top.in {
+    display: block !important;
+  
+       }
+    .tooltip.fade.top{
+     display: none !important;
+    
+    }
+    div.reviewSiteAddressBtnAction .btn-secondary{
+        min-width: 175px;
+        width: auto;
+        height: 40px;
+        color: #595959 !important;
+        background: #ffffff !important;
+        border: 1px solid #595959;
+        border-radius: 4px;
+        padding: 0 15px;
+        text-align: center;
+        margin-right: 25px;
+    }
+    div.reviewSiteAddressBtnAction .btn-primary{
+        min-width: 175px;
+        width: auto;
+        height: 40px;
+        color: #ffffff !important;
+        background: #0568ad !important;
+        border: 1px solid #0568ad;
+        border-radius: 4px;
+        padding: 0 15px;
+        text-align: center;
+    }
+    div.reviewSiteAddressBtnAction .btn-primary[disabled]{
+        background: #d1d1d1 !important;
+        border: 1px solid #d1d1d1;
+    }
+    
+</style>
+<apex:form id="ReviewAddForm1" >
+<div class="col-xs-12 col-md-12 p0">
+    <h1>Review Address Validation and Service Availability</h1>
+    <div class="row m0">
+        <div class="col-xs-12 col-md-12 p0">
+            <h3 style="font-size: 21px !important;">{!quote.End_Customer__r.Name}</h3>
+            <div class="row m0 p0 m-t-20 m-b-40">
+                <div class="col-xs-3 p0">
+                    <label class = "m-r-10" >Quote Name</label>{!quote.Apttus_Proposal__Proposal_Name__c}</div>
+                <div class="col-xs-3 p0">
+                    <label class = "m-r-10" >Quote ID</label>{!quote.Name}</div>
+                <div class="col-xs-4 p0">
+                    <label class = "m-r-10" style="padding-right: 10px;">Product</label>{!quote.Product_New_Name__c}</div>
+                <div class="p0" style="text-align:right;">
+                    <label class = "m-r-10" style="padding-left: 5%;" >Term</label>{!quote.Apttus_Proposal__Payment_Term__c}</div>
+            </div>
+        </div>
+    </div>
+    <div id="reviewAddressInstructionsDiv">
+        <hr class="blue_hr"/>
+        <div><apex:image url="{!URLFOR($Resource.legendicons_blue,'icon_circle_check.png')}" style="width: 25px; height: 25px;margin-top: 5px;" /><span><strong>Ready to Configure,</strong> no additional action is required. All sites must be ready to configure or removed to continue to Configure Sites.</span></div>
+        <div><apex:image url="{!URLFOR($Resource.legendicons_blue,'icon_circle_warning.png')}" style="width: 25px; height: 25px;margin-top: 5px;" /><span><strong>Address Correction Needed,</strong> click on the site name link to correct or remove site.</span></div>
+        <div><apex:image url="{!URLFOR($Resource.legendicons_blue,'icon_circle_unavailable.png')}" style="width: 25px; height: 25px;margin-top: 5px;" /><span><strong>Service Unavailable,</strong> click on Edit to make changes and check for availability again or click on Remove to remove the site from the quote.</span></div>
+        <div><apex:image url="{!URLFOR($Resource.legendicons_blue,'icon_circle_close.png')}" style="width: 25px; height: 25px;margin-top: 5px;" /><span><strong>Removed from Quote,</strong> click on Undo Remove site to edit the adddress and check for availability again.</span></div>
+    </div>
+    <div class="m-t-20 col-xs-12">
+        <h5 class="col-xs-12 rememberMessage">
+            Remember: All sites are automatically saved to your customer list including removed sites. Export the address list to have a complete record of all sites and statuses.
+            <strong>All sites listed must have {!IF(quote.Product__r.ProductCode == 'AVPN','AVPN','')}{!IF(quote.Product__r.ProductCode == 'AMIS','MIS','')} service  available and be Ready to Configure to continue the quote process.</strong>
+        </h5>
+    </div>
+    <div class="m-t-20 m-b-20 col-xs-12 p0">
+        <div id="search_id" class="col-xs-3 p0">   
+        </div>
+        <div class="reviewSiteAddressSearch search_button"></div>
+        <div class="col-xs-2">
+                <apex:commandButton id="addNewAddress" styleClass="btn-primary" value="Add New Address"  action="{!goToAddNewAddressTab}" status="loading" />
+        </div>
+        
+        <div class="col-xs-6 p0 text-right pull-right" id="siteCountsDiv"></div>
+        
+    </div>
+    <div id="selectSiteStatus" class="selectSiteStatusStyle"><ul><li><input type="checkbox"  id="checkAll" checked="true" /><label class="">All</label></li></ul><ul></ul></div>
+    <!-- Export Changes -->
+        <!--<input type="button" id="exportSiteButton" Value="Export Address List" onclick="getSiteIds();"/> -->
+        <div style= " float: right;margin-bottom: 10px;padding-right: 0px;margin-top:-5px">
+         <apex:commandLink id="exportSiteButton" value="Export Address List" onclick="getSiteIds();" rerender="exportSiteDiv"/>
+            
+              <!--  <i class='glyphicon glyphicon-question-sign' style="color:black">
+                    <span>{!$Label.exportAddressToolTip}</span>
+                </i>-->
+            <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="top" title="{!$Label.exportAddressToolTip}"></span>
+         
+         <apex:actionFunction name="passSite" action="{!updateJunctionObject}" rerender="exportSiteDiv" oncomplete="exportExcel();" status="loading">
+         <!--<apex:actionFunction name="passSite" action="{!updateJunctionObjectWrc}" rerender="exportSiteDiv" oncomplete="exportExcel();">-->
+             <apex:param name="siteList" value="" />
+         </apex:actionFunction> 
+         </div>
+        <!-- export changes end -->
+    <div class="m-t-40" id="dataTableDiv">
+        <c:DataTableComponent wrcomp="{!wrc}"></c:DataTableComponent>
+    </div>       
+    <!-- export site changes start -->
+    <apex:pageBlock id="exportSiteDiv">
+        <div id="exportSiteDivTable" style="display:none;">
+            <!--<apex:pageBlockTable value="{!wrcSites.WrapperUISections}"  var="section"  styleClass="headerClass"> 
+                <apex:repeat value="{!section.WrapperUIRenderSectionElement}" var="sectionEle" >
+                    <apex:column headerValue="{!sectionEle.name}" value="{!sectionEle.value}"/>
+                </apex:repeat>
+            </apex:pageBlockTable>
+            -->
+            <apex:pageBlockTable id="exportTable" value="{!ExcelSheetSiteList}" var="wrapper" styleClass="headerClass">
+                                    <apex:column headerValue="Site Name" value="{!wrapper.siteName}"/>
+                                    <apex:column headerValue="Address" value="{!wrapper.addressLine}"/>
+                                    <apex:column headerValue="Location" value="{!wrapper.location}"/>
+                                    <apex:column headerValue="Location #" value="{!wrapper.locationNum}"/>
+                                    <apex:column headerValue="City" value="{!wrapper.city}"/>
+                                    <apex:column headerValue="State" value="{!wrapper.state}"/>
+                                    <apex:column headerValue="Zip" value="{!wrapper.zipcode}"/>
+                                    <apex:column headerValue="Phone" value="{!wrapper.phone}"/>
+                                    <apex:column headerValue="Status"/>
+                              </apex:pageBlockTable>
+         </div>
+     </apex:pageBlock>
+    <!-- export site ends-->                                
+    <div class="col-md-12 p0 m-t-20 reviewSiteAddressBtnAction">
+        <hr class="blue_hr m-b-40"/>
+        <div class="m-t-10 p0 col-md-4 backLink"><apex:commandLink id="back" value="< Back to Enter Addresses" action="{!goToEnterAddressPage}" reRender="back"  style="color:#056fab;font-weight: bold;"/></div>
+        <input type="button" class="btn-primary pull-right" id="configureProducBtntId"  value="Next: Configure Product" disabled="true" onClick="configureProduct()" />
+        <apex:outputPanel id="ButtonSectionId">
+        <apex:commandButton id="discardChanges" action="{!discardChanges}" value="Discard Changes"
+        styleClass="btn-secondary discardChangesBtn pull-right" status="loading" rendered="{!checkDiscard}" />
+        </apex:outputPanel>
+        <input type="button" class="pull-right btn-secondary" id="saveExitBtnId" Value="Save & Exit" 
+        onclick="saveAndNavigateToDashboard();" /> 
+        
+        <apex:actionFunction name="saveandexit" action="{!saveAndNavigateToDashboard}" reRender="saveExitBtnId" status="loading">                              
+            <apex:param name="siteIDs" value=""  />
+        </apex:actionFunction>
+        <apex:actionFunction name="goToConfigPage" action="{!goToConfigSitesPage}" rerender="configureProducBtntId" status="loading">
+            <apex:param name="siteIDs" value=""  />
+        </apex:actionFunction> 
+    </div>
+
+</div> 
+
+<div class="modal fade removeSiteActionModal" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static" >
+    <div class="modal-dialog">
+        <div class="modal-content col-xs-12">
+            <apex:outputPanel id="addaddresspopup">
+                <apex:outputPanel styleClass="" layout="block" rendered="{!removePopupOnLoadFlag}">
+                    <div class="modal-header" style="margin: 0 0;">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabelR2" style="margin-bottom: 0;"></h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            {!$Label.REMOVE_CONFIRM_REG_TEXT1}
+                        </p>
+                        <p>
+                            {!$Label.REMOVE_CONFIRM_REG_TEXT2}
+                        </p>
+                    </div>
+                    <div class="modal-footer text-center">
+                        <div class="pull-right p0 m0">
+                            <apex:commandLink styleclass="cancelLink" value="Cancel" reRender="null" html-data-dismiss="modal"/>                                    
+                            <apex:commandButton styleclass="btn-primary goToSamePage" value="Continue"  onclick="remove_site()" action="{!disableDiscardOnRemoveSite}"  status="loading" reRender="ButtonSectionId,addaddresspopup"  html-data-dismiss="modal" />
+                            
+                        </div>
+                    </div>
+                </apex:outputPanel>
+                </apex:outputPanel>
+        </div>
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+
+    
+    
+<script>
+    var totalSites,reviewDataTable,reviewIndexTable,currRow;
+    var siteIDArray = [];
+    var siteIDArrayForSaveAndExit = [];
+    var actionStatusArr=['Remove','Edit','Undo Remove'];
+    var aSFlipIdsArr=['prevStatus','currStatus','preAction','currAction'];
+    totalSites=$("#compdatatable").find('tbody tr').length;
+    var imgStatusMap={
+        ADDRESSEXACTMATCH:{imgref:'statusImgSucess',textRef:'Ready to Configure',statusCount:'0'},
+        POSSIBLEMATCHES:{imgref:'statusImgWarning',textRef:'Address Correction Needed',statusCount:'0'},
+        ADDRESSNOMATCH:{imgref:'statusImgWarning',textRef:'Address Correction Needed',statusCount:'0'},
+        REMOVEADDRESS:{imgref:'statusImgClose',textRef:'Removed from Quote',statusCount:'0'},
+        SERVICEUNAVAILABLE:{imgref:'statusImgUnAvail',textRef:'Service Unavailable',statusCount:'0'},
+    }; 
+    $(document).ready(function() {
+        $(".tooltipTrigger").tooltip(); 
+        reviewDataTable=$('#compdatatable').dataTable();
+        reviewIndexDataTable=$('#compdatatable').DataTable();
+        $('#compdatatable_filter label').addClass('col-xs-11 p0');
+        $('#compdatatable_filter input').attr('placeholder','Search by Site Name or Address');
+        $('.reviewSiteAddressSearch').insertAfter('#compdatatable_filter label');
+        $('#compdatatable_length').insertAfter('#compdatatable_paginate').addClass('col-xs-2 pull-right');
+        $('#compdatatable_length label').addClass("pull-right styled-select").css('width','100%');
+        //$('#compdatatable_length').attr('style','margin: -8px 0 0 174px');
+        $('#compdatatable_info').addClass("p0");
+        $('#compdatatable').addClass("m-b-40");
+        $('#compdatatable_paginate').css({'margin-left': 'auto','margin-top': 'auto'});
+        prepareDropDown();     
+        $("#search_id").html($(".dataTables_filter"));
+        
+        
+        $('#compdatatable td:nth-child(5)').each(function(){
+            if($(this).closest("tr").attr('data-name')=="true")
+                updateDataTable($(this).closest('tr'),imgStatusMap.REMOVEADDRESS.textRef);            
+        }); 
+        
+    });
+    function updateDataTable(obj,data){
+    
+        var currTdHtml=$(obj).find('#sStatusTdId').html();
+        var thisRow=$(obj).closest("tr");
+        currRow =reviewIndexDataTable.row(thisRow).index();
+        reviewDataTable.fnUpdate(data, currRow ,3,false);
+        thisRow.find('#sStatusTdId').html(currTdHtml);
+    }
+      
+    $('#modalstatus').each (function() {
+        var h3Val = $(this).html().replace(/\s+/g, "");
+         $(this).html('<h3>'+imgStatusMap[h3Val].textRef+'</h3>');
+    });
+   $('#compdatatable td:nth-child(4)').each(function() {     
+        var statusCellVal= $(this).find('#SiteStatus').html();
+        if(statusCellVal !=imgStatusMap.REMOVEADDRESS.textRef){  
+             statusCellVal= statusCellVal.replace(/\s+/g, "");
+             $(this).html('<span id="currStatus">'+imgStatusMap[statusCellVal].textRef+'</span><span id="prevStatus"></span>');
+             $(this).addClass('statusImgSize '+imgStatusMap[statusCellVal].imgref).attr('id','sStatusTdId');
+         }
+             
+    });
+     $('#compdatatable td:nth-child(5)').each(function(){
+        $(this).find('#'+actionStatusArr[0]).addClass('anchorTag');
+        $(this).find('#'+actionStatusArr[1]).addClass('anchorTag');
+        $(this).find('#'+actionStatusArr[2]).addClass('anchorTag');
+        $(this).children("span:first").attr('id','currAction').after('<span id="preAction" class="statusImgSize"></span>');
+        
+        var objArr= [];
+        var thisRow=$(this).closest('tr');
+        makeActionStatusArrObj(thisRow,objArr);
+        if(thisRow.attr('data-name')=="true")
+           removeSitesFromDataTable(thisRow,objArr);
+    }); 
+    function makeActionStatusArrObj(thisRow,objArr){
+        $.each(aSFlipIdsArr, function( index, object ){
+            objArr.push($(thisRow).find('#'+aSFlipIdsArr[index]));
+        });
+    }
+
+     $('#compdatatable th:nth-child(4) div').click(function(e) {
+           e.stopPropagation();          
+           $('#selectSiteStatus').appendTo($(this).parent());       
+           $('#selectSiteStatus').toggle();     
+    });
+    $('#selectSiteStatus').click(function(e) {
+        e.stopPropagation();
+    });
+    $(document).click(function(){
+        $("#selectSiteStatus").hide();
+    });     
+    $("#checkAll").change(function () {     
+            $("input:checkbox").prop('checked', $(this).prop("checked"));       
+    });     
+            
+    $('#selectSiteStatus ul').change(function() {       
+        var val='';     
+        $('#selectSiteStatus input:checkbox').each(function () {        
+           if(this.checked)     
+              val=val+$(this).next("label:first").text().split('(')[0].trim()+"|";
+        });            
+        reviewIndexDataTable.column(3)       
+            .search( val == 'All' ? '' : "^("+ val+ ")$", true, false )     
+            .draw();        
+        if ($('[type=checkbox]:checked').length == $('[type=checkbox]').length)     
+            $('#checkAll').prop('checked', true);       
+        else        
+            $('#checkAll').prop('checked', false);      
+    });  
+    siteStatusCounter();
+    function siteStatusCounter(){
+        $.each( imgStatusMap, function( index, object ){
+            object.statusCount=$("#compdatatable td:nth-child(4)> :first-child:contains("+object.textRef+")").length;
+        });     
+    }
+    
+    function prepareDropDown(){
+        var siteStatusContainerObj=$('#selectSiteStatus ul:eq(1)');
+        var uniqueStatus=[];
+        siteStatusContainerObj.html('');
+        $.each( imgStatusMap, function( index, object ){
+            //alert(object.textRef+" :"+$.inArray(object.textRef,uniqueStatus));
+            if(object.statusCount>0 && $.inArray(object.textRef,uniqueStatus)==-1){
+                uniqueStatus.push(object.textRef);
+                siteStatusContainerObj.append('<li><input type="checkbox" ><label class="">'+object.textRef+'('+object.statusCount+')</label></li>');
+            }
+        });
+        $('#siteCountsDiv').html(imgStatusMap.ADDRESSEXACTMATCH.statusCount+' of '+totalSites+' Sites Ready to Configure').css('color','orange').css('font-weight','bold');
+
+        if(imgStatusMap.ADDRESSEXACTMATCH.statusCount>0 && imgStatusMap.POSSIBLEMATCHES.statusCount==0 && imgStatusMap.SERVICEUNAVAILABLE.statusCount==0){    
+            $('#configureProducBtntId').removeClass("clearMsg");
+            $('#configureProducBtntId').removeAttr("disabled");
+            $('#siteCountsDiv').html(imgStatusMap.ADDRESSEXACTMATCH.statusCount+' of '+totalSites+' Sites Ready to Configure').css('color','green').css('font-weight','bold');            
+         }else{
+            $('#configureProducBtntId').addClass("clearMsg");
+            $('#configureProducBtntId').attr("disabled", "true");
+         }
+     }
+     
+    
+    var clickedValue="";
+    var siteList= [];
+    function getSiteIds(){
+        siteList= [];
+        $("#compdatatable").find("tr").each(function(){ siteList.push(this.id); });
+        //alert('Id in ExportAddressList='+siteList);
+        passSite(siteList.toString());  
+          
+     } 
+     
+     function insertStatusColumn()
+     {    
+        var statusList = [];
+         // $('[id$=exportTable] tr').append($("<td>"));
+        /*$('[id$=exportTable] thead tr>td:last').html('Status');
+        $('[id$=exportTable] thead tr>td:last').addClass('statusHeader');*/
+        
+        
+        $('tr.statusClass td:nth-child(4) span:first-child').each(function(){  
+           var statusVal = this.textContent;
+            statusList.push(statusVal);
+           
+        });
+       
+        
+        var count=0;
+       
+       $('[id$=exportTable] tbody tr').each(function(){
+       var statusVal = statusList[count];
+       
+       count++;
+       $(this).children('td:last').append(statusVal)
+       });
+       return true;
+    }
+     
+    function exportExcel()
+    {       
+        if(insertStatusColumn()){
+            var a = document.createElement('a');
+            document.body.appendChild(a);
+            a.setAttribute("type", "hidden");            
+            //getting data from our div that contains the HTML table
+            var table_div = document.getElementById('exportSiteDivTable');
+            var table_html = table_div.outerHTML;
+            var myBlob =  new Blob( [table_html] , {type:'data:application/vnd.ms-excel' });
+            var url = window.URL.createObjectURL(myBlob);            
+            a.href = url ;
+            //setting the file name
+            a.download = 'ExportAddressList' + '.xls';
+            //triggering the function
+            a.click();            
+       }
+    }
+    
+    var thisRow;
+    var cSiteId = '';
+    $(".anchorTag").live('click', function() {
+
+        var cAction= $(this).text();
+        thisRow=$(this).closest('tr');
+        cSiteId=thisRow.attr('id');
+        var objArr= [];
+        makeActionStatusArrObj(thisRow,objArr);
+            
+        if(cAction==actionStatusArr[0]){
+            var checkremoveFlag = {!removePopupOnLoadFlag};
+            if(checkremoveFlag){
+                $('.goToSamePage').show();
+                $('.removeSiteActionModal').modal();
+            }else{
+                removeSitesFromDataTable(thisRow,objArr);
+                thisRow.attr('data-name')=="true"?removeSiteID(siteIDArrayForSaveAndExit,cSiteId):addSiteID(siteIDArrayForSaveAndExit,cSiteId);
+                updateDataTable(thisRow,imgStatusMap.REMOVEADDRESS.textRef);
+                imgStatusMap.REMOVEADDRESS.statusCount++;
+            }
+            
+        }
+        if(cAction==actionStatusArr[1]){
+             if(thisRow.find('#sStatusTdId').hasClass('statusImgWarning'))
+                addressCorrectionModalFlag = true;
+            else if(thisRow.find('#sStatusTdId').hasClass('statusImgUnAvail'))
+                addressCorrectionModalFlag = false;            
+            modalBlock(cSiteId);
+        }
+        if(cAction==actionStatusArr[2]){
+            undoRemoveSitesFromDataTable(thisRow,objArr);
+            thisRow.attr('data-name')=="true"?addSiteID(siteIDArrayForSaveAndExit,cSiteId):removeSiteID(siteIDArrayForSaveAndExit, cSiteId);
+            updateDataTable(thisRow,objArr[1].text());
+            imgStatusMap.REMOVEADDRESS.statusCount--;           
+        }
+        
+        prepareDropDown();
+    });
+    function updateSiteStatusCounter(operatorStr,textCheck){
+        $.each(imgStatusMap, function( index, object){
+            if (textCheck == object.textRef && operatorStr =='plus')
+                object.statusCount++;
+            else if(textCheck == object.textRef && operatorStr =='minus')
+                object.statusCount--;
+        });
+    }
+    
+    function remove_site() {
+        var objArr= [];
+        makeActionStatusArrObj(thisRow,objArr);
+        removeSitesFromDataTable(thisRow,objArr);
+        thisRow.attr('data-name')=="true"?removeSiteID(siteIDArrayForSaveAndExit,cSiteId):addSiteID(siteIDArrayForSaveAndExit,cSiteId);
+        updateDataTable(thisRow,imgStatusMap.REMOVEADDRESS.textRef);
+        imgStatusMap.REMOVEADDRESS.statusCount++;
+        prepareDropDown();
+        
+    }
+    
+    function removeSitesFromDataTable(thisRow,objArr){
+        objArr[0].text(objArr[1].text()).closest('td').addClass('statusImgClose');
+        objArr[1].text(imgStatusMap.REMOVEADDRESS.textRef);                        
+        objArr[3].children().appendTo(objArr[2]);
+        objArr[3].append('<span id="undoRemove" class="anchorTag">'+actionStatusArr[2]+'</span>');
+        thisRow.css('color','#9A9A9A');
+        updateSiteStatusCounter('minus',objArr[0].text());
+        totalSites--;
+        addSiteID(siteIDArray,thisRow.attr('id'));
+    }
+    
+    function undoRemoveSitesFromDataTable(thisRow,objArr){
+        
+        objArr[1].text(objArr[0].text()).closest('td').removeClass('statusImgClose');
+        objArr[0].text('');
+        thisRow.find('#Pipe').addClass('pipeClass');
+        objArr[2].children().appendTo(objArr[3]);
+        thisRow.find('#undoRemove').remove();
+        thisRow.css('color','#000');
+        updateSiteStatusCounter('plus',objArr[1].text());
+        totalSites++; 
+        removeSiteID(siteIDArray,thisRow.attr('id'));
+    }
+    function removeSiteID(array, itemToRemove) {
+        var removeCounter = 0;
+        for (var index = 0; index < array.length; index++) {
+            if (array[index] === itemToRemove) {
+                array.splice(index, 1);
+                removeCounter++;
+                index--;
+            }
+        }
+    }
+    
+    function addSiteID(array, itemToadd) {
+        var addCounter = 0;
+        for (var index = 0; index < array.length; index++) {
+            if (array[index] === itemToadd) {
+                addCounter++;
+            }
+        }
+        if(addCounter ==0)
+        {
+            array.push(itemToadd);
+        }
+    }
+    
+    var IDs = [];
+    $("#compdatatable").find("tr").each(function(){ IDs.push(this.id); });
+    
+    function saveAndNavigateToDashboard(){
+        saveandexit(siteIDArrayForSaveAndExit.toString());
+    }
+    
+    function configureProduct()
+    {         
+          goToConfigPage(siteIDArray.toString());      
+    } 
+  </script> 
+    <apex:actionFunction name="modalBlock" action="{!doFetchUpdatingRecord}" reRender="form-2,SiteOverlay" status="loading"  oncomplete="initializeFieldValidations_ExactMatch();openAddressCorrectionModal(addressCorrectionModalFlag);$('.modal-backdrop').not(':last-child').remove();">
+        <apex:param name="siteToUpdate" value=""/>
+        <apex:param name="junctionRecId" value=""/>
+    </apex:actionFunction>
+
+    </apex:form>
+    <!-- Address Correction/ Service Unavailable Modal -->
+                <div class="modal fade" id="closeMatch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+                    <apex:form id="SiteOverlay">                            
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header" style="padding: 30px 15px;">
+                                   <button type="button" class="close" data-dismiss="modal" onclick="clearMessage();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <div id="modalstatus" style="padding-left: 30px;" class="addressCorrectionContentOnModal">
+                            <apex:image url="{!URLFOR($Resource.legendicons_blue,'icon_circle_warning.png')}" style="width: 25px; height: 25px;float:left;margin-right:10px;" />
+                            <h3>Address Correction Needed</h3>
+                                    </div>
+                        <div id="modalstatus" style="padding-left: 30px;" class="serviceUnavailableContentonModal">
+                            <apex:image url="{!URLFOR($Resource.legendicons_blue,'icon_circle_unavailable.png')}" style="width: 25px; height: 25px;float:left;margin-right:10px;" />
+                            <h3>Service Unavailable</h3>
+                                </div>
+                    </div>
+                    <div style="border-bottom: 2px solid #d3d3d3;"></div>
+                    <div class="modal-body">
+                        <div class="col-xs-12" id="UpdateSitesTable">
+                            <apex:pageBlock id="UpdateSitesTable" rendered="true">
+                                <div class="addressCorrectionContentOnModal">
+                                    <div style="padding-left: 15px;">
+                                                We are having trouble locating the address that you provided. 
+                                                Please select an address below that correctly matches the address you entered, or update the address you entered, 
+                                                and resubmit for validation.
+                                            </div>
+                                    <div style="margin:20px 30px;"> 
+                                        <!-- TODO: Add the suggested address on this spot --> 
+                                        <div style="overflow:auto;max-height:60px;">
+                                            
+                                            <apex:repeat value="{!closeMatchAddrWrapper}" var="item" rendered="{!IF(closeMatchAddrWrapper.size>0,true,false)}">
+                                                <div id="addressSuggestions">
+                                                    <input type="radio" value="{!item.isSelected}" name="group12" onchange="updateSelectCloseMatchRadio('{!item.radioId}','{!item.siteId}');enableValidateAddressBtn();" />
+                                                    <apex:outputText value="{!item.closeMatchAddress.street}" styleClass="address"/>
+                                                    <apex:outputText value="{!item.closeMatchAddress.city}" styleClass="address"/>
+                                                    <apex:outputText value="{!item.closeMatchAddress.state}" styleClass="address"/>
+                                                    <apex:outputText value="{!country}" styleClass="address"/>
+                                                    <apex:outputText value="{!item.closeMatchAddress.zip.zipCode}" styleClass="address"/><br/>
+                                                </div>                                    
+                                            </apex:repeat>
+                                        </div>                                       
+                                        <input type="radio" name="group12" onchange="enableValidateAddressBtn();enableInputFields();enableSubmitButtonDropDown();" /><span class="address">I want to update the address</span>
+                                    </div>                                
+                                    <div style="border-bottom: 2px solid #d3d3d3;margin: 0px -40px;"></div>
+                                </div>
+                                <div style="padding-left: 15px;">
+                                    <h3 class="addressCorrectionContentOnModal">Update Address Information</h3>
+                                    Please update and resubmit for validation.
+                                </div>
+                                
+                                <ul class="col-xs-6 addressFields">
+                                    <li class="closeMatchLi">
+                                        <label for="" class="control-label">Site Name</label>
+                                        <apex:inputField value="{!customerSite.Site_Name__c}" id="SiteName" styleClass="form-control inputSite required" html-placeholder="Site Name"  />
+                                    </li>                                            
+                                    <li class="closeMatchLi">
+                                        <label for="" class="control-label">Address Line</label>
+                                        <apex:inputText label="Address Line" value="{!addressLine}" id="SiteAddressLineid" styleClass="form-control inputAddress required"  html-placeholder="Address Line"  />
+                                    </li>
+                                    <li class="closeMatchLi">
+                                        <div class="form-group row m0" id="siteStateZip">
+                                            <div class="pull-left" style="width: 60%; padding-right: 15px;">
+                                            <label class="control-label" style="width: 100%;">Location (Optional)</label>
+                                            <apex:selectList value="{!customerSite.Location__c}" label="State"  id="siteLocation" multiselect="false" size="1" styleClass="form-control pull-left styled-select-small" style="font-family:inherit; font-size:inherit;width:100%;padding-top: 3px;padding-bottom: 3px;height: 34px;" onchange="onchangeLocationPicListFun(this, 'popup')">
+                                                <apex:selectOptions value="{!LocationPicklist}" id="sitePickLocation" />
+                                            </apex:selectList>
+                                            </div>
+                                            <div class="pull-left" style="width: 40%; padding-left: 15px;">
+                                                <label class="control-label" style="width: 100%;">&nbsp;</label>
+                                                <apex:inputField value="{!customerSite.RoomBuildingFloorInput__c}" styleClass="form-control pull-right" html-placeholder="#" style="width: 100%;" id="siteRoomFloor" />
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="closeMatchLi">
+                                        <label for="" class="control-label">City</label>
+                                           <apex:inputField value="{!customerSite.City__c}" styleClass="form-control inputCity required" html-placeholder="City" id="siteCity"  />
+                                    </li>
+                                    <li class="closeMatchLi">
+                                        <div class="form-group row m0" id="siteStateZip">
+                                            <div class="pull-left" style="width: 60%; padding-right: 15px;">
+                                                <label class="control-label" style="width: 100%;">State</label>
+                                                <apex:selectList value="{!state}" label="State"  id="statePickList" multiselect="false" size="1" styleClass="form-control inputState required pull-left styled-select-small" style="font-family:inherit; font-size:inherit;width:100%;padding-top: 3px;padding-bottom: 3px;">
+                                                    <apex:selectOptions value="{!statePickList}" />
+                                                </apex:selectList>
+                                            </div>
+                                            <div class="pull-left" style="width: 40%; padding-left: 15px;">
+                                                <label for="" class="control-label">Zip</label>                                                 
+                                                <apex:inputField value="{!customerSite.Zip_Code__c}" styleClass="form-control pull-right inputZip required" html-placeholder="" style="width: 100%;" id="siteZip" />
+                                            </div>
+                                        </div>
+                                    </li>                                   
+                                    </ul>
+                                    
+                                    <ul class="col-xs-6 addressFields">
+                                        <li class="closeMatchLi">
+                                            <label for="" class="control-label">Phone Number (Optional)</label>
+                                            <apex:inputText value="{!customerSite.Phone__c}" styleClass="form-control inputPhone" html-placeholder="" required="false" maxlength="10" id="sitePhone"/>
+                                        </li>                                                                      
+                                   </ul>
+                                   <hr/>
+                                    </apex:pageBlock>
+                                </div>
+                            </div>
+                            <div style="border-bottom: 2px solid #d3d3d3;margin-top: 30px;"></div>
+                           <div class="modal-footer" style="padding:30px 55px;">
+                            <span class="addressMatchContainer" style="float:right;">
+                                   <input type="button" value="Validate Address and Check Service Availability" class="btn btn-primary addressMatchbtn" onclick="checkAddressCorrection('{!sSiteName}','{!sAddressLine}','{!sLocation}','{!sRoomBuildingFloorInput}','{!sPhone}','{!sCity}','{!sState}','{!sZip}');" data-dismiss="modal" />
+                            </span>
+                           </div>
+                        </div>
+                    </div>          
+            <apex:actionFunction status="loading" name="updateSelectRadio" action="{!doValidate}"  oncomplete="callToConfigure();">
+                <apex:param name="selectedCloseRadio" value="" />
+            </apex:actionFunction>
+            <apex:actionFunction status="loading" name="doConfigureSites" action="{!doConfigure}" oncomplete="updateAddressCorrected()">
+                <apex:param name="selectedCloseRadio" value="" />
+            </apex:actionFunction>
+            <apex:actionFunction status="loading" name="updateAddress" action="{!updateAddressCorrectionVasaCall}" oncomplete="checkRetrigger();">
+                <!-- <apex:param name="selectedRadioSiteId" value="" assignTo="{!adressCorrectionSiteId}"/> oncomplete="reloadPage()"-->
+            </apex:actionFunction>
+            
+            <apex:actionfunction name="checkRetriggerEvent" action="{!callFirstRetriggerMethod}"  oncomplete="checkRetriggerSecond();"  status="loading"/> 
+            <apex:actionfunction name="checkRetriggerEventSecond" action="{!callSecondRetriggerMethod}"  oncomplete="checkRetriggerThird();" status="loading" />
+            <apex:actionfunction name="checkRetriggerEventThird" action="{!callThirdRetriggerMethod}"  oncomplete="createITSupport();" status="loading" />
+            <apex:actionfunction name="createITSupportTickets" action="{!CreateITSupportTicket}"  status="loading" />
+            
+            <apex:actionFunction status="loading" name="refreshEditSite" action="{!refreshEditSite}" oncomplete="">
+            </apex:actionFunction>
+            <apex:inputHidden id="checkStatusASE" value="{!checkStatusASE}"/>
+            <apex:actionFunction name="checkItpaStatus" status="loading" action="{!checkASEItpaStatus}" 
+                rerender="checkStatusASE,configureNewBtnId" 
+                oncomplete="checkPollingStatusASE();">                                      
+            </apex:actionFunction>
+            <script>
+                function updateAddressCorrected(){
+                    updateAddress(selectedRadioSiteId);
+                }
+                        
+                selectedRadioBtnVal = '';
+                selectedRadioSiteId = '';
+                        
+                function updateSelectCloseMatchRadio(radioId,siteId) {
+                    document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.SiteName}').value = '{!customerSite.Site_Name__c}'; 
+                    document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.SiteAddressLineid}').value = '{!addressLine}';
+                    document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.siteCity}').value = '{!customerSite.City__c}';
+                    document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.statePickList}').value = '{!state}';
+                    document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.siteZip}').value = '{!customerSite.Zip_Code__c}';
+                    document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.siteLocation}').value = '{!customerSite.Location__c}';
+                    document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.sitePhone}').value = '{!customerSite.Phone__c}';
+                    document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.siteRoomFloor}').value = '{!customerSite.RoomBuildingFloorInput__c}';
+                    $("#closeMatch .inputSite, #closeMatch .inputAddress, #closeMatch .inputZip, #closeMatch .inputCity").keyup();
+                    $("#closeMatch .inputState").change();
+                                        
+                    selectedRadioBtnVal = radioId;
+                    selectedRadioSiteId = siteId;
+                    correctAddressSelected = true;
+                    $("#closeMatch .addressFields :input").each(function(){
+                        $(this).prop('disabled',true);
+                    });
+                }
+                           
+                function enableValidateAddressBtn() {
+                    $('#closeMatch .addressMatchbtn').removeClass('disabled');
+                    $('.styled-select-small').addClass('disableSelect');
+                }
+                
+                function enableSubmitButtonDropDown() {
+                    $('.styled-select-small').removeClass('disableSelect');
+                }
+    
+                function enableInputFields() {
+                    correctAddressSelected = false;
+                    selectedRadioBtnVal = '';
+                    selectedRadioSiteId = cSiteId;
+                    $('#closeMatch .addressFields').prop('disabled',false);
+                    $("#closeMatch .addressFields :input").each(function(){
+                        $(this).prop('disabled',false);
+                    });                
+                }
+                                        
+                function checkAddressCorrection(sSiteName,SiteAddressLine,SiteLocation,SiteRoomFloor,SitePhone,SiteCity,StatePickList,SiteZip){
+                    if(SiteLocation == null || SiteLocation=='' ){
+                        SiteLocation ='';
+                    }
+                    if(StatePickList == null || StatePickList==''){
+                        StatePickList ='';
+                    }
+                     var newSiteName =document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.SiteName}').value;              
+                     var newSiteAddressLine =document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.SiteAddressLineid}').value; 
+                     var newSiteLocation =document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.siteLocation}').value;
+                     var newSiteRoomFloor =document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.siteRoomFloor}').value;
+                     var newSitePhone =document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.sitePhone}').value;
+                     var newSiteCity =document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.siteCity}').value;
+                     var newStatePickList = document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.statePickList}').value;
+                     var newSiteZip =document.getElementById('{!$Component.reviewAddressPageId.SiteOverlay.UpdateSitesTable.siteZip}').value;
+                     if(newSiteName==sSiteName && newSiteAddressLine==SiteAddressLine && newSiteLocation==SiteLocation && newSiteRoomFloor==SiteRoomFloor && newSitePhone==SitePhone && newSiteCity==SiteCity && newStatePickList==StatePickList && newSiteZip==SiteZip && !correctAddressSelected ) {
+                         $('#closeMatch').modal('hide');                                    
+                     } else {                    
+                        setTimeout(function() {updateSelectRadio(selectedRadioBtnVal)},2000); 
+                     }  
+                }
+                
+                function callToConfigure(){
+                    doConfigureSites();
+                }
+                
+                function reloadPage(){
+                    checkItpaStatus();
+                }
+                
+                function checkPollingStatusASE() {
+                    var isContPollingASE1 = $('[id$=checkStatusASE]').val();
+                    if(isContPollingASE1 == 'false'){
+                        checkItpaStatus();
+                    }else{
+                        refreshEditSite();
+                    }
+                }
+                function checkRetrigger(){
+                    checkRetriggerEvent();
+                }
+                function checkRetriggerSecond(){
+                    checkRetriggerEventSecond();
+                }
+                function checkRetriggerThird(){
+                    checkRetriggerEventThird();
+                }
+                function createITSupport(){
+                    createITSupportTickets();
+                }
+                
+            </script>
+        </apex:form>
+    </div> 
+</apex:page>

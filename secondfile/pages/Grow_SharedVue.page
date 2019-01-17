@@ -1,0 +1,54 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetGrowPdfsCtrl">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" /> 
+    <!-- <apex:stylesheet value="{!$Resource.peCustom}" /> -->
+    <apex:stylesheet value="{!$Resource.products_css}" />
+        <!-- Robyn 6/8/16: removed inline hero style and updated the class name on line 5 to grow-sharedvue -->
+        <!-- HERO SLICE -->
+        <div id="slice_hero" class="grow-sharedvue jumbotronContainer col-sm-12">
+            <div class="row">
+                <div class="hero-container">
+                    <div class="hero_badge">
+                        <h1 class="hero_badge_1">Help to strengthen your brand</h1>
+                        <h2 class="hero_badge_2">Marketing resources to enhance your presence.</h2>
+                    </div>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+        </div>
+        <!-- END HERO SLICE -->
+        <!-- BODY SLICE -->
+        <div class="grow-body development-funds col-sm-12">
+            <div class="row">         
+                <div class="contentCol col-sm-10 col-sm-offset-1 body-load-content">
+                <!-- Tab panes -->
+                    <div class="tab-content">
+                        <section>
+                            <h2>Digital marketing and fiber list tools</h2>
+                            <p> SharedVue is a turnkey marketing tool to help you generate awareness of the AT&amp;T products you sell. Use campaign templates to send synchronized email and social campaigns&#42; to your leads. You can also stream syndicated AT&amp;T product content to your website for your customers.</p>
+                            <p>Take advantage of this free marketing tool by <a href="http://attpartnerexchange.sharedvue.net/infocenter/en/" target="_blank">visiting SharedVue today</a>. Please note, SharedVue will be available untill December 15, 2016. Please check back for additional marketing tools at the beginning of the year.</p>
+                            <p>AT&amp;T has developed the Fiber to the Building Program (FTTB) to deliver fiber connectivity to over 1 Million businesses. To help drive selling efforts, AT&amp;T has developed a Fiber-Ready &quot;Lit Building&quot; list that can be used as a tool to prospect, propose and deliver AT&amp;T&#39;s best in class fiber service to your customers. </p>
+                            <p>&#42;Use subject to do not call and SPAM regulations.</p>
+                            <apex:outputPanel >   
+                                <div class="mt-40 mb-40">
+                                <hr class="blue_hr mb-40" />
+                                    <apex:repeat value="{!DocMapGROWSharedVue}" var="docMap"> 
+                                        <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}"  target="_blank" styleClass="document-file">
+                                            <div class="document-row">
+                                                <div class="file-type file-{!docMap.type}"></div>
+                                                <div class="details">
+                                                    <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                                    <p><apex:outputText value="{!docMap.description}"/></p>
+                                                </div>
+                                            </div>
+                                        </apex:outputLink>        
+                                    </apex:repeat>
+                                </div>
+                            </apex:outputPanel>
+                        </section> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    <!-- END BODY SLICE -->
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+</apex:page>

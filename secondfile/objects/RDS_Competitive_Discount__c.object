@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Container to keep Competitive Rates Discounts</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
+    <fields>
+        <fullName>Competitive_Discount_Amount__c</fullName>
+        <description>Competitive Discount Amount</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Competitive Discount Amount</inlineHelpText>
+        <label>Competitive Discount Amount</label>
+        <precision>14</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Competitive_Discount_Plan_Id__c</fullName>
+        <description>Competitive Discount Plan Id</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Competitive Discount Plan Id</inlineHelpText>
+        <label>Competitive Discount Plan Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Competitive_Discount_Type__c</fullName>
+        <description>Competitive Discount Type</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Competitive Discount Type</inlineHelpText>
+        <label>Competitive Discount Type</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MACD_Type__c</fullName>
+        <description>This is a technical field to indicate that record has been created due to MACD Disconnect. Not required on page layout.</description>
+        <externalId>false</externalId>
+        <label>MACD Type</label>
+        <length>5</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PremiseDetails__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>To Related Master(Premise) with Child(RDS-CompetitiveDiscount)</description>
+        <externalId>false</externalId>
+        <label>RDS-Premise Details</label>
+        <referenceTo>RDS_Premise_Details__c</referenceTo>
+        <relationshipLabel>RDS-Competitive Discounts</relationshipLabel>
+        <relationshipName>RDS_Competitive_Discounts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>RDS -Competitive Discount</label>
+    <nameField>
+        <displayFormat>CD-{000000}</displayFormat>
+        <label>RDS Competitive Discount Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>RDS-Competitive Discounts</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Restrict_Creation_for_Non_MACD_D_RDSComp</fullName>
+        <active>true</active>
+        <description>This validation rule will prevent creation of records for SI EBM Admin and EBM DEV OPs profile when the record is not of MACD Disconnect type</description>
+        <errorConditionFormula>AND(MACD_Type__c &lt;&gt; &apos;D&apos;, MACD_Type__c &lt;&gt; &apos;C&apos;, 
+OR($Profile.Name = &apos;SI_EBM_DEV_OPS&apos;,$Profile.Name = &apos;SI_EBM Admin&apos;), 
+ISNEW() )</errorConditionFormula>
+        <errorMessage>You do not have permission to create a new RDS -Competitive Discount record.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

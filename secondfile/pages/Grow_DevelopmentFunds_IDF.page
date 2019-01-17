@@ -1,0 +1,56 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetGrowPdfsCtrl">
+    <div class="idf">
+       
+            <h2>Investment Development Funds</h2>
+            <p class="mb-40">
+              The Investment Development Funds (IDF) program offers AT&amp;T Partner Exchange Solution Providers an opportunity to receive funds from AT&amp;T Partner Exchange to help accelerate and optimize their business operations.
+            </p>
+            <h4>Eligible IDF Services:</h4>
+            <ul class="mt-10 mb-40 has_bullets">
+               <li>Billing as a Service</li>
+               <li>Taxation as a Service</li>
+               <li>Network Operation Center (NOC) as a Service</li>
+               <li>Automation (API development)</li>
+           </ul>
+           
+            
+    <p><apex:repeat value="{!DocumentMap}" var="doc">
+                <apex:outputLink value="{!DocumentMap[doc]}" rendered="{!doc == 'Development_Funds_Vendor_List'}" target="_blank" >
+                click here
+                </apex:outputLink> 
+                </apex:repeat> to find a list of pre-approved vendors.</p> 
+                 <h4>Looking for other operational resources?  Investment Development Funds may be available, on a case-by-case basis, for the following activities:</h4>
+            <ul class="mt-10 mb-40 has_bullets">
+               <li>End User Contract Templates</li>
+               <li>Project Management for Large Deals</li>
+               <li>Installation Services</li>
+               <li>Sales Compensation &amp; Assessments</li>
+               <li>Wireless Network Training</li>
+               <li>Tax Compliance &amp; Mapping</li>
+           </ul>
+           <p class="mb-40">To learn more, contact marketing support at <a href="mailto:SPMarketingSupport@att.com">SPMarketingSupport@att.com</a>.</p>
+            <hr class="blue_hr mb-40" />
+       
+        <div class="mb-40">
+       
+         <apex:outputPanel >
+                        <apex:repeat value="{!DocMapGrowIDF}" var="docMap">
+                          <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}"  target="_blank" styleClass="document-file">
+                                <div class="document-row">
+                                    <div class="file-type file-{!docMap.type}"></div>
+                                    <div class="details">
+                                        <h4>
+                                            <apex:outputText value="{!docMap.Name}" />
+                                        </h4>
+                                        <p>
+                                            <apex:outputText value="{!docMap.description}" />
+                                        </p>
+                                    </div>
+                                </div>
+                            </apex:outputLink>
+                        </apex:repeat>
+      </apex:outputPanel>
+                  
+        </div>
+    </div>    
+</apex:page>

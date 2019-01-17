@@ -1,0 +1,343 @@
+<apex:page title="Dashboard" standardStylesheets="false" sidebar="false" showHeader="false">
+	<!-- Following script added for walkMe Deeplink redirection-->
+	<script type="text/javascript"> 
+		if(sessionStorage.URL){
+			var url  = sessionStorage.URL;
+			sessionStorage.removeItem('URL');
+			var endwith = url.endsWith("/PortalDesignHomeUnauth");
+			var dashboard = url.endsWith("/PortalDashboard_UI");
+			if(!endwith){
+				if(!dashboard)window.location = url;
+			}
+		}
+	</script>
+    
+    <apex:includeScript value="{!$Resource.jQueryMin}" />
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/libs/angular.min.js')}" />
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader" />
+
+    <style>
+        .dashboard_options {
+            padding: 0px 40px 0 40px !important;
+        }
+        table a {
+            cursor: pointer;
+        }
+        .dataTables_length {
+            display: none;
+        }
+        .dataTables_info {
+            bottom: 22px;
+            position: absolute;
+            left: 0;
+        }
+        .manage_user_name {
+            width: 17% !important;
+        }
+        .customize_desktop { margin-top: 70px; margin-bottom: 20px !important; }
+        #manage_content .pagination > a {
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #056fab;
+            margin-left: 5px;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+        .paginate_enabled_previous, .paginate_enabled_next {
+            cursor: pointer;
+        }
+        .paginate_disabled_previous, .paginate_disabled_next {
+            cursor: no-drop;
+        }
+        .adjust-select-small{
+            width:230px;
+        }
+        .adjust-select-small select{
+            padding: 0 5px;
+            line-height: 17px;
+        }
+       	h1 { font-family: omnesatt_iiregular; }   
+        #headerNav3,#headerNav4,#headerNav5 { background: #edf8fd; }
+        .tHeadNavType ul {        
+            padding-left: 10px;
+            min-width: 300px;
+        }
+        .tHeadNavStatus ul {
+            /*-webkit-column-count: 2;*/
+            padding-left: 10px;
+            min-width: 300px;
+        }
+        .tHeadNavProduct ul {
+            /*-webkit-column-count: 2;*/
+            padding-left: 10px;
+            min-width: 300px;
+        }
+        .status_more_options { display: none; }        
+        .latest_news_widget section p { max-height: 32px; overflow: hidden; }
+        .manage_user_search_row { margin-top: 0; }
+        .paginate_active {
+            z-index: 2;
+            color: #fff;
+            cursor: default;
+            background-color: #428bca;
+            border-color: #428bca;
+        }        
+        .paginate_button, .paginate_active {
+            float: left;
+            padding: 3px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #428bca;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .paginate_active {
+            z-index: 2;
+            color: #fff;
+            cursor: default;
+            background-color: #428bca;
+            border-color: #428bca;
+        }
+        .table-hover>tbody>tr:hover>td, .table-hover>tbody>tr:hover>th {
+            background-color: #f5f5f5;
+        }
+        #customizeMsg { position: absolute; z-index: -1; height: 100px; margin-top: -50px; top: 550px; width: 100%; }
+        li.disabledLi {
+            cursor: no-drop;
+            opacity: .5;
+        }
+    </style>
+
+    <script>
+        function showSelectedRecords(val) {
+            var selctdVal=val;
+            //alert(selctdVal);
+            showSelectedRecords1(selctdVal);
+        }
+    </script>
+    
+     <div class="dashboard_options">
+            <div class="customize_desktop">
+                <div class="styled-select" id="customize_desktop_nav" ng-click="widget_options = !widget_options"><p>Customize Desktop</p></div>
+                <div class="status_more_options">
+                    <ul>
+                        <apex:outputPanel rendered="{!$User.Begin_Quote__c == true}">
+                            <li>
+                                <input ng-click="widget_manage_quotes = !widget_manage_quotes" type="checkbox" name="w_manage_quotes" id="w_manage_quotes" class="css-checkbox" checked="true" />
+                                <label for="w_manage_quotes" class="css-label radGroupWidgetOptions">Manage Quotes &amp; Orders</label>
+                            </li>
+                        </apex:outputPanel> 
+                        <apex:outputPanel rendered="{!$User.Begin_Quote__c == false}">
+                            <li class="disabledLi">
+                                <input ng-click="widget_manage_quotes = !widget_manage_quotes" type="checkbox" name="w_manage_quotes" id="w_manage_quotes" class="css-checkbox" disabled="true"/>
+                                <label for="w_manage_quotes" class="css-label radGroupWidgetOptions disabled">Manage Quotes &amp; Orders</label>
+                            </li>
+                        </apex:outputPanel>    
+                        <li>
+                            <input ng-click="widget_manage_customer = !widget_manage_customer" type="checkbox" name="w_manage_customers" id="w_manage_customers" class="css-checkbox" checked="true" />
+                            <label for="w_manage_customers" class="css-label radGroupWidgetOptions">Manage Customers</label>
+                        </li>
+                        <li class="disabledLi">
+                            <input ng-click="widget_latest_news = !widget_latest_news" type="checkbox" name="m_latest_news" id="m_latest_news" class="css-checkbox" disabled="true" />
+                            <label for="m_latest_news" class="css-label radGroupWidgetOptions disabled">Latest News</label>
+                        </li>
+                        <li class="disabledLi">
+                            <input ng-click="widget_my_mobility = !widget_my_mobility" type="checkbox" name="w_my_mobility" id="w_my_mobility" class="css-checkbox" disabled="true" />
+                            <label for="w_my_mobility" class="css-label radGroupWidgetOptions disabled">My Mobility</label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div id="quotesandorderscontainer">
+            <apex:outputPanel rendered="{!$User.Begin_Quote__c == true}">
+                <apex:include pageName="QuotesAndOrdersDashboard_UI" />
+            </apex:outputPanel>     
+        </div>
+        <div id="managecustomerscontainer">
+            <apex:include pageName="Dashboard_PortalDesign_ManageCustomers" />
+        </div>
+        
+        <div id="mobilitycontainer" style="display: none;">
+            <apex:outputPanel rendered="{!$User.Begin_Quote__c}">
+                <apex:include pageName="MyMobility_UI" />
+            </apex:outputPanel>   
+        </div>
+
+        <!-- Robyn: 10/30/15 -->
+        <!-- Developers Note: commented out LatestNews module until defects are fixed and newsroom is complete, also added include for footer -->
+        <div id="latestnewscontainer" style="display:none;">
+            <!--<apex:include pageName="LatestNews" />-->
+        </div>
+        
+        <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+        
+        <script type="text/javascript">
+            function doSearch() {
+                searchServer(document.getElementById("firstName").value);
+                isCustomerSelected();
+            }
+        
+            function getSelectedContact() {
+                var $radio = $('input[name=group1]:checked');
+                var updateDay = $radio.val();
+                var id = $radio.attr('id');
+                if (customerId != null && customerId != '') {
+                    CreateQuote(customerId);
+                } else {
+                }
+            }
+            
+            function isCustomerSelected(){
+                if (!$("input[name='group1']:checked").val()) {
+                  $('input[value="Create Quote"]').addClass('disabled');
+                } else {
+                   $('input[value="Create Quote"]').removeClass('disabled');
+                }
+                $('#addCustTrigger').on('click', function(){
+                    $('#addCustomerModal').modal('show');
+                });
+                recheckIsCustomerSel();
+            }
+            
+            function recheckIsCustomerSel(){
+            $('input[name=group1]:radio').change(function () {
+                customerId = $('input[type=radio][name=group1]:checked').attr('id');
+            });
+                $("input[name='group1']").on('click',function(){
+                    if (!$("input[name='group1']:checked").val()) {
+                      $('input[value="Create Quote"]').addClass('disabled');
+                    } else {
+                       $('input[value="Create Quote"]').removeClass('disabled');
+                    }                    
+                });
+            }
+
+            $(document).ready(function(){            
+                 var cookie         = document.cookie; 
+                 var cookieArr      = cookie.split(";");
+                 var cookieObj      = {}; 
+                 var isCheckedArr   = new Array(); 
+                 var d = new Date();
+                 d.setTime(d.getTime() + (30*24*60*60*1000));
+                 var expires        = "expires="+d.toUTCString();
+
+                 for (var i =0; i < cookieArr.length; i ++) {
+                   //trim
+                   var cookieKV = cookieArr[i]; 
+                   cookieKV = cookieKV.trim();
+                      
+                   //split on "="
+                   var cookieKVArr = cookieKV.split("=");
+                      
+                   //store kv on obj
+                   cookieObj[cookieKVArr[0]] = cookieKVArr[1];
+                 }
+
+                $(".status_more_options input").click( function () {
+                       var isChecked = this.checked; 
+                       document.cookie = $(this).attr("id")+"="+isChecked+";expires="+expires;
+                       document.cookie = "customDesktop=true;expires="+expires;
+                 });
+                 
+                 // store cookie property values
+                 var w_manage_quotes_cookie         = cookieObj.w_manage_quotes;
+                 var w_manage_customers_cookie      = cookieObj.w_manage_customers;
+                 var w_my_mobility_cookie           = cookieObj.w_my_mobility;
+                 var m_latest_news_cookie           = cookieObj.m_latest_news;
+                 
+                 // check cookie values and set check boxes accordingly
+                 if(!$("#w_manage_quotes").parent().hasClass('DisabledLi')){
+                     if(w_manage_quotes_cookie == undefined || w_manage_quotes_cookie == "true"){
+                        $("#w_manage_quotes").prop("checked", true);
+                     }else{
+                        $("#w_manage_quotes").prop("checked", false);
+                     }
+                 }
+                 if(w_manage_customers_cookie == undefined || w_manage_customers_cookie == "true"){
+                     $("#w_manage_customers").prop("checked", true);
+                 }else{
+                     $("#w_manage_customers").prop("checked", false);
+                 }
+                 w_my_mobility_cookie == "true" ? $("#w_my_mobility").prop("checked", true) : $("#w_my_mobility").prop("checked", false);
+                 m_latest_news_cookie == "true" ? $("#m_latest_news").prop("checked", true) : $("#m_latest_news").prop("checked", false);
+                 
+                 // read check boxex
+                 var quotesAndOrders    = $("#w_manage_quotes").prop("checked");
+                 var manageCustomers    = $("#w_manage_customers").prop("checked");
+                 var mobility           = $("#w_my_mobility").prop("checked");
+                 var latestNews         = $("#m_latest_news").prop("checked");
+                
+                // show containers if coresponding check boxes are checked                                 
+                 quotesAndOrders == true ? $("#quotesandorderscontainer").show() : $("#quotesandorderscontainer").hide() ;
+                 manageCustomers == true ? $("#managecustomerscontainer").show() : $("#managecustomerscontainer").hide() ;
+                 mobility == true ? $("#mobilitycontainer").show() : $("#mobilitycontainer").hide() ;
+                 latestNews == true ? $("#latestnewscontainer").show() : $("#latestnewscontainer").hide() ;
+            });
+            
+            function callDatatable() {                
+                $('#search_input, .dataTables_info, .pagination').remove();
+                $('.dataTable th.headerRow').each(function() {
+                    var thText = $(this).text();
+                    var newHeadTd = '<td role="columnheader" rowspan="1" colspan="1"><a>'+thText+'</a><div class="reorder_btn"></div></td>';             
+                    $(this).replaceWith(newHeadTd);
+                });
+                $('.dataTable thead tr td:eq(2), .dataTable thead tr td:eq(3), .dataTable thead tr td:eq(4), .dataTable thead tr td:eq(6)').addClass('no-sort').children('.reorder_btn').remove();
+                
+                $('.dataTable thead td:eq(2),.dataTable thead td:eq(3),.dataTable thead td:eq(4)').html('');
+                $('.tHeadNavType').prependTo('table thead td:eq(2)');
+                $('.tHeadNavStatus').prependTo('table thead td:eq(3)');
+                $('.tHeadNavProduct').prependTo('table thead td:eq(4)');
+                    $('.dataTable').DataTable({
+                        "oLanguage": {
+                        "sInfo": "_START_ - _END_ of _TOTAL_",
+                        "sZeroRecords": "Click Begin Quote to start a quote"                   
+                    }, "aoColumnDefs": [
+                        { 
+                            "bSortable": false,
+                            "aTargets" : [ "no-sort" ]
+                        }
+                      ],       
+                    "oPaginate": {
+                        "sNext": ">",
+                        "sPrevious": "<",
+                        "First" :'1',
+                        "Next":'2'
+                    }
+                 });
+                 
+                 var searchBTN = $('.dataTables_filter > label > input[type="text"]').attr({'id':'search_input', 'name':'search_users', 'placeholder':'Search by Name or Location'});
+                 $(searchBTN).prependTo('.search_user_container');
+                 $('.dataTables_filter').hide();
+                 $('.dataTables_paginate').addClass('pagination');
+                }
+        </script>  
+
+        <!-- customized desktop menu -->
+        <script>
+            $( "#customize_desktop_nav" ).click(function() {
+                $( ".status_more_options" ).toggle();
+            });
+            
+            $( "#w_manage_quotes" ).on( "click", function() {
+                $( "#quotesandorderscontainer" ).toggle("slow");
+            });
+            
+            $( "#w_manage_customers" ).on( "click", function() {
+                $( "#managecustomerscontainer" ).toggle("slow");
+            });
+            
+            $( "#w_my_mobility" ).on( "click", function() {
+                $( "#mobilitycontainer" ).toggle("slow");
+            });
+            
+            $( "#m_latest_news" ).on( "click", function() {
+                $( "#latestnewscontainer" ).toggle("slow");
+            });                    
+        </script>
+        <!--/customized desktop menu -->        
+      
+</apex:page>
