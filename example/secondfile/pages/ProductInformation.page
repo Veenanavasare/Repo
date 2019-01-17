@@ -1,0 +1,1103 @@
+<apex:page controller="ProductInformationController" action="{!handleProductInfoRequest}" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0">
+    <apex:includeScript value="{!$Resource.ATnT_AES}"/>
+    <apex:includeScript value="{!$Resource.ATnT_mode_ecb_min}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.js')}" />
+    <head>
+        <apex:includeScript value="{!$Resource.jquery_confirm_js}"/>
+    </head>
+    <style>
+     .tooltip-inner {
+        max-width: none;
+        white-space: nowrap;
+     }
+    .popover{
+        min-width:485px;
+        box-shadow: 15px 15px 10px rgba(0,0,0,.2);
+     }
+     #manage_content label, .manage_content label {
+         margin: 0 !important;
+     }
+     .popover-content{
+         padding: 10px 20px 30px;
+     }
+     #myPopoverContent{
+         line-height:1.2em;
+         font-family:omnes_light;
+     }
+     .popover-title{
+         font-size:24px;
+         padding:5px !important;
+     }
+     .details{
+        padding-left: 10px !important;
+        margin-top:15px;
+     }
+    .details a{
+        font-family:omnes_att_iimedium;
+        font-size:16px;
+        color:#44c8f5;
+    }
+    .pdfImageDiv {
+        float: left;
+        border: none !important;
+        margin-top: 12px;
+        padding-right: 5px;
+    }
+    .closePopOver{
+        cursor:pointer;
+    }
+    .imageClass{
+        height: 25px !important;
+        width: auto;
+        border: none;
+    }
+    .aiaProdMsgItalic {
+        font-size: 12px;
+        font-style: italic;
+        white-space: nowrap;
+        margin: 5px 0 5px 21px;
+    }
+    .aiaProdMsgSignErr {
+        margin: -15px 0px 0px 0px;
+        font-family: omnes_light;
+        font-size: 12px;
+        margin-left: 15px;
+        line-height: 1.2em;
+        color: #b30a3c !important;
+        font-weight: bold;        
+        display:inline-block;
+    }
+        #selectterm td:last-child {
+            width: auto;
+        }
+        #selectterm td:last-child label.special:after {
+            content: '&#40;Best value&#41;';
+            margin-left: 2px;
+            color: #999;
+        }
+        
+        /* Additional styles for confirming with the redlines */
+        .cNameHeader, .quoteContent
+        {
+            font-size: 20px;
+            color: #333333;
+            font-weight: normal;
+            text-align: left;
+            line-height: 30px;
+        }
+        .quoteContent{
+            font-size: 18px;
+        }
+        .m-t-5{
+            margin-top: 5px !important;
+        }
+        .m-t-20{
+            margin-top: 20px;
+        }
+        .m-b-20{
+            margin-bottom: 20px;
+        }
+        .p-l-5{
+            padding-left: 5px;
+        }
+        .p-r-5{   
+            padding-right: 5px;
+        }
+        #manage_content label.m-l-10, .manage_content label.m-l-10{
+            margin-left: 10px !important;
+        }
+        #productheader input{
+            margin-top: 0 !important;
+        }
+        #selectproducts h4{
+            font-size: 22px;
+            text-align: left;
+            color: #356fab;
+            margin-bottom: 20px;
+        }
+        .border-right{
+            border-right: 1px solid #ddd;
+        }
+        .border-height{
+            padding-bottom: 20px;
+            min-height: 190px;
+        }
+        #selectterm h3{
+            font-size: 36px !important;
+            color: #666;
+            line-height: 18px;
+        }
+        #slctProd h3 {
+            font-size: 36px !important;
+            color: #666;
+        }
+        .termListId{
+            margin-left: 5px;
+        }
+        #oppurtunityModal .modal-body label {padding: 0px 8px 0px !important;}
+
+        .tooltipTrigger1 {
+            position: absolute;
+            cursor: pointer;
+            margin-left: 90px;
+            z-index: 1;
+            margin-top:4px;
+        }
+        .tooltipTrigger2 {
+            position: absolute;
+            cursor: pointer;
+            margin-left: 225px;
+            z-index: 2;
+            margin-top:4px;
+        }        
+        .popover-header {
+            padding:8px 14px;
+            background-color:#fff;
+        }
+        .popover-title {
+            margin:0;
+            padding:0;
+            background-color:transparent;
+            border:none;
+        }
+        .example-popovers {
+            padding:30px 0;
+        }
+        .acenter {
+            text-align:center;
+            margin:30px 0;
+        }        
+        span.glyphicon {
+        cursor: pointer;
+        }
+        .modal-header{
+            border-bottom : none !important;
+        }
+        .modal-footer{
+            border-top : none !important;
+        }
+        .networkProds{
+            white-space: nowrap;
+            list-style: none;
+        }
+        .myElement, x:-moz-any-link, x:default {
+             margin-top: -15px; 
+        }
+        #oppurtunityModal input[type="radio"]{height: 18px !important;}
+        
+        #productheader span {
+            margin: 0 0 0 10px;
+            display: inline-block;
+        }
+        .termListId tbody tr:nth-child(odd) {
+            background: none;
+        }
+        .termListId td{
+                width:10%;
+        } 
+        #selectterm label {
+            float: left;
+            padding-left: 10px !important;
+            padding-right: 15px !important;
+            font-family: omnesatt_iiregular;
+            font-size: 18px;
+            font-weight: normal;
+        }
+        #selectterm input {
+            margin-top: 4px !important;
+        } 
+        #AIAoption td {
+            min-width: 123px;
+        }
+        #AIAoption tbody tr:nth-child(odd) {
+            background : none !important;
+        }
+        #AIAoption input[type="radio"]{
+            margin-top : 3px !important;
+        }
+        #AIAoption label{
+            font-family: omnesatt_iiregular !important;
+            font-weight: normal;
+            font-size: 16px !important;
+        } 
+        #ui-datepicker-div{
+            top: 506px !important;
+        }
+        .ui-widget-header{
+            background: cornflowerblue !important;
+            border: 1px solid cornflowerblue !important;
+            font-family:omnes_light;
+            font-size: 16px;
+            color:black;
+        }
+    </style>
+    <apex:outputPanel id="errorMessage">
+        <apex:pageMessages />
+    </apex:outputPanel>
+    <apex:form id="productInfoFormId" styleClass="row m0">
+    <apex:pageMessages />      
+    <div class="bootstrap" id="selectproducts" style="margin-top:10px;">
+        <div>
+            <div class="row m0 p0">
+                <div class="col-xs-12 col-md-12 p0">
+                    <h3 class="m-b-10 m-b-20 cNameHeader"><apex:outputText id="cnameheader" value="{!quoteObj.End_Customer__r.Name}" /></h3>
+                    <div class="row m0 p0" id="productheader">
+                        <div class="col-xs-12 p0">
+                            <div>
+                                <!-- Quote Name -->
+                                <label class = "pull-left quoteContent">{!$Label.Quote_Name}</label>
+                                <apex:inputText id="qname" styleclass="border-r-0 quoteName col-md-2" style="margin-left:10px;" value="{!quoteName}" />
+                                
+                                <!-- Quote Number -->
+                                <label class = "quoteContent m-l-10">{!$Label.Quote_Number}</label> <apex:outputText id="qnumber" styleclass="border-r-0 disabled m-t-5" value="{!quoteObj.name}" />
+                                                            <!-- Promotional Date --> 
+                    
+                            <script>
+                                var today = new Date();
+                                var currentDate = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+                                var day = currentDate.getDate();
+                                var month = currentDate.getMonth() + 1;
+                                var year = currentDate.getFullYear();
+                                today = month + '/' + day + '/' + year;
+                                if(window.location.search == null || "undefined" == typeof window.location.search || "" ==  window.location.search || ((window.location.search).indexOf("?newCustRec")>-1) || ((window.location.search).indexOf("mode=productinfo")>-1)){
+                                    $(".dPicker").datepicker({
+                                        numberOfMonths: 1,
+                                        minDate: today
+                                    });
+                                    $(".calendarIcon").on("click", function () {
+                                        $('.dPicker').focus();
+                                    });
+                                }
+                                
+                            </script>
+                            
+                            <div class="col-xs-6 pull-right" style="width:588px;">
+                                <div class="col-xs-12" style="margin-left: -45px;">
+                                    <apex:outputPanel rendered="{!isTestAccount}" style="width:600px;">
+                                    <div class="col-xs-6" style="margin-right: -60px;"><label class = "quoteContent">{!$label.Promotion_Simulation_Date}</label></div>
+                                        <div class="col-xs-6">
+                                            <div style="display:flex" class="simulationDateBlock">
+                                                <div style="width:70%">
+                                                    <apex:input styleClass="dPicker" style=" margin-bottom: 5px; " html-readonly="readonly" value="{!PromotionSimulationDate}" label="Simulation Date" type="text" id="quoteSimulationDate" onchange="" />
+                                                </div>
+                                                <span class="glyphicon glyphicon-calendar calendarIcon" style="top: 6px;"></span>
+                                                </div>                                                                  
+                                        </div>
+                                        </apex:outputPanel>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            <apex:actionFunction action="{!setErrorMessage}" status="loading" name="passQuoteNoToController" rerender="myHiddenField,oppurtunityModal" oncomplete="">
+                                 <apex:param name="p1" value="" assignTo="{!quoteNo}"/>
+                                 <apex:param name="p2" value="" assignTo="{!mobileProdId}" /> 
+                                 <apex:param name="p3" value="" assignTo="{!productIdcheck}" /> 
+                                 <apex:param name="p4" value="" assignTo="{!productNamecheck}" /> 
+                            </apex:actionFunction>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row m0 p0"><div class="col-xs-12 m-t-20 m-b-20 p0"><hr class="blue_hr" /></div></div>        
+        <div class="col-xs-12 m-b-20 p0" id="slctProd"><h3>Select Product</h3></div>
+        <script> 
+        $('#selectterm td:last-child label').addClass('special');
+        </script>
+        <div id="productoptions">
+            <apex:inputHidden value="{!productId}" id="selectedProductId"/>
+            <div class="row m0">
+                <div class="col-xs-4 col-md-4 border-right border-height p0">
+                    <apex:variable value="{!1}" var="networkRowNum"/>
+                    <apex:repeat value="{!pWrapperList}" id="networkProd" var="p"> 
+                        <apex:outputPanel rendered="{!IF(p.prodObj.Category__c == 'Network Services',true,false)}">
+                            <apex:outputPanel rendered="{!IF(FLOOR(networkRowNum) == 2,true,false)}"> 
+                                <h4>Network Products</h4>
+                            </apex:outputPanel> 
+                        </apex:outputPanel>
+                        <apex:variable var="networkRowNum" value="{!networkRowNum+1}"/>
+                    </apex:repeat>
+                    <ul>
+                        <apex:repeat value="{!pWrapperList}" id="productDataTableId1" var="p">
+                            <apex:outputPanel rendered="{!IF(p.prodObj.Category__c == 'Network Services',true,false)}" style="display: block;margin-bottom: 20px;">
+                                <li class="networkProds">
+                                    <input type="radio" value="true" name="productSelectId1" id="{!p.prodObj.id}" onclick='setProdId("{!p.prodObj.id}");' style="margin-top: 3px !important;margin-right: 10px !important;" oncomplete='updateQuoteNameJS("{!p.prodObj.id}");'/>
+                                    {!p.prodObj.Product_New_Name__c}
+                                    <apex:outputPanel rendered="{!IF(p.prodObj.Product_New_Name__c=='AT&T Internet Access',true,false)}" > 
+                                        <span data-title="<div class='closePopOver' style='float:right;line-height:0.9em;margin-bottom:20px;color:#808080;'>x</div>" class="aiaInfoPopover glyphicon glyphicon-info-sign myElement" data-container="body" data-toggle="popover" data-html="true" data-placement="right" data-content="<div id='myPopoverContent' style='width:100%;'><div><p><strong style='font-weight:bold;'>{!$Label.AIA_Product_Tool_Tip_Header}</strong></p><p>{!$Label.AIA_Product_Tool_Tip_Info}</p></div></div><div class='pdfImageDiv'><a href='{!($Resource.ATT_Internet_Access_Address_Validation_Help_Guide)}' target='_blank'><img src='{!($Resource.pdfSmallIcon)}' class='imageClass'/></a></div><div class='details'><span><a href='{!($Resource.ATT_Internet_Access_Address_Validation_Help_Guide)}' target='_blank' >{!$Label.Inside_Wiring_Guide_Label}&nbsp;</a><strong>(38k)</strong></span></div>"></span>
+                                    </apex:outputPanel>
+                                </li>
+                                <apex:outputPanel rendered="{!IF(p.prodObj.Product_New_Name__c=='AT&T Network-Based IP-VPN Remote Access',true,false)}">
+                                    <div class="aiaProdMsgItalic">Existing AVPN required.</div>
+                                </apex:outputPanel>
+                                
+                                <div class="aiaProdNote">
+                                    <apex:outputPanel rendered="{!IF(p.prodObj.Product_New_Name__c=='AT&T Internet Access',true,false)}">
+                                        <script>
+                                        var aiaId = "{!p.prodObj.id}";
+                                        var isAIASgned = "{!MPSSigned}";
+                                        if(isAIASgned == 'false') {
+                                            $('#{!p.prodObj.id}').attr("disabled","disabled");
+                                        }
+                                        </script>
+                                        <div id="AIAoption" name= "AIAoptionval" style="display:none;font-family: omnesatt_iiregular;margin-top: 10px;height: 25px;">
+                                            <div class="row">
+                                                <div class="col-xs-5 row-internal-additional-spacing-top" style="margin-left:35px;">
+                                                    <apex:selectRadio value="{!aiaradiovalue}" id="aiaradio" styleClass="col-xs-4"> 
+                                                        <apex:selectOptions value="{!RadioButtonValues}"> </apex:selectOptions>
+                                                        <span class="tooltipTrigger1 glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="right" title="End Customer is a business."></span>
+                                                        <span class="tooltipTrigger2 glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="right" title="End Customer is a consumer."></span> 
+                                                    </apex:selectRadio>
+                                                </div>
+                                            </div>
+                                            <script>
+                                            $(function () {
+                                                $("body").tooltip({ selector: '[data-toggle=tooltip]' });
+                                            });
+                                            </script>
+                                        </div>
+                                        <div class="aiaProdMsgItalic">{!$Label.AIA_Product_Selection_Msg_1}</div>
+                                        <apex:outputPanel rendered="{!MPSUpdated && !MPSNotSigned}">
+                                            <div class="aiaProdMsgSignErr">
+                                                {!$Label.AIA_Product_No_Sign_Error_Msg_UPD}
+                                                <apex:outputPanel rendered="{!camaction}" style="margin:0px;display:inline;"> 
+                                                    <a href="mailto:{!camEmail}?subject={!$Label.AIA_CAM_Subject}">{!$Label.AIA_Product_Contact_CAM_Label}</a>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!!camaction}" style="margin:0px;display:inline;"> 
+                                                    {!$Label.AIA_Product_Contact_CAM_Label_TXT}
+                                                </apex:outputPanel>
+                                            </div>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!!MPSUpdated && MPSNotSigned}" style="margin:0px;">
+                                            <div class="aiaProdMsgSignErr">
+                                                {!$Label.AIA_Product_No_Sign_Error_Msg}
+                                                <apex:outputPanel rendered="{!camaction}" style="margin:0px;display:inline;"> 
+                                                    <a href="mailto:{!camEmail}?subject={!$Label.AIA_CAM_Subject}">{!$Label.AIA_Product_Contact_CAM_Label}</a>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!!camaction}" style="margin:0px;display:inline;"> 
+                                                    {!$Label.AIA_Product_Contact_CAM_Label_TXT}
+                                                </apex:outputPanel>
+                                            </div>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </div>
+                                <input type="hidden" value="{!FirstTimeUser}" id="firstUserHdn" />
+                            </apex:outputPanel>
+                        </apex:repeat>
+                    </ul>
+                </div>
+                <div class="col-xs-4 col-md-4 border-right border-height">
+                    <apex:repeat value="{!pWrapperList}" id="mobileProduct" var="p">
+                        <apex:outputPanel rendered="{!IF(p.prodObj.Category__c == 'Mobility Services' && checkWirelessFlag == true,true,false)}">
+                            <h4>Mobile Products</h4>
+                        </apex:outputPanel>
+                    </apex:repeat>
+                    <ul class="list-unstyled mobileProdRad">
+                        <apex:repeat value="{!pWrapperList}" id="productDataTableId2" var="p">
+                            <apex:outputPanel rendered="{!IF(p.prodObj.Category__c == 'Mobility Services' && checkWirelessFlag == true,true,false)}" style="display: block;margin-bottom: 20px;">
+                                <li class="mobileProds"><input type="radio" value="{!p.isSelected}" name="productSelectId1" id="{!p.prodObj.id}" style="margin-top: 3px !important;margin-right: 10px !important;"
+                                                               onclick='passQuoteNoToController("{!quoteObj.name}","{!p.prodObj.id}","{!p.prodObj.id}","{!p.prodObj.Name}");MobileSetProdId("{!p.prodObj.Name}","{!p.prodObj.id}");prodRadioName("mobileProds");' data-disFlag="{!checkMobilityFlag}"/> {!p.prodObj.Name} <br/>
+                                </li>
+                            </apex:outputPanel>
+                        </apex:repeat>
+                    </ul>
+                </div>
+                
+                <div class="col-xs-4 col-md-4">
+                    <apex:repeat value="{!pWrapperList}" id="cloudProd" var="p">
+                        <apex:outputPanel rendered="{!IF(p.prodObj.Category__c == 'Cloud & Hosting Solutions' ,true,false)}" >
+                            <h4>Cloud and Hosting Services</h4>
+                        </apex:outputPanel>
+                    </apex:repeat>
+                    <ul class="list-unstyled">
+                        <apex:repeat value="{!pWrapperList}" id="productDataTableId3" var="p">
+                            <apex:outputPanel rendered="{!IF(p.prodObj.Category__c == 'Cloud & Hosting Solutions' ,true,false)}" style="display: block;margin-bottom: 20px;">
+                                <li class="cloudProds"><input type="radio" value="{!p.isSelected}" name="productSelectId1" id="{!p.prodObj.id}" onclick='setProdId("{!p.prodObj.id}"); prodRadioName("cloudProds");' style="margin-top: 3px;margin-right: 10px !important;"/> {!p.prodObj.Name}</li>
+                            </apex:outputPanel>
+                        </apex:repeat>
+                    </ul>
+                </div>
+            </div>
+            
+            <apex:actionFunction name="updateAIACheckBox" status="loading" action="{!updateusersAIA}" reRender="" >
+            </apex:actionFunction>
+            <apex:actionFunction name="updateQuoteName" status="loading" action="{!populateQuoteName}" reRender="qname,selectedProductId" oncomplete="isASERadSelected();">
+                <apex:param name="productId" value="" />
+            </apex:actionFunction>
+            <apex:actionFunction action="{!renderprodAttr}" status="loading" name="attwirelessCheck" rerender="prodAttr,TermlistId" oncomplete="prodRadioName('mobileProds')">
+                <apex:param name="productId1" value="" />
+            </apex:actionFunction>
+            <apex:actionFunction action="{!renderprodAttr}" status="loading" name="renderprodAttr" rerender="prodAttr,TermlistId" oncomplete="prodRadioName('networkProds');isASERadSelected();initProductInfo();">
+                <apex:param name="productId1" value="" />
+            </apex:actionFunction>
+            <apex:actionFunction action="{!updateConfigAndJurisdiction}" name="updateConfigAndJurisdiction"  status="loading" oncomplete="return false;" reRender="prodAttr">
+                <apex:param name="selectedEthernetconfiguration" value="" />
+                <apex:param name="selectTrafficJurisdiction" value="" />
+            </apex:actionFunction>
+        </div>
+        
+        <apex:outputpanel id="prodAttr">
+            <apex:outputpanel rendered="{!showProdAttr}">
+                <div class="m-t-20">
+                    <div class="row p10 m0" id="selectEthernetConfiguration">
+                        <h3>Select Ethernet configuration</h3>
+                        <hr class="blue_hr" /> 
+                        <h4>Ethernet configuration</h4>                                               
+                        <apex:selectRadio value="{!selectedEthernetconfiguration}" styleClass="configRad" onchange="setConfigAndJuri(this, null);" id="selectEthernetConfigurationId"> 
+                            <apex:selectOptions value="{!EthernetOptionslist}"> </apex:selectOptions>
+                        </apex:selectRadio>
+                    </div>
+                </div> 
+                <div class="m-t-20">
+                    <div class="row p10 m0" id="selectedTrafficJurisdictionVal">
+                        <h3>Select Traffic Jurisdiction</h3>
+                        <hr class="blue_hr" /> 
+                        <h4>Traffic Jurisdiction Configuration</h4>                                               
+                        <apex:selectRadio value="{!selectedTrafficJurisdiction}"  onchange="setConfigAndJuri(null, this);" id="selectedTrafficJurisdictionId"> 
+                            <apex:selectOptions value="{!TrafficJurisdictionOptionslist}"> </apex:selectOptions>
+                        </apex:selectRadio>
+                    </div>
+                </div> 
+            </apex:outputpanel>
+        </apex:outputpanel>
+        <div>
+            <div class="row m0" id="selectterm">
+                <div class="col-xs-12 m-b-20 p0">
+                    <hr style="margin-top: 15px;" class="blue_hr" />
+                </div>
+                <h3>Select Term</h3>
+                <h4 style="margin-top:20px !important">Contract Term</h4>                                               
+                <apex:selectRadio value="{!selectedTerm}" id="TermlistId"  styleClass="termListId" onClick="enableNext(this.value)"> 
+                    <apex:selectOptions value="{!Termlist}"> </apex:selectOptions>
+                </apex:selectRadio>
+            </div>  
+        </div>              
+        <div class="row m0 p0">
+            <div class="col-xs-12 m-t-20 p0">
+                <hr class="blue_hr" />
+            </div>
+        </div>        
+        <div>
+            <ul class="row m0 m-t-20 p0 pull-right">
+                <li style="display: inline-block;margin-right:15px;">
+                    <apex:commandButton id="prodInfoCancelBtnId" value="Cancel Quote" style="padding:0 20px; background: none !important; color:#428bca !important; margin-bottom: 3px;border:none;" action="{!cancel}"/>                      
+                </li>
+                <li style="display: inline-block;margin-right:15px;">
+                    <input type="button" value="{!$Label.Back}" class="btn btn-secondary pull-right" style="padding: 0px 20px !important; background: #fff !important; color: #595959 !important;min-width: 180px; border: 1px solid #595959!important; height: 40px; font-size: 16px; font-family: omnes_att_iimedium !important;" onclick = "callToUpdateQuoteBack();"/>
+                </li>
+                <li style="display: inline-block;">
+                    <apex:commandButton onclick="checkProduct();" id="prodInfoNextBtnId" value="Next: Enter Addresses" styleClass="btn-primary pull-right prodInfoNextBtnId m0" style="padding: 0px 20px !important; height: 40px;" reRender="" oncomplete=""/>                          
+                </li>                        
+            </ul>
+            <apex:actionFunction name="updateQuoteBack" action="{!updateQuoteOnBack}" status="loading" oncomplete="reloadCustTab();"/>
+            <apex:actionFunction name="updateQuoteBackToDashboard" action="{!updateQuoteOnBack}" status="loading" oncomplete="navigateToDashboard();"/>
+            <apex:actionFunction name="changeIPFlexFlag" action="{!changeIPFlexFlag}" status="loading" />
+            <apex:actionFunction name="updateQuote" action="{!updateQuote}" status="loading" oncomplete="setProductType();isProductSelected();" rerender="errorMessage">
+                <apex:param name="selectedTerm" value="" assignTo="{!selectedTerm}" />
+            </apex:actionFunction>                    
+            <apex:actionFunction name="updateQuoteAIA" action="{!updateQuoteAIA}" status="loading" oncomplete="setProductType();isProductSelected();" rerender="errorMessage"/>              
+            <script>
+            productType = '';
+            var quoteID;            
+            function setProductType() {
+                productType = '{!productType}';
+                quoteID = '{!quoteObj.Id}';
+            }
+            </script>            
+        </div>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="oppurtunityModal" tabindex="-1" role="dialog" aria-labelledby="oppurtunityModalLabel" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+            <div class="modal-dialog">
+                
+                <div class="modal-content" style = "width: 700px; margin-left: -60px;margin-top: 65px;">
+                    <div class="modal-header">
+                        <button type="button" onclick="checkWireless();" id="closeBtnWireless" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" style="font-family: omnes_light; font-size: 32px; color: rgb(102, 102, 102); margin-left: 15px;" id="oppurtunityModalLabel">Continue</h4>
+                        <p style="margin-left:16px; padding-right:20px;">
+                            To start the quote and deal registration process, the AT&amp;T Premier Store will open in a new window. To proceed, choose one of the selections below, then click <strong>Continue</strong>.
+                        </p>
+                    </div>
+                    <hr style="border:1px solid #a1a1a1; margin-top: 5px; margin-bottom: 10px;" />
+                    <div class="modal-body" style="margin-left: 15px;">
+                        <div>
+                            <input type="radio" id="endCustomerFan" value="endCustomerFan" name="continueRadio" onclick="atLeastOneRadio(this);"/>
+                            <label for="endCustomerFan">End Customer Fan</label>
+                        </div>
+                        <div style="margin-top:25px;">
+                            <input type="radio" id="consumeForUseFan" value="consumeForUseFan" name="continueRadio" onclick="atLeastOneRadio(this);"/>
+                            <label for="consumeForUseFan">Consume for use Fan</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" value="Continue" id="disabledFanCtnBtn" disabled="true" class="col-md-3 col-xs-30 p0 btn-primary" style="float:right; margin-top: -20px; margin-bottom: 10px; margin-right: 40px;"/>
+                        <apex:commandButton id="enabledFanCtnBtn" html-data-id="select_prod_modal_continue" action="{!callLoginDispatchServicePI}"  status="loading" value="Continue" styleClass="col-md-3 col-xs-30 p0 btn-primary" style="float:right; margin-top: -20px; margin-bottom: 10px; margin-right: 40px;display:none;" oncomplete="$('#oppurtunityModal').modal('toggle');openWireless('{!deEncryptedUrl}','productInformation');"/>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="modal fade" id="FrstAiaPop" tabindex="-1" role="dialog" style="display:none; position:relative; ">
+            <div class="modal-dialog">
+                <div class="modal-content" style = "width: 700px; margin-left: -60px;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" style="font-family: OmnesATTII; font-size: 32px; color: rgb(102, 102, 102); font-weight: unset !important; margin-left: 15px;" id="oppurtunityModalLabel">Continue</h4>
+                        <p style="margin-left:16px; padding-right:20px;">
+                            To start the quote and deal registration process, the AT&amp;T Premier Store will open in a new window. To proceed, choose one of the selections below, then click <strong>Continue</strong>.
+                        </p>
+                    </div>
+                    <hr style="border:1px solid #a1a1a1; margin-top: 5px; margin-bottom: 10px;"></hr>
+                </div>
+            </div>
+        </div>
+        
+        <div id="myPopoverContent" style="display:none;width:100%;">
+            <div class="closePopOver" style="float:right;line-height:0.9em;margin-bottom:20px;color:black;">X</div>
+            <div>
+                <p>For Business Fiber connection speeds at some sites, AT&amp;T does not provide inside wiring. For those sites, you would be responsible for the inside wiring or you can select non-Business Fiber connection speeds.</p>
+            </div>
+        </div>
+                       
+        <apex:actionFunction id="funcId" action="{!handleProductInfoPage}" name="handleProductInfoPage" reRender="productInfoFormId,productDataTableId" status="loading" oncomplete="checkVal();toggleLookUpIcon();">
+            <apex:param name="quoteId" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction action="{!checkForPremierUpdate}" name="checkForPremierUpdate" status="loading" oncomplete="window.location='/apex/PortalDashboard_UI'"/>
+        <script>                
+            function checkVal() {
+                if ('{!quoteObj.Product__c}' != null) {
+                    document.getElementById('{!quoteObj.Product__c}').checked = true;
+                    setProdId('{!quoteObj.Product__c}');
+                }
+            }
+            $('.mobileProdRad li input[type="radio"]').each(function(){
+                if($(this).attr('data-disFlag')=='true'){
+                    $(this).prop('disabled','true');
+                }
+            }); 
+            // Function to prevent enter click on the quote name text box
+            function preventEnter() {            
+                $(".quoteName").on({"keypress":function(event)
+                                    {
+                                        if(event.keyCode && 13 === event.keyCode){
+                                            return false;
+                                        }
+                                    },
+                                    "keyup": function(event){
+                                        if(event.keyCode && 13 === event.keyCode){
+                                            return false;
+                                        }
+                                    }
+                                   });
+                
+                var chkProdLength = $("input[name='productSelectId1']:checked").length;
+                if (chkProdLength === 0 ) {
+                    $('.prodInfoNextBtnId').attr('disabled', 'true');
+                }
+            }
+            preventEnter();                
+        </script>
+    </div>
+    </apex:form>
+    
+    <script>
+        var popUpFlag = false; 
+        var prodName1 = ''; 
+        var firstTimeAia = '';         
+        $(document).ready(function () {
+            $('.lookupInput > a').addClass('glyphicon-search');            
+        });
+        var RingCentralFlag;
+        var JasperFlag ;
+        
+        function setProdId(ele) {                
+            renderprodAttr(ele.trim());
+            popUpFlag = false;
+            RingCentralFlag = false;
+            JasperFlag = false;
+        }
+        
+        function updateQuoteNameJS(ele){
+            updateQuoteName(ele.trim());  
+        }
+        
+        function isASERadSelected() {
+            if($('.configRad input').length>0) {
+                $('.prodInfoNextBtnId').prop('disabled', 'true');
+                if (!$(".configRad input:checked").val()) {
+                    $('.prodInfoNextBtnId').attr('disabled', 'true');
+                } else {
+                    $('.prodInfoNextBtnId').removeAttr('disabled');
+                }
+                $(".configRad input").on('click', function () {
+                    if (!$(".configRad input:checked").val()) {
+                        $('.prodInfoNextBtnId').attr('disabled', 'true');
+                    }
+                });
+            } else {
+                var inputName2 = 'input[name="productSelectId1"]';
+                if($(inputName2).parent('li:contains("Network-Based IP-VPN Remote Access")').children(inputName2).is(':checked')) {
+                    $('.prodInfoNextBtnId').attr('value', 'Next: Configure Product');
+                }else if($(inputName2).parent('li:contains("Wireless")').children(inputName2).is(':checked')){
+                    $('.prodInfoNextBtnId').attr('value', 'Continue'); 
+                } 
+                    else {
+                        $('.prodInfoNextBtnId').attr('value', 'Next: Enter Addresses');
+                    }
+            }
+        }
+        function MobileSetProdId(str,ele){
+            isASERadSelected();
+            var url;
+            updateQuoteName(ele.trim());
+            attwirelessCheck(ele.trim());
+            if(str =='RingCentral Office@Hand from AT&T'){    
+                url='{!radioButtonRedirect}'; 
+                RingCentralURL = url;
+                if(url){
+                    RingCentralFlag = true;
+                } else {
+                    RingCentralFlag = false;
+                }
+            }
+            else if(str =='Jasper from AT&T'){  
+                url='{!radioButtonRedirectJasper}';
+                RingCentralURL = url;
+                if(url){
+                    JasperFlag = true;
+                } else {
+                    JasperFlag = false;
+                }                
+            } 
+            
+            selected_radio = $('#'+ele).parent('li').text().replace(/^\s+|\s+$/g, '');
+            
+            if(selected_radio.match('AT&T Wireless')){
+                popUpFlag = true;
+                RingCentralFlag = false;
+                JasperFlag = false; 
+            }
+            else{
+                popUpFlag = false;
+            }
+        }
+        var typeOfFan;
+        function atLeastOneRadio(id) {
+            typeOfFan=id.value;
+            $('#disabledFanCtnBtn').css('display','none');
+            $('input[data-id="select_prod_modal_continue"]').css('display','block');
+        }
+        
+        function toggleLookUpIcon() {
+            $('.lookupInput > a').addClass('glyphicon-search');
+        }
+        
+        function handleSiteAddress() {
+            handleSiteAddressPage(generatedQuoteId);
+        }
+        
+        function isProductSelected() {
+            if ($("input[name='productSelectId1']:checked").val()) {
+                $('input[id="prodInfoNextBtnId"]').addClass('disabled');
+                
+                if(popUpFlag == true){
+                    $('#oppurtunityModal').delay(1000).queue(function(){ $('#oppurtunityModal').modal("show").dequeue(); });                   
+                }else {
+                    if(RingCentralFlag == true) {
+                        window.open(RingCentralURL, '_new');         
+                    }else if(JasperFlag == true) { 
+                        window.open(RingCentralURL, '_new');         
+                        
+                    } else {
+                        prodBuyflowRedirect();
+                    }
+                }
+                
+            }           
+        }
+        var hiddenRep;                
+        function proceedToEnterAddress() {
+            if(quoteID!= ''){
+                window.location.href = "/apex/Buyflow?mode=siteinfo&quoteid="+quoteID;
+            }else{
+                window.scrollTo(0, 0);
+            }     
+        }
+        function openWireless(url, pageName) {
+            var fanVal;
+            var decryptedURLx;
+            var selectedVal = $('input[name=continueRadio]:checked').val();            
+            
+            if (selectedVal != null && selectedVal == 'endCustomerFan') {
+                fanVal = 'End+Customer+FAN';
+            } else {
+                fanVal = 'Consume+for+Use+FAN';
+            }
+            
+            if (url != null && url != '') {
+                decryptedURLx = url + '&fanName=' + fanVal;       
+            }
+            openNewWindowForPremier(decryptedURLx, pageName);                                           
+        } 
+        function callToUpdateQuoteBack(){
+             if(window.location.search != null && "undefined" != typeof window.location.search && ((window.location.search).indexOf("mode=productinfo")>0)){
+                navigateToDashboard();
+             }
+             else{
+            updateQuoteBack();
+             }
+        }
+        function reloadCustTab() {
+            reLoad(customerId);
+            $("a[data-name='selectProd']").parent('li').addClass("disabled");
+            $("a[data-name='selectProd']").parent('li').css("background","#e1e1e1");
+            $("a[data-name='selectProd']").removeAttr('data-toggle href');
+            $("a[data-name='selectCust']").parent('li').removeClass("disabled");
+            $('a[data-name="selectCust"]').attr({ 'data-toggle':"tab", href:"#selectCust" });
+            $("a[data-name='selectCust']").trigger("click");
+            $("a[data-name='selectCust']").find('div').removeClass("glyphicon glyphicon-ok");
+            $("a[data-name='selectCust']").find('div').html('1');
+            $("a[data-name='selectCust']").find('div').addClass("circlenum");
+            $(".manage_content-header").html("Select Customer");
+        }  
+                
+        function modalcheck(id){          
+            updateQuote(selectedTerm);
+        }
+        
+        function showAIAPopup(){
+            var camEmail = '{!camEmail}';         
+            var camaction = {!camaction};
+            if(typeof toAddress == 'undefined'){
+                toAddress = '';    
+            }
+            var subject ='Signing of Master Pricing Schedule';
+            
+            if(camaction == true){
+                $.confirm({        
+                    text: "<div style='text-align:center;font-weight:normal;line-height:1.8;margin-top:25px;'><p>There is no signed Master Pricing Schedule for this account on file.</p><p>A signed Master Pricing Schedule is required to sell AT&T Internet Access.</p><div style='margin-left: 40px ! important; margin-right: 40px;'>Please have someone from your organization \<a href=\"\mailto:"+camEmail+"\?\subject="+subject+"\"\>\contact your CAM\</a>\ to review and sign a Master Pricing Schedule.</div><br/><p>You can select a different product to continue a quote or cancel the quote.</p></div>",
+                    confirm: function(button) {
+                        window.scrollTo(500, 0);
+                    },
+                    cancel: function(button) {
+                    },
+                    confirmButton: "Okay",
+                    cancelButton: "false"
+                }); 
+            }else if(camaction  == false){
+                $.confirm({        
+                    text: "<div style='text-align:center;font-weight:normal;line-height:1.8;margin-top:25px;'><p>There is no signed Master Pricing Schedule for this account on file.</p><p>A signed Master Pricing Schedule is required to sell AT&T Internet Access.</p><div style='margin-left: 40px ! important; margin-right: 40px;'>Please have someone from your organization contact your CAM to review and sign a Master Pricing Schedule.</div><br/><p>You can select a different product to continue a quote or cancel the quote.</p></div>",
+                    confirm: function(button) {
+                        window.scrollTo(500, 0);
+                    },
+                    cancel: function(button) {
+                    },
+                    confirmButton: "Okay",
+                    cancelButton: "false"
+                }); 
+            }
+            $('.modal-content').css('width', '630px');
+            $('.modal-content').css('height', '280px');
+            $('.modal-content').css('margin-left', 'auto');
+            $('.modal-content').css('margin-right', 'auto');
+            $('.modal-dialog').css('top', '60px'); 
+            $('.modal-footer').css('padding', '20px'); 
+            $('.btn').attr('style','padding: 6px 67px !important');
+            $('.modal-header').css('min-height', '31.429px');
+            $('.modal-body').css('padding', '0px'); 
+            $('.modal-body').css('margin-top', '35px ! important;');
+            $('.modal-body').css('margin-left', '25px! important;');
+            $('.modal-body').css('margin-right', '45px! important;');
+            $('.modal-body').css('width', '570px! important;');
+        }  
+
+        function showAIAOptionDiv(prodRadName) {
+            var aiacheckval = {!aiacheckvalue};
+            if(prodRadName != null && prodRadName =='AIA' && aiacheckval == true){
+                 document.getElementById('AIAoption').style.display = 'block';
+                 $('.prodInfoNextBtnId').attr('disabled', 'true');
+                 $('input[id="prodInfoNextBtnId"]').addClass('disabled');
+                  checkfrsttimeAIA();  
+            }
+            else{
+                checkfrsttimeAIA();
+                if (document.getElementById('AIAoption')) {
+                    document.getElementById('AIAoption').style.display = 'none';
+                }
+            }
+        }
+        
+        var ShowAIA3yrTerm = '{!$Label.Show_AIA_3yr_Term}';
+        function prodRadioName(prodType) {
+            prodRadName = '';
+            inputName = 'input[name="productSelectId1"]';
+
+            switch(prodType) {
+            case 'networkProds':
+                if($(inputName).parent('li:contains("Virtual Private Network")').children(inputName).is(':checked')){
+                    prodRadName = 'AVPN';
+                    prodName1 = prodRadName; 
+                } else if($(inputName).parent('li:contains("Managed Internet Service")').children(inputName).is(':checked')){
+                    prodRadName = 'MIS';
+                    prodName1 = prodRadName;
+                } else if($(inputName).parent('li:contains("Switched Ethernet Service")').children(inputName).is(':checked')){
+                    prodRadName = 'ASE';
+                    prodName1 = prodRadName;
+                } else if($(inputName).parent('li:contains("Internet Access")').children(inputName).is(':checked')){
+                    prodRadName = 'AIA';
+                    prodName1 = prodRadName;
+                } else if($(inputName).parent('li:contains("Network-Based IP-VPN Remote Access")').children(inputName).is(':checked')){
+                    prodRadName = 'ANIRA';
+                    prodName1 = prodRadName;
+                } else if($(inputName).parent('li:contains("NBFW")').children(inputName).is(':checked')){
+                    prodRadName = 'NBFW';
+                    prodName1 = prodRadName;
+                }
+                showAIAOptionDiv(prodRadName); 
+                if(prodRadName == 'ASE' ){
+                    setYearOption('reset');
+                    if($('#selectterm td').length == 1){
+                        setYearOption('1year');
+                    }                    
+                }else{
+                    if(prodRadName == 'AIA'){
+                        if(ShowAIA3yrTerm == 'True' || ShowAIA3yrTerm == 'true'){
+                            setYearOption('both');
+                            $('#selectterm td:last-child label').addClass('special');                         
+                        }else{
+                            $('.termListId td input').removeAttr('checked');// reset both initially
+                            $('.termListId td:last-child').css('display','none')// Hiding 3 years option for AIA
+                            $('.termListId td:first-child input').removeAttr('disabled').removeClass('disabled').addClass('enabled');
+                            $('.termListId td:first-child input').prop('checked', true);//1 Year selected
+                            enableNext($('.termListId td:first-child input').val());                        
+                        }                   
+                    }else{
+                        setYearOption('both');
+                        $('#selectterm td:last-child label').addClass('special');                     
+                    }                   
+                }
+                $('.prodInfoNextBtnId').attr('disabled',false);
+                if(!$('.termListId td input').is(':checked')){
+                        $('.prodInfoNextBtnId').attr('disabled',true);
+                }
+                break;
+            case 'mobileProds':
+                if($(inputName).parent('li:contains("RingCentral")').children(inputName).is(':checked')){
+                    prodRadName = 'RingCentral';
+                    prodName1 = prodRadName;
+                } else if($(inputName).parent('li:contains("Wireless")').children(inputName).is(':checked')){
+                    prodRadName = 'AT&T Wireless';
+                    prodName1 = prodRadName;
+                    setYearOption('none');
+                } else if($(inputName).parent('li:contains("Jasper")').children(inputName).is(':checked')){
+                    prodRadName = 'Jasper';
+                    prodName1 = prodRadName;
+                }
+                $('#selectterm td:last-child label').addClass('special');
+                $('.prodInfoNextBtnId').attr('disabled',false);
+                showAIAOptionDiv(prodRadName);
+                break;
+            case 'cloudProds':
+                if($(inputName).parent('li:contains("CaaS")').children(inputName).is(':checked')){
+                    prodRadName = 'CaaS';
+                }                
+                else if($(inputName).parent('li:contains("Private Cloud")').children(inputName).is(':checked')){
+                    prodRadName = 'Private Cloud';
+                    setYearOption('3year'); // Calling function to disable year option
+                } else if($(inputName).parent('li:contains("Colocation")').children(inputName).is(':checked')){
+                    prodRadName = 'Colocation';
+                    setYearOption('3year'); // Calling function to disable year option
+                }         
+                break;
+                
+                case 'none':  
+                    $('.termListId td input').removeAttr('checked disabled').removeClass('disabled').addClass('enabled');// reset both initially
+                    $('.termListId td:first-child input').attr('disabled', 'true').addClass('disabled')// 1 Year disabled
+                    $('.termListId td:last-child input').attr('disabled', 'true').addClass('disabled')// 3 Years disabled
+                break;
+                
+            default:
+                prodRadName = '';
+                setYearOption('both');
+                break;
+            }
+        }
+
+        function prodBuyflowRedirect() {
+            switch (prodName1) {                                        
+                case 'ANIRA' :
+                window.location.href = "/apex/Buyflow_ANIRA?mode=confProd&quoteid="+generatedQuoteId;
+                break;
+                case 'AIA' :
+                break;
+                default:                
+                proceedToEnterAddress(); 
+                break;
+            }
+        }
+
+        function setYearOption(option) {        
+            switch(option) {
+                case '1year':
+                    $('.termListId td input').removeAttr('checked');// reset both initially
+                    $('.termListId td:last-child input').attr('disabled', 'true').addClass('disabled')// 3 Years disabled
+                    $('.termListId td:first-child input').removeAttr('disabled').removeClass('disabled').addClass('enabled');
+                    $('.termListId td:first-child input').prop('checked', true);//1 Year selected
+                    enableNext($('.termListId td:first-child input').val());
+                break;
+                case '3year':                    
+                    $('.termListId td input').removeAttr('checked');// reset both initially
+                    $('.termListId td:first-child input').attr('disabled', 'true').addClass('disabled')// 1 Year disabled
+                    $('.termListId td:last-child input').removeAttr('disabled').removeClass('disabled').addClass('enabled');
+                    $('.termListId td:last-child input').prop('checked', true);//3 Years selected
+                    enableNext($('.termListId td:last-child input').val());
+                break;                
+                case 'both':  
+                    $('.termListId td input').removeAttr('checked disabled').removeClass('disabled').addClass('enabled');// reset both initially
+                    $('.termListId td:last-child input').prop('checked', true);//3 Years selected
+                    enableNext($('.termListId td:last-child input').val());
+                break;
+                case 'none':  
+                    $('.termListId td input').removeAttr('checked disabled').removeClass('disabled').addClass('enabled');// reset both initially
+                    $('.termListId td:first-child input').attr('disabled', 'true').addClass('disabled')// 1 Year disabled
+                    $('.termListId td:last-child input').attr('disabled', 'true').addClass('disabled')// 3 Years disabled
+                break;
+                case 'reset':  
+                      $('.termListId td input').removeAttr('checked disabled').removeClass('disabled').addClass('enabled');// reset both initially
+                break;      
+                default:
+                    $('.termListId td input').removeAttr('checked disabled').removeClass('disabled').addClass('enabled');// reset both initially
+                    $('.termListId td:last-child input').prop('checked', true);//3 Years selected
+                    enableNext($('.termListId td:last-child input').val());
+                break;
+            }
+        }
+        
+        function setConfigAndJuri(selectEthernetId, selectInterstateId){
+            if(selectEthernetId != null){
+                var selectEthernetIdVal = selectEthernetId.value;
+                updateConfigAndJurisdiction(selectEthernetIdVal, null);
+            }else if(selectInterstateId != null){
+                var selectInterstateIdVal = selectInterstateId.value;
+                updateConfigAndJurisdiction(null, selectInterstateIdVal);
+            }  
+        }
+        
+        function checkWireless(){                                 
+            mobileinput = $(".mobileProds>input[type='radio']");              
+            mobileinput.click();  
+            modalradio = $("[name=continueRadio]");
+            modalradio.unbind("click");
+            $('.termListId td input').removeAttr('checked');
+            $('.termListId td:first-child input').unbind("click");
+            $('.termListId td:last-child input').unbind("click");
+            $('.termListId td:first-child input').attr('disabled', 'true').addClass('disabled')// 1 Year disabled
+            $('.termListId td:last-child input').attr('disabled', 'true').addClass('disabled')// 3 Years disabled            
+        }
+        
+        function initProductInfo(){
+            mobileinputc = $(".mobileProds>input[type='radio']");   
+            if (mobileinputc.is(':checked')) {
+                mobileinputc.click(); 
+                $('.termListId td input').removeAttr('checked');
+                $('.termListId td:first-child input').unbind("click");
+                $('.termListId td:last-child input').unbind("click");
+                $('.termListId td:first-child input').attr('disabled', 'true').addClass('disabled')// 1 Year disabled
+                $('.termListId td:last-child input').attr('disabled', 'true').addClass('disabled')// 3 Years disabled      
+            }
+        }
+        
+        function checkfrsttimeAIA(){
+            if(prodName1 == 'AIA'){
+                firstTimeAia = document.getElementById("firstUserHdn").value;
+                if(firstTimeAia!= undefined && firstTimeAia == 'true'){
+                    updateAIACheckBox();
+                    showPopOver(firstTimeAia);
+                }
+            }
+        }
+    
+        function checkProduct(){
+        if(prodName1 == 'AIA'){
+                updateQuoteAIA();
+            }else{
+                    var productId = $('[id$=selectedProductId]').val();
+                 if(selectedTerm == null || selectedTerm == 'undefined' || selectedTerm =='')
+                {
+                    selectedTerm = $('.termListId :checked').val();
+                }
+                if(productId == null || productId == 'undefined' || productId =='')
+                {
+                    productId = $('[name=productSelectId1]:checked').prop('id');
+                    $('[id$=selectedProductId]').val(productId);
+                }
+                updateQuote(selectedTerm); 
+            }         
+        }
+        
+        /*function checkProductName(){
+            if(prodName1 == 'AIA'){
+                updateQuoteAIA();
+            }else{
+                if(prodName1 == null || prodName1 == 'undefined' || prodName1 =='')
+                {
+                    prodName1 = $('.productSelectId1:checked').val();
+                }
+                updateQuote(prodName1); 
+            }         
+        } */   
+        
+        function disableCrossBtn(flag) {
+            if (flag){
+                document.getElementById("closeBtnWireless").disabled = true;
+                $("#closeBtnWireless").css({"pointer-events":"none"});
+            }
+            else{
+                document.getElementById("closeBtnWireless").disabled = false;
+                $("#closeBtnWireless").css({"pointer-events":"auto"});
+            }
+        }
+        
+        /* script to resolve sfdc re-rendering */
+        $('body').popover({ selector: '.aiaInfoPopover' });
+        $('body').on('shown.bs.popover', '.aiaInfoPopover', function(e) {
+            var _this = this;
+            $('.closePopOver').on('click.hidePopover', function(e) {
+                if (!$(e.target).hasClass('popover-content')) {
+                    hidePopover(_this);
+                }
+            });
+        });
+        
+        /* to open tooltip if aia is selected first time */
+        function showPopOver(aiaFlag) {
+            if(aiaFlag == 'true'){   
+                if(!($('.popover').hasClass('in'))){
+                    $('.aiaInfoPopover').trigger('click');
+                }
+            }
+        }
+        
+        var hidePopover = function(popover) {
+            $(popover).popover('toggle');
+        };
+        
+        var selectedTerm;
+        function enableNext(termValue){
+            selectedTerm = termValue;
+            if($('input[name="productSelectId1"]').is(':checked')){
+                $('.prodInfoNextBtnId').attr('disabled',false);
+            }
+        }
+        function navigateToDashboard() {
+            window.open('{!$Site.Prefix}/apex/PortalDashboard_UI', '_self');
+        }
+    </script>  
+
+    <script>
+        $('#selectProd').on('click',function(){
+            createLog('Select Product');
+        });
+    </script>
+</apex:page>

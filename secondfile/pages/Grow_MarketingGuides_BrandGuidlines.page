@@ -1,0 +1,241 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetGrowPdfsCtrl">
+<style>
+    .custom-img-horizontal {
+        margin-top: 55%;
+        max-width: 90%;
+        max-height: 60%;
+    }
+    .custom-img-vertical {
+        margin-top: 25%;
+        max-width: 90%;
+        max-height: 60%;
+    }
+    .img-asset {
+        position: relative;
+        padding: 0px !important;
+        margin-top: 0px;
+        border: 1px solid #ced0d6;
+        border-radius: 4px;
+        height: 266px;
+        text-align: center;
+        overflow: hidden;
+    }
+    .download {
+        background-color: #0f8ec7 !important;
+        color: #fff !important;
+        cursor: pointer;
+    }
+    .custom-built-border-top {
+        border-width: 1px 0px 0px 0px;
+        border-style: solid;
+        border-color: #d2d2d2;
+    }
+    .custom-built-border-bottom {
+        border-width: 0px 0px 1px 0px;
+        border-style: solid;
+        border-color: #d2d2d2;
+    }
+    .custom-built-border {
+        border-width: 1px 0px;
+        border-style: solid;
+        border-color: #d2d2d2;
+    }
+    .mtm-25 {
+        margin-top: -25px;
+    }
+    .mlp-40 {
+        margin-left: 40%;
+    }
+    @media (min-width: 1200px) and (max-width: 1700px) {
+        .h4-media-width {
+            width: 40px;
+        }
+        .custom-img-horizontal {
+            margin-top: 94%;
+        }
+        .custom-img-vertical {
+            margin-top: 53%;
+            max-width: 71%;
+            max-height: 144px;
+        }
+        .img-asset {
+            height: 304px;
+        }
+    }
+    @media (max-width: 1100px) {
+        .mtp-200 {
+            margin-top: 200px;
+        }
+        .mtp-3 {
+            margin-top: 3px;
+        }
+    }
+    .dispLeft {
+        display: inline-block;
+        float: left;
+        width: 35%;
+    }
+</style>
+    <div class="overview">        
+        <div class="row" >
+    <!-- Robyn 6/27/16: modify heading and paragrph text per PE Reqeust C0622_1606 -->
+            <h2>Help to strengthen your brand with Co-branding resources</h2>
+            <p class="mb-40">Ensure your co-branded marketing materials follow AT&amp;T and AT&amp;T Partner Exchange guidelines. This includes use of AT&amp;T branded assets, the mention of AT&amp;T or any reference to AT&amp;T products and services. The resources below are provided to help guide and strengthen your co-branding efforts.</p>
+            <hr class="blue_hr mb-40" />
+                <apex:outputPanel >   
+                    <div class="mt-40 mb-40">
+                        <apex:repeat value="{!DocMapGrowCoBranding}" var="docMap"> 
+                            <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                                <div class="document-row">
+                                    <div class="file-type file-{!docMap.type}"></div>
+                                    <div class="details">
+                                        <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                        <p><apex:outputText value="{!docMap.description}"/></p>
+                                    </div>
+                                </div>
+                            </apex:outputLink>
+                        </apex:repeat>
+                    </div>
+                </apex:outputPanel> 
+            
+            <hr class="blue_hr mb-40" />
+            
+            <h2>Badges<span class="btn pull-right download">Download all</span></h2>
+            <p>Download the badge for your tier (Platinum Elite or Platinum) for all of your co-branded activities.</p>
+            
+            <h2>Badge Usage</h2>
+            <p>The horizontal badge is the primary and preferred, which should be used when creative space is avilable. The vertical badge is strictly reserved for layouts that cannot accomodate the preferred horizontal badge. Use the Print file (.eps) for all full color print needs. Use the Digital - Onscreen file (.eps) for websites and videos. Use the Digital - Onscreen file (.png) for presentations and documents. The black and white file (.eps) is limited, black and white (grayscale) print opportunities only.</p>
+
+            <div class="mb-40">
+                <h2>Full Color Formats</h2>
+                <div class="col-lg-6">
+                    <h4 style="margin-bottom: 20px !important;">Horizontal Badge</h4>
+                    <span class="bg-blue img-asset dispLeft"><img class="custom-img-horizontal" src="{!URLFOR($Resource.MarketingGuide_Assets, 'BADGES/apex_sp-badge_plat-elite_horz_rgb_pos.png')}" /></span>
+                    <span class="">
+                        <div class="custom-built-border-top">
+                            <h4 class="mlp-40 mt-10 h4-media-width">Print</h4>
+                            <p class="mlp-40">Process (CMYK)<br />.EPS format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                        <div class="custom-built-border-top">
+                            <h4 class="mlp-40 mt-10 h4-media-width">Digital-Onscreen</h4>
+                            <p class="mlp-40">(RGB)<br/>.EPS format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                        <div class="custom-built-border">
+                            <h4 class="mlp-40 mt-10 h4-media-width">Digital-Onscreen</h4>
+                            <p class="mlp-40">(RGB)<br />.PNG format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-lg-6 mtp-3">
+                    <h4 style="margin-bottom: 20px !important;">Vertical Badge</h4>
+                    <span class="bg-blue img-asset dispLeft"><img class="custom-img-vertical" src="{!URLFOR($Resource.MarketingGuide_Assets, 'BADGES/apex_sp-badge_plat-elite_vert_rgb_pos.png')}" /></span>
+                    <span class="">
+                        <div class="custom-built-border-top">
+                            <h4 class="mlp-40 mt-10 h4-media-width">Print</h4>
+                            <p class="mlp-40">Process (CMYK)<br />.EPS format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                        <div class="custom-built-border-top">
+                            <h4 class="mlp-40 mt-10 h4-media-width">Digital-Onscreen</h4>
+                            <p class="mlp-40">(RGB)<br/>.EPS format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                        <div class="custom-built-border">
+                            <h4 class="mlp-40 mt-10 h4-media-width">Digital-Onscreen</h4>
+                            <p class="mlp-40">(RGB)<br />.PNG format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                    </span>
+                </div>
+            </div>
+
+            <div class="mb-40">
+                <h2>Black &amp; White Formats</h2>
+                <div class="col-lg-6">
+                    <h4 style="margin-bottom: 20px !important;">Horizontal Badge</h4>
+                    <span class="bg-gray img-asset dispLeft"><img class="custom-img-horizontal" src="{!URLFOR($Resource.MarketingGuide_Assets, 'BADGES/apex_sp-badge_plat_horz_rgb_pos.png')}" /></span>
+                    <span class="">
+                        <div class="custom-built-border">
+                            <h4 class="mlp-40 mt-10 h4-media-width">Print</h4>
+                            <p class="mlp-40">Process (CMYK)<br />.EPS format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-lg-6 mtp-200">
+                    <h4 style="margin-bottom: 20px !important;">Vertical Badge</h4>
+                    <span class="bg-gray img-asset dispLeft"><img class="custom-img-vertical" src="{!URLFOR($Resource.MarketingGuide_Assets, 'BADGES/apex_sp-badge_plat_vert_rgb_pos.png')}" /></span>
+                    <span class="">
+                        <div class="custom-built-border">
+                            <h4 class="mlp-40 mt-10 h4-media-width">Print</h4>
+                            <p class="mlp-40">Process (CMYK)<br />.EPS format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                    </span>
+                </div>
+            </div>
+
+            <!-- **************************************************************************************************************************************************************************************************************************************************************** -->
+            <!-- <div class="mb-40">
+                <h2>Full Color Formats</h2>
+                <div class="col-xs-6">
+                    <h4 style="margin-bottom: 20px !important;">Horizontal Badge</h4>
+                    <span class="col-md-4 bg-blue img-asset"><img class="custom-img-horizontal" src="{!URLFOR($Resource.MarketingGuide_Assets, 'BADGES/apex_sp-badge_plat-elite_horz_rgb_pos.png')}" /></span>
+                    <span class="col-md-8">
+                        <div class="custom-built-border-top">
+                            <h4 class="ml-20 mt-10 h4-media-width">Print</h4>
+                            <p class="ml-20">Process (CMYK)<br />.EPS format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                        <div class="custom-built-border-top">
+                            <h4 class="ml-20 mt-10 h4-media-width">Digital-Onscreen</h4>
+                            <p class="ml-20">(RGB)<br/>.EPS format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                        <div class="custom-built-border">
+                            <h4 class="ml-20 mt-10 h4-media-width">Digital-Onscreen</h4>
+                            <p class="ml-20">(RGB)<br />.PNG format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-xs-6">
+                    <h4 style="margin-bottom: 20px !important;">Vertical Badge</h4>
+                    <span class="col-md-4 bg-blue img-asset"><img class="custom-img-vertical" src="{!URLFOR($Resource.MarketingGuide_Assets, 'BADGES/apex_sp-badge_plat-elite_vert_rgb_pos.png')}" /></span>
+                    <span class="col-md-8">
+                        <div class="custom-built-border-top">
+                            <h4 class="ml-20 mt-10 h4-media-width">Print</h4>
+                            <p class="ml-20">Process (CMYK)<br />.EPS format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                        <div class="custom-built-border-top">
+                            <h4 class="ml-20 mt-10 h4-media-width">Digital-Onscreen</h4>
+                            <p class="ml-20">(RGB)<br/>.EPS format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                        <div class="custom-built-border">
+                            <h4 class="ml-20 mt-10 h4-media-width">Digital-Onscreen</h4>
+                            <p class="ml-20">(RGB)<br />.PNG format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                    </span>
+                </div>
+            </div>
+
+            <div class="">
+                <h2>Black &amp; White Formats</h2>
+                <div class="col-xs-6">
+                    <h4 style="margin-bottom: 20px !important;">Horizontal Badge</h4>
+                    <span class="col-md-4 bg-gray img-asset"><img class="custom-img-horizontal" src="{!URLFOR($Resource.MarketingGuide_Assets, 'BADGES/apex_sp-badge_plat_horz_rgb_pos.png')}" /></span>
+                    <span class="col-md-8">
+                        <div class="custom-built-border">
+                            <h4 class="ml-20 mt-10 h4-media-width">Print</h4>
+                            <p class="ml-20">Process (CMYK)<br />.EPS format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                    </span>
+                </div>
+                <div class="col-xs-6">
+                    <h4 style="margin-bottom: 20px !important;">Vertical Badge</h4>
+                    <span class="col-md-4 bg-gray img-asset"><img class="custom-img-vertical" src="{!URLFOR($Resource.MarketingGuide_Assets, 'BADGES/apex_sp-badge_plat_vert_rgb_pos.png')}" /></span>
+                    <span class="col-md-8">
+                        <div class="custom-built-border">
+                            <h4 class="ml-20 mt-10 h4-media-width">Print</h4>
+                            <p class="ml-20">Process (CMYK)<br />.EPS format<span class="btn download pull-right mtm-25">Download</span></p>
+                        </div>
+                    </span>
+                </div>
+            </div> -->
+            <!-- **************************************************************************************************************************************************************************************************************************************************************** -->
+
+        </div>
+    </div>
+</apex:page>

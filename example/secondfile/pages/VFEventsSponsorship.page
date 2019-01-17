@@ -1,0 +1,122 @@
+<apex:page standardController="Engagement__c" >
+
+    <apex:stylesheet value="{!$Resource.EventsandSponsorship}"/>
+    <apex:outputPanel rendered="{!if(Engagement__c.RecordType.Name = 'Event' ,true, false)}">
+        <div Title="Event List Div" class="EventListDiv">
+                    <div Title="Main Event Pic Div" class="MainEventPicDiv">
+                        <div title="second Main Event Pic Div" class="secondMainEventPicDiv">
+                                <div title="Event Gray Header" 
+                                class="EventGrayHeader"
+                                style="background-image:url('{!$Resource.GrayGradient}'); ">
+                                
+                                    <apex:outputPanel rendered="{!IF((Engagement__c.Start_Date__c !=Engagement__c.End_Date__c), true, false)}" >                                                  
+                                          <apex:OutputText value="{0, date, MMM. d}" styleClass="Eventdate">
+                                             <apex:param value="{!Engagement__c.Start_Date__c}" />
+                                          </apex:outputText> 
+                                          <apex:OutputText value=" - " styleClass="font-family:arial;font-weight:bold;vertical-align:top;"/>                                         
+                                          <apex:OutputText value="{0, date, MMM. d}" styleClass="Eventdate">
+                                              <apex:param value="{!Engagement__c.End_Date__c}"  />
+                                          </apex:outputText>   
+                                     </apex:outputPanel>  
+                                     <apex:outputPanel rendered="{!IF((Engagement__c.Start_Date__c ==Engagement__c.End_Date__c), true, false)}">                                                  
+                                          <apex:OutputText value="{0, date, MMM. d}" styleClass="Eventdate">
+                                             <apex:param value="{!Engagement__c.Start_Date__c}" />
+                                          </apex:outputText> 
+                                    </apex:outputPanel>  
+                                
+                                
+                                </div>
+                                
+                                <div title="Pic Event Div" class="PicEventDiv">
+                                
+                                    <div Title="Inserted Event Pic" class="insertPicEvent" style="background-image:url('{!Engagement__c.Event_Image_Link__c}');" id="topImageDiv">
+                                        
+                                    </div>
+                                </div>
+                                
+                         
+                         </div>
+                    </div>
+                
+                    <div title="EventInformation" style="display: table-cell;">
+                        <div title="EventName" class="EventName">
+                            <apex:outPutText value="{!Engagement__c.Name}" />
+                        </div>
+                        
+                        <div title="When information" >
+                            <apex:outputText value="When: " styleClass="eventsdate"/>  
+                            
+                            <apex:outputPanel rendered="{!IF((Engagement__c.Start_Date__c !=Engagement__c.End_Date__c), true, false)}" >                                         
+                                <apex:OutputText value="{0,date,M'/'d}">
+                                    <apex:param value="{!Engagement__c.Start_Date__c}"/>
+                                </apex:outputText>                                                                                   
+                                
+                                <apex:OutputText value="-" styleClass="font-weight:bold;"/>                                         
+                                
+                                <apex:OutputText value="{0,date,M'/'d}" >
+                                    <apex:param value="{!Engagement__c.End_Date__c}"  />
+                                </apex:outputText> 
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel rendered="{!IF((Engagement__c.Start_Date__c ==Engagement__c.End_Date__c), true, false)}" >                                         
+                                <apex:OutputText value="{0,date,M'/'d}">
+                                    <apex:param value="{!Engagement__c.Start_Date__c}"/>
+                                </apex:outputText>
+                            </apex:outputPanel>
+                            
+                        </div>
+                        
+                        <div title="Where Information">
+                            <apex:outputText value="Where: " styleClass="eventsdate"/>
+                            <apex:outPutText value="{!Engagement__c.City__c}" />
+                            <apex:outputText value=", "/>
+                            <apex:outPutText value="{!Engagement__c.State__c}" /> 
+                        </div>
+                        
+                        <div title="Description Information" style="padding-top:20px;">
+                            <apex:outputField value="{!Engagement__c.Description__c}" styleClass="TitleDesc"/>
+                        </div>
+                        
+                           <div title="Website Information" class="WebsiteInformation">
+                        
+                         <apex:outputText rendered="{!Engagement__c.Website_Friendly_Name__c == NULL}">
+                             <apex:outputLink value="{!Engagement__c.Website__c}">
+                                <div style="display:table-cell; vertical-align:top;font-family:Arial;color:#067ab4;"> 
+                                      {!Engagement__c.Name} Website
+                                </div>
+                                <div style="display:table-cell; padding-left:10px;">
+                                    <img src="{!URLFOR($Resource.eventarrowlink)}" alt="arrow" id="arrow" />
+                                </div>
+                            </apex:outputLink>
+                         </apex:outputText>
+                        
+                        
+                         <apex:outputText rendered="{!Engagement__c.Website_Friendly_Name__c != NULL}">
+                            <apex:outputLink value="{!Engagement__c.Website__c}">
+                                <div style="display:table-cell; vertical-align:top;font-family:Arial;color:#067ab4;"> 
+                                  {!Engagement__c.Website_Friendly_Name__c} 
+                                </div>
+                                <div style="display:table-cell; padding-left:10px;">
+                                    <img src="{!URLFOR($Resource.eventarrowlink)}" alt="arrow" id="arrow" />
+                                </div>
+                            </apex:outputLink>
+                         </apex:outputText>
+                        </div>
+                    </div>
+                </div>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!if(Engagement__c.RecordType.Name = 'Sponsorship' ,true, false)}">
+            <div title="Sponsorship List" class="SponsorshipList">
+                <div title="Sponsorship Website Information" class="SponsorshipWebsiteInfo">
+                    <apex:outputLink value="{!$Label.EventURL}{!Engagement__c.Website__c}" target="_blank" style="color:#067ab4;text-decoration: none;">{!Engagement__c.Name}</apex:outputLink>
+                </div>
+                
+                <div title="Sponsorship Description" class="SponsorshipDescription">
+                    <apex:outputField value="{!Engagement__c.Description__c}" />
+                </div>
+            </div>
+        
+        </apex:outputPanel>
+
+</apex:page>

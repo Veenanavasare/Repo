@@ -1,0 +1,117 @@
+<apex:page docType="html-5.0" controller="PortalDesignController" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />
+    <apex:stylesheet value="{!$Resource.products_css}" />
+    <apex:includeScript value="{!URLFOR($Resource.productMobileMenuJS)}" />
+    <apex:stylesheet value="{!$Resource.peCustom}" />
+    <!-- <style type="text/css">
+    .page-include {
+        display: none;
+    }
+    .PortalDesign_IFR_Overview {
+        display: block;
+    }
+    </style>  -->
+      <!-- REDIRECTION LOGIC FOR UNAUTHORIZED ACCESS -->
+     <script>
+            redirectToUnauthorizedAccessPage();
+    
+            function redirectToUnauthorizedAccessPage() {
+                // for maintenance page redirection
+                var byPassFreeze = "{!isIPFLEX}";            
+                if (byPassFreeze == 'false') {
+                    window.location="/apex/UnauthorizedAccess";
+                }
+            }
+        
+    </script>  
+      <!-- END REDIRECTION LOGIC FOR UNAUTHORIZED ACCESS -->  
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="ifr jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                    <h1 class="hero_badge_1">AT&amp;T IP Flexible Reach </h1>
+                    <h2 class="hero_badge_2">Get a dynamic network solution for high-speed voice and data.</h2>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+
+    <!-- BODY SLICE -->
+    <div class="products-body col-sm-12 product-page IFR">
+        <div class="row">
+            <div class="leftNavCol col-sm-3">
+                <div class="leftNav">
+                    <ul class="" role="tablist">
+                        <li class="active" data-page="PortalDesign_IFR_Overview"><a class="btn btn-link" href="#PortalDesign_IFR_Overview" role="tab" data-toggle="tab">Overview</a></li>
+                        <li class="" data-page="PortalDesign_IFR_Resources"><a class="btn btn-link" href="#PortalDesign_IFR_Resources" role="tab" data-toggle="tab">Learn More</a></li>
+                        <li class="" data-page="PortalDesign_IFR_Pricing"><a class="btn btn-link" href="#PortalDesign_IFR_Pricing" role="tab" data-toggle="tab">Pricing</a></li>
+                    </ul>
+                    <!-- <ul class="" role="tablist">
+                    <li class="active"><a class="btn btn-link" href="#overview" role="tab" data-toggle="tab">Overview</a></li>
+                    <li class=""><a class="btn btn-link" href="#pricing" role="tab" data-toggle="tab">Pricing</a></li>
+                    <li class=""><a class="btn btn-link" href="#resources" role="tab" data-toggle="tab">Resources</a></li>
+                    </ul> -->
+                    <!-- Nav tabs -->
+                </div>
+
+                <div class="mobile-content-menu">
+                    <div class="dropdown-label" data-status="closed">
+                        Overview
+                        <span class="ionicons ion-ios7-arrow-down" style="position: relative; top: 3px; left: 7px; "></span>
+                    </div>
+                    <ul class="mobile-dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                        <a data-page="PortalDesign_IFR_Overview" role="menuitem" href="#PortalDesign_IFR_Overview">
+                            <li role="presentation">Overview</li>
+                        </a>
+                        <a data-page="PortalDesign_IFR_Resources" role="menuitem" href="#PortalDesign_IFR_Resources">
+                            <li role="presentation">Learn More</li>
+                        </a>
+                        <a data-page="PortalDesign_IFR_Pricing" role="menuitem" href="#PortalDesign_IFR_Pricing">
+                            <li role="presentation">Pricing</li>
+                        </a>
+                    </ul>
+                    <!-- <ul class="mobile-dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                <a data-page="overview" role="menuitem" href="#overview" ><li role="presentation">Overview</li></a>
+                <a data-page="pricing" role="menuitem" href="#pricing"><li role="presentation">Pricing</li></a>
+                <a data-page="resources" role="menuitem" href="#resources"><li role="presentation" style="border:0px;">Resources</li></a>
+              </ul> -->
+                </div>
+            </div>
+            <div class="contentCol col-sm-8 body-load-content">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="overview">
+                        <div class="page-include PortalDesign_IFR_Overview">
+                            <apex:include pageName="PortalDesign_IFR_Overview" id="PortalDesign_IFR_Overview" />
+                        </div>
+                        <div class="page-include PortalDesign_IFR_Resources">
+                            <apex:include pageName="PortalDesign_IFR_Resources" id="PortalDesign_IFR_Resources" />
+                        </div>
+                        <div class="page-include PortalDesign_IFR_Pricing">
+                            <apex:include pageName="PortalDesign_IFR_Pricing" id="PortalDesign_IFR_Pricing" />
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="tab-content">
+                    <div class="tab-pane active" id="overview">
+                        <apex:include pageName="PortalDesign_IFR_Overview" id="PortalDesign_IFR_Overview" />  
+                    </div>
+                    <div class="tab-pane" id="pricing">
+                        <apex:include pageName="PortalDesign_IFR_Pricing" id="PortalDesign_IFR_Pricing" />  
+                    </div>
+                    <div class="tab-pane" id="resources">
+                        <apex:include pageName="PortalDesign_IFR_Resources" id="PortalDesign_IFR_Resources" />  
+                    </div>
+                </div> -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- END BODY SLICE -->
+    <apex:includescript value="{!$Resource.LeftNav_Controller}" />
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+</apex:page>

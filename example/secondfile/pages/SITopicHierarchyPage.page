@@ -1,0 +1,31 @@
+<apex:page standardController="Topic__c" extensions="SITopicHierarchyController">
+     <apex:outputPanel rendered="{!AND(NOT(haveParent),NOT(isChild))}">
+         <apex:outputText value="No related topics" style="font-style:italic"/>
+     </apex:outputPanel>   
+    <apex:outputPanel rendered="{!haveGrandParent}">
+        <apex:outputLink value="/{!grandParentTopic.Id}" rendered="{!haveGrandParent}" style="color :#2E9AFE;" target="_parent">{!grandParentTopic.Name}</apex:outputLink>
+        <BR></BR>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!haveParent}">  
+        <apex:outputLink value="/{!Topic__c.Parent_Topic__r.Id}" rendered="{!haveParent}"  style="{!IF(haveGrandParent, 'margin-left : 3em; color :#2E9AFE;', 'color :#2E9AFE;')}" target="_parent">{!Topic__c.Parent_Topic__r.Name}</apex:outputLink>
+        <BR></BR>
+    </apex:outputPanel>
+    <apex:outputPanel >
+        <apex:outputText style="{!IF(haveGrandParent, 'margin-left : 6em',IF(haveParent,'margin-left : 3em;',''))}" value="{!Topic__c.Name}" escape="true" rendered="{!OR(haveParent,isChild)}"/>
+        <BR></BR>
+        <apex:repeat var="parent" value="{!topicsList}" rendered="{!isChild}">
+            <apex:outputLink target="_parent" value="/{!parent.detail.Id}" style="{!IF(haveGrandParent, 'margin-left : 6em;color :#2E9AFE;',IF(haveParent,'margin-left : 6em;color :#2E9AFE;','margin-left : 3em;color :#2E9AFE;'))}">{!parent.detail.Name}</apex:outputLink>
+                <BR></BR>
+                <apex:repeat var="child" value="{!parent.children}" rendered="{!parent.isChildern}">
+                    <apex:outputLink target="_parent" value="/{!child.Id}" style="margin-left : 6em;color :#2E9AFE;">{!child.Name}</apex:outputLink>
+                    <BR></BR>
+                </apex:repeat>
+        </apex:repeat>
+        <apex:repeat var="peer" value="{!peerTopics}" rendered="{!haveParent}">
+            <apex:outputLink target="_parent" value="/{!peer.Id}" style="{!IF(haveGrandParent, 'margin-left : 6em;color :#2E9AFE;', 'margin-left : 3em;color :#2E9AFE;')}" rendered="{!IF(peer.Id!=Topic__c.Id,true,false)}">{!peer.Name}</apex:outputLink>
+           <apex:outputPanel rendered="{!IF(peer.Id!=Topic__c.Id,true,false)}">
+                <BR></BR>
+            </apex:outputPanel>
+        </apex:repeat>
+    </apex:outputPanel>
+</apex:page>

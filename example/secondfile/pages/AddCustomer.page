@@ -1,0 +1,424 @@
+<apex:page standardController="End_Customer__c" tabStyle="End_Customer__c" extensions="AddCustomerController" standardStylesheets="false" sidebar="false" showHeader="false">
+    <style>
+        select[multiple], select[size]{
+            height: auto !important;
+        }
+        .btn {        
+            border: none !important;
+            background-image: none !important;
+            background: #056fab !important;
+        } 
+        .btn:hover {
+            background-color: #056fab !important;
+            color: #ffffff !important;
+        }
+        .btn-success {
+            color: #fff !important;
+            background-color: #056fab !important;
+        }
+        /* Added styles for the error messages and fields */
+        .errorText
+        {
+            color:#cf2a2a !important;
+            font-weight:bold;
+            clear:both;
+        }
+        .errorHighlight
+        {
+            border: 1px solid #a94442 !important;   
+        }
+        .businessAddressChkbox{
+            margin-top: 16px;
+        }
+        .addcustomer_grey_hr{
+            background: #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+        .addCustomerBtn{
+            margin-right: 40px;
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+        .close{
+            font-size: 20px !important;
+        }
+        .modal-title{
+            font-size:36px;
+            margin-top: 8px;    
+            margin-left: 34px;
+        }
+        .modal-header{
+            padding:0px !important;
+            margin-top: 24px;
+            margin-bottom: 26px;
+        }
+        #pageBlockSection1{
+            padding: 0px 20px;
+        }
+        .siteLocation{
+            width: 100%;
+        }
+        .inputPadding{
+            padding: 3px 12px 5px 12px !important;
+        }
+    </style>    
+    <apex:form styleclass="p20 form-horizontal addCustomerForm">           
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">x</span><span class="sr-only">Close</span></button>
+            <h1 class="modal-title" id="">Add Customer</h1>
+            <apex:pageMessages ></apex:pageMessages>
+        </div>
+        <hr class="addcustomer_grey_hr" style="margin-bottom:10px !important;"/>
+        <div class="row m0" id="pageBlockSection1" >
+            <div class="col-md-6 col-lg-6">
+                <ul>
+                    <li class="m0" style="margin-bottom:10px !important;">
+                        <apex:outputLabel value="Business Name" styleClass="control-label" > </apex:outputLabel>
+                    </li>
+                    <li>
+                        <apex:inputField value="{!End_Customer__c.Name}" styleClass="form-control Customer_Name required inputPadding" />
+                    </li>
+                    <li style="margin: 10px 0 !important;">
+                        <apex:outputLabel value="Address" styleClass="control-label"></apex:outputLabel>
+                    </li>
+                    <li>
+                        <apex:inputField value="{!End_Customer__c.Mailing_Street_Address__c}" styleClass="form-control Street required inputPadding" />
+                    </li>                 
+                    <div class="row m0">
+                            <div class="col-md-6 col-lg-6" style="padding-left:0px;">
+                                 <li style="margin-bottom: 7px !important;">
+                        <apex:outputLabel value="Location (Optional)" styleClass="control-label"></apex:outputLabel>
+                    </li>
+                  <li>
+                        <apex:selectList value="{!End_Customer__c.Suite__c}" label="Location" id="siteLocation" multiselect="false" size="1" styleClass="form-control siteLocation styled-select-small inputPadding" >
+                            <apex:selectOptions value="{!LocationPicklist}" id="sitePickLocation" />
+                        </apex:selectList>
+                    </li>
+                            </div>
+                            <div class="col-md-6 col-lg-6" style="padding-right:0px;">
+                              <li style="margin-bottom: 7px !important;">
+                        <label class="control-label">&nbsp;</label>
+                    </li>
+                    <li>
+                        <apex:inputField value="{!End_Customer__c.Floor__c}" styleClass="form-control" required="false" html-placeholder="#"/>
+                    </li>
+                            </div>
+                     </div>
+                    <li style="margin-bottom: 7px !important;">
+                        <apex:outputLabel value="{!$Label.Customer_City}" styleClass="control-label"></apex:outputLabel>
+                    </li>
+                    <li>
+                        <apex:inputField value="{!End_Customer__c.City__c}" styleClass="form-control City required" html-maxlength="40"/>
+                    </li>
+                    <li>
+                        <div class="row m0">
+                            <div class="col-md-6 col-lg-6" style="padding-left:0px;">
+                                <apex:outputLabel value="{!$Label.Customer_State_Province}" styleClass="control-label"></apex:outputLabel>
+                            </div>
+                            <div class="col-md-6 col-lg-6" style="padding-right:0px;">
+                                <apex:outputLabel value="{!$Label.ZIP}" styleClass="control-label"></apex:outputLabel>
+                            </div>
+                        </div>
+                        <div class="row m0">
+                            <div class="col-md-6 col-lg-6" style="padding-left: 0px;top: 5px;height: 32px;">
+                                <apex:selectList value="{!End_Customer__c.State__c}" label="State" required="true" multiselect="false" id="statePickList" size="1" styleClass="form-control State required styled-select-small inputPadding" style="width:100%;">
+                                    <apex:selectOptions value="{!statePickList}"/>
+                                </apex:selectList>
+                            </div>
+                            <div class="col-md-6 col-lg-6" style="padding-right:0px;top:5px;">
+                                <apex:inputField html-data-id="CustomerZipCode" value="{!End_Customer__c.Zip__c}" styleClass="form-control ZipCode required" />
+                            </div>
+                        </div>
+                    </li>                   
+                </ul>   
+            </div>
+            <div class="col-md-6 col-lg-6">
+                <ul>
+                    <li class="m0" style="margin-bottom: 10px !important;">
+                        <apex:outputLabel value="Business Website (Optional)" styleClass="control-label"></apex:outputLabel>
+                    </li>
+                    <li>
+                        <apex:inputField value="{!End_Customer__c.Business_Website__c}" styleClass="form-control inputPadding" html-placeholder=""/>
+                    </li>
+                    <li style="margin: 10px 0 !important;">
+                        <apex:outputLabel value="{!$Label.Customer_DUNS_Number} (Optional)" styleClass="control-label"></apex:outputLabel>
+                    </li>
+                    <li>
+                        <apex:inputField html-data-id="CustomerDUNSNumber" value="{!End_Customer__c.DUNS__c}" styleClass="form-control DUNS_Number inputPadding" html-placeholder="" />
+                    </li>                                       
+                </ul>   
+            </div>
+            <div class="col-md-12 col-lg-12 businessAddressChkbox">
+                <apex:inputCheckbox value="{!checkbox}" styleClass="chkbox" id="check_next_step" disabled="true"/>
+                <span>{!$Label.CustomerManagementLabel5}</span>             
+            </div>
+        </div>
+        <hr class="addcustomer_grey_hr" />
+
+        <div class="modal-footer" style="margin: 20px 0;">
+            <apex:commandButton value="{!$Label.Customer_Add_Customer}" action="{!saveAction}" styleClass="btn-primary pull-right col-md-2 p0 addCustomerBtn" />
+        </div>
+    </apex:form>
+    <script>
+   
+    // Function to enable trimLeft in IE
+    String.prototype.trimLeft = function() {
+        return this.replace(/^\s+/,"");
+    }
+    $(document).ready(function()
+    {
+            // Add the keyup events for each of the fields
+            initializeFieldValidations();
+            validateRequiredFields();
+    });
+
+    // Function to initialize each of the validations present on the form fields
+    function initializeFieldValidations () {
+        // Add a keyup event handler to each of the fields to ensure that on keyup we validate the field
+        // First Name
+        $(".addCustomerForm .First_Name").on({"keyup": function()
+            {
+                validateEmptyFields("First_Name","First Name should not begin with a space","First Name cannot be blank", true);
+            },
+        "blur":function()
+            {
+                validateEmptyFields("First_Name","First Name should not begin with a space","First Name cannot be blank", true);
+            }
+        });
+        // Last Name
+        $(".addCustomerForm .Last_Name").on({"keyup": function()
+            {
+                validateEmptyFields("Last_Name","Last Name should not begin with a space","Last Name cannot be blank", true);
+            },
+        "blur":function()
+            {
+                validateEmptyFields("Last_Name","Last Name should not begin with a space","Last Name cannot be blank", true);
+            }
+        });
+        // Email Address
+        $(".addCustomerForm .Email").on({"keyup": function()
+            {
+                validateEmptyFields("Email","Email Address should not begin with a space","Email Address cannot be blank", true);
+            },
+        "blur":function()
+            {
+                validateEmptyFields("Email","Email Address should not begin with a space","Email Address cannot be blank", true);
+            }   
+        });
+        // Customer Name (Label is Business Name)
+        $(".addCustomerForm .Customer_Name").on({"keyup": function()
+            {
+                validateEmptyFields("Customer_Name","Business Name should not begin with a space","Business Name cannot be blank", true);
+            },
+        "blur":function()
+            {
+                validateEmptyFields("Customer_Name","Business Name should not begin with a space","Business Name cannot be blank", true);
+            }   
+        });
+        // Street (label is Address)
+        $(".addCustomerForm .Street").on({"keyup": function()
+            {
+                validateEmptyFields("Street","Address should not begin with a space","Address cannot be blank", true);
+            },
+        "blur":function()
+            {
+                validateEmptyFields("Street","Address should not begin with a space","Address cannot be blank", true);
+            }
+        });
+        // City
+        $(".addCustomerForm .City").on({"keyup": function()
+            {
+                validateEmptyFields("City","City should not begin with a space","City cannot be blank", true);
+            },
+        "blur":function()
+            {
+                validateEmptyFields("City","City should not begin with a space","City cannot be blank", true);
+            }
+        });
+        // State
+        $(".addCustomerForm .State").on({"keyup": function()
+            {
+                validateEmptyFields("State","State should not begin with a space","State cannot be blank", true);
+            },
+        "blur":function()
+            {
+                validateEmptyFields("State","State should not begin with a space","State cannot be blank", true);
+            }
+        });
+        
+        // Numerical Fields - Verify the length along with the checks for invalid characters and empty space
+        // Zip Code
+        $(".addCustomerForm .ZipCode").on({"keyup": function()
+            {
+                validateNumericalFields($(".addCustomerForm .ZipCode").val(), "Invalid number", "Zip Code cannot be blank", "Zip Code must be five digits", true, "ZipCode","Zip Code should not begin with a space");
+            },
+        "blur":function()
+            {
+                validateNumericalFields($(".addCustomerForm .ZipCode").val(), "Invalid number", "Zip Code cannot be blank", "Zip Code must be five digits", true, "ZipCode","Zip Code should not begin with a space");
+            }
+        });
+        // Customer Phone Number
+        $(".addCustomerForm .Customer_Number").on({"keyup": function()
+            {
+                validateNumericalFields($(".addCustomerForm .Customer_Number").val(), "Invalid number", "Phone Number cannot be blank", "Phone Number must be ten digits", true,"Customer_Number","Phone Number should not begin with a space");
+            },
+        "blur":function()
+            {
+                validateNumericalFields($(".addCustomerForm .Customer_Number").val(), "Invalid number", "Phone Number cannot be blank", "Phone Number must be ten digits", true,"Customer_Number","Phone Number should not begin with a space");
+            }
+        });
+    }
+
+    // Function to handle numerical values
+    // If any non - numerical characters are entered, we show an invalid entry message
+    // If a required field is blank, we show a message indicating that the field is blank
+    // If a phone number is greater or less than 10 digits in length, we show a message indicating that the number is longer than expected
+    function validateNumericalFields(sValue, sErrorMessage, sBlankMessage, sPhoneDigitErrorMessage, boolIsRequired, sFieldClassName, sFirstSpaceErrorMessage){
+        var oError = $('#'+sFieldClassName+"_error"), oParent = $('.'+sFieldClassName).parent(), sFilteredValue = sValue.replace(/[\s()-]/g,""); // Remove all spaces, - and () from the phone number field
+        var regex=/^[0-9]+$/;
+        // var regex= /^(?=.*?[1-9])[0-9()-]+$/;
+        if(oParent[0]) {
+            if((boolIsRequired) && ("" === sValue))
+            {
+                oParent.addClass("has-error");
+                if(oError){
+                    oError.remove();
+                }
+                oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sBlankMessage+"</p>" );
+            }
+            else if((" " === sValue) || (sValue !== sValue.trimLeft())){
+                oParent.addClass("has-error");
+                if(oError){
+                    oError.remove();
+                }
+                oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sFirstSpaceErrorMessage+"</p>" );
+            }
+            // Handle the Phonenumber field separately since we allow the () and - in the phonenumber field
+            else if(!sValue.match(regex) && "Customer_Number" !== sFieldClassName){
+                oParent.addClass("has-error");
+                if(oError){
+                    oError.remove();
+                }
+                oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sErrorMessage+"</p>" );
+                
+            }
+            // Handle the Phonenumber field separately since we allow the () and - in the phonenumber field
+            else if("Customer_Number" === sFieldClassName && (!sFilteredValue.match()))
+            {
+                oParent.addClass("has-error");
+                if(oError){
+                    oError.remove();
+                }
+                oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sErrorMessage+"</p>" );
+            }
+            // Fitering out the () and - from the number, check if all other characters are digits
+            // Phone Number must be exactly 10 Characters
+            // Zip Code must be exactly 5 Characters
+            else if(("Customer_Number" === sFieldClassName && (sFilteredValue.length > 10 || sFilteredValue.length < 10))||
+                    ("ZipCode" === sFieldClassName && (sValue.length > 5 || sValue.length < 5))){
+                oParent.addClass("has-error");
+                if(oError){
+                    oError.remove();
+                }
+                oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sPhoneDigitErrorMessage+"</p>" );
+                
+            }
+            else{
+                 oParent.removeClass("has-error");
+                 if(oError){
+                    oError.remove();
+                }
+            }
+        }
+        // All Field Check
+        validateRequiredFields();
+    }
+
+    // Function to check whether the field is empty or whether the field contains preceeding white space
+    // If the field contains white space or preceeding white space, we show an error message
+    // If a required field is blank, we show a message indicating that the field is blank
+    function validateEmptyFields (sClassName,sErrorMessage, sBlankMessage, boolIsRequired) {
+        var sValue = "",oField = $("."+sClassName), oParent = oField.parent();
+        if(oField[0])
+        {
+            // Check if the field contains blank value as the first character
+            sValue = oField.val();
+            if((boolIsRequired) && ("" === sValue))
+            {
+                // Append the error message in case the field is not filled
+                if(oParent[0]){
+                    // Remove all spaces and () from the string
+                    $(".errorText."+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error").remove();
+                    oParent.addClass("has-error").append("<p class='errorText "+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error'>"+ sBlankMessage +"</p>");
+                }
+            }
+            else if((" " === sValue) || (sValue !== sValue.trimLeft()))
+            {
+                // Append the error message in case the field is wrongly filled
+                if(oParent[0]){
+                    // Remove all spaces and () from the string
+                    $(".errorText."+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error").remove();
+                    oParent.addClass("has-error").append("<p class='errorText "+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error'>"+ sErrorMessage +"</p>");
+                }
+            }
+            //added for Defect 19749
+            else if ("Customer_Name" === sClassName && sValue.length > 50) {
+                // Append the error message in case the field is wrongly filled
+                if(oParent[0]){
+                    // Remove all spaces and () from the string
+                    $(".errorText."+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error").remove();
+                    oParent.addClass("has-error").append("<p class='errorText "+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error'>"+ "Business Name cannot be more than 50 characters" +"</p>");
+                }
+            }
+            else
+            {   
+                // Remove the error message
+                if(oParent[0]){
+                    oParent.removeClass("has-error");
+                    // Remove all spaces and () from the string
+                    $(".errorText."+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error").remove();
+                }
+            }
+        }
+        // All Field Check
+        validateRequiredFields();
+    }
+    // Function to verify whether all the required fields are filled before submitting the form
+    function validateRequiredFields () {
+        // Iterate through all fields and check if there are any invalid entries. If yes, then return false    
+        var arrRequiredFields = $(".addCustomerForm .required"), boolIsNumberValid = true,boolIsValid = true, oAddCustomerButton = $(".addCustomerForm .addCustomerBtn");
+        arrRequiredFields.each(function () 
+        {   
+            oRequiredField = $(this);
+            if(oRequiredField[0]) 
+            {
+                if (0 === oRequiredField.val().length)
+                {
+                    boolIsValid = false;
+                    return false;
+                }
+            }
+        });
+            // If there is any error message present, do not enable the button
+            if(0 < $("#pageBlockSection1 .errorText").length)
+            {
+                boolIsNumberValid = false;
+            }
+            if(boolIsValid && boolIsNumberValid){
+                // Add customer button enabled
+                if(oAddCustomerButton[0])
+                {
+                    oAddCustomerButton.prop("disabled",false);
+                }
+            }
+            else
+            {
+                // Add customer button disabled
+                if(oAddCustomerButton[0])
+                {
+                    oAddCustomerButton.prop("disabled",true);
+                }
+            }
+    }
+    </script> 
+</apex:page>

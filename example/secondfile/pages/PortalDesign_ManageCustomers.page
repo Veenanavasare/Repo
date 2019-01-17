@@ -1,0 +1,106 @@
+<apex:page Controller="ManageCustomerController" action="{!displayCustomerDetails}" docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader" />        
+
+    <style>
+        .tableHeaderRow td {cursor: pointer;}
+        .manageCustomerPage .searchField {float: left;}
+        .pagination {margin: 0;}
+        .manage_user_name {width: 17% !important;}
+        .manage_user_contact_name {width: 10% !important;}
+        .manage_user_address {width: 10% !important;}
+        .manage_user_city {width: 10% !important;}
+        .manage_user_state {width: 10% !important;}
+        .manage_user_zip {width: 10% !important;}
+        
+        table {border-collapse:collapse; table-layout:fixed; width:400px;}
+        table td{overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+        
+        #manage_content .pagination a {
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #056fab;
+            margin-left: 0;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .create_users_button {
+            position: relative;
+            padding: 6px 20px !important;
+            top: 10px;
+        }
+
+        .dataTables_info { 
+            bottom: 5px !important;
+            position: absolute;
+            left: 15px !important;
+            width: 50%;
+         }
+
+        .paginate_enabled_previous, .paginate_enabled_next {
+            cursor: pointer;        
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #056fab;
+            margin-left: 5px;
+            background: #fff;
+            border: 1px solid #ccc;
+            float: left;        
+        }
+        
+        .paginate_disabled_previous, .paginate_disabled_next {
+            cursor: no-drop;
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #056fab;
+            margin-left: 5px;
+            background: #fff;
+            border: 1px solid #ccc;  
+            float: left;      
+        }
+        
+        .modal-footer input {width: auto !important;}
+        h1 { font-family: omnesatt_iiregular; }
+        .table-bordered>thead>tr>th, .table-bordered>thead>tr>td { border-top: none; border-bottom: none; }  
+        .table-bordered>tbody>tr:first-child td { border-top: none !important; }  
+        table thead tr { background: #fff; border-bottom: 1px dashed #ddd !important; cursor: pointer; }
+        table thead td { border: none; }
+        #manage_content .messageText{color: #47D510;}
+        .reorder_btn { margin-top: -4px;}
+        
+        .btn_deactivate_user {
+            position: absolute;
+            margin: 20px 5px 0 !important;
+            padding: 10px 20px !important;
+            bottom: -40px;
+        }
+
+        #manage_content .pagination span, .manage_content .pagination span {margin-right: 0;}
+        .#DataTables_Table_0_paginate {margin-right:0px;}
+        .chklbl {margin-left:8px !important;}
+        .dataTables_paginate {margin-right:0px !important;}
+    </style>
+    <div class="content_container manageCustomerPage">
+        <!-- HERO MODULE -->
+        <div id="hero_banner" class="hero_manage jumbotronContainer ng-scope">
+            <div class="row">
+                <div class="col-sm-12"></div>
+            </div>
+        </div>
+        <apex:form >
+            <apex:commandButton id="AddNewCustomerButton" value="Add New Customer" action="{!AddNewCustomerButton}" status="loading" styleClass="create_users_button col-md-2 btn btn-primary pull-right" rerender="" oncomplete=""/>
+        </apex:form>
+        <div id="managecustomerscontainer">
+            <apex:include pageName="Dashboard_PortalDesign_ManageCustomers" />
+        </div>
+    </div>
+
+    <script>
+        targetPlace = $('.manageCustomerPage .searchField').parent('div');
+        $('.manageCustomerPage .create_users_button').appendTo(targetPlace);
+    </script>
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+</apex:page>

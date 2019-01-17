@@ -1,0 +1,43 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetGrowPdfsCtrl">
+    <div>
+       
+            <h2>Market Development Funds</h2>
+            <p class="mb-40">
+              The Market Development Funds (MDF) program offers AT&amp;T Partner Exchange Solution Providers an opportunity to receive funds to help drive brand awareness and sales momentum of solutions powered by AT&amp;T.
+            </p>
+            <h4>How MDF can help:</h4>
+            <ul class="mt-10 mb-40 has_bullets">
+               <li>Brand awareness and market presence</li>
+               <li>Relationship building</li>
+               <li>Lead generation</li>
+               <li>Website development</li>
+               <li>Direct marketing</li>
+               <li>Marketing as a Service </li>
+            </ul>
+            <hr class="blue_hr mb-40" />
+        
+        <div class="mb-40">
+           <apex:outputPanel >
+                        <apex:repeat value="{!DocMapGrowMDF}" var="docMap">
+                             <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}"  target="_blank" styleClass="document-file">
+                                <div class="document-row">
+                                    <div class="file-type file-{!docMap.type}"></div>
+                                    <div class="details">
+                                        <h4>
+                                            <apex:outputText value="{!docMap.Name}" />
+                                        </h4>
+                                        <p>
+                                            <apex:outputText value="{!docMap.description}" />
+                                        </p>
+                                    </div>
+                                </div>
+                            </apex:outputLink>
+                        </apex:repeat>
+                    </apex:outputPanel>
+        
+         
+           </div> 
+         
+        </div>
+        
+</apex:page>

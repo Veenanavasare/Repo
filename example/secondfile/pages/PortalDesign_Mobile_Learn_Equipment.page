@@ -1,0 +1,62 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    <div class="equipment">        
+        
+        <!-- Intro -->
+        <h2>Mobilize your business with a broad portfolio of smartphones and mobile phones backed by fast, dependable, comprehensive global network&nbsp;coverage.</h2>
+        
+        <!-- Document List: Devices -->
+        <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-devices.svg')}" />Devices</h3>
+        <apex:outputPanel >   
+            <apex:repeat value="{!DocMapDevices}" var="docMap"> 
+                <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                    <div class="document-row">
+                        <div class="file-type file-{!docMap.type}"></div>
+                        <div class="details">
+                            <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                            <p><apex:outputText value="{!docMap.description}"/></p>
+                        </div>
+                    </div>
+                </apex:outputLink>        
+            </apex:repeat>    
+        </apex:outputPanel>             
+
+        <hr class="blue_hr" />
+
+        <!-- Document List: Accessories -->
+        <!-- Robyn 3/9/16: Commenting out Accessories Document List because documents will not be ready by April Release -->
+        <!-- <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-accessories.png')}" />Accessories</h3>
+        <apex:outputPanel >   
+            <apex:repeat value="{!DocMapAccessories}" var="docMap"> 
+                <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                    <div class="document-row">
+                        <div class="file-type file-{!docMap.type}"></div>
+                        <div class="details">
+                            <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                            <p><apex:outputText value="{!docMap.description}"/></p>
+                        </div>
+                    </div>
+                </apex:outputLink>        
+            </apex:repeat>    
+        </apex:outputPanel>              
+
+        <hr class="blue_hr" /> -->
+        
+        <!-- Document List: Device Purchasing & Financing Options -->
+        <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-rent.svg')}" />Device Purchasing &amp; Financing Options</h3>
+        <div class="mb-30">
+            <apex:outputPanel >   
+                <apex:repeat value="{!DocMapDevicePurchasing}" var="docMap"> 
+                     <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                        <div class="document-row">
+                            <div class="file-type file-{!docMap.type}"></div>
+                            <div class="details">
+                                <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                <p><apex:outputText value="{!docMap.description}"/></p>
+                            </div>
+                        </div>
+                    </apex:outputLink>        
+                </apex:repeat>    
+            </apex:outputPanel> 
+        </div>            
+    </div>
+</apex:page>

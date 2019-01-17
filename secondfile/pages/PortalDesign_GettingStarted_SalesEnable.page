@@ -1,0 +1,33 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetGrowPdfsCtrl">
+    <div class="salesEnable">
+        <section data-module="growSalesEnablement_content_block">
+            <h2>Get on the path to selling</h2>
+            <p>Our goal is to help set you up for success. That’s why we’ve created a playbook to guide you through program milestones and help you locate valuable resources. </p>
+            <p>Your Enablement Playbook will help you find the information you need to get up and running, including resources to help:</p>
+            <ul class="has_bullets">
+                <li>Train your sales team</li>
+                <li>Go to market as an AT&amp;T Partner Exchange reseller</li>
+                <li>Quote and order through the AT&amp;T Partner Exchange portal</li>
+                <li>Understand the available financial resources</li>
+                <li>Operationalize your sales</li>
+                <li>Support your customers</li>
+            </ul>
+         <apex:outputPanel >   
+              <div class="mt-40 mb-40">
+                <hr class="blue_hr mb-40" />
+                    <apex:repeat value="{!DocMapSalesEnable}" var="docMap"> 
+                        <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                            <div class="document-row">
+                                <div class="file-type file-{!docMap.type}"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                    <p><apex:outputText value="{!docMap.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>        
+                    </apex:repeat>
+                </div>
+              </apex:outputPanel>
+        </section>
+    </div>
+</apex:page>

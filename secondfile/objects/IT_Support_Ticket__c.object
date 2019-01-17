@@ -1,0 +1,1390 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Used to open IT Support Tickets for ATT Maintenance projects.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
+    <fields>
+        <fullName>ActualClosedDateSubCreatedDate__c</fullName>
+        <externalId>false</externalId>
+        <formula>Actual_Resolution_Date_Time__c - Logged_Date_Time__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ActualClosedDateSubCreatedDate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Actual_Resolution_Date_Time__c</fullName>
+        <externalId>false</externalId>
+        <label>Actual Resolution Date/Time</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Added_Screenshot_as_Note_Attachment__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Will you be able to add a Screenshot of your issue as an Attachment?</inlineHelpText>
+        <label>Screenshot Included?</label>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AgeInNumbers__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF (ISBLANK(TEXT(Actual_Resolution_Date_Time__c)),
+ NOW() - Logged_Date_Time__c,Actual_Resolution_Date_Time__c - Logged_Date_Time__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>AgeInNumbers</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Age_of_Closed_Tickets__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( (ISPICKVAL(Status__c, &apos;Closed&apos;)), 
+TEXT(FLOOR( ActualClosedDateSubCreatedDate__c)) &amp; &quot; days &quot; &amp; 
+TEXT( FLOOR( 24 * ( ActualClosedDateSubCreatedDate__c - FLOOR(ActualClosedDateSubCreatedDate__c) ))) &amp; &quot; hours &quot; &amp; 
+TEXT( ROUND(60 * (ROUND( 24 * ( ActualClosedDateSubCreatedDate__c - FLOOR(ActualClosedDateSubCreatedDate__c) ),8) - FLOOR( 
+ROUND( 24 * ( ActualClosedDateSubCreatedDate__c- FLOOR(ActualClosedDateSubCreatedDate__c) ),8)) ),0)) &amp; &quot; mn &quot; 
+, &quot;Unresolved Ticket&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Age of Resolved Ticket</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Age_of_Unresolved_Tickets__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Not (ISPICKVAL(Status__c, &apos;Closed&apos;)), 
+TEXT(FLOOR( NowDateSubCreatedDate__c)) &amp; &quot; days &quot; &amp; 
+TEXT( FLOOR( 24 * ( NowDateSubCreatedDate__c - FLOOR(NowDateSubCreatedDate__c) ))) &amp; &quot; hours &quot; &amp; 
+TEXT( ROUND(60 * (ROUND( 24 * ( NowDateSubCreatedDate__c - FLOOR(NowDateSubCreatedDate__c) ),8) - FLOOR( 
+ROUND( 24 * ( NowDateSubCreatedDate__c - FLOOR(NowDateSubCreatedDate__c) ),8)) ),0)) &amp; &quot; mn &quot; 
+, &quot;Resolved Ticket&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Age of Unresolved Ticket</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Change_Request__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Change Request</label>
+        <referenceTo>Application_CR__c</referenceTo>
+        <relationshipLabel>IT Support Tickets</relationshipLabel>
+        <relationshipName>IT_Support_Tickets</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Closed_Reasons__c</fullName>
+        <externalId>false</externalId>
+        <label>Closed Reasons</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Status__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Application Maintenance</fullName>
+                    <default>false</default>
+                    <label>Application Maintenance</label>
+                </value>
+                <value>
+                    <fullName>Deferred(CR)</fullName>
+                    <default>false</default>
+                    <label>Deferred(CR)</label>
+                </value>
+                <value>
+                    <fullName>Issue Fixed</fullName>
+                    <default>false</default>
+                    <label>Issue Fixed</label>
+                </value>
+                <value>
+                    <fullName>Not an Issue</fullName>
+                    <default>false</default>
+                    <label>Not an Issue</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Closed</controllingFieldValue>
+                <valueName>Application Maintenance</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Closed</controllingFieldValue>
+                <valueName>Deferred(CR)</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Closed</controllingFieldValue>
+                <valueName>Issue Fixed</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Closed</controllingFieldValue>
+                <valueName>Not an Issue</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>ETA__c</fullName>
+        <externalId>false</externalId>
+        <label>ETA</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>End_User_Support_Ticket__c</fullName>
+        <externalId>false</externalId>
+        <label>End User Support Ticket#</label>
+        <length>18</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Error_Message_Received__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>If you see an error message for your issue, please copy/paste here.</inlineHelpText>
+        <label>Error Message Received</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Force_Portal_Category__c</fullName>
+        <externalId>false</externalId>
+        <label>Force Portal Categories</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <controllingField>Related_to__c</controllingField>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Add Sites</fullName>
+                    <default>false</default>
+                    <label>Add Sites</label>
+                </value>
+                <value>
+                    <fullName>AVPN Buy Flow</fullName>
+                    <default>false</default>
+                    <label>AVPN Buy Flow</label>
+                </value>
+                <value>
+                    <fullName>Cancel In Flight</fullName>
+                    <default>false</default>
+                    <label>Cancel In Flight</label>
+                </value>
+                <value>
+                    <fullName>First Time login</fullName>
+                    <default>false</default>
+                    <label>First Time login</label>
+                </value>
+                <value>
+                    <fullName>MIS Buy Flow</fullName>
+                    <default>false</default>
+                    <label>MIS Buy Flow</label>
+                </value>
+                <value>
+                    <fullName>Password Change/Reset</fullName>
+                    <default>false</default>
+                    <label>Password Change/Reset</label>
+                </value>
+            </valueSetDefinition>
+            <valueSettings>
+                <controllingFieldValue>Force Portal</controllingFieldValue>
+                <valueName>Add Sites</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Force Portal</controllingFieldValue>
+                <valueName>AVPN Buy Flow</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Force Portal</controllingFieldValue>
+                <valueName>Cancel In Flight</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Force Portal</controllingFieldValue>
+                <valueName>First Time login</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Force Portal</controllingFieldValue>
+                <valueName>MIS Buy Flow</valueName>
+            </valueSettings>
+            <valueSettings>
+                <controllingFieldValue>Force Portal</controllingFieldValue>
+                <valueName>Password Change/Reset</valueName>
+            </valueSettings>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Impact__c</fullName>
+        <externalId>false</externalId>
+        <label>Impact</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Logged_Date_Time__c</fullName>
+        <externalId>false</externalId>
+        <label>Logged Date/Time</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Next_Steps__c</fullName>
+        <externalId>false</externalId>
+        <label>Next Steps</label>
+        <length>10000</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>NowDateSubCreatedDate__c</fullName>
+        <externalId>false</externalId>
+        <formula>Now() - Logged_Date_Time__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NowDateSubCreatedDate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Owner_Work_Phone__c</fullName>
+        <externalId>false</externalId>
+        <label>Owner Work Phone #</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Phone</type>
+    </fields>
+    <fields>
+        <fullName>QC__c</fullName>
+        <externalId>false</externalId>
+        <label>QC#</label>
+        <length>30</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuoteName__c</fullName>
+        <description>Created for email template</description>
+        <externalId>false</externalId>
+        <formula>RelatedQuote__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Quote Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>QuoteProductName__c</fullName>
+        <description>Created for email template</description>
+        <externalId>false</externalId>
+        <formula>RelatedQuote__r.Product_Name__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Quote Product</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RelatedQuote__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>US799054 - Helps track the tickets created for the SIVAR - API failure</description>
+        <externalId>false</externalId>
+        <label>Related Quote/Proposal</label>
+        <referenceTo>Apttus_Proposal__Proposal__c</referenceTo>
+        <relationshipLabel>IT Support Tickets</relationshipLabel>
+        <relationshipName>APIFailureSupportTickets</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Related_Customer_Site__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Related Customer Site</label>
+        <referenceTo>CustomerSite__c</referenceTo>
+        <relationshipLabel>IT Support Tickets</relationshipLabel>
+        <relationshipName>IT_Support_Tickets</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Related_Opportunity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Added as part of RDS Excel failure exception handling to tag ITS tickets to its related opportunity</description>
+        <externalId>false</externalId>
+        <label>Related Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>IT Support Tickets</relationshipLabel>
+        <relationshipName>IT_Support_Tickets</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Related_to__c</fullName>
+        <externalId>false</externalId>
+        <label>Related to</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Accounts</fullName>
+                    <default>false</default>
+                    <label>Accounts</label>
+                </value>
+                <value>
+                    <fullName>Contacts</fullName>
+                    <default>false</default>
+                    <label>Contacts</label>
+                </value>
+                <value>
+                    <fullName>Credit Validations</fullName>
+                    <default>false</default>
+                    <label>Credit Validations</label>
+                </value>
+                <value>
+                    <fullName>Data Access</fullName>
+                    <default>false</default>
+                    <label>Data Access</label>
+                </value>
+                <value>
+                    <fullName>Data Mismatch with BID</fullName>
+                    <default>false</default>
+                    <label>Data Mismatch with BID</label>
+                </value>
+                <value>
+                    <fullName>Data Mismatch with ROME</fullName>
+                    <default>false</default>
+                    <label>Data Mismatch with ROME</label>
+                </value>
+                <value>
+                    <fullName>Deal Registration Approval</fullName>
+                    <default>false</default>
+                    <label>Deal Registration Approval</label>
+                </value>
+                <value>
+                    <fullName>Email</fullName>
+                    <default>false</default>
+                    <label>Email</label>
+                </value>
+                <value>
+                    <fullName>Enhancement</fullName>
+                    <default>false</default>
+                    <label>Enhancement</label>
+                </value>
+                <value>
+                    <fullName>Force Portal</fullName>
+                    <default>true</default>
+                    <label>Force Portal</label>
+                </value>
+                <value>
+                    <fullName>General Field Update</fullName>
+                    <default>false</default>
+                    <label>General Field Update</label>
+                </value>
+                <value>
+                    <fullName>General Process Flow</fullName>
+                    <default>false</default>
+                    <label>General Process Flow</label>
+                </value>
+                <value>
+                    <fullName>Lead Conversion</fullName>
+                    <default>false</default>
+                    <label>Lead Conversion</label>
+                </value>
+                <value>
+                    <fullName>On/Off cart deals</fullName>
+                    <default>false</default>
+                    <label>On/Off cart deals</label>
+                </value>
+                <value>
+                    <fullName>Opportunities</fullName>
+                    <default>false</default>
+                    <label>Opportunities</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+                <value>
+                    <fullName>SI/VAR-API</fullName>
+                    <default>false</default>
+                    <label>SI/VAR-API</label>
+                </value>
+                <value>
+                    <fullName>Sign on</fullName>
+                    <default>false</default>
+                    <label>Sign on</label>
+                </value>
+                <value>
+                    <fullName>Special Pricing Approval</fullName>
+                    <default>false</default>
+                    <label>Special Pricing Approval</label>
+                </value>
+                <value>
+                    <fullName>SP Products</fullName>
+                    <default>false</default>
+                    <label>SP Products</label>
+                </value>
+                <value>
+                    <fullName>User Creation/Deletion</fullName>
+                    <default>false</default>
+                    <label>User Creation/Deletion</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Resolution1_Owner__c</fullName>
+        <externalId>false</externalId>
+        <label>Resolution Owner</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Resolution_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Resolution Notes</label>
+        <length>32000</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Root_Cause__c</fullName>
+        <externalId>false</externalId>
+        <label>Root Cause</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>BID</fullName>
+                    <default>false</default>
+                    <label>BID</label>
+                </value>
+                <value>
+                    <fullName>Cast Iron</fullName>
+                    <default>false</default>
+                    <label>Cast Iron</label>
+                </value>
+                <value>
+                    <fullName>Force Portal Buy Flow</fullName>
+                    <default>false</default>
+                    <label>Force Portal Buy Flow</label>
+                </value>
+                <value>
+                    <fullName>Force Portal Other</fullName>
+                    <default>false</default>
+                    <label>Force Portal Other</label>
+                </value>
+                <value>
+                    <fullName>Force Portal RDS</fullName>
+                    <default>false</default>
+                    <label>Force Portal RDS</label>
+                </value>
+                <value>
+                    <fullName>P29 API Data</fullName>
+                    <default>false</default>
+                    <label>P29 API Data</label>
+                </value>
+                <value>
+                    <fullName>P29 API Downstream</fullName>
+                    <default>false</default>
+                    <label>P29 API Downstream</label>
+                </value>
+                <value>
+                    <fullName>Pricing Related</fullName>
+                    <default>false</default>
+                    <label>Pricing Related</label>
+                </value>
+                <value>
+                    <fullName>SFDC Backend Flow Stage</fullName>
+                    <default>false</default>
+                    <label>SFDC Backend Flow Stage</label>
+                </value>
+                <value>
+                    <fullName>SFDC CRM</fullName>
+                    <default>false</default>
+                    <label>SFDC CRM</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Severity__c</fullName>
+        <externalId>false</externalId>
+        <label>Severity</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>1- Critical</fullName>
+                    <default>false</default>
+                    <label>1- Critical</label>
+                </value>
+                <value>
+                    <fullName>2 - High</fullName>
+                    <default>false</default>
+                    <label>2 - High</label>
+                </value>
+                <value>
+                    <fullName>3 - Medium</fullName>
+                    <default>true</default>
+                    <label>3 - Medium</label>
+                </value>
+                <value>
+                    <fullName>4 - Low</fullName>
+                    <default>false</default>
+                    <label>4 - Low</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Open</fullName>
+                    <default>true</default>
+                    <label>Open</label>
+                </value>
+                <value>
+                    <fullName>On Hold - Client Input/Verification Needed</fullName>
+                    <default>false</default>
+                    <label>On Hold - Client Input/Verification Needed</label>
+                </value>
+                <value>
+                    <fullName>On Hold - Referred to External Application</fullName>
+                    <default>false</default>
+                    <label>On Hold - Referred to External Application</label>
+                </value>
+                <value>
+                    <fullName>On Hold - Targeted for Maintenance Release</fullName>
+                    <default>false</default>
+                    <label>On Hold - Targeted for Maintenance Release</label>
+                </value>
+                <value>
+                    <fullName>In Progress</fullName>
+                    <default>false</default>
+                    <label>In Progress</label>
+                </value>
+                <value>
+                    <fullName>Deferred(CR)</fullName>
+                    <default>false</default>
+                    <label>Deferred(CR)</label>
+                </value>
+                <value>
+                    <fullName>Not an Issue</fullName>
+                    <default>false</default>
+                    <label>Not an Issue</label>
+                </value>
+                <value>
+                    <fullName>Closed</fullName>
+                    <default>false</default>
+                    <label>Closed</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Steps_to_Reproduce_Error__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter step by step instructions for how the error was produced</inlineHelpText>
+        <label>Steps to Reproduce Error</label>
+        <length>32000</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Target_Resolution_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Target Resolution Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Technical_Resolution_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Technical Resolution Notes</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Ticket_Subject__c</fullName>
+        <externalId>false</externalId>
+        <label>Subject</label>
+        <length>175</length>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>IT Support Ticket</label>
+    <listViews>
+        <fullName>API_Ops3</fullName>
+        <booleanFilter>1 OR 2 OR 3 OR 4 OR 5</booleanFilter>
+        <columns>NAME</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>ActualClosedDateSubCreatedDate__c</columns>
+        <columns>Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OWNER.LAST_NAME</field>
+            <operation>equals</operation>
+            <value>Esquivel</value>
+        </filters>
+        <filters>
+            <field>OWNER.LAST_NAME</field>
+            <operation>equals</operation>
+            <value>Alexander</value>
+        </filters>
+        <filters>
+            <field>OWNER.LAST_NAME</field>
+            <operation>equals</operation>
+            <value>Grinstead</value>
+        </filters>
+        <filters>
+            <field>OWNER.LAST_NAME</field>
+            <operation>equals</operation>
+            <value>Wilkinson</value>
+        </filters>
+        <filters>
+            <field>OWNER.LAST_NAME</field>
+            <operation>equals</operation>
+            <value>Amores</value>
+        </filters>
+        <label>API Ops</label>
+    </listViews>
+    <listViews>
+        <fullName>Awaiting_response</fullName>
+        <booleanFilter>(1 OR 2) AND 3</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Status__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>Steps_to_Reproduce_Error__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>Related_to__c</columns>
+        <columns>Resolution1_Owner__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>On Hold - Client Input/Verification Needed</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>On Hold - Referred to External Application</value>
+        </filters>
+        <filters>
+            <field>Related_to__c</field>
+            <operation>notEqual</operation>
+            <value>Enhancement</value>
+        </filters>
+        <label>Awaiting response</label>
+    </listViews>
+    <listViews>
+        <fullName>Closed_Tickets</fullName>
+        <columns>NAME</columns>
+        <columns>Logged_Date_Time__c</columns>
+        <columns>Related_to__c</columns>
+        <columns>Status__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>Steps_to_Reproduce_Error__c</columns>
+        <columns>OWNER.LAST_NAME</columns>
+        <columns>OWNER.FIRST_NAME</columns>
+        <columns>Resolution1_Owner__c</columns>
+        <columns>Actual_Resolution_Date_Time__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Closed</value>
+        </filters>
+        <label>Closed Tickets</label>
+    </listViews>
+    <listViews>
+        <fullName>Closed_ticket_from_January</fullName>
+        <columns>NAME</columns>
+        <columns>Related_to__c</columns>
+        <columns>Resolution_Notes__c</columns>
+        <columns>Root_Cause__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Status__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>Steps_to_Reproduce_Error__c</columns>
+        <columns>Impact__c</columns>
+        <columns>Resolution1_Owner__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>greaterOrEqual</operation>
+            <value>10/1/2015 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Closed</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>lessOrEqual</operation>
+            <value>12/31/2015 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>Root_Cause__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Closed ticket from Oct to Dec</label>
+        <sharedTo>
+            <group>IT_Support_Group</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Enhancement_View</fullName>
+        <columns>NAME</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>Steps_to_Reproduce_Error__c</columns>
+        <columns>Status__c</columns>
+        <columns>Resolution_Notes__c</columns>
+        <columns>Root_Cause__c</columns>
+        <columns>Resolution1_Owner__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Related_to__c</field>
+            <operation>equals</operation>
+            <value>Enhancement</value>
+        </filters>
+        <label>Enhancement View</label>
+        <sharedTo>
+            <group>IT_Support_Group</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>ITS_on_oct_4th_and_5th</fullName>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Steps_to_Reproduce_Error__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>10/4/2016 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>10/5/2016 12:00 AM</value>
+        </filters>
+        <label>ITS on oct 4th and 5th</label>
+        <sharedTo>
+            <group>IT_Support_Group</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Jared_Tickets</fullName>
+        <columns>NAME</columns>
+        <columns>Status__c</columns>
+        <columns>Related_to__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Steps_to_Reproduce_Error__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>Logged_Date_Time__c</columns>
+        <columns>Resolution_Notes__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OWNER.FIRST_NAME</field>
+            <operation>equals</operation>
+            <value>Jared</value>
+        </filters>
+        <filters>
+            <field>CREATEDBY_USER</field>
+            <operation>contains</operation>
+            <value>Jared</value>
+        </filters>
+        <filters>
+            <field>Resolution1_Owner__c</field>
+            <operation>contains</operation>
+            <value>Muneesh</value>
+        </filters>
+        <label>Jared Tickets</label>
+    </listViews>
+    <listViews>
+        <fullName>On_Hold_Targeted_for_Release</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Related_to__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>Status__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Logged_Date_Time__c</columns>
+        <columns>Actual_Resolution_Date_Time__c</columns>
+        <columns>Resolution1_Owner__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>On Hold - Targeted for Maintenance Release</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>greaterThan</operation>
+            <value>1/1/2016 12:00 AM</value>
+        </filters>
+        <label>On Hold - Targeted for Release</label>
+    </listViews>
+    <listViews>
+        <fullName>On_hold_client_input_needed</fullName>
+        <columns>NAME</columns>
+        <columns>Related_to__c</columns>
+        <columns>Status__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Logged_Date_Time__c</columns>
+        <columns>Steps_to_Reproduce_Error__c</columns>
+        <columns>Resolution_Notes__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>Actual_Resolution_Date_Time__c</columns>
+        <columns>Resolution1_Owner__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>On Hold - Client Input/Verification Needed</value>
+        </filters>
+        <label>On hold-Client Input/Verification Needed</label>
+    </listViews>
+    <listViews>
+        <fullName>OpenTicketsSFDC</fullName>
+        <columns>NAME</columns>
+        <columns>Status__c</columns>
+        <columns>Related_to__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Steps_to_Reproduce_Error__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>Logged_Date_Time__c</columns>
+        <columns>Resolution_Notes__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>contains</operation>
+            <value>Open,In Progress</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>greaterThan</operation>
+            <value>1/1/2016 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>Related_to__c</field>
+            <operation>notEqual</operation>
+            <value>Enhancement</value>
+        </filters>
+        <filters>
+            <field>Force_Portal_Category__c</field>
+            <operation>notEqual</operation>
+            <value>SkyNet Issue - OST,SkyNet Issue - AIA,SkyNet Issue - ANIRA</value>
+        </filters>
+        <label>Open Tickets SFDC</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_CRITICAL_Tickets</fullName>
+        <columns>NAME</columns>
+        <columns>Related_to__c</columns>
+        <columns>Status__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Logged_Date_Time__c</columns>
+        <columns>Steps_to_Reproduce_Error__c</columns>
+        <columns>Resolution_Notes__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>Actual_Resolution_Date_Time__c</columns>
+        <columns>Resolution1_Owner__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Closed,Resolved - Pending User Verification</value>
+        </filters>
+        <filters>
+            <field>Severity__c</field>
+            <operation>equals</operation>
+            <value>1- Critical</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>LAST_N_DAYS:30</value>
+        </filters>
+        <label>Open CRITICAL Tickets</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_ITS_Tickets</fullName>
+        <booleanFilter>1 AND 2 AND 3</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Age_of_Unresolved_Tickets__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Status__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>OWNER.FIRST_NAME</columns>
+        <columns>OWNER.LAST_NAME</columns>
+        <columns>NowDateSubCreatedDate__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Deferred(CR),Closed</value>
+        </filters>
+        <filters>
+            <field>NowDateSubCreatedDate__c</field>
+            <operation>lessOrEqual</operation>
+            <value>120</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>In Progress</value>
+        </filters>
+        <label>Open ITS Tickets - In Progress</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_ITS_TicketsSev1</fullName>
+        <booleanFilter>1 AND 2 and 3</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Age_of_Unresolved_Tickets__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Status__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>OWNER.FIRST_NAME</columns>
+        <columns>OWNER.LAST_NAME</columns>
+        <columns>NowDateSubCreatedDate__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Deferred(CR),Closed</value>
+        </filters>
+        <filters>
+            <field>NowDateSubCreatedDate__c</field>
+            <operation>lessOrEqual</operation>
+            <value>120</value>
+        </filters>
+        <filters>
+            <field>Severity__c</field>
+            <operation>equals</operation>
+            <value>1- Critical,2 - High</value>
+        </filters>
+        <label>Open ITS Tickets Sev1</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_ITS_Tickets_On_Hold</fullName>
+        <booleanFilter>1 AND 2 AND 3</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Age_of_Unresolved_Tickets__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Status__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>OWNER.FIRST_NAME</columns>
+        <columns>OWNER.LAST_NAME</columns>
+        <columns>NowDateSubCreatedDate__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Deferred(CR),Closed</value>
+        </filters>
+        <filters>
+            <field>NowDateSubCreatedDate__c</field>
+            <operation>lessOrEqual</operation>
+            <value>120</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>On Hold - Logged in QC,On Hold - Targeted for Maintenance Release</value>
+        </filters>
+        <label>Open ITS Tickets - On Hold</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_Tickets</fullName>
+        <columns>NAME</columns>
+        <columns>Related_to__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>Status__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Logged_Date_Time__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>Actual_Resolution_Date_Time__c</columns>
+        <columns>Resolution1_Owner__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Open,In Progress</value>
+        </filters>
+        <filters>
+            <field>Related_to__c</field>
+            <operation>notEqual</operation>
+            <value>Enhancement</value>
+        </filters>
+        <label>Open Tickets</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_TicketsMelissa</fullName>
+        <columns>NAME</columns>
+        <columns>Status__c</columns>
+        <columns>Related_to__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Steps_to_Reproduce_Error__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>Logged_Date_Time__c</columns>
+        <columns>Resolution_Notes__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>contains</operation>
+            <value>Open,In Progress</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>greaterThan</operation>
+            <value>1/1/2016 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>Related_to__c</field>
+            <operation>notEqual</operation>
+            <value>Enhancement</value>
+        </filters>
+        <filters>
+            <field>CREATEDBY_USER</field>
+            <operation>contains</operation>
+            <value>Melissa</value>
+        </filters>
+        <label>Open Tickets Melissa</label>
+    </listViews>
+    <listViews>
+        <fullName>Open_Tickets_SKYNET</fullName>
+        <columns>NAME</columns>
+        <columns>Related_to__c</columns>
+        <columns>Status__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Steps_to_Reproduce_Error__c</columns>
+        <columns>Resolution_Notes__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>Logged_Date_Time__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>Actual_Resolution_Date_Time__c</columns>
+        <columns>Resolution1_Owner__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Open,In Progress</value>
+        </filters>
+        <filters>
+            <field>Force_Portal_Category__c</field>
+            <operation>equals</operation>
+            <value>SkyNet Issue - OST,SkyNet Issue - AIA,SkyNet Issue - ANIRA</value>
+        </filters>
+        <label>Open Tickets SKYNET</label>
+    </listViews>
+    <listViews>
+        <fullName>Pending</fullName>
+        <columns>NAME</columns>
+        <columns>Related_to__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>Status__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Logged_Date_Time__c</columns>
+        <columns>Actual_Resolution_Date_Time__c</columns>
+        <columns>Resolution1_Owner__c</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Deferred(CR),Closed,Not an Issue,Open,In Progress</value>
+        </filters>
+        <filters>
+            <field>Related_to__c</field>
+            <operation>notEqual</operation>
+            <value>Enhancement</value>
+        </filters>
+        <label>Pending Tickets</label>
+    </listViews>
+    <listViews>
+        <fullName>Portal_Outages</fullName>
+        <columns>NAME</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>Steps_to_Reproduce_Error__c</columns>
+        <columns>Resolution_Notes__c</columns>
+        <columns>Age_of_Closed_Tickets__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Related_to__c</field>
+            <operation>equals</operation>
+            <value>Portal Outage</value>
+        </filters>
+        <label>Portal Outages</label>
+    </listViews>
+    <listViews>
+        <fullName>SIVAR_API</fullName>
+        <columns>NAME</columns>
+        <columns>Related_to__c</columns>
+        <columns>Ticket_Subject__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Status__c</columns>
+        <columns>OWNER.FIRST_NAME</columns>
+        <columns>Logged_Date_Time__c</columns>
+        <columns>Impact__c</columns>
+        <columns>Steps_to_Reproduce_Error__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Related_to__c</field>
+            <operation>equals</operation>
+            <value>SI/VAR-API</value>
+        </filters>
+        <label>SI/VAR-API Tickets</label>
+    </listViews>
+    <listViews>
+        <fullName>monthly_reports</fullName>
+        <booleanFilter>1</booleanFilter>
+        <columns>Ticket_Subject__c</columns>
+        <columns>NAME</columns>
+        <columns>Related_to__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Status__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>greaterOrEqual</operation>
+            <value>3/1/2018 12:00 AM</value>
+        </filters>
+        <label>monthly_reports_Mar</label>
+    </listViews>
+    <nameField>
+        <displayFormat>ITS-{000000}</displayFormat>
+        <label>IT Support Ticket #</label>
+        <trackHistory>true</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>IT Support Tickets</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Ticket_Subject__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Severity__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Logged_Date_Time__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <startsWith>Vowel</startsWith>
+    <validationRules>
+        <fullName>Actual_Resolution_Date_Check</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(ISPICKVAL( Status__c,&apos;Closed&apos;),ISBLANK(Actual_Resolution_Date_Time__c))</errorConditionFormula>
+        <errorDisplayField>Actual_Resolution_Date_Time__c</errorDisplayField>
+        <errorMessage>Please provide Actual Resolution Date/Time.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Resolution_owner_Check</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(ISPICKVAL( Status__c ,&apos;Closed&apos; ),  Resolution1_Owner__c  == null)</errorConditionFormula>
+        <errorDisplayField>Resolution1_Owner__c</errorDisplayField>
+        <errorMessage>Please provide ticket Resolution Owner name.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Root_cause_field_is_required</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(ISPICKVAL( Status__c,&apos;Closed&apos; ), ISPICKVAL( Root_Cause__c, &apos;&apos;))</errorConditionFormula>
+        <errorDisplayField>Root_Cause__c</errorDisplayField>
+        <errorMessage>Root Cause field is required when you close the ticket.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Status_Open_To_Closed_not_permitted</fullName>
+        <active>true</active>
+        <description>Status cannot be changed to Closed from Open directly.</description>
+        <errorConditionFormula>ISPICKVAL(PRIORVALUE( Status__c ), &apos;Open&apos;) &amp;&amp; ISPICKVAL(( Status__c ), &apos;Closed&apos;)</errorConditionFormula>
+        <errorMessage>You cannot change your status value from Open to Closed</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Status_Test</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND( ISPICKVAL( Status__c , &apos;Closed&apos;),   ISPICKVAL( Closed_Reasons__c , &apos;Deferred(CR)&apos;),  Change_Request__c  = NULL)</errorConditionFormula>
+        <errorDisplayField>Change_Request__c</errorDisplayField>
+        <errorMessage>Please Provide the CR#.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Technical_Resolution_Notes_is_mandatory</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(ISPICKVAL( Status__c,&apos;Closed&apos;),Technical_Resolution_Notes__c == null)</errorConditionFormula>
+        <errorDisplayField>Technical_Resolution_Notes__c</errorDisplayField>
+        <errorMessage>Please enter Technical Resolution before closing the ticket.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,242 @@
+<apex:page Controller="ManageExistingNetworkSerInvContoller"   docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:includescript value="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js" />
+    <style>
+        .tooltip > div {
+               text-align:left;
+         }  
+        .m-t-40{margin-top:40px}      
+        .tooltip.top .tooltip-arrow{border-top-color: #fff!important;}
+        .tooltip.right .tooltip-arrow{border-right-color: #fff!important;} 
+        .tooltip.bottom .tooltip-arrow{border-bottom-color: #fff!important;}
+        .tooltip.left .tooltip-arrow{border-left-color: #fff!important;}
+        .tooltip-inner{background-color: #fff;color: #000;box-shadow: 2px 2px 8px 8px rgba(0, 0, 0, 0.1);}
+        .dataTables_paginate a.disabled {cursor: no-drop;color: #cfcfcf;pointer-events: auto;}
+        .dataTables_paginate> a.disabled {background-color: #fff;color:#cfcfcf;padding: 5px 10px;font-family: omnes_att_iimedium;line-height: 1.125em;margin-left: 0;border: 1px solid #ccc;}
+        .dataTables_paginate a.disabled:hover {text-decoration: none !important;color: #cfcfcf!important;}
+        .dataTables_paginate a {padding: 5px 10px;font-family: omnes_att_iimedium;background: #fff; border: 1px solid #ccc;cursor: pointer;}
+        .dataTables_paginate .current{background-color: #428bca;border: 1px solid #428bca;color:#fff;cursor: default;}
+        .dataTables_paginate .current:hover{color: #fff!important}
+        b { font-weight: bold; }
+        .caret {border-top: 9px solid;border-right: 9px solid transparent;border-left: 9px solid transparent;}
+        .dataTables_info {position: absolute;}
+        .pagination { float: left; margin: 0; }
+        .reorder_btn { margin-top: -4px; }      
+        input[type = "search"] {width: 260px;font-weight: normal;padding-right: 30px;}
+        .search_button{top: 5px;left: -32px;}
+        .ContractEndDate__cls_error{color: red;font-weight: bold;}
+        .dropdown-menu>li>a ,a {color: #056fab;}
+        a.disabled {pointer-events: none;cursor: default;background-color: #eee;color: #A0A0A0}            
+        td a.disabled {pointer-events: none;cursor: default;background-color: transparent;color: #A0A0A0}   
+        #manage_content label{float:left}
+        .checkbxLabel{font-weight: normal;margin-top: 7px !important;padding-right: 10px;}
+        #loading{left:0;top:0}
+        .manageNetServiceDT .Th_Action__cls .reorder_btn{display:none}
+        .End_Customer_Name__cls{white-space: normal}
+        .header_Action__cls .reorder_btn{display:none}
+    </style>
+    
+    <div class="content_container" id="manageCustomerWrapperId">
+        <apex:form id="ManageCustomerId">
+            <div id="manage_content" class="page">
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <div class="manage_network_header_text"><h1>Manage Network Services</h1></div>
+                        <hr class="blue_hr"/> 
+                        <div>View site details about your existing networks by clicking on <b>Quote Number or Sub Account Number</b> or selecting <b>View Network Sites</b> under <b>Action</b>.</div>
+                        <div>Your <b>Sub Account Number</b> can be found on your AT&amp;T  Partner Exchange &#8480; invoice.</div>
+                        <br></br>
+                        <br></br>                    
+                    </div>
+                </div>
+
+                <apex:pageMessages ></apex:pageMessages>
+                
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <div class="manage_users_table">
+                            <div id="manage_users_table_wrapper" class="dataTables_wrapper" role="grid">
+                                <table class="manageNetServiceDT table table-bordered table-striped table-hover hidden" style="white-space: nowrap;">
+                                    <thead><tr></tr></thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+                <hr class="m-t-40 blue_hr"/>
+            </div>
+             
+        </apex:form>
+    </div>
+    <div class="hidden">    
+        <div class="dropdown actionDropDown">
+            <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" style=" font-family: Omnes_Light !important; font-size: 18px;">Select <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                <li><a role="menuitem" class="viewChangeNWSitesCls" href="/MACD_ASE_NetworkSites" data-toggle="tooltip">View/Change Network Sites</a></li>
+                <li><a role="menuitem" class="viewNWSitesCls" href="/Inventorylookup_SiteInventory">View Network Sites</a></li>
+                <li><a role="menuitem" class="addSitesCls"  href="/API_MACD_Buyflow" data-toggle="modal">Add Sites</a></li>
+                <li><a role="menuitem" class="renewContractCls" href="/RenewContract" data-toggle="modal">Renew Contract</a></li>
+            </ul> 
+        </div>
+    </div>
+    <div class="hidden">
+        <label class="expireContractsCheckbox">
+            <span class="check-label">
+                <input class="css-checkbox" id="checkboxExpiredContractId" value="expire" type="checkbox" onchange="filterExpiredContract(this)"></input>
+                <label class="css-label" for="checkboxExpiredContractId"></label>
+            </span>
+            <label class="checkbxLabel">View Expired Contract</label>
+            <label class="checkbxLabel"><div class="glyphicon glyphicon-info-sign" data-toggle="tooltip" title="Only expired contracts are eligible for renewal. Changes are only available after contract renewal." data-container="body" data-placement="right"></div></label>
+        </label>
+        
+    </div> 
+    <script>
+        var conResponse;
+        var count=0;     
+        
+        function prepareDataForDataTable() { 
+        
+            endCustFields =[
+                    {apiName:'End_Customer_Name__c',value:'Customer Name'},{apiName:'Sub_Account_Number__c',value:'Sub Account/Quote Number'},
+                    {apiName:'ContractEndDate__c',value:'Contract End Date'},{apiName:'ServiceType__c',value:'Product'},
+                    {apiName:'Number_of_Sites__c',value:'Number of Sites'},{apiName:'Action__c',value:'Action'},
+                    {apiName:'ManualFlow__c',value:'Manual Flow'},{apiName:'IsDealHashCreationSuccess__c',value:'Deal Hash'},
+                    {apiName:'isBeginQuotePermission__c',value:'Begin Quote'},{apiName:'DH_Quote_Name__c',value:'Quote Name'},
+                    {apiName:'DH_Quote_Id__c',value:'Quote Id'},{apiName:'ASE_MACD_Lock__c',value:'ASE MACD Lock'},
+                    {apiName:'Contract_Renewal_Stage__c',value:'Contract Renewal Stage'}
+            ];         
+            $.each( endCustFields, function( index, columnObj){
+                 $(".manageNetServiceDT thead tr").append('<th class="header_'+columnObj.apiName+'ls">'+columnObj.value+'<div class="reorder_btn"></div></th>');
+            });    
+           
+           ManageExistingNetworkSerInvContoller.fetchDealHashAndPremiseRecords(function(result, event) {
+                if (event.type != 'exception') {
+                    for(row = 0;row<result.length;row++){
+                        var currRow = '<tr>';
+                        $.each( endCustFields, function( index, columnObj){
+                            if(columnObj.apiName == 'ContractEndDate__c'){
+                                var dateFormatArr = result[row][columnObj.apiName].split("/");
+                                var newDateFormat = dateFormatArr[2].concat(('00'+dateFormatArr[0]).slice(-2),('00'+dateFormatArr[1]).slice(-2));
+                                
+                                if(result[row].Contract_Renewal_Status__c == 'Expired'){
+                                    result[row].Contract_Renewal_Stage__c == 'Renewal Request Pending' ? dealStatus = result[row].Contract_Renewal_Stage__c : dealStatus = result[row].Contract_Renewal_Status__c;
+                                    currRow += '<td data-order='+newDateFormat+' class='+columnObj.apiName+'ls>'+result[row][columnObj.apiName]+'<div class='+columnObj.apiName+'ls_error>'+dealStatus+'</div></td>';
+                                }else if(result[row].Contract_Renewal_Stage__c == 'Renewal Request Pending'){
+                                    dealStatus = result[row].Contract_Renewal_Stage__c;
+                                    currRow += '<td data-order='+newDateFormat+' class='+columnObj.apiName+'ls>'+result[row][columnObj.apiName]+'<div class='+columnObj.apiName+'ls_error>'+dealStatus+'</div></td>';
+                                }else{
+                                    currRow += '<td data-order='+newDateFormat+' class='+columnObj.apiName+'ls>'+result[row][columnObj.apiName]+'</td>';                                    
+                                }
+                            }else if(columnObj.apiName == 'Sub_Account_Number__c'){
+                                if(result[row].ServiceType__c == 'ASE'){
+                                   result[row].ASE_MACD_Lock__c?disClass = 'disabled':disClass ='enabled';   
+                                   currRow += '<td class='+columnObj.apiName+'ls><span><a class='+disClass+' href="/MACD_ASE_NetworkSites?quoteId='+result[row].DH_Quote_Id__c+'">'+result[row].DH_Quote_Name__c+'</a><span></td>';
+                                }
+                                else
+                                    currRow += '<td class='+columnObj.apiName+'ls><a href="/Inventorylookup_SiteInventory?id='+result[row][columnObj.apiName]+'">'+result[row][columnObj.apiName]+'</a></td>';
+                            }else{
+                                currRow += '<td class='+columnObj.apiName+'ls>'+result[row][columnObj.apiName]+'</td>';
+                            }
+                        });  
+                        currRow += '</tr>';
+                       $(".manageNetServiceDT tbody").append(currRow);
+                       prepareActionDropdown(result[row],row);
+                    }
+                  
+                } else {
+                }  
+                invokeDataTable(); 
+            }); 
+           
+        }
+        
+        var dataTableComp;
+        function invokeDataTable(){
+         
+            $('.manageNetServiceDT').dataTable().fnDestroy();
+            $('.manageNetServiceDT').removeClass('hidden');
+            dataTableComp = $('.manageNetServiceDT').dataTable({
+               'language': {
+                    'search': '_INPUT_',
+                    'searchPlaceholder': 'Search by any displayed criteria',
+                    'info': 'Showing _START_ - _END_ of _TOTAL_',
+                    'zeroRecords': 'At this time there are no Networks to change.'
+                    
+                },
+                "pagingType": "full_numbers",
+                "dom": '<"top"f>rt<"bottom"il><"pull-right"p><"clear">',
+                "aoColumnDefs": [
+                    { "bVisible": true, "bSearchable": true, "aTargets": [0,1,2,3,4] },
+                    { "bVisible": true, "bSearchable": false, "aTargets": [5 ] },
+                    { "bVisible": false, "bSearchable": false, "aTargets": [ '_all' ] },
+                    { "width": "15%", "targets": 3 },
+                    { "width": "15%", "targets": 0 }
+                ],
+                "aaSorting": [[3,'asc'],[0,'asc']],
+                "bLengthChange": false,
+                "iDisplayLength":8
+            });
+            $("#DataTables_Table_0_filter input").before('<span class="search_button"></span>' );
+            $("#DataTables_Table_0_filter label:last").after($(".expireContractsCheckbox").clone());
+            $('[data-toggle ="tooltip"]').tooltip();
+            $("#loading").parent().hide();
+        }
+        function filterExpiredContract(obj){
+            searchContractType =  "(Expired)";
+            searchProductType =  "(AVPN|MIS)";
+            if($(obj).is(":checked")){
+                dataTableComp.dataTable().fnFilter(searchContractType,2,true);
+                dataTableComp.dataTable().fnFilter(searchProductType,3,true);
+            }else{
+                invokeDataTable();
+            }    
+        }
+        function prepareActionDropdown(rowObj,row){
+            var dropdownContent = $(".actionDropDown").clone().removeClass('actionDropDown');
+            var actionDropdownId = "actionDropDown"+row;
+            dropdownContent.attr("id",actionDropdownId);
+            $('.Action__cls').eq(row).html(dropdownContent);
+            $('.viewChangeNWSitesCls ').eq(row).attr("href",$('.viewChangeNWSitesCls').eq(row).attr("href")+"?quoteId="+rowObj.DH_Quote_Id__c);
+            $('.viewNWSitesCls ').eq(row).attr("href",$('.viewNWSitesCls').eq(row).attr("href")+"?Id="+rowObj.Sub_Account_Number__c);
+            $('.addSitesCls ').eq(row).attr("href",$('.addSitesCls').eq(row).attr("href")+"?sub_acount_number="+rowObj.Sub_Account_Number__c);
+            $('.renewContractCls ').eq(row).attr("href",$('.renewContractCls').eq(row).attr("href")+"?sub_account_number="+rowObj.Sub_Account_Number__c+"&parent=ms");                        
+            if(rowObj.ServiceType__c == 'ASE'){
+                $("#"+actionDropdownId+' .viewNWSitesCls').hide();
+                $("#"+actionDropdownId+' .addSitesCls').hide();
+                $("#"+actionDropdownId+' .renewContractCls').hide();
+                
+                if(rowObj.ASE_MACD_Lock__c){
+                    $("#"+actionDropdownId+' .viewChangeNWSitesCls').addClass('disabled');
+                    $("#"+actionDropdownId+' ul').attr({"title":"This Quote is currently being worked on by another user. Please try later.","data-toggle":"tooltip","data-container":"body","data-placement":"bottom"}).tooltip();
+                    $('.Sub_Account_Number__cls a.disabled').parent().attr({"title":"This Quote is currently being worked on by another user. Please try later.","data-toggle":"tooltip","data-container":"body","data-placement":"right"}).tooltip();
+                }
+            }else{
+                $("#"+actionDropdownId+' .viewChangeNWSitesCls').hide();
+                if(rowObj.Contract_Renewal_Status__c  == 'Expired'){                    
+                    $("#"+actionDropdownId+' .addSitesCls').addClass('disabled');
+                    if(typeof rowObj.Contract_Renewal_Stage__c != 'undefined' || !rowObj.IsEligibleForContract__c || rowObj.Contract_Renewal_Lock__c){                       
+                        $("#"+actionDropdownId+' .renewContractCls').addClass('disabled').parent().attr({"title":rowObj.Contract_Action_Tooltips__c,"data-toggle":"tooltip","data-container":"body","data-placement":"left"}).tooltip();
+                    }
+                }else{
+                    $("#"+actionDropdownId+' .renewContractCls').addClass('disabled').parent().attr({"title":rowObj.Contract_Action_Tooltips__c,"data-toggle":"tooltip","data-container":"body","data-placement":"left"}).tooltip();
+                }
+                if(!rowObj.Opportunity__r.Account_Contract_Renewal__c){
+                    $("#"+actionDropdownId+' .renewContractCls').hide();  
+                }
+            }
+            if(rowObj.ManualFlow__c || !rowObj.isBeginQuotePermission__c || !rowObj.IsDealHashCreationSuccess__c || (rowObj.ServiceType__c == 'MIS' && {!enableAddSitesOption}) || rowObj.Contract_Renewal_Stage__c == 'Renewal Request Pending'){
+                console.log(actionDropdownId); 
+                $("#"+actionDropdownId+' .addSitesCls').addClass('disabled');
+            }
+            
+        }
+        $( window ).bind( "beforeunload", function() {
+            $("#loading").parent().show();
+        });
+        $( window ).bind( "load", function() {
+            $("#loading").parent().show();
+            prepareDataForDataTable();
+        });
+
+    </script>
+</apex:page>

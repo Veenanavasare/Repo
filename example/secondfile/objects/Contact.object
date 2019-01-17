@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>ATOM_Account__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account.ATOM_Account__c</formula>
+        <label>ATOM Account</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Account_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Approve_Contracts__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Approve Contracts</label>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>BD_Provisioning_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>BD Provisioning Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>TBD</fullName>
+                    <default>false</default>
+                    <label>TBD</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>BD_Trigger_Date_Time__c</fullName>
+        <description>This field will be populated when the BD user creation webservice call will be made for the first time</description>
+        <externalId>false</externalId>
+        <label>BD Trigger Date&amp;Time</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>BD_User_ID__c</fullName>
+        <externalId>true</externalId>
+        <label>BD User ID</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Basic__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account.BasicTier__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Basic</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Begin_Quote__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Begin Quote</label>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Billing_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Billing Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Requested</fullName>
+                    <default>false</default>
+                    <label>Requested</label>
+                </value>
+                <value>
+                    <fullName>Completed</fullName>
+                    <default>false</default>
+                    <label>Completed</label>
+                </value>
+                <value>
+                    <fullName>Revoked</fullName>
+                    <default>false</default>
+                    <label>Revoked</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Birch_API_Message_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Birch API Message Code</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Birch_API_Message__c</fullName>
+        <externalId>false</externalId>
+        <label>Birch API Message</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Birch_User_API_Call_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Birch User API Call Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Birch_User_Created__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Birch User Created</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CSP_Failure_Count__c</fullName>
+        <externalId>false</externalId>
+        <label>CSP Failure Count</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Community_Enabled__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Community Enabled</label>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Community_Role_Formula__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF (
+  AND(
+
+Create_Modify_Profile__c  ,
+Begin_Quote__c  ,
+Approve_Contracts__c ,
+Manage_MDF__c  || MDF_Read_Only__c ,
+Basic__c == false,
+Provider_Directory__c ,
+Community_Enabled__c,
+Manage_Billing__c,
+Service_Assurance__c ), &quot;Admin&quot;, 
+
+IF (
+  AND(
+
+Create_Modify_Profile__c  ,
+Begin_Quote__c  ,
+Approve_Contracts__c ,
+Basic__c,
+Primary_Contact__c ,
+Provider_Directory__c ,
+Community_Enabled__c,
+Manage_Billing__c,
+Service_Assurance__c ), &quot;Admin&quot;, 
+
+IF(Community_Enabled__c, &quot;User&quot;, &quot;&quot;
+
+     )   
+   )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Community Role</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Copy_Address_from_Lead__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Copy Address from Lead</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Create_Modify_Profile__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Create/Modify Profile</label>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>First_time_AIA__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>First time AIA</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>First_time_ASE__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>First time ASE</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Generate_New_PE_Username__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Generate New PE Username</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Lead__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Lead</label>
+        <referenceTo>Lead</referenceTo>
+        <relationshipLabel>Contacts</relationshipLabel>
+        <relationshipName>Contacts</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>MDF_Read_Only__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>MDF - Read Only</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Manage_Billing__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Manage Billing</label>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Manage_MDF__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>MDF - Admin</label>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NetExam_User_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>NetExam User Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Solution Provider</fullName>
+                    <default>true</default>
+                    <label>Solution Provider</label>
+                </value>
+                <value>
+                    <fullName>EBM Employee</fullName>
+                    <default>false</default>
+                    <label>EBM Employee</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>PEUserNameFormula__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+Partner_Exchange_User_Name__c = &quot;&quot;, 
+LEFT( FirstName, 1) &amp; 
+   SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE ( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( SUBSTITUTE( LastName, &quot; &quot; , &quot;&quot; ), &quot;,&quot; ,&quot;&quot; ), &quot;&apos;&quot;, &quot;&quot; ) , &quot;-&quot; , &quot;&quot;) , &quot;.&quot; ,&quot;&quot; ) , &quot;!&quot; ,&quot;&quot; ), &quot;*&quot;, &quot;&quot; ), &quot;_&quot; , &quot;&quot; ) , &quot;#&quot;, &quot;&quot; ) 
+, &quot;1&quot;, &quot;&quot;), &quot;2&quot;, &quot;&quot;), &quot;3&quot;, &quot;&quot;), &quot;4&quot;, &quot;&quot;), &quot;5&quot;, &quot;&quot;), &quot;6&quot;, &quot;&quot;), &quot;7&quot;, &quot;&quot;), &quot;8&quot;, &quot;&quot;), &quot;9&quot;, &quot;&quot;), &quot;0&quot;, &quot;&quot;),
+LEFT( Partner_Exchange_User_Name__c, LEN(Partner_Exchange_User_Name__c) - PEUserNameNumericDigits__c ) 
+)</formula>
+        <label>PEUserNameFormula</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PEUserNameNumericDigits__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF (ISNUMBER (RIGHT(Partner_Exchange_User_Name__c, 5)), 5,
+IF (ISNUMBER (RIGHT(Partner_Exchange_User_Name__c, 4)), 4,
+IF (ISNUMBER (RIGHT(Partner_Exchange_User_Name__c, 3)), 3,
+IF (ISNUMBER (RIGHT(Partner_Exchange_User_Name__c, 2)), 2,
+IF (ISNUMBER (RIGHT(Partner_Exchange_User_Name__c, 1)), 1,
+0
+  )))))</formula>
+        <label>PEUserNameNumericDigits</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PE_User_ID__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>Partner Exchange User ID</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>PE_User_Id_Formula__c</fullName>
+        <externalId>false</externalId>
+        <formula>VALUE( PE_User_ID__c )</formula>
+        <label>PE User Id Formula</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Partner_Exchange_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Partner Exchange Status</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Active</fullName>
+                    <default>false</default>
+                    <label>Active</label>
+                </value>
+                <value>
+                    <fullName>Inactive</fullName>
+                    <default>false</default>
+                    <label>Inactive</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Partner_Exchange_User_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Partner Exchange User Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Partner_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Account.Partner_Type__c)</formula>
+        <label>Partner Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Partner_User_Role__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account.Name+&apos; &apos;+IF(Community_Role_Formula__c == &apos;Admin&apos;,&apos;Partner Manager&apos;,IF(Community_Role_Formula__c == &apos;User&apos;,&apos;Partner User&apos;,&apos;&apos;))</formula>
+        <label>Partner User Role</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Premier_Login__c</fullName>
+        <externalId>false</externalId>
+        <label>Premier Login</label>
+        <length>100</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Primary_Contact__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Portal Administrator</label>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Product_Trainings_Completed__c</fullName>
+        <externalId>false</externalId>
+        <label>Product Trainings Completed</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>ANIRA</fullName>
+                    <default>false</default>
+                    <label>ANIRA</label>
+                </value>
+                <value>
+                    <fullName>ASE</fullName>
+                    <default>false</default>
+                    <label>ASE</label>
+                </value>
+                <value>
+                    <fullName>Attwireless</fullName>
+                    <default>false</default>
+                    <label>Attwireless</label>
+                </value>
+                <value>
+                    <fullName>AVPN</fullName>
+                    <default>false</default>
+                    <label>AVPN</label>
+                </value>
+                <value>
+                    <fullName>Broadband</fullName>
+                    <default>false</default>
+                    <label>Broadband</label>
+                </value>
+                <value>
+                    <fullName>CaaS</fullName>
+                    <default>false</default>
+                    <label>CaaS</label>
+                </value>
+                <value>
+                    <fullName>COLHS</fullName>
+                    <default>false</default>
+                    <label>COLHS</label>
+                </value>
+                <value>
+                    <fullName>IPFLEX</fullName>
+                    <default>false</default>
+                    <label>IPFLEX</label>
+                </value>
+                <value>
+                    <fullName>IPTollFree</fullName>
+                    <default>false</default>
+                    <label>IPTollFree</label>
+                </value>
+                <value>
+                    <fullName>MDM</fullName>
+                    <default>false</default>
+                    <label>MDM</label>
+                </value>
+                <value>
+                    <fullName>MiiM</fullName>
+                    <default>false</default>
+                    <label>MiiM</label>
+                </value>
+                <value>
+                    <fullName>MIS</fullName>
+                    <default>false</default>
+                    <label>MIS</label>
+                </value>
+                <value>
+                    <fullName>NBFW</fullName>
+                    <default>false</default>
+                    <label>NBFW</label>
+                </value>
+                <value>
+                    <fullName>PaaS</fullName>
+                    <default>false</default>
+                    <label>PaaS</label>
+                </value>
+                <value>
+                    <fullName>PNT</fullName>
+                    <default>false</default>
+                    <label>PNT</label>
+                </value>
+                <value>
+                    <fullName>StaaS</fullName>
+                    <default>false</default>
+                    <label>StaaS</label>
+                </value>
+                <value>
+                    <fullName>PRIVATECLOUD</fullName>
+                    <default>false</default>
+                    <label>PRIVATECLOUD</label>
+                </value>
+                <value>
+                    <fullName>AIA</fullName>
+                    <default>false</default>
+                    <label>AIA</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Provider_Directory__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Provider Directory</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Role__c</fullName>
+        <externalId>false</externalId>
+        <label>Role</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <type>MultiselectPicklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Adminstrative</fullName>
+                    <default>false</default>
+                    <label>Adminstrative</label>
+                </value>
+                <value>
+                    <fullName>Alternate Portal Admin</fullName>
+                    <default>false</default>
+                    <label>Alternate Portal Admin</label>
+                </value>
+                <value>
+                    <fullName>API Contact</fullName>
+                    <default>false</default>
+                    <label>API Contact</label>
+                </value>
+                <value>
+                    <fullName>Architect/IT Lead Contact</fullName>
+                    <default>false</default>
+                    <label>Architect/IT Lead Contact</label>
+                </value>
+                <value>
+                    <fullName>CEO</fullName>
+                    <default>false</default>
+                    <label>CEO</label>
+                </value>
+                <value>
+                    <fullName>CFO</fullName>
+                    <default>false</default>
+                    <label>CFO</label>
+                </value>
+                <value>
+                    <fullName>Contact for Notices</fullName>
+                    <default>false</default>
+                    <label>Contact for Notices</label>
+                </value>
+                <value>
+                    <fullName>COO</fullName>
+                    <default>false</default>
+                    <label>COO</label>
+                </value>
+                <value>
+                    <fullName>Fieldglass Administrator</fullName>
+                    <default>false</default>
+                    <label>Fieldglass Administrator</label>
+                </value>
+                <value>
+                    <fullName>Finance</fullName>
+                    <default>false</default>
+                    <label>Finance</label>
+                </value>
+                <value>
+                    <fullName>Main Contact</fullName>
+                    <default>false</default>
+                    <label>Main Contact</label>
+                </value>
+                <value>
+                    <fullName>Marketing</fullName>
+                    <default>false</default>
+                    <label>Marketing</label>
+                </value>
+                <value>
+                    <fullName>MDF Management</fullName>
+                    <default>false</default>
+                    <label>MDF Management</label>
+                </value>
+                <value>
+                    <fullName>Mobility Lead</fullName>
+                    <default>false</default>
+                    <label>Mobility Lead</label>
+                </value>
+                <value>
+                    <fullName>NOC</fullName>
+                    <default>false</default>
+                    <label>NOC</label>
+                </value>
+                <value>
+                    <fullName>Operations</fullName>
+                    <default>false</default>
+                    <label>Operations</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+                <value>
+                    <fullName>Owner</fullName>
+                    <default>false</default>
+                    <label>Owner</label>
+                </value>
+                <value>
+                    <fullName>Portal Administrator</fullName>
+                    <default>false</default>
+                    <label>Portal Administrator</label>
+                </value>
+                <value>
+                    <fullName>President</fullName>
+                    <default>false</default>
+                    <label>President</label>
+                </value>
+                <value>
+                    <fullName>Primary Billing Contact</fullName>
+                    <default>false</default>
+                    <label>Primary Billing Contact</label>
+                </value>
+                <value>
+                    <fullName>Provisioning Contact</fullName>
+                    <default>false</default>
+                    <label>Provisioning Contact</label>
+                </value>
+                <value>
+                    <fullName>Sales</fullName>
+                    <default>false</default>
+                    <label>Sales</label>
+                </value>
+                <value>
+                    <fullName>Training</fullName>
+                    <default>false</default>
+                    <label>Training</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>SIDeleteContact__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Deleting the Created Contact from Lead Conversion</description>
+        <externalId>false</externalId>
+        <label>SIDeleteContact</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Service_Assurance_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Service Assurance Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Requested</fullName>
+                    <default>false</default>
+                    <label>Requested</label>
+                </value>
+                <value>
+                    <fullName>Completed</fullName>
+                    <default>false</default>
+                    <label>Completed</label>
+                </value>
+                <value>
+                    <fullName>Revoked</fullName>
+                    <default>false</default>
+                    <label>Revoked</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Service_Assurance__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Service Assurance</label>
+        <trackHistory>true</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Test_Company__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account.Test_Company__c</formula>
+        <label>Test Company</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Through_Channel_API_Message_Code__c</fullName>
+        <externalId>false</externalId>
+        <label>Through Channel API Message Code</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Through_Channel_API_Message__c</fullName>
+        <externalId>false</externalId>
+        <label>Through Channel API Message</label>
+        <length>131072</length>
+        <trackHistory>false</trackHistory>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Training_Coordinator__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Determines if a user can view transcripts of other users in NetExam</description>
+        <externalId>false</externalId>
+        <label>Training Coordinator</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>User_Role__c</fullName>
+        <externalId>false</externalId>
+        <label>NetExam User Role</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Student</fullName>
+                    <default>true</default>
+                    <label>Student</label>
+                </value>
+                <value>
+                    <fullName>System Administrators</fullName>
+                    <default>false</default>
+                    <label>System Administrators</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>isconverted__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This intent of this field is to indicated when the associated lead has been converted into an account</description>
+        <externalId>false</externalId>
+        <label>isconverted</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+</CustomObject>

@@ -1,0 +1,79 @@
+<apex:page docType="html-5.0" controller="PortalDesignHeaderController" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />
+    <apex:stylesheet value="{!$Resource.products_css}"/>
+    <apex:includeScript value="{!URLFOR($Resource.productMobileMenuJS)}" />
+    <apex:stylesheet value="{!$Resource.peCustom}" />
+    <style>
+    /* Robyn 6/8/16: removed inline hero style */
+        .grow-body .leftNavCol .leftNav, .products-body .leftNavCol .leftNav {
+            width: 180px;
+        }
+    </style>
+     <!-- REDIRECTION LOGIC FOR UNAUTHORIZED ACCESS -->
+       <script>
+            redirectToUnauthorizedAccessPage();
+    
+            function redirectToUnauthorizedAccessPage() {
+                // for maintenance page redirection
+                var byPassFreeze = "{!isWirelessProduct}";            
+                if (byPassFreeze == 'false') {
+                    window.location="/apex/UnauthorizedAccess";
+                }
+            }
+        
+    </script>
+    <!-- END REDIRECTION LOGIC FOR UNAUTHORIZED ACCESS --> 
+     
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="grow-incentives jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+            <div class="hero_badge">
+                <h1 class="hero_badge_1">Help to win more deals</h1>
+                <h2 class="hero_badge_2">Offers and incentives to support your success.</h2>
+            </div>
+            </div>
+        <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+    <!-- BODY SLICE -->
+    <div class="grow-body col-sm-12 product-page Incentives">
+        <div class="row">
+            <div class="leftNavCol col-sm-3">
+                <div class="leftNav">
+                    <ul class="" role="tablist">
+                        <li class="active" data-page="Grow_Incentives_IncentivesPromotions"><a class="btn btn-link" href="#Grow_Incentives_IncentivesPromotions" role="tab" data-toggle="tab">{!$Label.Incentives_Promotions}</a></li> 
+                        <li class="" data-page="Grow_Incentives_MobilityDiscounts"><a class="btn btn-link" href="#Grow_Incentives_MobilityDiscounts" role="tab" data-toggle="tab">{!$Label.IRU_Sponsorship_Program}</a></li>
+                        <li class="" data-page="Grow_Incentives_TierLevels"><a class="btn btn-link" href="#Grow_Incentives_TierLevels" role="tab" data-toggle="tab">{!$Label.Tier_Levels}</a></li>
+                    </ul>
+    <!-- Nav tabs -->
+                </div>
+                <div class="mobile-content-menu">
+                    <div class="dropdown-label" data-status="closed"> {!$Label.Incentives_Promotions} <span class="ionicons ion-ios7-arrow-down" style="position: relative; top: 3px; left: 7px; "></span>
+                    </div>
+                    <ul class="mobile-dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                        <a data-page="Grow_Incentives_IncentivesPromotions" role="menuitem" href="#Grow_Incentives_IncentivesPromotions" ><li role="presentation">{!$Label.Incentives_Promotions}</li></a>
+                        <a data-page="Grow_Incentives_MobilityDiscounts" role="menuitem" href="#Grow_Incentives_MobilityDiscounts" ><li role="presentation">{!$Label.IRU_Sponsorship_Program}</li></a>
+                        <a data-page="Grow_Incentives_TierLevels" role="menuitem" href="#Grow_Incentives_TierLevels" ><li role="presentation">{!$Label.Tier_Levels}</li></a>
+                    </ul>
+                </div>
+            </div>      
+            <div class="contentCol col-sm-8 body-load-content">
+    <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="IncentivesPromotions">
+                        <div class="page-include Grow_Incentives_IncentivesPromotions"><apex:include pageName="Grow_Incentives_IncentivesPromotions" id="Grow_Incentives_IncentivesPromotions" />  </div>
+                        <div class="page-include Grow_Incentives_MobilityDiscounts"><apex:include pageName="Grow_Incentives_MobilityDiscounts" id="Grow_Incentives_MobilityDiscounts" /> </div>
+                        <div class="page-include Grow_Incentives_TierLevels"><apex:include pageName="Grow_Incentives_TierLevels" id="Grow_Incentives_TierLevels" /> </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <apex:includescript value="{!$Resource.LeftNav_Controller}" />
+    <!-- END BODY SLICE -->
+    
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+</apex:page>

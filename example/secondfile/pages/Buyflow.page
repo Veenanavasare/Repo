@@ -1,0 +1,287 @@
+<apex:page controller="BuyFlowController" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" title="BuyFlow" cache="false">
+    <apex:include pageName="PortalDesignHeader_UIUX"/>
+
+    <style>
+         .infoM3 tbody tr{
+             background: none;
+         }    
+         .tooltipTrigger + .tooltip > .tooltip-inner {
+            background-color: #fff;
+            color:#000;
+            font-family:omnes_att_iimedium;
+            text-align: left;
+            font-weight: normal;
+        }
+        .tooltipTrigger + .tooltip.top > .tooltip-arrow {
+            border-top-color:#fff; 
+            border-top:10px solid #fff;
+        }
+        
+        .tooltipTrigger + .tooltip.top{
+            width:195px;
+        }
+        .tooltipTrigger + .tooltip.right > .tooltip-arrow {
+            border-right-color:#fff; 
+            border-right:10px solid #fff;
+        }
+        .tooltipTrigger.glyphicon.glyphicon-info-sign.reviewQuoteInfoIcon {
+            margin: -47px 13px;
+            float: right;
+        }
+        .tooltipTrigger + .tooltip.top {
+            left: 1060.5px !important;
+        }
+        .tooltip.fade.top.in {
+            margin-left: -129px !important;
+        }
+        .btn-secondary {
+            background: #fff !important;
+            color: #056FAB  !important;
+        }
+        .mainnav .active {
+            border: 1px solid #056fab;
+        }
+        
+        .m-t-30{
+            margin-top: 30px !important;
+        }
+        .m-b-30{
+            margin-bottom: 30px !important;
+        }
+        .greenText {
+            color: green !important;
+            padding: 10px 15px 0 15px;
+        }
+        #contentWrapper {
+            min-width: 1024px !important;
+        }
+        button.close {
+            font-size: 200% !important;
+        }
+        .active > a,
+        .active_tab > a {
+            color: #fff !important;
+        }
+        .active > a,
+        .active_tab > a, .tabbed_menu .mainnav li.active::after {
+           cursor: default; /* Added to ensure the cursor is default for the active tab */
+        }
+        .tabbed_menu .active {
+           background: #056fab;
+        }
+        .tabbed_menu li {            
+           padding: 0;
+           width: 20%;
+        }
+       
+        .tabbed_menu li a {
+           padding: 20px;
+           display: block;
+        }       
+        .dataTables_length {
+           display: none;
+        }
+        .dataTables_info {
+           bottom: 22px;
+           position: absolute;
+           right: 180px;
+        }
+        .manage_user_name {
+           width: 17% !important;
+        }
+        .manage_user_contact_name {
+           width: 10% !important;
+        }
+        .manage_user_address {
+           width: 10% !important;
+        }
+        .manage_user_city {
+           width: 10% !important;
+        }
+        .manage_user_state {
+           width: 10% !important;
+        }
+        .manage_user_zip {
+           width: 10% !important;
+        }
+        #manage_content .pagination > a {
+           padding: 5px 10px;
+           font-family: omnes_att_iimedium;
+           line-height: 1.125em;
+           color: #056fab;
+           margin-left: 5px;
+           background: #fff;
+           border: 1px solid #ccc;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+           cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+           cursor: no-drop;
+        }
+        .btn {
+           padding: 10px 20px !important;
+        }
+        .btn:hover {
+           background: #fff !important;
+           color: #333;
+        }
+        .mainnav a:hover { color: #428bca !important; }
+        .mainnav .active a { color: #fff !important;cursor: default !important; }
+        
+        .tabbed_menu .mainnav li.active::after {
+           content: ' ';
+           display: inline;
+           width: 0;
+           height: 0;
+           border-left: 20px solid transparent;
+           border-right: 20px solid transparent;
+           position: absolute;
+           border-top: 14px solid #056fab;
+           bottom: -12px;
+           margin-left: 8%;
+           z-index: 99999;
+        }
+        .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+           background-size: 900px 900px !important;
+        }
+        .tabbed_menu li {
+           float: left !important;
+        }
+        ul.mainnav li.disabled a, ul.mainnav li.disabled a:hover{
+           color: #666 !important;
+           border: 1px solid #a3a3a3 ;
+           pointer-events: none;
+        }
+        li.ng-isolate-scope.active::after {
+           cursor: default;
+        }
+        b, strong {
+            font-weight: inherit;
+        }
+        #main li{
+            cursor:default !important;
+        }
+        .modal-header .close{
+            margin-right: 24px;
+        }
+    </style>
+    
+    <div class="content_container">
+
+        <div id="hero_banner" class="hero_manage jumbotronContainer ng-scope">
+            <div class="row">
+                <div class="col-sm-12"></div>
+            </div>
+        </div>
+        <div id="manage_content" style="padding-top: 0;" class="page ng-scope" ng-controller="QuoteController as beginQuote">
+            
+            <div class="container p0">
+                <apex:form >
+                    <br/>
+                    <div class="col-xs-12 m-t-20 p0">
+                        <apex:commandLink value="< Back to Enter Addresses" action="{!goToEnterAddressPage}" rendered="{!backToEnterAddressLink}"
+                            style="color:#056fab;font-weight: bold;" status="loading">
+                            <br/><br/>
+                        </apex:commandLink>
+                    </div>
+                </apex:form>
+                <div id="main" class="tabbed_menu m-t-20">
+                    <div class="col-xs-12 col-md-12 m-t-20 p0">
+                        <ul class="mainnav" role="tablist">
+                            <li class="active">
+                                <a href="#selectCust" data-name="selectCust" role="tab" data-toggle="tab"><div class="circlenum">1</div> {!$Label.Select_Customer} </a>
+                            </li>
+                            <li>
+                                <a href="#selectProd" data-name="selectProd" data-tabName="{!$Label.Select_Product}" role="tab" data-toggle="tab"><div class="circlenum">2</div> {!$Label.Select_Product} </a>
+                            </li>
+                            <li>
+                                <a href="#enterAddress" data-name="enterAddress" data-tabName="{!$Label.Enter_Addresses}" role="tab" data-toggle="tab"><div class="circlenum">3</div> {!$Label.Enter_Addresses} </a>
+                            </li>
+                            <li>
+                                <a href="#configSites" data-name="configSites" data-tabName="{!$Label.Configure_Sites}" role="tab" data-toggle="tab"><div class="circlenum">4</div> {!$Label.Configure_Sites} </a>
+                            </li>
+                            <li>
+                                <a href="#reviewQuote" data-name="reviewQuote" data-tabName="{!$Label.Review_Quote}" role="tab" data-toggle="tab"><div class="circlenum">5</div> {!$Label.Review_Quote} </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row m0">
+                    <div class="col-xs-12 col-md-12 p0">
+                        <h1 class="manage_content-header">Select Customer</h1>
+                    </div>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade in active" id="selectCust">
+                        <apex:include pageName="CustomerInformation" id="manageCustomerPageId" />
+                    </div>
+                    <div class="tab-pane fade" id="selectProd">
+                        <apex:include pageName="ProductInformation" id="productInfoId" />
+                    </div>
+                    <div class="tab-pane fade" id="enterAddress">
+                        <apex:include pageName="SiteAddressInformation" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $(".tooltipTrigger").tooltip();
+        }); 
+
+        function activeTabIcon() {
+            var tabName = $('.tabbed_menu li.active a').attr('data-tabname');            
+            $('.manage_content-header').text(tabName);
+            var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+            $('.tabbed_menu li.active').prevAll('li').find('.circlenum').addClass('circlenum1').removeClass('circlenum').text('').append(okIcon);            
+            preventEnter();
+        }
+
+        function GetURLParameter(sParam) {
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++) {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam) {
+                    return sParameterName[1];
+                }
+            }
+        }
+        
+        var customerId = '';
+        var mode = GetURLParameter('mode');
+        var UrlQuoteId = GetURLParameter('quoteid');
+        var generatedQuoteId = UrlQuoteId ;
+        
+        if (!UrlQuoteId) {       
+            $("a[data-name='selectProd'], a[data-name='enterAddress'], a[data-name='configSites'], a[data-name='reviewQuote']").parent('li').addClass("disabled");
+            $('.disabled a').removeAttr('data-toggle href');
+            $("a[data-name='selectProd'],a[data-name='enterAddress'],a[data-name='configSites'],a[data-name='reviewQuote']").parent('li').css("background","#e1e1e1");
+            activeTabIcon();
+        }
+        
+        if (UrlQuoteId) {       
+            reInitializeMain();
+            if (mode == "productinfo") {            
+                handleProductInfoPage(generatedQuoteId);
+                $("a[data-name='selectProd']").trigger("click");                
+                $("a[data-name='selectCust'], a[data-name='enterAddress'], a[data-name='configSites'], a[data-name='reviewQuote']").parent('li').addClass("disabled");
+                $("a[data-name='enterAddress'],a[data-name='configSites'],a[data-name='reviewQuote']").parent('li').css("background","#e1e1e1");
+                $("a[data-name='selectProd']").parent('li').removeAttr("style");
+            } else if (mode == "siteinfo") {
+                $("a[data-name='enterAddress']").trigger("click");
+                $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='configSites'], a[data-name='reviewQuote']").parent('li').addClass("disabled");
+                $("a[data-name='configSites'],a[data-name='reviewQuote']").parent('li').css("background","#e1e1e1");
+            }
+            $('.disabled a').removeAttr('data-toggle href');
+            activeTabIcon();
+        }
+    </script>
+    <div id="footerdiv" style="margin-top: -48px;">
+        <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+     </div>
+</apex:page>

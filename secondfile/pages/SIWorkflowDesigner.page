@@ -1,0 +1,168 @@
+<apex:page standardController="WF_Engine_Rule__c" extensions="SIWorkflowController" sidebar="true">
+<apex:form > 
+
+ <div style="color:#FF0000; font-weight:bold">
+    <apex:pageMessages id="pagemessage" />
+  </div>
+    <table width="100%" align="left" border="0">
+        <tr>
+            <td width="40%">
+            <apex:pageBlock tabStyle="Account" >
+                    <apex:pageBlockSection title="Workflow Instructions" columns="1" collapsible="true">
+                   <P styleClass="labelCol">
+                    1.Numeric input and Output only available<br></br> 
+                    2.Please Check Active to activate the Rule<br></br> 
+                    3.Once Rule is Created Please click Execute Rule Button on the Detailed page to run the rule<br></br> 
+                    </p>
+                      </apex:pageBlockSection>
+                </apex:pageBlock>
+              
+               <apex:pageBlock tabStyle="Account" >
+                    <apex:pageBlockSection title="Workflow Engine" columns="2" collapsible="true">
+                         <apex:outputLabel value="Rule Name" for="accountSerId" styleClass="labelCol"/>
+                         <apex:inputText value="{!RuleName}" id="ruleName"/>
+                         <apex:outputLabel value="Active" for="accountSerId" styleClass="labelCol"/>
+                         <apex:inputCheckbox value="{!isActive}" />
+                         
+                                             
+                        <apex:outputLabel value="Please select an Object" for="chooseObject" styleClass="labelCol"/>
+                        <apex:selectList value="{!selObjectName}" multiselect="false" 
+                            size="1" id="chooseObject" onChange="resetDatatypeJs(this.value)">
+                            <apex:selectOptions value="{!objectsList}"/>
+                        </apex:selectList>
+                        <apex:outputLabel value="No of Rules on the object" for="accountSerId" styleClass="labelCol"/>
+                        <apex:outputLabel value="{!MaxOrder}" id="MaxOrderNum"/>
+                         <apex:outputLabel value="Order No" for="accountSerId" styleClass="labelCol"/>
+                        <apex:inputText value="{!OrderNum}" id="OrderNum"/>
+                        
+                         <sup>&nbsp;
+                            <apex:actionStatus id="loading">
+                                 <apex:facet name="start">
+                                     <apex:outputPanel >
+                                           <apex:image value="{!$Resource.LoadingGif}" style="height: 30px;"/>
+                                      </apex:outputPanel>
+                                   </apex:facet>      
+                            </apex:actionStatus>
+                         </sup>
+                         
+                    </apex:pageBlockSection>
+                </apex:pageBlock>
+                    
+                                   
+                    <apex:pageBlock title="Input Entry Details" tabStyle="Account">
+                           <apex:pageBlockTable value="{!NoofRulesentry}" var="a">  
+                           
+                           <apex:column headerValue="I/P field type" >
+                             <apex:selectList value="{!selDataTypeName}" multiselect="false" 
+                            size="1" id="chooseDataType"
+                            onChange="getFieldsNamesJs(this.value)">
+                            <apex:selectOptions value="{!dataTypeList}"/>
+                             </apex:selectList>   
+                         </apex:column>   
+                                 
+                             <apex:column headerValue="Input Field">
+                                <apex:selectList value="{!infieldName}" multiselect="false" size="1"  onChange="getPickNamesJs(this.value)"  id="chooseField1">
+                                <apex:selectOptions value="{!fieldsList}"/>
+                            </apex:selectList>    
+                           </apex:column>
+                           
+                            <apex:column headerValue="Operator">
+                                <apex:selectList value="{!OperatorValue}" multiselect="false" size="1" >
+                                <apex:selectOptions value="{!Operatorsymbels}" />
+                            </apex:selectList>   
+                           </apex:column>
+                           
+                           <apex:column headerValue="Value"  >
+                               <apex:inputText value="{!rulecond}" maxlength="50"/>  
+                           </apex:column>
+                           
+                            <apex:column headerValue="PickList" >
+                               <apex:selectList value="{!InPickvalue}" multiselect="false" size="1" id="InPick" >
+                                <apex:selectOptions value="{!InPickList}" />
+                            </apex:selectList> 
+                           </apex:column>
+                           
+                          </apex:pageBlockTable>
+                           </apex:pageBlock>
+                        <apex:pageBlock title="Output Entry Details" tabStyle="Account">
+                           <apex:pageBlockTable value="{!NoofRulesentry}" var="b">   
+                           
+                           <apex:column headerValue="O/P field type" >
+                        <apex:selectList value="{!selOutDataTypeName}" multiselect="false" 
+                            size="1" id="chooseOutDataType"
+                            onChange="getFieldsNamesJs1(this.value)">
+                            <apex:selectOptions value="{!dataTypeList}"/>
+                        </apex:selectList> 
+                         </apex:column>
+                           
+                            <apex:column headerValue="Type">
+                                <apex:selectList value="{!TypeValue}" multiselect="false" size="1" >
+                                <apex:selectOptions value="{!Scoretype}" />
+                            </apex:selectList> 
+                           </apex:column>
+                           
+                            <apex:column headerValue="Score Field">
+                               <apex:selectList value="{!outfieldName}" multiselect="false" size="1"  onChange="getPickNamesJs1(this.value)" id="scoreField1">
+                                <apex:selectOptions value="{!scoreFieldsList}"/>
+                            </apex:selectList> 
+                            </apex:column>
+                            
+                              <apex:column headerValue="Score">
+                                <apex:inputText value="{!rulescore}" />  
+                               </apex:column>
+                               
+                               <apex:column headerValue="PickList" >
+                               <apex:selectList value="{!OutPickvalue}" multiselect="false" size="1" id="OutPick">
+                                <apex:selectOptions value="{!OutPickList}" />
+                            </apex:selectList> 
+                           </apex:column>
+                           
+                        </apex:pageBlockTable>
+                        </apex:pageBlock>
+
+                         <apex:pageBlock tabStyle="Account">
+                            <table border="0">
+                            <tr>
+                            <td width="60%" align="right">
+                             <apex:commandLink value="Save" action="{!UpdateEFRules}"  styleClass="btn" style="color:black;text-decoration:none">
+                             <apex:param name="createtype" value="create"/>
+                             </apex:commandLink>
+                             </td>
+                             <td width="20%" align="center">                
+                             <apex:commandLink value="Save and New" action="{!UpdateEFRules}" styleClass="btn" style="color:black;text-decoration:none">
+                             </apex:commandLink>
+                             </td>
+                             <td width="20%" align="left">                
+                             <apex:commandLink value="Cancel" action="{!Cancel}" styleClass="btn" style="color:black;text-decoration:none">
+                             </apex:commandLink>
+                             </td>
+                            
+                             </tr>
+                           </table>                       
+                    </apex:pageBlock>
+            </td>   
+         </tr>
+    </table>
+    
+    <apex:actionFunction action="{!getFieldsNames}" name="getFieldsNamesJs" rerender="chooseField1" status="loading">
+        <apex:param name="selDataTypeName" assignTo="{!selDataTypeName}" value="" />
+    </apex:actionFunction> 
+    
+    <apex:actionFunction action="{!getFieldsNames}" name="getFieldsNamesJs1" rerender="scoreField1" status="loading">
+        <apex:param name="selOutDataTypeName" assignTo="{!selOutDataTypeName}" value="" />
+    </apex:actionFunction> 
+    
+     <apex:actionFunction action="{!resetDatatype}" name="resetDatatypeJs" rerender="chooseDataType,MaxOrderNum,chooseOutDataType" status="loading">
+        <apex:param name="selObjectName" assignTo="{!selObjectName}" value="" />
+    </apex:actionFunction>  
+    
+     <apex:actionFunction action="{!getInPicklistvalues}" name="getPickNamesJs" rerender="InPick" status="loading">
+        <apex:param name="InPickvalue" assignTo="{!InPickvalue}" value="" />
+    </apex:actionFunction> 
+    
+    <apex:actionFunction action="{!getOutPicklistvalues}" name="getPickNamesJs1" rerender="OutPick" status="loading">
+        <apex:param name="OutPickvalue" assignTo="{!OutPickvalue}" value="" />
+    </apex:actionFunction> 
+          
+</apex:form>    
+</apex:page>

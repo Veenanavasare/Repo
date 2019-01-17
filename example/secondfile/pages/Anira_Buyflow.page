@@ -1,0 +1,120 @@
+<apex:page standardController="Apttus_Proposal__Proposal__c" extensions="AIA_JSONGenerator" action="{!logCanvasParameters}" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" title="BuyFlow">    
+    <!-- TODO: Change all AIA to ANIRA once backend changes are available -->
+    <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" /> 
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCss}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCSSDetails}" />  
+    <script type="text/javascript" src="/canvas/sdk/js/31.0/controller.js"></script> 
+    
+    <script language="javascript">
+        var timeOut = {!timeOutValue};
+        var quoteObjId = '{!recordId}';
+        var target = {canvas : "canvasAppId"};
+        var canvasWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
+        var canvasHeight = (window.innerHeight || document.documentElement.clientHeight ||document.body.clientHeight);
+    
+
+        $( document ).ready(function() {
+            callResizeAJAX(canvasHeight,canvasWidth);
+        });
+       
+        $(window).resize(function() {
+            if (this.resizeTO) {
+                clearTimeout(this.resizeTO);
+            }
+            
+            this.resizeTO = setTimeout(function() {
+                $(this).trigger('resizeEnd');
+            }, 500);
+        });
+       
+        Sfdc.canvas(function() {
+            $(window).bind('resizeEnd', function() {
+                Sfdc.canvas.controller.publish(
+                    {
+                        name : 'anira.resize',
+                        payload: { height: $(this).height(),width: $(this).width()} 
+                    });   
+           }); 
+
+       Sfdc.canvas.controller.subscribe(
+            {
+                name : 'anira.quoteAck', 
+                onData : function (data) {  
+                    clearTimeout(myVar); 
+                    $('.errorMsg').hide();
+                    $('#footerId').hide(); 
+                }          
+            }); 
+        
+        Sfdc.canvas.controller.subscribe(
+            {
+                name : 'anira.dashboard', 
+                onData : function (data) {
+                    
+                    window.open('/apex/PortalDashboard_UI', '_self' );                   
+                }          
+        }); 
+                
+       Sfdc.canvas.controller.subscribe(
+            {
+                name : 'anira.reconfigure', 
+                onData : function (data) {  
+                /* TODO : Logic to clear the discount  */
+                 //   clearDiscount();
+                 // window.open('/dealreg?code=AIA&mode=orderConf&quoteid='+quoteObjId,'_self' );
+                    Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.AIA_JSONGenerator.clearDiscount}',
+                     quoteObjId,
+                     function(result, event){
+                     }                     
+                  );   
+                }          
+            });       
+        });
+     
+        // Function to send the error when Canvas loads to fail    
+        function canvasError() {
+            myVar = window.setTimeout(loadError,timeOut);    
+        }  
+    
+        function loadError() {
+            $('.errorMsg').css('display','block');
+            $('#footerId').css('display','block');
+        }
+
+    </script>  
+    
+    
+    <style>
+        .begin_quote_icon {
+            background-size: 900px 900px;
+        }
+        #aniraCanvasContainer {
+            overflow: hidden !important;
+        }
+    </style>
+    
+    <body id="aniraCanvasContainer" onload="canvasError();"> 
+        <apex:form id="formId">
+            <div id="canvasAppId" style="display:block;">
+                <apex:outputPanel id="panelId">
+                    <apex:canvasApp applicationName="ANIRA" parameters="{!JSONContent}"  containerId="canvasAppId"  /> 
+                </apex:outputPanel>
+
+                <apex:actionFunction name="callResizeAJAX" action="{!getJSONContent}" reRender="formId,panelId"  id="callResize"  >
+                    <apex:param id="canvasHeight" name="canvasHeight" value="" assignTo="{!canvasHeight}" /> 
+                    <apex:param id="canvasWidth" name="canvasWidth" value="" assignTo="{!canvasWidth}" />
+                </apex:actionFunction>               
+            </div>
+        </apex:form>
+    
+        <div class="errorMsg" style="display:none;margin-top:40px;text-align: center;">
+            <span>We are experiencing technical difficulties, please try again later.</span>
+        </div>
+      
+        <div id="footerId" style="display:none;">
+            <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+        </div>
+    </body>
+</apex:page>

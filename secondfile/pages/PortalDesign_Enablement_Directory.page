@@ -1,0 +1,426 @@
+<apex:page docType="html-5.0" controller="PortalDesignHeaderController" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />
+    <apex:stylesheet value="{!$Resource.products_css}"/>
+    <apex:includeScript value="{!URLFOR($Resource.productMobileMenuJS)}" />
+    <apex:stylesheet value="{!$Resource.peCustom}" />
+    <script type="text/javascript"  src="{!URLFOR($Resource.newsroomplayer2, 'amp/amp.min.js')}?amp-defaults={!$Resource.prodVideoXML3}"></script> 
+    <style type="text/css">
+       
+         .product-page .promo {
+            padding-bottom: 28px !important;
+            min-height: 220px !important;
+      
+        }
+        .product-page .promo.unclickable{
+            padding-bottom: 181px !important;
+            padding: 10px 0px !important;
+                
+        }
+   
+       
+        @media (min-width: 1500px) {
+            .step-tab-list-item {
+                width: 20%;
+                display: inline-block;
+                padding: 0px 10px;
+                margin-right: -3px;
+               
+            }
+        }
+        @media (max-width: 1499px) {
+            .step-tab-list-item {
+                width: 100%;
+                padding: 0px 20px 10px 10px;
+                 margin-bottom:10px;
+            }
+       }
+        #presale, 
+        #ecommerce {
+            margin-bottom: 0px !important;
+            display: block !important;
+            padding-bottom: 170px !important;
+        }
+
+        .product-page.enable-directory .step-tab-container {
+            border-spacing: 0px !important; 
+            margin-right: 0px !important; 
+            margin-left: 0px !important; 
+            padding: 0px !important; 
+            margin-bottom: 40px !important; 
+        }
+
+        .product-page .step-tab-list-item a {
+            height: 263px !important;
+
+        }
+
+        .product-page .stepCont {
+            margin-top: -24px;
+        }
+
+        .promo-link h3 {
+            color: #fff !important;
+        }
+        .small-font {
+            font-size: 15px !important;
+        }
+           .st{ 
+      
+        clear:both !important;
+        display: block !important;
+        font-size: 15px;
+        padding-top: -1px;   
+        } 
+
+     </style>
+
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="enablement-directory-hero jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                    <h1 class="hero_badge_1">{!$Label.Enablement_Directory}</h1>
+                    <h2 class="hero_badge_2">Accelerator resources* for Solution Providers through third party collaboration</h2>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+    
+    <!-- BODY SLICE -->
+    <div class="products-body col-sm-10 col-sm-offset-1 product-page enable-directory">
+        <div class="row">           
+            <div class="contentCol col-sm-12 body-load-content">
+                <div>
+                    <!-- Intro -->
+                    <h2>Accelerator program</h2> 
+                    <p>The AT&amp;T Partner Exchange offers access to accelerator resources that may position your business for growth, help reduce costs and improve operational efficiency.</p>
+                    <apex:outputPanel rendered="{!devFunds}">                       
+                        <p class="mb-40"><a href="{!$Page.Grow_DevelopmentFunds}#Grow_DevelopmentFunds_IDF">Learn how you can access Investment Development Funds (IDF)**</a> to support your operational projects.</p>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!NOT(devFunds)}">
+                        <p class="mb-40">Please contact your company’s portal administrator to gain access to the Development Funds page</p>
+                    </apex:outputPanel>
+                    <hr class="blue_hr mb-40" />
+                    <h3 class="mb-25">Accelerator Resources</h3>
+
+                    <!-- List of Steps Tabbed Content -->
+                     <!-- List of Steps Tabbed Content -->
+                   <div class="row">
+                        <div class="col-sm-12 step-tab-container text-center mb-40">
+                           
+                            <ol class="step-tab-list">
+                                <!-- Network Services Section -->
+                                <div class="step-tab-list-item">
+                                    <a href="javascript:void(0)" class="promo promo-link text-center  bg-gray gray-arrow stepTab" id="step1">
+                                    <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-billing.svg')}" />
+                                       <p>Increase Billing Accuracy and Cost Reconciliation using </p>
+                                      <h3>Billing &amp; Taxation as a Service</h3>
+                                        <span class="transp-bg learn-more">Learn More</span>
+                                    </a>
+                                </div>
+                                <div class="step-tab-list-item">
+                                    <a href="javascript:void(0)" class="promo promo-link text-center bg-dk-blue dk-blue-arrow stepTab" id="step2">
+                                        <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-money-share.svg')}" />
+                                      <p>Minimize Risk and Maximize Compliance with </p>
+                                        <h3>Taxation as a Service<BR /><BR /></h3>
+                                        <span class="transp-bg learn-more">Learn More</span>
+                                    </a>
+                                </div>
+                                <div class="step-tab-list-item">
+                                    <a href="javascript:void(0)" class="promo promo-link text-center bg-lt-blue lt-blue-arrow stepTab" id="step3">
+                                          <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-network.svg')}" />
+                                        <p>Provide Tier 1 &amp; NOC Support with</p>
+                                         <h3>Network Operations Center as a&nbsp;Service</h3>
+                                        <span class="transp-bg learn-more">Learn More</span>
+                                    </a>
+                                </div>
+                                <div class="step-tab-list-item">
+                                    <a href="javascript:void(0)" class="promo promo-link text-center  bg-dk-gray dk-gray-arrow stepTab" id="step4">
+                                        <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-clipboard.svg')}" />
+                                        <p>Automate and Scale Your Quote to Cash&nbsp;with</p>
+                                        <h3>Automation</h3>
+                                        <span class="transp-bg learn-more">Learn More</span>
+                                    </a>
+                                </div>
+                               <div class="step-tab-list-item">
+                                    <a href="javascript:void(0)" class="promo promo-link text-center  bg-blue blue-arrow stepTab" id="step5">
+                                    <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-step.svg')}" />
+                                       <p>Accelerate your business with </p>
+                                      <h3>Expanded IDF Activities</h3>
+                                        <span class="transp-bg learn-more">Learn More</span>
+                                    </a>
+                                </div>
+                            </ol>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>    
+                    <div class="clearfix"></div>
+                    <div class="mt-10">
+                    <!-- Step 5 -->
+                       
+                        <div class="row">
+                            <div class="col-sm-12 stepCont  step5-cont">
+                                  <h3 class="step-heading bg-blue">
+                                    <p>Accelerate your business with</p>
+                                   Expanded IDF Activities 
+                                </h3> 
+                                <div class="step-body">
+                                    <p class="mt-15">Additional activities may be considered for IDF, on a case-by-case basis:  End User Contract Template Preparation, Sales Compensation Consulting, Installation Services, Project Management for Large Deals and Tax Compliance.  In addition, if there is a project that will accelerate your business with AT&amp;T Partner Exchange, please send your project proposal for evaluation to  marketing support inbox at <a href="mailto:SPMarketingSupport@att.com" target="_blank">SPMarketingSupport@att.com</a>.</p>
+                                    
+                                    <h4>How it works </h4>
+                                    <p class="mt-10">Apply for IDF on the AT&amp;T Partner Exchange portal. Each request will be reviewed on a case-by-case basis.  Expected return on investment information will be required on the request.  </p>
+                                   
+                                    <h4>What are my next steps?</h4>
+                                    <p class="mt-10 mb-40">Solution Providers may use the vendor of their choice. If you need referrals or assistance within AT&amp;T Partner Exchange, Please reach out to the marketing support inbox at <a href="mailto:SPMarketingSupport@att.com">SPMarketingSupport@att.com</a> </p>
+                                    <!-- Footnotes -->        
+                                   
+                                    
+                                </div>
+                            </div> 
+                        </div>
+                 
+                        <!-- Step 1 -->
+                        <div class="row">
+                            <div class="stepCont step1-cont col-sm-12">
+                              <h3 class="step-heading bg-gray">
+                                    <p>Increase Billing Accuracy and Cost Reconciliation using</p> 
+                                    Billing &amp; Taxation as a Service
+                                </h3>
+                                <div class="step-body">
+                                    <p class="mt-15 mb-40">If you need a billing resource to assist with accurate and timely billing to your end user customers, one of the Billing as a Service providers may be able to help. AT&amp;T Partner Exchange formed relationships with industry leaders in billing services to help you get up and running with our robust portfolio of AT&amp;T services.</p>
+
+                                    <h4>How it works</h4>
+                                    <p class="mt-10 mb-40">As outlined in the Partner Exchange Master Reseller Agreement, the solution provider owns the end-user customer relationship, including taxing and billing.</p>
+
+                                    <h4>Potential Benefits</h4>
+                                    <ul class="mt-10 mb-40 has_bullets">
+                                        <li>Support your end user pricing, develop enhanced value bundles, and promotions across the Partner Exchange portfolio</li>
+                                        <li>Fast operational readiness without additional headcount</li>
+                                        <li>Competitive rates</li>
+                                    </ul>
+
+                                    <h4>What are my next steps?</h4>
+                                    <ul class="mt-10 mb-40 has_bullets">
+                                        <li>For Billing and Taxing assistance, you may contact the vendors listed below. If you need assistance within AT&amp;T Partner Exchange, Please reach out to the marketing support inbox at <a href="mailto:SPMarketingSupport@att.com" target="_blank">SPMarketingSupport@att.com</a>.</li>
+                                        <li>If your company is tax exempt or FUSF exempt, request a tax exemption kit. Note: All exempt customers are required to complete the tax exemption kit, regardless of exempt status in other AT&amp;T channels.</li>
+                                    </ul>
+                                    <!-- PROMO CARDS -->
+                                    <div class="row promo-row">
+                                         <div class="col-lg-3 promo-col">
+                                           <div class="unclickable promo text-center ">
+                                            <img class="img-responsive" src="{!URLFOR($Resource.partner_logos,'/Billing/partner_blulogix.png')}" />
+                                                <h4>BluLogix</h4>
+                                                <p>Tim Cook</p>
+                                                <p><a href="mailto:tcook@blulogix.com" target="_blank">tcook@blulogix.com</a></p>
+                                                <p>443-333-4114</p>
+                                                <p><a href="http://www.blulogix.com" target="_blank">www.blulogix.com</a></p>
+                                            </div>
+                                        </div>
+                                    <div class="col-lg-3 promo-col">
+                                            <div class="unclickable promo text-center ">
+                                            <img class="img-responsive" src="{!URLFOR($Resource.partner_logos,'/Billing/partner_powernet.png')}" />
+                                                <h4>Powernet</h4>
+                                                <p>Penny Thurnau</p>
+                                                <p><a href="mailto:pthurnau@powernetco.com" target="_blank">pthurnau@powernetco.com </a></p>
+                                                <p>513-645-5109</p>
+                                                <p><a href="http://www.powernetco.com" target="_blank">www.powernetco.com</a></p>
+                                                  <h5 class="st">“Please note: Powernet is also a reseller in the AT&amp;T Partner Exchange Program."</h5>
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 promo-col">
+                                            <div class="unclickable promo text-center mb-15">
+                                                <img class="img-responsive" src="{!URLFOR($Resource.partner_logos,'/Billing/partner_revio.png')}" />
+                                                <h4>Rev.IO</h4>
+                                                <p>Sales</p>
+                                                <p><a href="mailto:info@rev.io" target="_blank">info@rev.io </a></p>
+                                                <p>866-470-5502</p>
+                                                <p><a href="http://www.rev.io" target="_blank">www.rev.io</a></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 promo-col">
+                                            <div class="unclickable promo text-center mb-15 ">
+                                                <img class="img-responsive" src="{!URLFOR($Resource.partner_logos,'/Billing/partner_profitec.png')}" />
+                                                <h4>Profitec</h4>
+                                                <p>Randy Minervino</p>
+                                                <p><a href="mailto:randym@profitecinc.com" target="_blank">randym@profitecinc.com</a></p>
+                                                <p>203-697-7010</p>
+                                                <p><a href="http://www.profitecinc.com" target="_blank">www.profitecinc.com</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="row">
+                            <div class="stepCont col-sm-12 step2-cont">
+                                <h3 class="step-heading bg-dk-blue"> <p>Minimize Risk and Maximize Compliance with</p>Taxation as a Service</h3> 
+                                <div class="step-body">
+                                    <p class="mb-40 mt-15">Tax calculation and management can be complex. Taxation vendors can help you with the implementation, integration, calculation and exemption processes.</p>
+                                    
+                                    <h4>How it works</h4>
+                                    <p class="mt-10 mb-40">Taxing your customers correctly is a must in any industry, yet the taxing elements for telecommunications can be quite complicated. A taxation vendor can guide you through the process. And, a tax vendor can be a cheaper alternative to a full-time tax department.</p>
+
+                                    <h4>What are my next steps?</h4>
+                                    <p class="mt-10 mb-40">
+                                        For telecom tax assistance, you may contact the vendors listed below. If you need assistance within AT&amp;T Partner Exchange, Please reach out to the marketing support inbox at <a href="mailto:SPMarketingSupport@att.com">SPMarketingSupport@att.com</a>.
+                                   </p>    
+                                   
+                                    <div class="row promo-row">
+                                        <div class="col-lg-6 promo-col">
+                                            <div class="unclickable promo text-center bg-dk-blue mb-15">
+                                                <img class="img-responsive" src="{!URLFOR($Resource.partner_logos,'/Taxation/partner_avalara.png')}" />
+                                                <h4>Avalara</h4>
+                                                <p>John Inglehart</p>
+                                                <p><a href="mailto:john.inglehart@avalara.com" target="_blank">john.inglehart@avalara.com</a></p>
+                                                <p>913-901-5025</p>
+                                                <p><a href="http://www.avalara.com" target="_blank">www.avalara.com</a></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 promo-col">
+                                            <div class="unclickable promo text-center bg-lt-blue mb-15">
+                                                <img class="img-responsive" src="{!URLFOR($Resource.partner_logos,'/Taxation/partner_suretax.png')}" />
+                                                <h4>SureTax</h4>
+                                                <p>Brent Reeves</p>
+                                                <p><a href="mailto:brent.reeves@suretax.com" target="_blank">brent.reeves@suretax.com</a></p>
+                                                <p>404-644-7600</p>
+                                                <p><a href="http://www.suretax.com" target="_blank">www.suretax.com</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>  
+                        </div>
+                              
+                        <!-- Step 3 -->
+                        <div class="row">
+                            <div class="stepCont col-sm-12 step3-cont">
+                                <h3 class="step-heading bg-lt-blue">
+                                    <p>Provide Tier 1 &amp; NOC Support with</p>
+                                    Network Operations Center as a Service
+                                </h3> 
+                                <div class="step-body">
+                                    <p class="mt-15 mb-40">Experienced operations teams can be expensive to manage and hard to build. Network Operations Center (NOC)/Tier 1 help desk providers can help you manage your customer equipment and services.</p>
+
+                                    <h4>How it works</h4>
+                                    <p class="mt-10 mb-40">We work with experienced NOC providers to assist with Tier 1 Help Desk and Network Operations Center support to help you manage your customer equipment and services.</p>
+                                    
+                                    <h4>Potential Benefits</h4>
+                                    <ul class="mt-10 mb-40 has_bullets">
+                                        <li>Receive economies of scale benefits usually reserved for larger carriers</li>
+                                        <li>Get access to 24x7 support and tools to manage all of the products in your portfolio</li>
+                                        <li>Benefit from white labeling of services, pay-as-you-go pricing, and personalized business rules</li>
+                                        <li>Services can be customized to meet your network needs, whether your organization needs around-the-clock support, supplemental staffing, or secondary backup</li>
+                                        <li>Establish business rules and notification timing with your NOC provider during the initial onboarding process</li>
+                                    </ul>
+                                    <h4>What are my next steps?</h4>
+                                    <p class="mt-10 mb-40">For NOC assistance, contact the vendors listed below. If you need assistance within AT&amp;T Partner Exchange, Please reach out to the marketing support inbox at <a href="mailto:SPMarketingSupport@att.com">SPMarketingSupport@att.com</a>
+                                    </p>
+                                    
+                                    <div class="row promo-row">
+                                        <div class="col-lg-8 col-lg-offset-2 ">
+                                            <div class="unclickable promo text-center bg-dk-blue">
+                                                <img class="img-responsive" src="{!URLFOR($Resource.partner_logos,'/NOC/partner_netrio.png')}" />
+                                                <h4 class="st">Netrio</h4>
+                                                <p>Ted Johnston</p>
+                                                <p><a href="mailto:tjohnston@netrio.com">tjohnston@netrio.com</a></p>
+                                                <p>214-888-8506</p>
+                                                <p><a href="http://www.netrio.com" target="_blank">www.netrio.com</a></p>
+                                                <h5 class="st">“Please note: Netrio is also a reseller in the AT&amp;T Partner Exchange&nbsp;Program."</h5>
+                                            </div>
+                                        </div>
+                                      
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+                    </div>       
+                            
+                     
+                
+                        <!-- Step 4 -->
+                       
+                        <div class="row">
+                            <div class="stepCont col-sm-12 step4-cont">
+                                <h3 class="step-heading bg-dk-gray">
+                                    <p>Automate and Scale Your Quote to Cash with</p>
+                                    Automation 
+                                </h3> 
+                                <div class="step-body">
+                                    <p class="mt-15">Connect to the AT&amp;T Partner Exchange API<sup>1</sup> platform with Pre-Sales Automation Connectors who have experience working with the AT&amp;T APIs.</p>
+                                    <p class="mb-40">An application program interface (API) is a pathway to information. Our API platform enables direct access to near real-time product availability and quoting capabilities for select services.  API capabilities can be realized from virtually any device&mdash;handheld or desktop&mdash; putting the power of the technology into the hands of the user.</p>
+
+                                    <h4>Key Benefits</h4>
+                                    <p class="mt-10">APIs create connections between business systems, enabling near-instant transmission of important information across applications. APIs can provide the following benefits:</p>
+                                    <ul class="mb-40 has_bullets">
+                                        <li><span class="medium-font">Cycle times</span> - Accelerate service delivery through streamlined processes</li>
+                                        <li><span class="medium-font">User experience</span> - Embed processes into existing tools, helping speed up adoption</li>
+                                        <li><span class="medium-font">Speed</span> - Confirm addresses and get quotes in seconds</li>
+                                        <li><span class="medium-font">Accuracy</span> - Reduce errors and rework through automation</li>
+                                      
+                                    </ul>
+
+                                    <h4>How to connect</h4>
+                                    <p class="mt-10">Solution providers can connect to AT&amp;T APIs in the following ways:</p>
+                                    <ul class=" mb-40 has_bullets">
+                                        <li>Utilization of API (Application Programing Interface) Connectors</li>
+                                        <li>Direct API integration</li>
+                                    </ul>
+
+                                    <h4>What are my next steps?</h4>
+                                    <p class="mt-10 mb-40">For pre-sales automation assistance, you may contact the vendors listed below. If you need assistance within AT&amp;T Partner Exchange, Please reach out to the marketing support inbox at <a href="mailto:SPMarketingSupport@att.com">SPMarketingSupport@att.com</a></p>
+                                    <!-- Footnotes -->        
+                                    <ol class="numbered footnotes mb-40">
+                                         <li>Separate agreement required. Not available to all Solution Providers.</li>
+                                    </ol> 
+                                    <div class="row promo-row">
+                                        <div class="col-lg-6 promo-col">
+                                            <div class="unclickable promo text-center bg-dk-blue mb-15">
+                                            <img class="img-responsive" src="{!URLFOR($Resource.partner_logos,'/Pre-Sale/partner_masterstream.png')}" />
+                                                <h4>MasterStream</h4>
+                                                <p>Don Roots</p>
+                                                <p><a href="mailto:droots@mserp.com">droots@mserp.com</a></p>
+                                                <p>972-768-9571</p>
+                                                <p><a href="http://www.salestreamsoft.com" target="_blank">www.salestreamsoft.com</a></p>
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="col-lg-6 promo-col">
+                                            <div class="unclickable promo text-center bg-lt-blue mb-15">
+                                                <img class="img-responsive" src="{!URLFOR($Resource.partner_logos,'/Pre-Sale/partner_nda.png')}" />
+                                                <h4>Network Design &amp; Analysis</h4>
+                                                <p>Desiree Dortok</p>
+                                                <p><a href="mailto:ddortok@ndacorp.com">ddortok@ndacorp.com</a></p>
+                                                <p>905-477-9574 x 103</p>
+                                                <p><a href="http://www.ndacorp.com" target="_blank">www.ndacorp.com</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                     
+                     <p class="enablement-disclaimer mt-10">*Products and services are offered strictly by third-party Providers, and any purchase of products or services is between the relevant Solution Provider and such Providers. AT&amp;T assumes no liability for services or products offered or sold by, or purchased from, Providers.  Information herein does not represent an endorsement by AT&amp;T, and no such endorsement is expressed or implied by inclusion of any Provider information herein, including any hyperlinks or other Provider content. Please be aware that the Internet sites available through any hyperlinks and the material found there are outside the control of AT&amp;T and AT&amp;T makes no representation about such sites or material. **Eligible activities and funding restrictions for reimbursement apply. </p>
+                    </div>
+                </div>
+            </div>
+        </div> 
+    </div> 
+  
+    <script type="text/javascript">
+        $(document).ready( function () {
+            $(".stepTab").click( function () {
+                var myId = $(this).attr("id");
+                $(".stepTab.active").removeClass("active");
+                $(this).addClass("active");
+                $(".stepCont").not("."+myId+"-cont").hide();
+                $("."+myId+"-cont").css({"display":"inline-block"});
+            });
+        });
+    </script>
+    <!-- END BODY SLICE -->
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+</apex:page>

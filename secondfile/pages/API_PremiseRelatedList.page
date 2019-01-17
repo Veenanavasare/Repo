@@ -1,0 +1,37 @@
+<apex:page standardController="Deal_Hash__c" extensions="API_PremiseRelatedList_Controller">
+
+
+ <apex:form >
+   <apex:pageBlock >
+       <style>
+            body .bPageBlock .pbBody .grey .pbSubheader h3{
+                color:black;
+            }
+       </style>
+       {!msg}
+       <apex:pageBlockButtons location="top">
+    <apex:commandLink value="New-RDS Premise Details" action="{!newRecord}" styleClass="btn" immediate="true" target="_blank" />
+    </apex:pageBlockButtons>
+       <apex:pageMessages />
+     <apex:outputPanel layout="block" style="overflow:auto;width:1030px;height:200px" >   
+          <apex:pageBlockSection collapsible="false" columns="1" showHeader="false" title="" >
+
+    <apex:pageBlockTable value="{!prlist}" var="premise">
+    <apex:column value="{!premise.RDS_Version__c}" title="RDS Version" headerValue="RDS Version"/>
+    <apex:column headerValue="Premise Name">
+    <apex:outputLink target="_blank" value="/{!premise.id}" ><apex:outputText value="{!premise.Name}" /></apex:outputLink></apex:column>
+    <apex:column value="{!premise.Premise_Number__c}" headerValue="Premise Number"/>
+    <apex:column value="{!premise.GRID_Premise_ID__c}" headerValue="Grid Premise ID"/>
+    <apex:column value="{!premise.Service_Type__c}" headerValue="Service Type"/>
+    <apex:column value="{!premise.Transport_Type__c}" headerValue="Transport Type"/>
+    <apex:column value="{!premise.Premise_Street_Number__c}" headerValue="Street Number"/>
+    <apex:column value="{!premise.Premise_Street_Name__c}" headerValue="Street Name"/>
+    <apex:column value="{!premise.Best_Available_Due_Date__c}" headerValue="BADD"/>
+    <apex:column value="{!premise.Request_Due_Date__c}" headerValue="RDD"/>
+      
+    </apex:pageBlockTable>
+   </apex:pageBlockSection>
+  </apex:outputPanel> 
+  </apex:pageBlock>  
+ </apex:form>
+</apex:page>

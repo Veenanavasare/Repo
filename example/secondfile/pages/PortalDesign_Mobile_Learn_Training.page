@@ -1,0 +1,47 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">        
+        
+    <!-- Intro -->
+    <h2>Stay up to date on what's happening in&nbsp;mobility.</h2>
+    <p class="mb-40">It's an increasingly mobile world, and business needs are constantly evolving. Develop your skills through these videos, helpful links and training materials.</p>
+    
+    <!-- Video Section -->
+    <div class="row">
+        
+        <div class="col-lg-8">
+            <div class="embed-responsive embed-responsive-16by9">
+            <iframe class="embed-responsive-item" width="100%" heigh="100%" src="https://www.youtube.com/embed/bjCvY4utV-o" frameborder="0" allowfullscreen="true"></iframe>            
+            </div>
+            <p class="video-desc"><a href="#" class="video-link">LTE 101 | AT&amp;T</a> What exactly is LTE? LTE is the next step in wireless technology, and it's expected to be THE mobile broadband platform for new services and innovation for the foreseeable future. Learn more about LTE and how AT&amp;T 4G LTE allows you to stream, download, upload, browse and game faster than ever before.</p>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="video-list-wrapper">
+                <h3 class="video-list-heading bg-blue">Training Resources</h3>
+                <ul class="video-list">
+                    <li><a href="" class="video-link">LTE 101 | AT&amp;T</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>      
+
+    <hr class="blue_hr" />
+
+    <!-- Documents List: Helpful Links, no variable needed for file-type all show as file-help -->
+    <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-helpful.svg')}" />Helpful Links</h3>
+    <div class="mb-30">
+        <apex:outputPanel >   
+            <apex:repeat value="{!DocMapTraining}" var="docMap"> 
+                <apex:outputLink value="{!docMap.URL}" target="_blank" styleClass="document-file">
+                    <div class="document-row">
+                        <div class="file-type file-{!docMap.type}"></div>
+                        <div class="details">
+                            <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                            <p><apex:outputText value="{!docMap.description}"/></p>
+                        </div>
+                    </div>
+                </apex:outputLink>        
+            </apex:repeat>    
+        </apex:outputPanel>            
+    </div>
+    
+</apex:page>

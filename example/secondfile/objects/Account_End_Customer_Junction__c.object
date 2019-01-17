@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>A many-to-many object which holds the information from Account and End customer i.e. One SP Account can have many end customers and One end customer can have multiple SP Accounts</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
+    <fields>
+        <fullName>Account_Owner__c</fullName>
+        <externalId>false</externalId>
+        <formula>Account__r.OwnerId</formula>
+        <label>Account Owner</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Related End Customers</relationshipLabel>
+        <relationshipName>Account_End_Customer_Junction</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Duplicate_Check__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>false</externalId>
+        <label>Duplicate Check</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>End_Customer_Status__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(End_Customer__r.Endcustomer_Status__c)</formula>
+        <label>End Customer Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>End_Customer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>End Customer</label>
+        <referenceTo>End_Customer__c</referenceTo>
+        <relationshipLabel>Related SP Accounts</relationshipLabel>
+        <relationshipName>Account_End_Customer_Junction</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Shared_ECJ__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(End_Customer__r.Shared_EC__c,&quot;True&quot;,&apos;False&apos;)</formula>
+        <label>Shared ECJ</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Account End Customer - Junction</label>
+    <nameField>
+        <displayFormat>AEJ-{0000}</displayFormat>
+        <label>Account End Customer Junction ID</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Account End Customer - Junction</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Edit_Button_Control</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+ Shared_ECJ__c == &quot;True&quot;,
+ End_Customer_Status__c !=&quot;Shared&quot;
+)</errorConditionFormula>
+        <errorMessage>The End Customer Status should be &quot;Shared&quot;</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+    <webLinks>
+        <fullName>New_SP_Account</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>New SP Account</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/15.0/connection.js&quot;)} 
+
+var aejRecord= sforce.connection.query(&quot;Select Count() From Account_End_Customer_Junction__c  where End_Customer__c=&quot;+&quot;&apos;{!End_Customer__c.Id}&apos;&quot;);
+var url=&quot;/a01/e?&quot;+&apos;{!$Label.END_CUSTOMER_FIELD_IN_AE_Jn_OBJECT}&apos;+&quot;=&quot;+&quot;{!End_Customer__c.Name}&quot;+&quot;&amp;&quot;+&apos;{!$Label.END_CUSTOMER_FIELD_IN_AE_Jn_OBJECT}&apos;+&quot;_lkid=&quot;+&quot;{!End_Customer__c.Id}&quot;+&quot;&amp;retURL=%2F&quot;+&quot;{!End_Customer__c.Id}&quot;;
+
+if (&apos;{!End_Customer__c.Endcustomer_Status__c}&apos;==&quot;Shared&quot;)
+{
+  if(aejRecord.size&gt;0)
+  {
+    alert(&quot;You cannot assign End Customers to more than one SP &quot;);
+  }
+  else
+  {
+    window.location.href=url;
+  }
+}
+else
+{
+  alert(&quot;End Customer Status should be &apos;Shared&apos;&quot;);
+}</url>
+    </webLinks>
+</CustomObject>

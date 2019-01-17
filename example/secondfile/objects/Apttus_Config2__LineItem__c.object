@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <enableEnhancedLookup>false</enableEnhancedLookup>
+    <fields>
+        <fullName>AT_T_Customer_Site__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Used to Link Customer Site ; VASA Region and Line Item based on VASA Response</description>
+        <externalId>false</externalId>
+        <label>AT&amp;T Customer Site</label>
+        <referenceTo>CustomerSite__c</referenceTo>
+        <relationshipLabel>Line Items</relationshipLabel>
+        <relationshipName>Line_Items</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>AccessSpeed__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos; &amp;&amp;(OR (TEXT( Apttus_Config2__ChargeType__c)==&apos;Access Speed Fee&apos;,TEXT(Apttus_Config2__ChargeType__c)==&apos;Access Speed Mileage Fee&apos;)),TEXT(Apttus_Config2__AttributeValueId__r.Access_Speed_MIS__c),If(Product_Code__c==&apos;AVPN&apos; &amp;&amp; (OR (TEXT( Apttus_Config2__ChargeType__c)==&apos;Access Speed Fee&apos;,TEXT(Apttus_Config2__ChargeType__c)==&apos;Access Speed Mileage Fee&apos;)),TEXT(Apttus_Config2__AttributeValueId__r.Access_Speed_AVPN__c),TEXT(Apttus_Config2__OptionId__r.Access_Speed__c)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Access Speed</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Access_Speed__c</fullName>
+        <externalId>false</externalId>
+        <formula>Apttus_Config2__OptionId__r.Access_Speed__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Access Speed1</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Access_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos;,TEXT(Apttus_Config2__AttributeValueId__r.Access_Type__c),If(Product_Code__c==&apos;AVPN&apos; ,TEXT(Apttus_Config2__AttributeValueId__r.Access_Type_AVPN__c),TEXT( Apttus_Config2__AttributeValueId__r.Access_Type__c)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Access Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account_Tier__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Apttus_Config2__ConfigurationId__r.Apttus_Config2__AccountId__r.Current_Tier__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Tier</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AdditionalDnsType__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(CONTAINS(TEXT(Apttus_Config2__AttributeValueId__r.Additional_DNS__c ), &quot;Primary&quot;),&quot;Primary&quot;, 
+&quot;Secondary&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>AdditionalDnsType</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alternate_Access_IGLOO_Access_Price__c</fullName>
+        <externalId>false</externalId>
+        <label>Alternate Access IGLOO Access Price</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Alternate_Access_IGLOO_Discount__c</fullName>
+        <externalId>false</externalId>
+        <label>Alternate Access IGLOO Discount %</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Extra_Mileage_Charge__c</fullName>
+        <description>Mileage Charge * Extra Miles</description>
+        <externalId>false</externalId>
+        <label>Extra Mileage Charge</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Extra_Mileage__c</fullName>
+        <externalId>false</externalId>
+        <label>Extra  Mileage</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Installation_Option__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos;,
+TEXT(Apttus_Config2__AttributeValueId__r.Install_Option_MIS__c),
+If(Product_Code__c==&apos;AVPN&apos;,
+TEXT(Apttus_Config2__AttributeValueId__r.Install_Option_AVPN__c),
+&apos;&apos;))</formula>
+        <label>Installation Option</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Interface_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos; &amp;&amp; (OR (TEXT( Apttus_Config2__ChargeType__c)==&apos;Access Speed Fee&apos;,TEXT(Apttus_Config2__ChargeType__c)==&apos;Access Speed Mileage Fee&apos;)),TEXT(Apttus_Config2__AttributeValueId__r.Interface_Type__c),If(Product_Code__c==&apos;AVPN&apos; &amp;&amp; (OR (TEXT( Apttus_Config2__ChargeType__c)==&apos;Access Speed Fee&apos;,TEXT(Apttus_Config2__ChargeType__c)==&apos;Access Speed Mileage Fee&apos;)),TEXT(Apttus_Config2__AttributeValueId__r.Interface_Type_AVPN__c),TEXT(Apttus_Config2__AttributeValueId__r.Interface_Type__c)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Interface Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IsBatchUpdate__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>IsBatchUpdate</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsDuplicated__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>IsDuplicated</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Lec_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Lec Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MBC_Speed__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos;,TEXT(Apttus_Config2__AttributeValueId__r.UBB_Speed_MIS__c),If(Product_Code__c==&apos;AVPN&apos; ,TEXT(Apttus_Config2__AttributeValueId__r.UBB_Speed_AVPN__c),Apttus_Config2__AttributeValueId__r.UBB_Speed__c))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>MBC Speed</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Managed_Router__c</fullName>
+        <externalId>false</externalId>
+        <formula>Apttus_Config2__AttributeValueId__r.Managed_Router__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Managed Router</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Mileage__c</fullName>
+        <externalId>false</externalId>
+        <label>Mileage</label>
+        <precision>7</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Mileages__c</fullName>
+        <externalId>false</externalId>
+        <formula>if( Apttus_Config2__AttributeValueId__r.Mileage__c &lt;=20,TEXT(20),If(Apttus_Config2__AttributeValueId__r.Mileage__c &gt;20 &amp;&amp; Apttus_Config2__AttributeValueId__r.Mileage__c &lt;=50 ,TEXT(50),TEXT(999999)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Mileages</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Net_Price_with_Deal_Reg_Discounts__c</fullName>
+        <description>This field stores the net price after Deal Reg Discounts are applied</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field stores the net price after Deal Reg Discounts are applied</inlineHelpText>
+        <label>Net Price with Deal Reg Discounts</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Net_Price_with_SP_Order_Discounts__c</fullName>
+        <description>This field stores the net price after SP and Order Discounts are applied</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field stores the net price after SP and Order Discounts are applied</inlineHelpText>
+        <label>Net Price with SP/Order Discounts</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>One_Time_Fee__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos; &amp;&amp; TEXT(Apttus_Config2__ChargeType__c)==&apos;One Time Fee&apos;,TEXT(Apttus_Config2__AttributeValueId__r.Install_Option_MIS__c),
+If(Product_Code__c==&apos;AVPN&apos; &amp;&amp; TEXT(Apttus_Config2__ChargeType__c)==&apos;One Time Fee&apos;,TEXT(Apttus_Config2__AttributeValueId__r.Install_Option_AVPN__c)
+,&apos;&apos;))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>One Time Fee</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Original_Hidden_Price__c</fullName>
+        <description>This field stores the Original Hidden Price without promotional discount</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field stores the Original Hidden Price without promotional discount</inlineHelpText>
+        <label>Original Hidden Price</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Original_Net_Price__c</fullName>
+        <description>This field stores the original net price without promotions</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field stores the original net price without promotions</inlineHelpText>
+        <label>Original Net Price</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Port_Speed__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos; ,TEXT(Apttus_Config2__AttributeValueId__r.Port_Speed_MIS__c), 
+if(Product_Code__c==&apos;AVPN&apos;,TEXT(Apttus_Config2__AttributeValueId__r.Port_Speed_AVPN__c), 
+if(Product_Code__c==&apos;ASE&apos;,TEXT(Apttus_Config2__AttributeValueId__r.PortSpeedASE__c), Apttus_Config2__AttributeValueId__r.Port_Speed__c)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Port Speed</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Port_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos;,TEXT(Apttus_Config2__AttributeValueId__r.Port_Type_MIS__c),If(Product_Code__c==&apos;AVPN&apos; ,TEXT(Apttus_Config2__AttributeValueId__r.Port_Type_AVPN__c),IF(Apttus_Config2__ProductOptionId__r.Apttus_Config2__ProductOptionGroupId__r.Apttus_Config2__RootOptionGroupId__c = &apos;Port Type&apos;,Apttus_Config2__ProductOptionId__r.Apttus_Config2__ProductOptionGroupId__r.Apttus_Config2__ProductId__r.ProductCode,&apos;Blank&apos;)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Port Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Product_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>Apttus_Config2__ProductId__r.ProductCode</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Product Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Id</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Quote_Id__c</fullName>
+        <externalId>false</externalId>
+        <formula>Apttus_Config2__ConfigurationId__r.Apttus_QPConfig__Proposald__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Quote Id</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UBBOveragePrice__c</fullName>
+        <externalId>false</externalId>
+        <label>UBBOveragePrice</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>VASARegion__c</fullName>
+        <externalId>false</externalId>
+        <label>VASA Region</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>VOIP__c</fullName>
+        <externalId>false</externalId>
+        <formula>if( Apttus_Config2__AttributeValueId__r.Concurrent_Calls__c &lt;=12,TEXT(12) ,TEXT(500)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>VOIP</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Vasa_region__c</fullName>
+        <externalId>false</externalId>
+        <label>Vasa region</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>WP_Hidden_Discount_Percentage__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This field stores the original discount percentage without promotional discounts.</inlineHelpText>
+        <label>Wireline Promo Discount %(Access Hidden)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Wireline_Promo_Discount_Deal_Reg__c</fullName>
+        <description>This field stores the Wireline Promotion Discount (Deal Reg) applied on the Line Item</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field stores the Wireline Promotion Discount (Deal Reg) applied on the Line Item</inlineHelpText>
+        <label>Wireline Promo Discount % (Deal Reg)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Wireline_Promo_Discount_SP_Order__c</fullName>
+        <description>This field stores the Wireline Promotion Discount (SP/Order) applied on the Line Item</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field stores the Wireline Promotion Discount (SP/Order) applied on the Line Item</inlineHelpText>
+        <label>Wireline Promo Discount % (SP/Order)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Wireline_Promotion_Discount_Percentage__c</fullName>
+        <description>This field stores the Wireline Promotion Discount (Map/Site) applied on the Line Item</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field stores the Wireline Promotion Discount (Map/Site) applied on the Line Item</inlineHelpText>
+        <label>Wireline Promo Discount % (Map/Site)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Wireline_Promotion_Name_Applied__c</fullName>
+        <externalId>false</externalId>
+        <label>Wireline Promotion Name Applied</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Wireline_Promotion_Number_Applied__c</fullName>
+        <externalId>false</externalId>
+        <label>Wireline Promotion Number Applied</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>isPricingApplied__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>isPricingApplied</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+</CustomObject>

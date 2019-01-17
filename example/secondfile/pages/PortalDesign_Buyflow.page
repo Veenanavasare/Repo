@@ -1,0 +1,211 @@
+<apex:page controller="AVPN_MIS_BuyFlowController" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" title="BuyFlow" cache="false">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader" />
+
+    <style>
+        button.close {
+            font-size: 200%;
+        }
+        .tabbed_menu .circlenum, .tabbed_menu .circlenum1 {
+            float: left;
+            margin: -4px 0px 0px;
+            width: 25px;
+            height: 25px;
+            border-radius: 15px;
+            font-size: 10px;
+            line-height: 25px;
+            text-align: center;        
+        }
+        .tabbed_menu .circlenum1 {
+            border: 1px solid rgb(91, 98, 104);
+            color: rgb(102, 102, 102);
+        }
+        .tabbed_menu .circlenum {
+            border: 1px solid #056FAB;
+            color: #056FAB;
+        }
+        .tabbed_menu .active .circlenum {
+            font-size: 18px;
+            color: #fff;
+            border: 1px solid #fff;
+        }
+        .tabbed_menu .disabled .circlenum1 {
+            font-size: 18px;
+        }                        
+        .tabbed_menu li {
+            padding: 0;
+            width: 20%;
+            pointer-events: none !important;
+        }
+        .tabbed_menu li a {
+            padding: 20px;
+            display: block;
+            text-align: center;
+            color:#666;
+            border: 1px solid #a3a3a3 ;
+        }
+        .tabbed_menu .active {
+            background: #056fab;
+        }
+        .tabbed_menu .active > a{
+            color: #fff !important;
+        } 
+        .tabbed_menu .mainnav li.active::after {
+            content: ' ';
+            display: inline;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            position: absolute;
+            border-top: 14px solid #056fab;
+            bottom: -12px;
+            margin-left: 8%;
+            z-index: 99999;
+        }
+        .tabbed_menu .disabled {
+            background:#e1e1e1 !important;
+            color: #666 !important;
+        }                       
+        .dataTables_length {
+            display: none;
+        }
+        .dataTables_info {
+            bottom: 22px;
+            position: absolute;
+            right: 180px;
+        }
+        .manage_user_name {
+            width: 17% !important;
+        }
+        .manage_user_contact_name {
+            width: 10% !important;
+        }
+        .manage_user_address {
+            width: 10% !important;
+        }
+        .manage_user_city {
+            width: 10% !important;
+        }
+        .manage_user_state {
+            width: 10% !important;
+        }
+        .manage_user_zip {
+            width: 10% !important;
+        }
+        #manage_content .pagination > a {
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #056fab;
+            margin-left: 5px;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+            cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+            cursor: no-drop;
+        }
+        .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+            background-size: 900px 900px !important;
+        }
+        #manage_content{
+            margin-bottom:0px !important;
+        }
+        #slice_footer{
+            margin-top: 30px !important;
+        }
+        .rightMargin{
+            margin-right: -30px !important;
+        }
+        .rightmarginEnteraddress{
+            margin-right: -11px !important;
+        }
+    </style>
+    
+    <div class="content_container">
+        <div id="hero_banner" class="hero_manage jumbotronContainer ng-scope">
+            <div class="row">
+                <div class="col-sm-12"></div>
+            </div>
+        </div>
+        
+        <div id="manage_content" style="padding-top: 40px;" class="page ng-scope" ng-controller="QuoteController as beginQuote">
+            <div class="container" style="width: 100% !important; margin-top: 0 !important; padding: 0 !important;">
+                <div id="main" class="row tabbed_menu">
+                    <div class="stepTracker col-xs-12 col-md-12 p0">
+                        <ul class="mainnav" role="tablist">
+                            <li class="alreadyConfiguredTab">
+                                <a href="javascript:void(0);" data-name="selectCust" role="tab"  style="padding-right: 31px;" data-toggle="tab" data-tabname="{!$Label.Select_Customer}"><div class="circlenum rightMargin">1</div> {!$Label.Select_Customer} </a>
+                            </li>
+                            <li class="alreadyConfiguredTab">
+                                <a href="javascript:void(0);" data-name="selectProd" role="tab" style="padding-right: 41px;" data-toggle="tab" data-tabname="{!$Label.Select_Product}"><div class="circlenum rightMargin">2</div> {!$Label.Select_Product} </a>
+                            </li>
+                            <li class="alreadyConfiguredTab">
+                                <a href="javascript:void(0);" data-name="enterAddress" role="tab" style="padding-right: 50px;" data-toggle="tab" data-tabname="{!$Label.Enter_Addresses}"><div class="circlenum rightmarginEnteraddress">3</div> {!$Label.Enter_Addresses} </a>
+                            </li>
+                            <li class="active">
+                                <a href="javascript:void(0);" data-name="configProduct" role="tab" style="padding-right: 19px;" data-toggle="tab" data-tabname="{!$Label.Configure_Product}"><div class="circlenum rightMargin">4</div> {!$Label.Configure_Product} </a>
+                            </li>
+                            <li class="disabled">
+                                <a href="javascript:void(0);" data-name="reviewQuote" role="tab" style="padding-right: 51px;" data-toggle="tab" data-tabname="{!$Label.Review_Quote}"><div class="circlenum1 rightMargin">5</div> {!$Label.Review_Quote} </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="pageName col-xs-12 col-md-12 p0">
+                        <h1 class="manage_content-header">Configure Product</h1>
+                    </div>
+                </div>
+                <div class="row tab-content">
+                    <div class="tab-pane fade in active">
+                        <apex:include pageName="{!pageToLoad}"/>
+                    </div>
+                </div> 
+                             
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        $(document).ready(function () {
+            $(".tooltipTrigger").tooltip();
+        });             
+        
+        function activeTabIcon() {
+            var tabName = $('.tabbed_menu li.active a').attr('data-tabname');            
+            $('.manage_content-header').text(tabName);
+            var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+            $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);
+        }
+
+        function GetURLParameter(sParam) {
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++) {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam) {
+                    return sParameterName[1];
+                }
+            }
+        }
+
+        var mode = GetURLParameter('mode');
+        var generatedQuoteId = GetURLParameter('quoteid');
+        
+        if (generatedQuoteId) {
+            if (mode == "reviewquote") {
+                $("a[data-name='configProduct']").parent('li').removeClass("active").addClass("alreadyConfiguredTab");
+                $("a[data-name='reviewQuote']").parent('li').removeClass("disabled").addClass("active");
+                $("a[data-name='reviewQuote']").parent('li').find('.circlenum1').removeClass("circlenum1").addClass("circlenum");
+            }
+            activeTabIcon();                      
+        }      
+    </script>
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+</apex:page>

@@ -1,0 +1,65 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    <div class="international">
+
+        <!-- Intro -->        
+        <h2>AT&amp;T Partner Exchange is committed to keeping your customers connected, both at home and&nbsp;abroad.</h2>
+        
+        <hr class="blue_hr" />
+
+        <!-- Document List: Talk and Text -->
+        <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-us.svg')}" />Talk and text from the U.S.</h3>
+        <span class="doc-sub-cat">Keep your customers in touch with their colleagues around the globe. Grant them access to call to over 225 countries and text to over 190 countries from the U.S. at low or no cost to you.</span>
+        <apex:outputPanel >   
+            <apex:repeat value="{!DocMapTalkText}" var="docMap"> 
+                <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                    <div class="document-row">
+                        <div class="file-type file-{!docMap.type}"></div>
+                        <div class="details">
+                            <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                            <p><apex:outputText value="{!docMap.description}"/></p>
+                        </div>
+                    </div>
+                </apex:outputLink>        
+            </apex:repeat>    
+        </apex:outputPanel>              
+
+        <hr class="blue_hr" />           
+
+        <!-- Document List: Travel -->
+        <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-world.svg')}" />Travel outside the U.S.</h3>
+        <span class="doc-sub-cat">Enable your customers to do business abroad in more than 150 countries. AT&amp;T Partner Exchange<sup>&reg;</sup> has a roam zone for reselling voice, text, and data to your customers, allowing you to build incremental value at minimal cost.</span>
+        <apex:outputPanel >   
+            <apex:repeat value="{!DocMapTravel}" var="docMap"> 
+                <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                    <div class="document-row">
+                        <div class="file-type file-{!docMap.type}"></div>
+                        <div class="details">
+                            <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                            <p><apex:outputText value="{!docMap.description}"/></p>
+                        </div>
+                    </div>
+                </apex:outputLink>        
+            </apex:repeat>    
+        </apex:outputPanel>             
+
+        <!-- Robyn 3/10/16: Commenting out Helpful Links Document List because there are currently no documents for this section -->
+        <!-- <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-helpful.png')}" />Helpful Links</h3>
+        <apex:outputPanel >   
+            <apex:repeat value="{!DocMapHelpfulLinks}" var="docMap"> 
+                <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                    <div class="document-row">
+                        <div class="file-type file-{!docMap.type}"></div>
+                        <div class="details">
+                            <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                            <p><apex:outputText value="{!docMap.description}"/></p>
+                        </div>
+                    </div>
+                </apex:outputLink>        
+            </apex:repeat>    
+        </apex:outputPanel> -->
+
+        <!-- FIXME: clicking the link to Pricing should close the Learn More nested menu on the side nav -->
+        <p class="mt-40 mb-30">View <a data-page="PortalDesign_Mobile_Pricing" role="menuitem" style="cursor:pointer;">Pricing</a> to see the rate card.</p>
+
+    </div>
+</apex:page>

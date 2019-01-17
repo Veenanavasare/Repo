@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>Access_Speed__c</fullName>
+        <externalId>false</externalId>
+        <label>Access Speed</label>
+        <precision>7</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Category__c</fullName>
+        <externalId>false</externalId>
+        <label>Category</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+        <valueSet>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Network Services</fullName>
+                    <default>false</default>
+                    <label>Network Services</label>
+                </value>
+                <value>
+                    <fullName>Mobility Services</fullName>
+                    <default>false</default>
+                    <label>Mobility Services</label>
+                </value>
+                <value>
+                    <fullName>Cloud &amp; Hosting Solutions</fullName>
+                    <default>false</default>
+                    <label>Cloud &amp; Hosting Solutions</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>IsValid__c</fullName>
+        <description>This is used to check validity of a product based on the effective and expiry date</description>
+        <externalId>false</externalId>
+        <formula>IF(NOT(ISNULL(Apttus_Config2__EffectiveDate__c)) ||
+ NOT(ISNULL(Apttus_Config2__ExpirationDate__c )),
+ DATEVALUE(Apttus_Config2__ExpirationDate__c) &gt;= TODAY() ||
+ DATEVALUE(Apttus_Config2__EffectiveDate__c) &lt;= TODAY(),
+ IF(ISNULL(Apttus_Config2__EffectiveDate__c) &amp;&amp; 
+ ISNULL(Apttus_Config2__ExpirationDate__c),TRUE,FALSE))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>IsValid</label>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Product_New_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Product New Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sequence__c</fullName>
+        <description>For controlling display sequence</description>
+        <externalId>false</externalId>
+        <label>Sequence</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sub_Product1__c</fullName>
+        <externalId>false</externalId>
+        <label>Sub Product1</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sub_Product2__c</fullName>
+        <externalId>false</externalId>
+        <label>Sub Product2</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+</CustomObject>

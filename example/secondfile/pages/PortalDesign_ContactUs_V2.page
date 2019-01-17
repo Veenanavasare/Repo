@@ -1,0 +1,718 @@
+<apex:page docType="html-5.0" standardStylesheets="false"
+    sidebar="false" showHeader="false" controller="ContactUsController"
+    title="Contact Us Form">
+    
+ <style type='text/css'>
+ 
+     
+        .dropdown-contactus-small select {
+         background: url(/resource/1466127250000/portalDesignImg/new_arrow_small.png) no-repeat right #fff;
+        background-size: 39px;
+        -webkit-appearance:none;
+          -moz-appearance: none;
+          appearance: none;
+        }
+    .contactus-select-small {
+    width: auto;
+        }
+        .form-group-half-left {
+            float: left;
+            width: 47.5%;
+            margin-right: 5%;
+        }
+
+        .form-group-half-right {
+            float: left;
+            width: 47.5%;
+        }
+        .errorText {
+            color: #a94442;
+            margin-bottom: -15px;
+            font-size: 15px;
+        }
+        .has-error .control-label
+        {
+            color: #333;
+        }
+        .btn-complete-parent-disabled
+        {
+            cursor: not-allowed;
+        }
+        .inputState_error, .inputMessage_error
+        {
+            margin-top:0;
+        }
+        /* To prevent the form fields from shifting we add an additional height*/
+        #nameDiv, #companyInfoDiv, #contactInfoDiv
+        {
+            height: 80px;
+        }
+        /* To prevent the form fields from shifting, we remove the margin-bottom from the error messages*/
+        #emailDivErrorText, #phoneNumberDivErrorText
+        {
+            margin-bottom:0;
+        }
+        #serviceDivErrorText, #messageDivErrorText
+        {
+            margin-top: 0;
+        }
+        .btn_parent
+        {
+            height: 10px;
+        }
+        #slice_contact_us { background: url({!URLFOR($Resource.PortalDesignHeros,'heros/contact.jpg')}); }
+        #submitButton,
+        .btn_parent .btn {
+            color: #fff;
+            background: #056fab;
+            width: 100%;
+        }
+        .select-product,
+        .select-support-type {
+            display: none;
+        }
+        .blank-error {
+            color: #a94442;
+        }
+
+        .thankYouText {
+            display: none;
+            position: relative;
+            background-color: #eafdcf;
+            padding: 10px; 
+            border-radius: 7px; 
+            border: 1px solid #a5e031;
+            color: #86b41a;
+            line-height: 150%;
+            padding-left: 20px; 
+        }
+
+        .closeThankYouText {
+            position: absolute;
+            top: 10px; 
+            right: 10px; 
+            cursor: pointer;
+        }
+        /* BRANDON 5/9/16 fix smart button */
+        .btn_parent button {
+            margin: 0px; 
+        }
+        /* END - BRANDON 5/9/16 fix smart button */
+    </style> 
+    <apex:includeScript value="{!$Resource.jQueryMin}" /> 
+    <apex:includeScript value="{!$Resource.jMaskedInput}" />
+    <apex:includeScript value="{!$Resource.atombootstrapminjs}" />
+     <apex:stylesheet value="{!$Resource.peCustom}" />
+        
+   
+    
+    <div id="cred_pages">
+
+        <div id="slice_contact_us">
+            <form id="contactForm" action="{!LEFT($Api.Partner_Server_URL_260, FIND( '/services', $Api.Partner_Server_URL_260))}servlet/servlet.WebToCase?encoding=UTF-8" method="POST">
+            <input type="hidden" name="orgid" value="{!$Organization.Id}"></input>
+            <input type="hidden" name="retURL" value="{!LEFT($Api.Partner_Server_URL_260, FIND( '/services', $Api.Partner_Server_URL_260))}apex/PortalDesign_ContactUsauth#success"></input>
+            <input type="hidden" name="origins" value="contact Us"></input>
+               <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <section class="contact_header">
+                            <h1>Contact Us</h1>
+                            <h2>Together we can build wireless, cloud, and network
+                                services around any business.</h2>
+                        </section>
+                    </div>
+                </div>
+              </div>
+                <div class="max_1000_width">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="contact_form_container" id="contactFormDiv">
+                                <apex:pageMessages ></apex:pageMessages>
+                                <apex:outputPanel id="thankYouText">
+                                    <div class="thankYouText">
+
+                                    </div>
+                                </apex:outputPanel><br/>
+                                <p>Complete the form and click <strong>Submit</strong>. An AT&amp;T representative will contact you shortly with a response.</p><BR />
+
+                                <div class="form-group" id="nameDiv">
+                                    <div class="form-group-half-left" id="firstNameDiv">
+                                        <label class="control-label">First Name</label>
+                                        <input value="{!firstName}" id="00Nm0000000kpv0" maxlength="30" name="00Nm0000000kpv0" size="20" type="text"
+                                            Class="form-control required inputFirstName" placeholder="First Name" ></input>
+                                        <!-- <p id="firstNameDivErrorText" class="errorText">{!firstNameError}</p> -->
+                                    </div>
+                                    <div class="form-group-half-right" id="lastNameDiv">
+                                        <input  id="name" maxlength="80" name="name" size="20" type="hidden" ></input>
+                                        <label class="control-label">Last Name</label>
+                                        <input value="{!lastName}" id="00Nm0000000kpv5" maxlength="30" name="00Nm0000000kpv5" size="20" type="text"
+                                            Class="form-control required inputLastName" placeholder="Last Name" ></input>
+                                        <!-- <p id="laseNameDivErrorText" class="errorText">{!lastNameError}</p> -->
+                                    </div>
+                                </div>
+                                      <div class="form-group" id="companyInfoDiv">
+                                        <div class="form-group-half-left" id="companyNameDiv">
+                                        <label class="control-label">Company Name</label>
+                                        <input value="{!companyName}" id="inCompanyName"
+                                            Class="form-control required inputCompanyName" placeholder="Company Name" ></input>                                                                                                                               
+                                       </div>
+                                        <div class="form-group-half-right" id="companyWebsiteDiv">
+                                        <label class="control-label">Company Website</label>
+                                        <input value="{!companyWebsite}"
+                                           id="company" maxlength="80" name="company" size="20" type="text" class="form-control inputCompanyWebsite" html-placeholder="Company Website" ></input>
+                                        </div>
+                                    </div>
+                                <div class="form-group" id="contactInfoDiv">
+                                    <div class="form-group-half-left" id="emailDiv">
+                                        <label class="control-label">Email</label>
+                                        <input value="{!email}" id="email" maxlength="80" name="email" size="20" type="text"
+                                            Class="form-control required inputEmail" placeholder="john.smith@abc.com" ></input>
+                                        <!-- <p id="emailErrorText" class="errorText">{!emailError}</p> -->
+                                    </div>
+                                    <div class="form-group-half-right" id="phoneNumberDiv">
+                                        <label class="control-label">Phone Number</label>
+                                        <input value="{!phoneNumber}" id="phone" maxlength="40" name="phone" size="20" type="text"
+                                            Class="form-control tel-mask required inputPhoneNumber" placeholder="(xxx) xxx-xxxx" ></input>
+                                        <!-- <p id="phoneNumberErrorText" class="errorText">{!phoneNumberError}</p> -->
+                                    </div>
+                                </div>
+
+                                <div class="dropdown-contactus-small contactus-select-small" id="serviceDiv">
+
+                                   <label class="control-label">Subject</label> <BR />
+                                    <select  id="00Nm0000000kpvK" name="subject" title="Select a Subject"  html-data-live-search="true" class="form-control State required inputService" multiselect="false" size="1">
+                                        <option value="">--None--</option>                                        
+                                        <!-- <option value="Product">Product</option>
+                                        <option value="Portal Support">Portal Support</option>
+                                        <option value="Order and Provisioning">Order and Provisioning</option>
+                                        <option value="Billing">Billing</option>
+                                        <option value="Sales">Sales</option>
+                                        <option value="Marketing">Marketing</option>
+                                        <option value="Training">Training</option> -->
+                                        <option value="Learn about the Partner Exchange">Learn more about AT&amp;T Partner Exchange</option>
+                                        <option value="Login/Portal Issues">Login/Portal Issues</option>
+                                        <!-- <option value="Got a Question?">Got a Question?</option> -->
+                                    </select>
+
+                                    <!-- <div class="select-product">
+                                        <BR />
+                                        <select  class="form-control required" id="00Nm0000000ksIz" name="00Nm0000000ksIz" title="Products">
+                                            <option value="">Select a Product</option>
+                                            <option value="Network Services">Network Services</option>
+                                            <option value="Cloud and Hosting Services">Cloud and Hosting Services</option>
+                                            <option value="Mobility  Services">Mobility  Services</option>
+                                        </select>
+                                    </div> -->
+
+                                    <!-- <div class="select-support-type">
+                                        <BR />
+                                        <select  class="form-control required" id="00N60000002zjeP" name="00N60000002zjeP" title="Support Type"> -->
+                                        <!-- <select  class="form-control required" id="00Nm0000000ksRX" name="00Nm0000000ksRX" title="Support Type"> -->
+                                            <!-- <option value="">Select a Support Type</option>
+                                            <option value="Login/Password Support">Login/Password Support</option>
+                                            <option value="Technical Support">Technical Support</option>
+                                            <option value="Portal Migration Issue">Portal Migration Issue</option>
+                                        </select>   
+                                    </div> -->
+                                    <!-- <p id="serviceErrorText" class="errorText">{!serviceError}</p> -->
+                                </div>
+
+                                <div class="form-group" id="messageDiv">
+                                    <label class="control-label">Message</label>      
+                                    <!-- BRANDON: 9.8.2016 removed limit counter. It's throwing errors. Need to be fixed       -->
+                                    <!-- onkeydown="checkLimit(this,this.form.countdown,500);"  
+                                        onkeyup="checkLimit(this,this.form.countdown,500);" -->                        
+                                    <textarea value="{!message}" id="00Nm0000000kpul" name="description" type="text" wrap="soft" 
+                                        class="form-control required inputMessage" rows="3" 
+                                        html-placeholder="Write your message here. An AT&T representative will get back to you soon." ></textarea>
+                                    <!-- <p id="messageErrorText" class="errorText">{!messageError}</p> -->
+                                </div>
+                                <div class="form-group">
+                                    <div class="row">
+                                        <hr />
+                                    </div>
+                                    
+                                  
+                                </div>
+
+                                <div class="btn_parent">
+                                <!-- secondary -->
+                                    <button id="submitButton" value="Submit"
+                                        type="submit" class="btn  pull-right inputSubmit">Submit</button>
+                                </div>
+                                <!-- END - BRANDON 5/9/16 fix smart button -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+     <script>
+      function checkLimit(limitField, limitCount, limitNum)
+      {
+      if (limitField.value.length > limitNum) {
+        limitField.value = limitField.value.substring(0, limitNum);
+      } else {
+        limitCount.value = limitNum - limitField.value.length;
+      }
+      }
+     </script>
+    <script type='text/javascript'>
+    //captcha code initilize
+      
+        $(document).ready(function() {  
+        
+        var $firstName = $("#00Nm0000000kpv0");
+                var $email =$("#email");
+                var $lastName = $("#00Nm0000000kpv5");
+                var $companyName = $("#inCompanyName");
+                var $phone = $("#phone");
+                var $productService = $("#00Nm0000000kpvK"); //now is the form Subject
+                var $product = $("#00Nm0000000ksIz");
+                var $support = $("#00Nm0000000ksRX");
+                var $message = $("#00Nm0000000kpul"); 
+            
+            $("[name='description']").val("");
+            $("#submitButton").attr("disabled", "disabled").css({"background-color":"silver"});
+            $(".required").on("keyup", function (){
+
+                $("select").on("change", function () {
+                    var blnkCount   = $('.required').filter(function(){ return !$(this).val() }).length; 
+
+                    if (blnkCount == 0 && $("select:visible")[0].selectedIndex != 0)  {
+                        if ($("select:visible")[1]){
+                            if ($("select:visible")[1].selectedIndex != 0){
+                                $("#submitButton").removeAttr("disabled").css({"background-color":""});
+                            } else {
+                                $("#submitButton").attr("disabled", "disabled").css({"background-color":"silver"});
+                            }
+                        }else {
+                            $("#submitButton").removeAttr("disabled").css({"background-color":""});
+                        }
+
+                    }  else {
+                        $("#submitButton").attr("disabled", "disabled").css({"background-color":"silver"});      
+                    }
+                });
+
+                $(".required").not("[name='subject']").each( function () {
+                    var blnkCount   = $('.required').filter(function(){ return !$(this).val() }).length; 
+
+                    if (blnkCount == 0 && $("select:visible")[0].selectedIndex != 0) {
+                        if ($("select:visible")[1]){
+                            if ($("select:visible")[1].selectedIndex != 0){
+                                $("#submitButton").removeAttr("disabled").css({"background-color":""});
+                            } else {
+                                $("#submitButton").attr("disabled", "disabled").css({"background-color":"silver"});
+                            }
+                        }else {
+                            $("#submitButton").removeAttr("disabled").css({"background-color":""});
+                        }
+                    }  else {
+                        $("#submitButton").attr("disabled", "disabled").css({"background-color":"silver"});      
+                    }
+                });
+
+            });
+        
+            $(".tel-mask").mask("(999) 999-9999");
+            $(".dbl-mask").mask("999 999 999.99");
+            $(".date-mask").mask("99/99/9999");
+            $(".misc-mask").mask("**-aa-a9-9a-99");
+
+            // var formAction = $("#contactForm").attr("action");
+            // newActionValue = formAction.substring(0, formAction.indexOf('apex'));
+            // refinedActionValue = newActionValue + "servlet/servlet.WebToCase?encoding=UTF-8";
+            // $("#contactForm").attr("action", refinedActionValue);
+
+            if(window.location.hash == "#success"){
+                $(".thankYouText").fadeIn("fast").append("<strong>Your request was submitted successfully</strong>. <BR />You will receive a confirmation email soon. Thank you for contacting AT&amp;T.")
+            }
+
+            setTimeout(function () {
+                $(".thankYouText").slideUp(function () {
+                    window.location.hash="";
+                });
+            }, 7000);
+
+
+            // FORCE THE RETURN NAME OF SUBJECT FIELD TO MATCH "PRODUCT" AND "PORTAL SUPPORT" SUB MENUS
+                $("#00Nm0000000kpvK").change( function () {
+                    $(".newOption").remove();
+                });
+                $("#00Nm0000000ksIz").change( function () {
+                    var myVal = $(this).val();
+                    $(".newOption").remove();
+                    $("#00Nm0000000kpvK")
+                        .append("<option class='newOption' value='Product - "+myVal+"'>Product</option>")
+                        .val("Product - "+myVal+"");     
+                });
+                $("#00N60000002zjeP").change( function () {
+                    var myVal = $(this).val();
+                    $(".newOption").remove();
+                    $("#00Nm0000000kpvK")
+                        .append("<option class='newOption' value='Portal Support - "+myVal+"'>Portal Support</option>")
+                        .val("Portal Support - "+myVal+"");     
+                });
+            ////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+           // Function to initialize the validations on the form fields
+            // initializeFieldValidations();
+             $("#serviceDiv option:eq(0)").text("Select Option");
+
+             $("#submitButton").hover(function () {
+                var passName = $(".inputFirstName").val() + " " + $(".inputLastName").val();
+                $("#name").val(passName);
+             })
+             .click(function ( event ) {
+                
+
+                
+                
+
+                $(".blank-error").remove();
+
+                if ($firstName.val() == "") {
+                    event.preventDefault();
+                    $firstName.css({"border":"1px solid #a94442"}).after("<div class='blank-error'>First name must be specified.</div>");
+                    $firstName.focus(function () {
+                        $(this).css({"border":""}).siblings(".blank-error").remove();
+                    });
+                }
+                if ($lastName.val() == "") {
+                    event.preventDefault();
+                    $lastName.css({"border":"1px solid #a94442"}).after("<div class='blank-error'>Last name must be specified.</div>");
+                    $lastName.focus(function () {
+                        $(this).css({"border":""}).siblings(".blank-error").remove();
+                    });
+                }
+                if ($email.val() == "") {
+                    event.preventDefault();
+                    $email.css({"border":"1px solid #a94442"}).after("<div class='blank-error'>Email address must be specified.</div>");
+                    $email.focus(function () {
+                        $(this).css({"border":""}).siblings(".blank-error").remove();
+                    });
+                }
+                if ($companyName.val() == "") {
+                    event.preventDefault();
+                    $companyName.css({"border":"1px solid #a94442"}).after("<div class='blank-error'>Company name must be specified.</div>");
+                    $companyName.focus(function () {
+                        $(this).css({"border":""}).siblings(".blank-error").remove();
+                    });
+                }
+                if ($productService.val() == "Select Option") {
+                    event.preventDefault();
+                    $productService.css({"border":"1px solid #a94442"}).after("<div class='blank-error'>Products and services must be specified.</div>");
+                    $productService.focus(function () {
+                        $(this).css({"border":""}).siblings(".blank-error").remove();
+                    });
+                }
+                if ($product.val() == "Select a Product"  && $productService.val() == "Product") {
+                    event.preventDefault();
+                    $product.css({"border":"1px solid #a94442"}).after("<div class='blank-error'>Products and services must be specified.</div>");
+                    $product.focus(function () {
+                        $(this).css({"border":""}).siblings(".blank-error").remove();
+                    });
+                }
+                if ($support.val() == "Select a Support Type" && $productService.val() == "Portal Support") {
+                    event.preventDefault();
+                    $support.css({"border":"1px solid #a94442"}).after("<div class='blank-error'>Products and services must be specified.</div>");
+                    $support.focus(function () {
+                        $(this).css({"border":""}).siblings(".blank-error").remove();
+                    });
+                }
+          if ($phone.val() == "") {
+            event.preventDefault();
+              $phone.css({"border":"1px solid #a94442"}).after("<div class='blank-error'>A valid phone number must be specified.</div>");
+                 $phone.focus(function () {
+                   $(this).css({"border":""}).siblings(".blank-error").remove();
+                  });
+                }
+                if ($message.val() == "") {
+                    event.preventDefault();
+                    $message.css({"border":"1px solid #a94442"}).after("<div class='blank-error'>A message must be specified.</div>");
+                    $message.focus(function () {
+                        $(this).css({"border":""}).siblings(".blank-error").remove();
+                    });
+                }
+             });
+
+             $("#00Nm0000000kpvK").change(function () {
+                var myVal = $(this).val();
+
+                if (myVal != "Product" && myVal != "Portal Support") {
+                    $(".select-product ").hide();
+                    $(".select-support-type ").hide();
+                }
+                else if( myVal == "Product" ){
+                    $(".select-product ").show();
+                    $(".select-support-type ").hide();
+                }
+                else if (myVal == "Portal Support"){
+                    $(".select-support-type ").show();
+                    $(".select-product ").hide();
+                }
+             });
+
+
+        });
+        
+        function validateFieldNotEmpty(valString,divId,fieldName){
+            var ret;
+            if(valString != ""){
+                $('#'+divId).removeClass("has-error");
+                $('#'+divId+'ErrorText').remove();
+                ret = true;
+            }
+            else{
+                $('#'+divId).addClass("has-error");
+                $('#'+divId+'ErrorText').remove();
+                $('#'+divId).append("<p id='"+divId+"ErrorText' class='errorText'>"+fieldName+" must be specified</p>");
+                ret = false;
+            }
+            return ret;
+        }
+    
+        function validateFieldNoBegSpace(valString,divId,fieldName){
+            var ret;
+            if(valString.charAt(0) != " "){
+                $('#'+divId).removeClass("has-error");
+                $('#'+divId+'ErrorText').remove();
+                ret = true;
+            }
+            else{
+                $('#'+divId).addClass("has-error");
+                $('#'+divId+'ErrorText').remove();
+                $('#'+divId).append("<p id='"+divId+"ErrorText' class='errorText'>"+fieldName+" cannot begin with a space</p>");
+                ret = false;
+            }
+            return ret;
+        }
+    
+   
+        function validateFieldEmail(email,divId,fieldName) {
+            var ret;
+            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            if(email == "" || re.test(email)){
+                $('#'+divId).removeClass("has-error");
+                $('#'+divId+'ErrorText').remove();
+                ret = true;
+            } else {
+                $('#'+divId).addClass("has-error");
+                $('#'+divId+'ErrorText').remove();
+                $('#'+divId).append("<p id='"+divId+"ErrorText' class='errorText'>"+fieldName+" has to be a valid email address</p>");
+                ret = false;
+            }
+            return ret;
+        }
+    
+        function validateField(valString,divId,fieldName,valNE,valNBS,valE) {
+            var neValid,nbsValid,eValid;
+            neValid = true;
+            nbsValid = true;
+            eValid = true;
+
+            if(valNE) {
+                neValid = validateFieldNotEmpty(valString,divId,fieldName);
+            }
+            if(valNBS && neValid) {
+                nbsValid = validateFieldNoBegSpace(valString,divId,fieldName);
+            }
+            if(valE && neValid && nbsValid) {
+                eValid = validateFieldEmail(valString,divId,fieldName);
+            }
+            return (neValid && nbsValid && eValid);
+        }
+
+       
+        
+        // Function to verify whether all the required fields are filled in correctly 
+        // and ensure that there are no validation errors present on the page
+        function validateRequiredFields() 
+        {
+            var boolIsRequired = true, boolIsValid = true;
+            // Check if all required fields are filled
+            $(".required").each(function()
+                {
+                    if("" === $.trim($(this).val()))
+                    {
+                        boolIsRequired = false;
+                        return false;
+                    }
+                });
+
+       
+            // Check for any validation errors
+            if(0 < $(".errorText").length)
+            {
+                boolIsValid = false;
+            }
+            boolIsValid && boolIsRequired?$(".inputSubmit").removeClass("disabled"):$(".inputSubmit").addClass("disabled");
+        }
+
+        // Function to validate the product dropdown if the option selected the default one
+        function validateProductDropDown(oDropDown)
+        {
+            // Check for null (Does the dropdown exist)
+            if(oDropDown)
+            {
+                // If the selected index is 0, we throw an error
+                if(0 === oDropDown.selectedIndex)
+                    {
+                        $('#serviceDiv').addClass("has-error");
+                        $('#serviceDiv'+'ErrorText').remove();
+                        $('#serviceDiv').append("<p id='serviceDivErrorText' class='errorText'>Please Select Option</p>");
+                        return false;
+                    }
+                else
+                    {
+                        $('#serviceDiv').removeClass("has-error");
+                        $('#serviceDiv'+'ErrorText').remove();
+                        return true;
+                    }
+            }
+        }
+
+        // Function to initialize the validations on each of the fields
+        function initializeFieldValidations()
+        {
+            // First Name
+            $(".inputFirstName").on({"keyup": function()
+                    {
+                        validateField($(".inputFirstName").val(),"firstNameDiv","First Name",true,true,false);
+                        validateRequiredFields();
+                    },
+                "blur":function()
+                    {
+                       validateField($(".inputFirstName").val(),"firstNameDiv","First Name",true,true,false);
+                       validateRequiredFields();
+                    }
+            });
+            // Last Name
+            $(".inputLastName").on({"keyup": function()
+                    {
+                        validateField($(".inputLastName").val(),"lastNameDiv","Last Name",true,true,false);
+                        validateRequiredFields();
+                    },
+                "blur":function()
+                    {
+                       validateField($(".inputLastName").val(),"lastNameDiv","Last Name",true,true,false);
+                       validateRequiredFields();
+                    }
+            });         
+                      
+            // Company Name
+            $(".inputCompanyName").on({"keyup": function()
+                    {
+                        validateField($(".inputCompanyName").val(),"companyNameDiv","Company Name",true,true,false);
+                        validateRequiredFields();
+                    },
+                "blur":function()
+                    {
+                       validateField($(".inputCompanyName").val(),"companyNameDiv","Company Name",true,true,false);
+                       validateRequiredFields();
+                    }
+            });
+            // Company Website
+            $(".inputCompanyWebsite").on({"keyup": function()
+                    {
+                        validateField($(".inputCompanyWebsite").val(),"companyWebsiteDiv","Company Website",true,true,false);
+                        validateRequiredFields();
+                    },
+                "blur":function()
+                    {
+                       validateField($(".inputCompanyWebsite").val(),"companyWebsiteDiv","Company Website",true,true,false);
+                       validateRequiredFields();
+                    }
+            });
+            // Email Address
+            $(".inputEmail").on({"keyup": function()
+                    {
+                        validateField($(".inputEmail").val(),"emailDiv","Email Address",true,true,true);
+                        validateRequiredFields();
+                    },
+                "blur":function()
+                    {
+                       validateField($(".inputEmail").val(),"emailDiv","Email Address",true,true,true);
+                       validateRequiredFields();
+                    }
+            });
+            // Phone Number
+            $(".inputPhoneNumber").on({
+                 "focus": function()
+                 {
+                    validateField($(".inputPhoneNumber").val(),"phoneNumberDiv","Phone Number",true,true,false);
+                    validateRequiredFields();
+                 }
+                ,"keyup": function()
+                    {
+                        validateField($(".inputPhoneNumber").val(),"phoneNumberDiv","Phone Number",true,true,false);
+                        // Additional check for numbers
+                        if(($(this).val().replace(/[\s()-/_]/g,"").length < 10)||($(this).val().replace(/[\s()-/_]/g,"").length > 10))
+                        {
+                            $('#phoneNumberDiv').addClass("has-error");
+                            $('#phoneNumberDiv'+'ErrorText').remove();
+                            $('#phoneNumberDiv').append("<p id='phoneNumberDivErrorText' class='errorText'>Phone number must be ten digits</p>");
+                        }
+                        else
+                        {
+                            $('#phoneNumberDiv').removeClass("has-error");
+                            $('#phoneNumberDiv'+'ErrorText').remove();
+                        }
+                        validateRequiredFields();
+                    },
+                "blur":function()
+                    {
+                       validateField($(".inputPhoneNumber").val(),"phoneNumberDiv","Phone Number",true,true,false);
+                       validateRequiredFields();
+                    }
+            });
+            // Subject
+            // $(".inputSubject").on({"keyup": function()
+            //         {
+            //             validateField($(".inputSubject").val(),"subjectDiv","Subject",true,true,false);
+            //             validateRequiredFields();
+            //         },
+            //     "blur":function()
+            //         {
+            //            validateField($(".inputSubject").val(),"subjectDiv","Subject",true,true,false);
+            //            validateRequiredFields();
+            //         }
+            // });
+            // Message
+            $(".inputMessage").on({"keyup": function()
+                    {
+                        validateField($(".inputMessage").val(),"messageDiv","Message",true,true,false);
+                        validateRequiredFields();
+                    },
+                "blur":function()
+                    {
+                       validateField($(".inputMessage").val(),"messageDiv","Message",true,true,false);
+                       validateRequiredFields();
+                    }
+            });
+            // Product/Service
+            $(".inputService").on(
+                {
+                    "change":function()
+                    {
+                        validateProductDropDown($(".inputService")[0]);
+                        validateRequiredFields();
+                    }
+                    ,
+                    "blur":function()
+                    {
+                        validateProductDropDown($(".inputService")[0]);
+                        validateRequiredFields();
+                    }
+                }
+            );
+        }
+
+    </script>
+    <c:Walkme_Script ></c:Walkme_Script>
+</apex:page>

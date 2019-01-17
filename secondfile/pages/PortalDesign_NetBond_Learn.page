@@ -1,0 +1,70 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" Controller="GetPdfsController">
+       
+    <div class="learnmore">
+    
+        <!-- Intro -->
+        <h2>Learn more about AT&amp;T NetBond</h2>
+        <p>By extending enterprise-level network security to cloud platforms, AT&amp;T NetBond<sup>&reg;</sup> makes it possible to adopt cloud services as part of your customer's overall IT strategy.</p>
+        <p>You can also take advantage of the reach and performance of the AT&amp;T Network. In fact, for the 12th consecutive year, Gartner has recognized AT&amp;T as a Leader in its Magic Quadrant for Network Services<sup>1</sup>.</p>
+        
+            <!-- PROMO CARDS -->
+         <h4 class="mt-40">Industry Trends</h4> 
+        <div class="row promo-row mt-25 mb-40">
+           <div class="col-lg-4 promo-col">
+                <div class="unclickable unclickable-lg text-center unclickable-lg" >
+               <!-- <i class="att-icon att-icon-security"></i> -->
+                     <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-security.svg')}" /> 
+                    <h4>Security</h4>
+                    <p>10X increase in Advanced Persistent Threats and DDoS attacks over the last two years <br/>(Source: AT&amp;T)</p>
+                </div>
+            </div>
+            <div class="col-lg-4 promo-col">
+                <div class="unclickable unclickable-lg text-center unclickable-lg">
+                  <!--  <i class="att-icon att-icon-cloud"></i> -->
+                       <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-cloud.svg')}" /> 
+                    <h4>Cloud</h4>
+                    <p>40% of technology influencers report that they have adopted or plan to adopt more than one type of cloud platform <br/>(Source: Forrester)</p>
+                </div>
+            </div>
+            <div class="col-lg-4 promo-col">
+                <div class="unclickable unclickable-lg text-center unclickable-lg" >
+                   <!-- <i class="att-icon att-icon-connected-vehicle"></i> -->
+                       <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-connected-vehicle.svg')}" /> 
+                    <h4>IoT</h4>
+                    <p>By 2020, there will be 50 billion machines connected to the Internet <br/>(Source: AT&amp;T)</p>
+                </div>
+            </div>
+        </div>
+      <hr class="blue_hr" /> 
+          <div class="mt-40 mb-40">
+              <!-- Step 1 -->
+             <h3 class="step-heading bg-dk-blue">
+                   {!$Label.heading_sales}
+                  <p>Review our sales resources for an overview of product details</p>
+                </h3>
+            
+                <div class="step-body">
+                    <!-- Document List: Sales Resources -->
+                     <apex:outputPanel >   
+                        <apex:repeat value="{!DocMapNetBSales}" var="docMap"> 
+                            <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                                <div class="document-row">
+                                    <div class="file-type file-{!docMap.type}"></div>
+                                    <div class="details">
+                                        <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                        <p><apex:outputText value="{!docMap.description}"/></p>
+                                    </div>
+                                </div>
+                            </apex:outputLink>        
+                        </apex:repeat>    
+                    </apex:outputPanel> 
+                </div>
+            </div>
+           
+    <!-- Footnotes -->        
+        <ol class="numbered footnotes mb-40">
+            <li>Gartner, Magic Quadrant for Network Services, Global, Neil Rickard, Bjarne Munch, 14 January 2016 Gartner does not endorse any vendor, product or service depicted in its research publications, and does not advise technology users to select only those vendors with the highest ratings or other designation. Gartner research publications consist of the opinions of Gartner’s research organization and should not be construed as statements of fact. Gartner disclaims all warranties, expressed or implied, with respect to this research, including any warranties of merchantability or fitness for a particular purpose.</li>
+       </ol> 
+           
+      </div>
+</apex:page>

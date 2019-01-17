@@ -1,0 +1,175 @@
+<apex:page standardController="Apttus_Proposal__Proposal__c" extensions="AIA_JSONGenerator" action="{!logCanvasParameters}" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" title="BuyFlow">    
+    <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" /> 
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCss}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCSSDetails}" />  
+    <script type="text/javascript" src="/canvas/sdk/js/31.0/controller.js"></script> 
+    
+    <script language="javascript">
+        var timeOut ={!timeOutValue};
+        var quoteObjId = '{!recordId}';
+        //alert('timeOut   '+timeOut);
+        //alert('quote  '+quoteObjId);
+        var target = {canvas : "canvasAppId"};
+        var canvasWidth = (window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth);
+        var canvasHeight = (window.innerHeight || document.documentElement.clientHeight ||document.body.clientHeight);
+       // alert('canvasWidth  '+canvasWidth);
+       // alert('canvasHeight '+canvasHeight);
+        
+        $( document ).ready(function() {
+           callResizeAJAX(canvasHeight,canvasWidth);
+       });
+       
+       $(window).resize(function() {
+        if(this.resizeTO) clearTimeout(this.resizeTO);
+        this.resizeTO = setTimeout(function() {
+        $(this).trigger('resizeEnd');
+        }, 500);
+        });
+      //   $(window).bind('resizeEnd', function() {
+      //   alert('canvasWidth  '+$(this).width());
+      //    alert('canvasHeight  '+$(this).height());
+       //    Sfdc.canvas.controller.publish(
+       //        {
+       //            name : 'aia.resize',
+       //             payload: { height: $(this).height(),width: $(this).width()} 
+       //        });   
+           
+       //     }); 
+
+            
+
+       
+        Sfdc.canvas(function() {
+            //Explicitly calling resize method, here target is optional to mention for single canvas app
+        //    $(window).bind('resizeEnd', function() {
+       //   alert('canvasWidth  '+$(this).width());
+       //   alert('canvasHeight  '+$(this).height());
+       //   Sfdc.canvas.controller.resize(  
+       //         {height : $(this).height(), width : $(this).height()}, target         
+        //    );
+       
+           
+        //    }); 
+            
+            $(window).bind('resizeEnd', function() {
+         //    alert('canvasWidth  '+$(this).width());
+         //    alert('canvasHeight  '+$(this).height());
+            Sfdc.canvas.controller.publish(
+                {
+                    name : 'aia.resize',
+                     payload: { height: $(this).height(),width: $(this).width()} 
+                });   
+           
+            }); 
+
+        
+            Sfdc.canvas.controller.subscribe(
+                {
+                    name : 'aia.quoteAck', 
+                    onData : function (data) {  
+                       clearTimeout(myVar); 
+                       $('.errorMsg').hide();
+                       $('#footerId').hide();
+              //       alert('From salesfroce to Canvas Quote Ack'); 
+                    }          
+                }); 
+            Sfdc.canvas.controller.subscribe(
+                {
+                    name : 'aia.dashboard', 
+                    onData : function (data) {  
+                    //     alert('From salesfroce to Canvas save and Exit');               
+                    window.open('/apex/PortalDashboard_UI', '_self' );                   
+                    }          
+                }); 
+                
+            Sfdc.canvas.controller.subscribe(
+                {
+                   name : 'aia.toThankyouPage', 
+                   onData : function (data) {                 
+                   //        alert('From salesfroce to Canvas Thanks You');  
+                   window.open('/dealreg?code=AIA&mode=orderConf&quoteid='+quoteObjId,'_self' );
+                   }          
+                });        
+     });
+     
+    
+    
+ // Function to send the error when Canvas loads to fail    
+    function canvasError() {
+        
+     //  myVar = window.setTimeout(loadError, 30000); // This timeout is for demo purpose  for real scenario it should be 20 sec(20000ms)
+         myVar = window.setTimeout(loadError,timeOut);
+       
+       //if() Receive success event from canvas 
+     //   clearTimeout(myVar ); 
+     //   alert('Sample1');
+     //  $('.errorMsg').css('display','block');
+   //     $('#canvasAppId').css('display','none');
+        
+        
+    }  
+    
+    function loadError(){         
+     $('.errorMsg').css('display','block');
+     $('#footerId').css('display','block');
+     // $('#slice_footer').css('display','block');
+    // $('#canvasAppId').css('display','none');
+    
+    }
+    
+    
+
+    </script>  
+    
+    
+    <style>
+        .begin_quote_icon {
+            background-size: 900px 900px;
+        }
+        #aiaCanvasContainer {
+            overflow: hidden !important;
+        }
+    </style>
+    
+    <body id="aiaCanvasContainer" onload="canvasError()"> 
+    <!--
+    <div id="hero_banner" class="hero_manage jumbotronContainer ng-scope">
+        <div class="row">
+            <div class="col-sm-12"></div>
+        </div>
+    </div>
+    -->
+    <apex:form id="formId">
+      
+    <div id="canvasAppId" style="display:block;">
+   
+       <!-- <apex:canvasApp applicationName="OST" parameters="{!JSONContent}" onCanvasAppError="canvasError"  containerId="canvasAppId"  />      
+        <apex:canvasApp applicationName="OST" parameters="{!JSONContent}"  containerId="canvasAppId"  /> -->
+        <apex:outputPanel id="panelId">
+        <apex:canvasApp applicationName="AT&T Internet Service" parameters="{!JSONContent}"  containerId="canvasAppId"  /> 
+        </apex:outputPanel>
+        
+        <!-- Commented to formulate JSON Response having height and width as attribute -->
+   <apex:actionFunction name="callResizeAJAX" action="{!getJSONContent}" reRender="formId,panelId"  id="callResize"  >
+        <apex:param id="canvasHeight" name="canvasHeight" value="" assignTo="{!canvasHeight}" /> 
+        <apex:param id="canvasWidth" name="canvasWidth" value="" assignTo="{!canvasWidth}" />
+    </apex:actionFunction>
+       
+    </div>
+    
+    </apex:form>
+    
+    <div class="errorMsg" style="display:none;margin-top:40px;margin-left:50px;">
+        <span>We are experiencing technical difficulties, please try again later.</span>
+    </div>
+     
+    <div id="footerId" style="display:none;">
+        <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+    </div> 
+    <!-- END FOOTER SLICE -->
+ <!--   <script type="text/javascript">_satellite.pageBottom();</script>  -->
+
+ </body> 
+   
+</apex:page>

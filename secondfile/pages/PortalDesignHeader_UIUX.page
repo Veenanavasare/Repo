@@ -1,0 +1,1000 @@
+<apex:page docType="html-5.0" controller="PortalDesignHeaderController" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!$Resource.peCommonStyles}"/>
+    <apex:stylesheet value="{!$Resource.peHeaderStyles}"/>
+
+    <apex:includeScript value="{!$Resource.atomjqueryjs}"/>
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/libs/jquery.dataTables.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/modernizr.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/bootstrap.min.js')}" /> 
+    <apex:includeScript value="{!$Resource.chartJSMin}" />
+
+    <apex:actionstatus id="loading">
+        <apex:facet name="start">
+            <div class="waitingSearchDiv" id="loading" style="background-color: #fbfbfb; height: 100%; opacity: 0.65; width:100%; position: fixed; z-index:999999; top: 0; left: 0;">
+                <div class="waitingHolder" style="top: 40%; left: 50%; position: fixed;">
+                    <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionstatus>
+    
+    <script>
+        gotoMaintenance();
+
+        function gotoMaintenance() {
+            // for maintenance page redirection
+            var byPassFreeze = "{!isBypassApplicationFreeze}";            
+            if (byPassFreeze == 'false') {
+                window.location="/apex/maintenance";
+            }
+        }
+        $(document).ready(function(){
+            $('img.beginQuote_img').hover(function(){
+                $('img.beginQuote_img').prop('src','{!$Resource.BeginQuoteHoverIcon}');
+            },
+            function(){
+                $('img.beginQuote_img').prop('src','{!$Resource.beginQuoteIcon}');
+            });
+            
+        });
+    
+    </script>
+    
+    <div id="AccessModal" class="modal" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-md accessModalContainer">
+            <div class="modal-content">
+                <div id="thelink">x</div>
+                <div class="access">
+                    <h2 class="accessError">Access Error</h2>
+                    <div class="access-training">
+                        <p style="padding-left:25px; padding-top:10px;font-size: 22px;">You do not currently have access to Training.</p>        
+                        <p style="padding-left:25px; padding-bottom:100px;font-size: 22px;">Please contact your Channel Account Manager (CAM).</p>
+                        <button id="thelink2">Close</button> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="top_nav_bar" class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand navbar-logo" href="/apex/PortalDashboard_UI">
+                    <apex:image url="{!URLFOR($Resource.portalDesignImg,'/logo_retina.png')}" width="222" height="32" title="AT&T Partner Exchange" alt="AT&T Partner Exchange"/>
+                </a>
+            </div>
+
+            <div class="navbar-collapse collapse" ng-controller="NavController as nav">
+                <ul id="nav_desktop" class="nav navbar-nav navbar-right">
+                     <li class="nav_quote_li bellIcon">
+                        <apex:outputPanel rendered="{!emailNotificationFlag}" style="display:inline-block;">
+                        <a class="main_nav_link top_link_dashboard" id="notificationBellIcon" href="javascript:openNotificationWindow();" data-type="notificationIcon">
+                            <img src="{!$Resource.notification_bell_icon}" width="25" height="25"/>
+                            <apex:outputPanel rendered="{!IF(unseenNotificationCount > 0,true,false)}">
+                                <span id="unSeenNotificationCount">{!unseenNotificationCount}</span>
+                            </apex:outputPanel>
+                        </a>
+                        </apex:outputPanel>
+                    </li> 
+                                      
+                    <li>
+                        <a class="main_nav_link top_link_dashboard" href="{!$Page.PortalDashboard_UI}" data-type="noSub">{!$Label.My_Dashboard}</a>
+                    </li>
+                    <li>                         
+                         <a class="main_nav_link top_link_grow" href="javascript:void(0);" data-target=".grow-content" data-type="hasSub" >{!$Label.Grow}</a>
+                    </li>       
+                    <li>
+                        <a class="main_nav_link top_link_products" href="javascript:void(0);" data-target=".products-content" data-type="hasSub">{!$Label.Products}</a>
+                    </li>
+                    <li>
+                        <a class="main_nav_link top_link_manage" href="javascript:void(0);" data-target=".manage-content" data-type="hasSub">{!$Label.Manage}</a>
+                    </li>
+                    <li>
+                        <a href="/newsroomListView?Flag=R">{!$Label.Newsroom}</a>
+                        <!-- <a class="main_nav_link top_link_community" href="javascript:void(0);" data-target=".community-content" data-type="hasSub">{!$Label.Community}</a> -->
+                    </li> 
+                    <li>
+                        <a class="main_nav_link top_link_developers" href="javascript:void(0);" data-target=".developers-content" data-type="hasSub">{!$Label.Developers}</a>
+                    </li>
+                    <li class="nav_quote_li begin_quote">
+                        <apex:outputPanel rendered="{!userBeginQuote = true}">
+                            <a class="unactive_top top_link_quote" href="{!$Page.Buyflow}">
+                                <apex:image styleClass="beginQuote_img" url="{!$Resource.beginQuoteIcon}" title="Begin Quote" alt="Begin Quote"/>
+                            </a>
+                        </apex:outputPanel>
+    
+                        <apex:outputPanel rendered="{!!userBeginQuote}" onmouseover="onmouseOverBeginQuote()" onmouseout="onmouseOutBeginQuote()">
+                            <button  class="begin_quote_btn begin_quote_btnID" title="{!$Label.Begin_Quote}">
+                                <div class="begin_quote_icon"></div>
+                                {!$Label.Begin_Quote}
+                            </button>
+                            <div data-status="open" class="profile-dropdown-container-beginQuote" id="begin_quote_btnID11">                                    
+                                <apex:image url="{!$Resource.triangleGlyphion}" width="144" height="10" styleClass="aMustacheIconA"/>
+                                <div class="dropdown-link-container permissionDiv">
+                                    <p>You need <br/> permission to <br/> access this content</p>
+                                </div>
+                            </div> 
+                         </apex:outputPanel>
+                    </li>
+                    <li>
+                        <div class="user_badge">
+                            <div data-status="open" class="profile-dropdown-container">
+                                <i class="glyphicon glyphicon-triangle-top up-arrow"></i>
+                                <apex:image url="{!$Resource.triangleGlyphion}" width="130" height="10" styleClass="aMustacheIconB" />
+                                <div class="dropdown-link-container">
+                                    <ul>
+                                    <apex:form >                                       
+                                        <li><apex:outputLink value="/apex/Profile" title="My Profile" styleClass="myProfileLink">My Profile</apex:outputLink></li><br/>       
+                                        <li><apex:commandLink value="Logout" action="{!portalLogOut}" styleClass="myLogoutLink" oncomplete="javascrit:window.top.location.href='{!$Label.PortalLogOutUrl}';" /></li>     
+                                    </apex:form>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- <div class="notification_badge">6</div> -->
+                            <div class="welcomeDivClass">
+                                <div class="avatar">
+                                    <apex:image url="{!userSmallPhotoUrl}" width="40px" height="40px" alt="you"/>
+                                </div>
+                                <div class="user_welcome" title="Goto Profile">
+                                    <ul>
+                                         <li>{!$Label.Welcome}</li>
+                                         <li class="profile_name">{!userFirstName}&#33;</li>                                         
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="sub_navigation">
+        <section class="grow-content sub_content panel-collapse">
+            <div class="row">
+                <div class="sub_links_container sub_links_grow">
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>{!$Label.Getting_Started}</h4>
+                        <ul>
+                            <li><a href="{!$Page.PortalDesign_GettingStarted_Overview}">{!$Label.Program_Overview}</a></li>
+                            <!-- <li><a href="{!$Page.PortalDesign_GettingStarted}#PortalDesign_GettingStarted_Finance">{!$Label.Finance}</a></li> -->
+                           <!--  <li><a href="{!$Page.PortalDesign_GettingStarted}#PortalDesign_GettingStarted_SalesEnable">{!$Label.Sales_Enablement}</a></li> -->
+                            <li><a href="{!$Page.PortalDesign_GettingStarted_Guides}">{!$Label.Program_Resources}</a></li>
+                            <!-- Permission driven link to enable/disable training link to NetExam -->
+                            <apex:outputPanel rendered="{!acctraining = true}">                 
+                               <li><a class="AccessTrigger" id="enable" href="#">{!$Label.Training_Center_Home}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!acctraining = false || null}">
+                                <li id="disable"><p class="disabledP">{!$Label.Training_Center_Home}</p></li>
+                            </apex:outputPanel>
+                        </ul>
+                     </div>
+
+                     <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>{!$Label.Marketing}</h4>
+                        <ul>
+                        <!-- Phani: 10/18/2016: Header to be in sync with prod -->
+                        <!--    <apex:outputPanel rendered="{!isCampaignBuilderEnabled}">                       
+                                <li><a href="{!$Page.Campaign_Builder}">{!$Label.Ad_Builder}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!NOT(isCampaignBuilderEnabled)}">
+                                <li><p class="disabledP">{!$Label.Ad_Builder}</p></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!isProposalBuilderEnabled}">                       
+                                <li><a href="{!$Page.Proposal_Builder}">{!$Label.Proposal_Builder}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!NOT(isProposalBuilderEnabled)}">
+                                <li><p class="disabledP">{!$Label.Proposal_Builder}</p></li>
+                            </apex:outputPanel> -->
+                            <!-- Permission driven link to enable/disable link to development funds page -->
+                            <apex:outputPanel rendered="{!devFunds}">                       
+                                <li><a href="{!$Page.Grow_DevelopmentFunds}" >{!$Label.Development_Funds}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!NOT(devFunds)}">
+                                <li><p class="disabledP">{!$Label.Development_Funds}</p></li>
+                            </apex:outputPanel>
+                            <li><a href="{!$Page.Grow_MarketingTools}">{!$Label.Marketing_Tools}</a></li> 
+                            <li><apex:outputLink value="{!URLFOR($Action.User.eStore_link)}" target="_blank">{!$Label.Store}</apex:outputLink></li>
+                        </ul>
+                    </div>
+
+                     <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <!--DE90249 | Teja -->
+                           <!--yamini: 10/17/2016: Adding Navigation link for Incentives-->
+                        <h4>{!$Label.Incentives}</h4>
+                        <ul>
+                            <li><a href="{!$Page.Grow_Incentives_IncentivesPromotions}">{!$Label.Incentives_Promotions}</a></li>
+                            <li><a href="{!$Page.Grow_Incentives_MobilityDiscounts}">{!$Label.IRU_Sponsorship_Program}</a></li>
+                            <!-- <li><a href="{!$Page.Grow_Incentives}#Grow_Incentives_TierLevels">{!$Label.Tier_Levels}</a></li> -->
+                        </ul>
+                    </div>
+
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <!--DE90249 | Teja -->
+                           <!--yamini: 10/17/2016: Adding Navigation link for Incentives-->
+                        <h4>{!$Label.Operations}</h4>
+                        <ul>
+                            <li><a href="{!$Page.PortalDesign_Enablement_Directory}">{!$Label.Enablement_Directory}</a></li>  
+                        </ul>
+                    </div>
+                    <!-- <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>{!$Label.Learning_Center}</h4>
+                         <ul>    
+                            <apex:outputPanel rendered="{!acctraining = true}">                 
+                               <li><a class="AccessTrigger" id="enable" href="#">{!$Label.Courses}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!acctraining = false || null}">
+                                <li id="disable"><p class="disabledP">{!$Label.Courses}</p></li>
+                            </apex:outputPanel>
+                        </ul>
+                    </div> -->
+                </div>
+            </div>
+        </section>
+
+        <section class="products-content sub_content">
+            <div class="row">
+                <div class="sub_links_container sub_links_products">
+                    <div class="link-section col-xs-12 col-md-4 col-lg-4">
+                        <h4>{!$Label.Network_Services}</h4>
+                        <ul>
+                            <!--yamini: 10/17/2016: Adding Navigation link for AT&T Switched Ethernet Service-->
+                            <apex:outputPanel rendered="{!isAVPN}">
+                                <li><a href="{!$Page.PortalDesign_AVPN}">{!$Label.Virtual_Private_Network}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!isAVPN}">
+                                <li id="disable"><p style="color:#74A4C5; cursor:default;">{!$Label.Virtual_Private_Network}</p></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!isMIS}">
+                                <li><a href="{!$Page.PortalDesign_MIS}">{!$Label.Managed_Internet_Service}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!isMIS}">
+                                <li id="disable"><p style="color:#74A4C5; cursor:default;">{!$Label.Managed_Internet_Service}</p></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!isAIA}">
+                                <li><a href="{!$Page.PortalDesign_IA}">{!$Label.Internet_Access}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!isAIA}">
+                                <li id="disable"><p style="color:#74A4C5; cursor:default;">{!$Label.Internet_Access}</p></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!isIPFLEX}">
+                                <li><a href="{!$Page.PortalDesign_IFR}">{!$Label.IP_Flexible_Reach}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!isIPFLEX}">
+                                <li id="disable"><p style="color:#74A4C5; cursor:default;">{!$Label.IP_Flexible_Reach}</p></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!isANIRA}">
+                                 <li><a href="{!$Page.PortalDesign_ANIRA}">{!$Label.Network_Based_IP_VPN_Remote_Access}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!isANIRA}">
+                                <li id="disable"><p style="color:#74A4C5; cursor:default;">{!$Label.Network_Based_IP_VPN_Remote_Access}</p></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!isASE}">
+                                <li><a href="{!$Page.PortalDesign_ASE}">{!$Label.Switched_Ethernet_Service}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!isASE}">
+                                <li id="disable"><p style="color:#74A4C5; cursor:default;">{!$Label.Switched_Ethernet_Service}</p></li>
+                            </apex:outputPanel>
+                           <!-- Yamini: 11/16/2017: AT&T Dedicated Ethernet  nav link on header -->
+                            <li><a href="{!$Page.PortalDesign_DedicatedEthernet}">{!$Label.DedicatedEthernet}</a></li> 
+                            <!-- Yamini: 10/16/2017: FlexWare nav link on header -->
+                            <apex:outputPanel rendered="{!isFlexWare}">
+                                <li><a href="{!$Page.PortalDesign_FlexWare}">{!$Label.FlexWare}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!isFlexWare}">
+                                <li id="disable"><p style="color:#74A4C5; cursor:default;">{!$Label.FlexWare}</p></li>
+                            </apex:outputPanel>
+                            <!-- products not enabled on portal -->
+                            <!--
+                            <li class="disabled"><a href="javascript:void(0);">MPLS Private Network Transport</a></li> 
+                            <li><a href="{!$Page.PortalDesign_SES}">{!$Label.Switched_Ethernet_Service}</a></li> 
+                            -->
+                        </ul>
+                    </div>
+                    <div class="link-section col-xs-12 col-md-4 col-lg-4">
+                        <h4>{!$Label.Mobility_Services}</h4>
+                        <ul>
+                            <!-- yamini: 10/17/2016: Wireless WAN nav link on header -->
+                            <apex:outputPanel rendered="{!isWirelessProduct}">
+                                <li><a href="{!$Page.PortalDesign_Mobile}">{!$Label.Mobile_Services}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!isWirelessProduct}">
+                                <li id="disable"><p style="color:#74A4C5; cursor:default;">{!$Label.Mobile_Services}</p></li>
+                            </apex:outputPanel>
+                            <!-- Robyn 01/12/2017: PE Request C1215_0931, replace EPTT link with Field Solutions link -->
+                             <apex:outputPanel rendered="{!isWirelessProduct}">
+                                <li><a href="{!$Page.PortalDesign_FS}">{!$Label.Field_Solutions}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!isWirelessProduct}">
+                                <li id="disable"><p style="color:#74A4C5; cursor:default;">{!$Label.Field_Solutions}</p></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!isWirelessProduct}">
+                                <li><a href="{!$Page.PortalDesign_IOT}">{!$Label.IOT}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!isWirelessProduct}">
+                                <li id="disable"><p style="color:#74A4C5; cursor:default;">{!$Label.IOT}</p></li>
+                            </apex:outputPanel>
+                              <apex:outputPanel rendered="{!isWirelessProduct}">
+                                <li><a href="{!$Page.PortalDesign_WWAN}">{!$Label.WWAN}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!isWirelessProduct}">
+                                <li id="disable"><p style="color:#74A4C5; cursor:default;">{!$Label.WWAN}</p></li>
+                            </apex:outputPanel>
+                        </ul>
+                    </div>
+                    <div class="link-section col-xs-12 col-md-4 col-lg-4">
+                        <h4>{!$Label.Hosting_Security}</h4>
+                            <ul>
+                                 <!-- yamini: 10/17/2016: NET BOND nav link on header -->
+                             
+                                <li><a href="{!$Page.PortalDesign_NetBond}">{!$Label.NetBond}</a></li>
+                                <li><a href="{!$Page.PortalDesign_NFS}" >{!$Label.Network_Based_Firewall_Service}</a></li>
+                                <li><a href="{!$Page.PortalDesign_COLO}">{!$Label.Colocation_Hosting_Services}</a></li>
+                                <!-- products not enabled on portal -->
+                                <!--
+                                <li><a href="{!$Page.PortalDesign_CHS}">{!$Label.Colocation_Hosting_Services}</a></li>
+                                <li><a href="{!$Page.PortalDesign_PC}">{!$Label.Private_Cloud}</a></li>
+                                -->
+                          </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="manage-content sub_content">
+            <div class="row">
+                <div class="sub_links_container">
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>Customers</h4>
+                        <ul>
+                            <li><a href="{!$Page.PortalDesign_AddNewCustomers}">{!$Label.Add_New_Customers}</a></li>
+                            <li><a href="{!$Page.PortalDesign_ManageCustomers}">{!$Label.Manage_Customers}</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>Profiles</h4>
+                        <ul>
+                            <apex:outputPanel rendered="{!userCreateModifyProfile = true}">
+                                <li><a href="/apex/create_user">{!$Label.Create_User}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!userCreateModifyProfile = false}">
+                                <li><p class="disabledP">{!$Label.Create_User}</p></li>
+                            </apex:outputPanel>
+                            <li><a href="/apex/manage_users">{!$Label.Manage_Users}</a></li>
+                            <li><a href="/apex/business_profile">{!$Label.Business_Profile}</a></li>  
+                        </ul>
+                    </div>
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>Quotes &amp; Orders</h4>
+                        <ul>
+                            <apex:outputPanel rendered="{!userBeginQuote = true}">
+                                <li><a href="{!$Page.Buyflow}">{!$Label.Create_New_Quote}</a></li>
+                                <li><a href="{!$Page.QuotesAndOrdersDashboard}">{!$Label.Manage_Quotes_Orders}</a></li>
+                            </apex:outputPanel> 
+                            <!-- if userBeginQuote  = False, then disable Create New Quote and Manage Quotes Orders -->       
+                            <apex:outputPanel rendered="{!userBeginQuote = false}">
+                                <li><p class="disabledP">{!$Label.Create_New_Quote}</p></li>
+                                <li><p class="disabledP">{!$Label.Manage_Quotes_Orders}</p></li>    
+                            </apex:outputPanel> 
+                            <li><a href="{!$Label.Provisioning_Status_Url}" target="new">{!$Label.Provisioning_Status}</a></li> <!-- As part of US472811 --> 
+                            
+                            <!-- 08/02/2017: Document Archive functionality implemented as part of Sprint 49 US306998 -->
+                            <apex:outputPanel rendered="{!documentArchive = true}">
+                               <li><a href="{!$Page.DocumentsArchive}">{!$Label.DOCUMENTS_ARCHIVE_TITLE}</a></li>                            
+                            </apex:outputPanel>     
+                        </ul>
+                    </div>
+
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>Support</h4>
+                        <ul>
+                            <apex:outputPanel rendered="{!IF(BDEbill == true && billingStatusStr == 'Completed',true,false)}">
+                               <li>  <a href="{!$Label.BD_Link_URL}{!BDUserID}&appid=elecbllpymt" target="new" >{!$Label.Billing}</a></li>                             
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(BDEbill == true && billingStatusStr == 'Requested',true,false)}">
+                               <li>  <a href="{!$Page.PortalDesign_Billing}" target="new" >{!$Label.Billing}</a></li>                              
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!BDEbill = false}">
+                                <li><p style="color:#74A4C5; cursor:default;">{!$Label.Billing}</p></li>
+                            </apex:outputPanel>
+                            <!-- Phani: PE R0731_1331: 08/03/2017 -->
+                            <!-- <apex:outputPanel rendered="{!AOTSTickets = true}">
+                                <li> 
+                                    <apex:form >
+                                        <apex:commandLink action="{!setupAOTSValues}" target="_self" value="{!$Label.Trouble_Tickets}" id="troubleTicketLink" status="loading" oncomplete="showTroubleTicket('{!aotsURL}', '{!aotsApiFlag}', '{!aotsBdID}', '{!aotsSaartID}', '{!$User.Username}', '{!$User.FirstName}', '{!$User.LastName}', '{!aotsEmailId}','{!aotsPhNum}');"/>
+                                    </apex:form>
+                                </li> 
+                            </apex:outputPanel>  -->
+                            <!-- <apex:outputPanel rendered="{!AOTSTickets = false}">
+                                <li><p class="disabledP">{!$Label.Trouble_Tickets}</p></li>
+                            </apex:outputPanel> -->    
+                            <!-- <apex:outputPanel rendered="{!BDnet = true}">
+                               <li><a href="{!$Label.BD_Link_URL}{!BDUserID}&appid=mapadvantage" target="new">{!$Label.Network_Status}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!BDnet = false}">
+                                <li><p class="disabledP">{!$Label.Network_Status}</p></li>
+                            </apex:outputPanel> -->
+                            <!-- <apex:outputPanel rendered="{!BDsla = true}">
+                               <li><a href="{!$Label.BD_Link_URL}{!BDUserID}&appid=intsrvoffer" target="new">{!$Label.Service_Level_Agreements}</a></li> 
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!BDsla = false}">
+                                <li><p class="disabledP">{!$Label.Service_Level_Agreements}</p></li>
+                            </apex:outputPanel> -->
+                            <!-- Phani: EOC: 08/03/2017 -->
+                            <apex:outputPanel rendered="{!ManageMob = true}">
+                                <li><a href="{!$Label.Mobility_Unbilled_Usage_URL}" target="new">{!$Label.Mobility_Unbilled_Usage}</a></li> 
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!ManageMob = false}">
+                                <li><p class="disabledP">{!$Label.Mobility_Unbilled_Usage}</p></li>
+                            </apex:outputPanel>
+                            <!-- added for US759103 by Rommel -->
+                            <apex:outputPanel rendered="{!supportCenter = true}">
+                                <li><a href="/apex/support_center">Support Center</a></li> 
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!supportCenter = false}">
+                                <li><p class="disabledP">Support Center</p></li>
+                            </apex:outputPanel>
+                            <li><a href="https://www.businessdirect.att.com/portal/index.jsp" target="_blank">Business Direct Login</a></li>
+                        </ul>
+                    </div>
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>Services</h4>
+                        <ul>
+                            <li><a href="/apex/ManageExistingNetworkServiceInventry" >{!$Label.Manage_Network_Services}</a></li>
+                            <apex:outputPanel rendered="{!ManageMob = true && userBeginQuote = true}">
+                               <li><a href="javascript:void(0);" onclick="$('#premierModal').modal('show'); " >{!$Label.Manage_Mobility_Services}</a></li>  
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!ManageMob = false || userBeginQuote = false}">
+                                <li><p class="disabledP">{!$Label.Manage_Mobility_Services}</p></li>
+                            </apex:outputPanel>  
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+           <!-- Eliza 06/08/2016  Removed from Manage Tab
+            <div class="row">
+                <div class="sub_links_container">
+                    <div class="link-section col-xs-12 col-md-12">
+                        Our self-service website is under development. We'll activate more product and information links in the coming months.
+                    </div>
+                </div>
+            </div>
+           -->
+        </section>
+
+        <!-- <section class="community-content sub_content">
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <div class="link-section">
+                        <h4>Community</h4>
+                        <ul>
+                            <li><a href="/newsroomListView?Flag=R">{!$Label.Newsroom}</a></li>
+                            <li><a href="javascript:chattercookie();">{!$Label.Chatter}</a></li>
+                            <li><a href="{!$Page.Answer}">{!$Label.Answers}</a></li>
+                           <li><a href="{!$Page.PortalDesign_ContactUsAuth}">{!$Label.Contact_Us}</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+        </section> -->
+        
+        <section class="developers-content sub_content">
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <div class="link-section">
+                        <h4>Getting Started</h4>
+                        <!-- for Overview - start -->
+                        <apex:outputPanel rendered="{!isDeveloper}">
+                        <ul>
+                            <li><a href="{!$Page.PortalDesign_Developers}#PortalDesign_Developers_Overview">{!$Label.Developer_Overview}</a></li>
+                            <li><a href="{!$Page.PortalDesign_Developers}#PortalDesign_Developers_Documentation">{!$Label.Developer_Documentation}</a></li>
+                        </ul>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!!isDeveloper}">
+                        <ul>
+                            <li><p class="disabledP">{!$Label.Developer_Overview}</p></li>
+                            <li><p class="disabledP">{!$Label.Developer_Documentation}</p></li>
+                        </ul>
+                        </apex:outputPanel>
+                    </div>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+        </section>
+    </div>
+    
+    <apex:form >
+        <!-- Window to show Notification Panel-->
+        <div id="notificationWindow">
+            <div class="notificationWindowHeader">
+                <span class="notificationHeader">Notifications</span>
+                <span class="closeWindowIcon" onclick="closeNotificationWindow();">x</span>
+            </div>
+            <div class="notificationWindowBody">
+                <apex:repeat value="{!wpList}" var="gp" rows="8">
+                    <div class="eachNotification" onclick="notificationIsRead('{!gp.notificationId}');">
+                        <span class="notificationText">{!gp.description}</span>
+                        <span class="notificationColorText">
+                            <apex:outputPanel rendered="{!IF(gp.readCheck == false,true,false)}" styleClass="{!gp.notificationId}">
+                                <span class="unReadIndicationColor"></span>
+                            </apex:outputPanel>
+                            <span class="notificationCreatedTime">{!gp.timeLeft}</span>                           
+                        </span> 
+                    </div>
+                </apex:repeat>                                
+            </div>
+            <div class="notificationWindowFooter">
+                <div class="navigateLink"><a href="{!$Page.portalNotifications}">See more</a></div>
+            </div>                  
+        </div> 
+    </apex:form>
+    
+    <apex:form >
+        <!-- Grey background -->
+        <div class="modal fade" id="greyBackground" tabindex="-1" role="dialog" data-target="#greyBackground" data-backdrop="static" data-keyboard="false" aria-hidden="true"></div>  
+        
+        <!-- New Premier Window-->
+        <script>
+            function openNewWindowForPremier(encryptedUrl,pageName){
+                console.log('@@@@@ decryptedUrl == ' + encryptedUrl);
+                var winHeight = 600;
+                var winWidth = 980;                
+                var left = (screen.width/2)-(winWidth/2);
+                var top = (screen.height/2)-(winHeight/2);
+                
+                if(encryptedUrl != null && encryptedUrl != ''){
+                    $('#greyBackground').modal('show');
+                    var premierWindow = window.open(encryptedUrl, '_blank', 'directories=no,toolbar=no,location=no,menubar=no,status=no,scrollbars=yes,resizable=yes,height='+winHeight+',width='+winWidth+',top='+top+', left='+left);
+                    var closeCheck = window.setInterval(function() {
+                        if (premierWindow.closed !== false) {
+                            window.clearInterval(closeCheck);
+                            if(pageName == 'productInformation'){
+                                checkForPremierUpdate();
+                            }else{
+                                window.location="/apex/PortalDashboard_UI";
+                            }
+                        }
+                    }, 250);                
+                }else{
+                    $('#errorPremierModal').modal('show');
+                }
+            }
+        </script> 
+       
+        <!-- New Premier Error Overlay-->
+        <div class="modal fade" id="errorPremierModal" tabindex="-1" role="dialog" data-target="#errorPremierModal" data-backdrop="static" data-keyboard="false" aria-hidden="true" >
+            <div class="modal-dialog">
+                <div class="modal-content" id="errorPremierModalContent">
+                    <div class="modal-header"></div>
+                    <div class="modal-body">
+                        There was a problem accessing your Premier account.<br/>
+                        Please contact your Channel Account Manager (CAM).
+                    </div>
+                    <div class="modal-footer">
+                        <input type="button" value="Okay" class="col-md-3 btn-primary" onclick="window.location='/apex/PortalDashboard_UI'"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal to display Continue option for Manage Mobility Services-->
+        <div class="modal fade" id="premierModal" tabindex="-1" role="dialog" data-target="#premierModal" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="continueToPremierModalTitle">Continue</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p class="continueToPremierModalContent">
+                            To manage wireless users and services, AT&amp;T Premier will open in a new window. To proceed, click <strong>Continue.</strong>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <apex:commandButton styleClass="btn-primary premierBtn" action="{!callLoginDispatchService}" value="Continue" style="float: right; margin: 12px 30px 30px; height: 40px;width: 175px !important;font-family: omnes_att_iimedium;" status="loading" oncomplete="$('#premierModal').modal('hide');openNewWindowForPremier('{!deEncryptedUrl}','manageMobilityServiceLink');"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </apex:form>
+    
+    <script>
+        var jHeader$ = jQuery.noConflict();
+        var $ = jQuery.noConflict(); 
+        $(document).ready(function() {
+            var isAccessPermission = "{!isRedirect}";
+            if( isAccessPermission == 'true' ){
+                window.location.href = '/basic_manage_template';
+            }
+            // DISABLE ALL COMING SOON LINKS
+            $("a[data-status='cs']").each(function(){
+              $(this).attr("href","javascript:void(0)").css({"color":"#74a4c5", "cursor":"default", "text-decoration":"none"});
+            });
+
+            // Main Nav Script
+            var contentHeight = 0;
+
+            $('.main_nav_link').unbind('click').bind("click", function () {
+                var type = $(this).data('type');
+                var text = $(this).text().toLowerCase();
+                if(type === 'notificationIcon'){
+                    window.scrollTo(0, 0);
+                    $('.sub_navigation').css({'height' : '0px'});
+                    $('#nav_desktop a').removeClass('active_top');
+                }else if (type === 'hasSub') {
+                    thisHasSub(text);
+                } else {
+                    window.scrollTo(0, 0);
+                    $('.sub_navigation').css({'height' : '0px'});
+                    $('.'+text+'-content').css({'display':'block', 'height':'auto'});
+                    $('.'+text+'-content').siblings().css({'display' : 'none'});
+                    $('#nav_desktop a').removeClass('active_top');
+                    if (text === 'my dashboard' ||
+                        text === 'developers') {
+                        $('.top_link_'+text).removeClass('unactive_top');
+                        $('.top_link_'+text).addClass('active_top');
+                    }
+                }
+            });
+
+            function thisHasSub(text) {
+                if ($('.'+text+'-content').css('display') === 'block') {
+                    $('.'+text+'-content').css({'display' : 'none'});
+                    $('.top_link_'+text).removeClass('active_top');
+                    $('.top_link_'+text).addClass('unactive_top');
+                    $('.sub_navigation').animate({ height: '0px' });
+
+                } else {
+                    window.scrollTo(0, 0);
+                    $('.sub_navigation').css({'height' : '0px'});
+                    $('.'+text+'-content').css({'display':'block', 'height':'auto'});
+                    $('.'+text+'-content').siblings().css({'display' : 'none'});
+                    $('#nav_desktop a').removeClass('active_top');
+                    $('.top_link_'+text).removeClass('unactive_top');
+                    $('.top_link_'+text).addClass('active_top');
+                    contentHeight = $('.'+text+'-content').innerHeight();
+
+                    $('.sub_navigation').animate({ height: contentHeight }, function() {
+                        $('.sub_navigation').css({'height' : 'auto'});
+                        $('.'+text+'-content').css({'height' : 'auto'});
+                    });
+                }
+            }
+        });
+
+        function closedModalWindow(){
+            window.location="/apex/PortalDashboard_UI";
+        }
+
+        function chattercookie() {
+            var CookieUserId = window.UserContext.userId;           
+            var portalUserName = "{!peUserName}";
+            var portalUserFLName="{!peUserFLName}";
+            var portalUserManageMobFlag = "{!ManageMob}";
+            var portalCampaignBuilderFlag = "{!isCampaignBuilderEnabled}";
+            var portalProposalBuilderFlag = "{!isProposalBuilderEnabled}";
+            var isDeveloperFlag = "{!isDeveloper}";
+            var isManageServiceFlag = "{!userBeginQuote}";
+            var portalUserDevFundsFlag = "{!devFunds}";
+            var supportCenterFlag = "{!supportCenter}";
+            var billingLinkFlag = "{!BDEbill}";
+            var billingStatus = "{!billingStatusStr}";
+            var troubleTicketsFlag = "{!AOTSTickets}";
+            var serviceLevelAgreementFlag = "{!BDsla}";
+            var supportCenterFlag = "{!supportCenter}";
+            var learningCenterCoursesFlag = "{!acctraining}";
+
+            var chatterCookiename =  CookieUserId + "chatterCookiename";
+            var chatterUserName=  CookieUserId + "chatterUserName";  
+            var chatterManageMobFlag=  CookieUserId + "chatterManageMobFlag"; 
+            var chatterCampaignBuilderKey=  CookieUserId + "chatterCampaignBuilderKey";
+            var chatterProposalBuilderKey=  CookieUserId + "chatterProposalBuilderKey";
+            var isDeveloperCookiename =  CookieUserId + "isDeveloperCookiename";
+            var isManageServiceCookiename =  CookieUserId + "isManageServiceCookiename";
+            var isportalUserManageMobCookiename =  CookieUserId + "isportalUserManageMobCookiename";
+            var chatterDevFundsFlag = CookieUserId + "chatterDevFundsFlag";
+            var chatterSupportCenterFlag = CookieUserId + "chatterSupportCenterFlag";
+            var chatterBillingStatus = CookieUserId + "chatterBillingStatus";
+            var chatterBillingLinkFlag = CookieUserId + "chatterBillingLinkFlag";
+            var chatterTroubleTicketsKey =  CookieUserId + "chatterTroubleTicketsKey";
+            var chatterServiceLevelAgreementKey =  CookieUserId + "chatterServiceLevelAgreementKey";
+            var chatterLearningCenterCoursesKey =  CookieUserId + "chatterLearningCenterCoursesKey";
+            createCookie(chatterCookiename,portalUserName);
+            createCookie(chatterUserName,portalUserFLName); 
+            createCookie(chatterManageMobFlag,portalUserManageMobFlag); 
+            createCookie(chatterCampaignBuilderKey,portalCampaignBuilderFlag); 
+            createCookie(chatterProposalBuilderKey,portalProposalBuilderFlag);
+            createCookie(isDeveloperCookiename ,isDeveloperFlag);
+            createCookie(isManageServiceCookiename ,isManageServiceFlag);
+            createCookie(isportalUserManageMobCookiename ,portalUserManageMobFlag);
+            createCookie(chatterDevFundsFlag,portalUserDevFundsFlag);
+            createCookie(chatterBillingLinkFlag,billingLinkFlag);
+            createCookie(chatterBillingStatus,billingStatus);
+            createCookie(chatterTroubleTicketsKey,troubleTicketsFlag);
+            createCookie(chatterServiceLevelAgreementKey,serviceLevelAgreementFlag);
+            createCookie(chatterSupportCenterFlag,supportCenterFlag);
+            createCookie(chatterLearningCenterCoursesKey,learningCenterCoursesFlag);
+
+            //this change is specific to passing AOTS values to chatter header
+            var aotsTicketFlag = {!AOTSTickets};            
+            var troubleTicketParam = '';
+            var aURL = '{!aotsURL}';
+            var aotFlag = '{!aotsApiFlag}';
+            var aotbdId = '{!aotsBdID}';
+            var aotSaartId = '{!aotsSaartID}';
+            var aotUser = '{!$User.Username}';
+            var aotFirstName = '{!$User.FirstName}';
+            var aotLastName = '{!$User.LastName}';
+            var aotEmailId = '{!aotsEmailId}';
+            var aotPhoneNum = '{!aotsPhNum}';
+
+            var chatterURL = "/_ui/core/chatter/ui/ChatterPage";
+
+            if (aotsTicketFlag) {
+                troubleTicketParam =     '?atURL=' + aURL + '&bdFlag=' + aotFlag + 
+                                         '&bdId=' + aotbdId + '&saart=' + aotSaartId + 
+                                         '&userId=' + aotUser + '&userFirst=' + aotFirstName + 
+                                         '&userLast=' + aotLastName + '&aotsEmail=' + aotEmailId + 
+                                         '&aotPhone=' + aotPhoneNum;
+                chatterURL = "/_ui/core/chatter/ui/ChatterPage" + troubleTicketParam;
+            }
+
+            window.open(chatterURL, "_self");   
+        }
+
+        function createCookie(name,value) {
+            var today = new Date();
+            var expiry = new Date(today.getTime() + 30 * 24 * 3600 * 1000); // plus 30 days
+            document.cookie=name + "=" + escape(value) + "; path=/; expires=" + expiry.toGMTString();
+        }
+    </script>
+    
+    <script type="text/javascript">
+        function onmouseOverBeginQuote(){
+            $('.profile-dropdown-container-beginQuote').show();
+        }
+
+        function onmouseOutBeginQuote(){
+            $('.profile-dropdown-container-beginQuote').hide();
+        }
+
+        $(document).ready( function () {
+            $(".welcomeDivClass").mouseover( function () {
+                $(".profile-dropdown-container").show();
+            });
+
+            $(".begin_quote_btn").mouseover( function () {
+                $(".profile-dropdown-container").hide();
+            });
+            
+            $(".profile-dropdown-container").mouseover( function () {
+                $(".profile-dropdown-container").show();               
+            });
+            $(".profile-dropdown-container").mouseout( function () {
+                $(".profile-dropdown-container").hide();               
+            });
+        });
+    </script>
+    <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        
+          ga('create', 'UA-63429768-1', 'auto');
+          ga('send', 'pageview');
+
+    </script> 
+    
+    <!-- New Adobe Analytic Script added 7-12-2015-->
+    <script src="//assets.adobedtm.com/3cb377f74dd760b920cb82680edd5ed3ee951963/satelliteLib-ed747715529f45d08618d00cf7cca3159b56bc30-staging.js"></script>  
+    <!-- Walkme Script added 7-12-2015-->
+    <c:Walkme_Script ></c:Walkme_Script>
+    
+    <!-- Walkme tracking enhancement added 4-26-2016-->    
+    <!-- <c:WalkMeVariables /> -->
+    
+      <script type="text/javascript">
+
+        function showTroubleTicket(sURL, sAPIFlag, sbdId, sSaartId, sSfdcId, sFname, sLName, sMailId,sPhNum)
+        {
+            var form = document.createElement("form");
+            form.setAttribute("method", "POST");
+            form.setAttribute("action", sURL);
+            form.setAttribute("target", "PopupWindow");
+
+            var apiFlagField = document.createElement("input");
+            apiFlagField.setAttribute("type", "hidden");
+            apiFlagField.setAttribute("name", "apiFlag");
+            apiFlagField.setAttribute("value", sAPIFlag);
+
+            form.appendChild(apiFlagField);
+
+            if(sbdId != null && sbdId !=''){
+                var bdIdField = document.createElement("input");
+                bdIdField.setAttribute("type", "hidden");
+                bdIdField.setAttribute("name", "bdId");
+                bdIdField.setAttribute("value", sbdId);
+                
+                form.appendChild(bdIdField);
+            }
+            else
+            {
+                var saartField = document.createElement("input");
+                saartField.setAttribute("type", "hidden");
+                saartField.setAttribute("name", "saartId");
+                saartField.setAttribute("value", sSaartId);
+                form.appendChild(saartField);
+            }
+
+            var sfdcField = document.createElement("input");
+            sfdcField.setAttribute("type", "hidden");
+            sfdcField.setAttribute("name", "sfdcId");
+            sfdcField.setAttribute("value", sSfdcId);
+
+            form.appendChild(sfdcField);
+
+            var fnameField = document.createElement("input");
+            fnameField.setAttribute("type", "hidden");
+            fnameField.setAttribute("name", "fname");
+            fnameField.setAttribute("value", sFname);
+
+            form.appendChild(fnameField);         
+
+            var lnameField = document.createElement("input");
+            lnameField.setAttribute("type", "hidden");
+            lnameField.setAttribute("name", "lname");
+            lnameField.setAttribute("value", sLName);
+
+            form.appendChild(lnameField);  
+
+            var mailIDField = document.createElement("input");
+            mailIDField.setAttribute("type", "hidden");
+            mailIDField.setAttribute("name", "mailId");
+            mailIDField.setAttribute("value", sMailId);
+
+            form.appendChild(mailIDField);         
+
+            var phoneField = document.createElement("input");
+            phoneField.setAttribute("type", "hidden");
+            phoneField.setAttribute("name", "phNum");
+            phoneField.setAttribute("value", sPhNum);
+
+            form.appendChild(phoneField);          
+            document.body.appendChild(form);            
+
+            window.open('', 'PopupWindow');
+            form.submit();            
+        }
+        
+        var newsroomCheck = window.location.href.toString().toLowerCase().indexOf("newsroom");
+        if(newsroomCheck == -1){
+      
+           }    
+    </script>
+    <script>
+        $(document).ready(function() {
+            var AccessUserRole = "{!NEUserRole}";
+            $('.AccessTrigger').on('click', function () {     
+                if(AccessUserRole == "Student") {
+                    window.location = window.location.origin+"/NETEXAM";
+                } else {
+                    $('#AccessModal').modal('show');
+                }
+            });
+        
+            $('#thelink, #thelink2').on('click', function () {
+                $('#AccessModal').modal('hide');
+            });
+        }); 
+    </script>
+    
+    <script>
+        $(document).ready(function() {
+            $(function(){
+                $(".eachNotification .notificationText").each(function(i){
+                    if($(this).text().length > 0){
+                        notification = $(this).text();
+                        notification = notification.replace(/\s\s+/g, ' ');
+                        if($(this).text().length > 60){
+                          $(this).text(notification.substr(0,60)+'...');
+                        }                    
+                    }
+                });       
+            });        
+        });
+
+        function openNotificationWindow(){
+            var positionOfBellIcon = $('#notificationBellIcon').offset();
+            var topPositionOfWindow = positionOfBellIcon.top + 35;
+            var leftPositionOfWindow = positionOfBellIcon.left - 14;
+            $('#notificationWindow').css({'display':'block','left':leftPositionOfWindow,'top':topPositionOfWindow}); 
+            Visualforce.remoting.Manager.invokeAction( 
+               '{!$RemoteAction.PortalDesignHeaderController.updateUserOnNotificationSeen}', 
+                function(result, event){ 
+                   if (result) { 
+                       $('#unSeenNotificationCount').css('display','none'); 
+                    }else{
+                        console.log('Failed::VF Remoting to update Unseen Notification');
+                    } 
+                } 
+            ); 
+        }
+        
+        function closeNotificationWindow(){
+            $('#notificationWindow').css('display','none');
+        }
+        
+        function notificationIsRead(id){
+            Visualforce.remoting.Manager.invokeAction( 
+               '{!$RemoteAction.PortalDesignHeaderController.updateUserOnNotificationRead}', 
+               id, 
+               function(result, event){ 
+                   if (result) { 
+                       $('.'+id).css('display','none'); 
+                    }else{
+                        console.log('Failed::Backend Method to update notification as read');
+                    } 
+               } 
+            );            
+        }
+        
+        $(window).click(function() {
+            closeNotificationWindow();
+        });
+        
+        $('#notificationWindow').click(function(event){
+            event.stopPropagation();
+        });
+        
+        $('#notificationBellIcon').click(function(event){
+            event.stopPropagation();
+        });
+        
+        //Global Method to be used accross the Portal for Searching Data Table
+        (function($){
+            $.fn.extend({
+                donetyping: function(callback,timeout){
+                    timeout = timeout || 2e3; // 3 second default timeout
+                    var timeoutReference,
+                        doneTyping = function(el){
+                            if (!timeoutReference) return;
+                            timeoutReference = null;
+                            if(el.value != undefined && el.value.length != 1){
+                                callback.call(el);
+                            }
+                        };
+                    return this.each(function(i,el){
+                        var $el = $(el);
+                        $el.is(':input') && $el.on('keyup keypress paste',function(e){
+                            if (e.type=='keyup' && e.keyCode!=8) return;
+                            if (timeoutReference) clearTimeout(timeoutReference);
+                            timeoutReference = setTimeout(function(){
+                                doneTyping(el);
+                            }, timeout);
+                        }).on('blur',function(){
+                            doneTyping(el);
+                        });
+                    });
+                }
+            });
+        })(jQuery);    
+    </script>
+    <!-- Added to for Guest Users to View the UnAuthenticated page by restricting NewsRoomPermission Object Access--> 
+    <apex:outputPanel rendered="{!isGuest}">
+         {!newsroomName}
+    </apex:outputPanel> 
+   
+</apex:page>

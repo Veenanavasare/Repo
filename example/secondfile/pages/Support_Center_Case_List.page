@@ -1,0 +1,673 @@
+<apex:page docType="html-5.0" readOnly="true" standardStylesheets="false" sidebar="false" showHeader="false" controller="ContactPrototypeController">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />        
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8" />
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!$Resource.main_stylesheet_CSS}"/>
+    
+    <style type="text/css">
+        #caseListTable th {
+            border-top: 1px dashed #ddd !important;
+        }
+        #caseListTable td {
+            border-top: 1px dashed #ddd;
+        }
+        #caseListTable th,
+        .filter-select {
+            -webkit-user-select: none;  /* Chrome all / Safari all */
+            -moz-user-select: none;     /* Firefox all */
+            -ms-user-select: none;      /* IE 10+ */
+            user-select: none;  
+        }
+        .paginate_active {
+            color: #fff !important;
+        } 
+        .categoryCell,
+        .category-header {
+            max-width: 130px !important;
+        }
+        .ticket,
+        .order-num,
+        .oppid 
+        {
+            position: absolute;
+            display: none;
+            overflow: hidden;
+            width:0px !important; 
+        }
+        
+    
+      
+        .created,
+        .closed {
+            min-width: 151px !important;
+        }
+        .contact-name-header, 
+        .contact-name {
+            min-width: 150px !important;
+        }
+
+        .case-number-header, 
+        .case-number {
+            min-width: 140px !important;
+        }
+
+        .status-header {
+            min-width: 100px !important;
+        }
+
+        .productsCell {
+            min-width: 60px !important;
+        }
+
+        .header-label {
+            position: relative;
+        }
+        
+        
+        .filter-select {
+            position: absolute;
+            z-index: -1;
+        }
+        .filter-select-clickable {
+            z-index: 100 !important;
+        }
+
+        .filter-select .filter-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .filter-select .filter-item {
+            cursor: pointer;
+            padding: 4px 10px;
+            color: #000; 
+            font-family: "omnesatt_iiregular";
+            font-size: 14px;
+        }
+
+
+        .sorting_disabled .caret-down {
+            top: 0px !important; 
+            position: relative;
+            cursor: pointer;
+            color: #0568ae;
+        }
+
+        .filter-body {
+            border-radius: 4px; 
+            opacity: 0;
+            background-color: #fff;
+            border: 1px solid rgba(0,0,0,.15); 
+            width: -moz-max-content;
+            transition-duration: .2s;
+            -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+            -moz-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+            box-shadow: 0 6px 12px rgba(0,0,0,.175);
+            font-weight: normal !important;
+        }
+        .filter-body-open{
+            opacity: 1 !important;
+        }
+
+        #caseListTable {
+            min-width: 100%;
+        } 
+        td, 
+        tr {
+            max-width: 100% !important;
+        }
+        #caseListTable_paginate {
+            display: inline-block;
+            float: right;
+            margin-bottom: 40px; 
+        }
+        .paging_simple_numbers {
+            margin-top: 40px;
+        }
+        .dataTables_info {
+            display: inline-block;
+            margin-top: 40px;
+        }
+        .inactive-button:hover {
+            color: silver !important;
+        }
+        .inactive-button {
+            background-color: #fff !important;
+            color: silver !important;
+            cursor: default !important;
+        }
+        .carets {
+            position: relative;
+            float: right;
+            margin-top: 7px; 
+            margin-right: 2px; 
+        }
+        .caret-up {
+            position: absolute;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-bottom: 5px solid;
+            display: inline-block;
+            height: 0;
+            margin-left: 2px;
+            vertical-align: middle;
+            width: 0;
+            
+        }
+        .caret-down {
+            position: absolute;
+            top: 6px; 
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid;
+            display: inline-block;
+            height: 0;
+            margin-left: 2px;
+            vertical-align: middle;
+            width: 0;
+            color: silver;
+        }
+
+        .sorting .caret-up,
+        .sorting .caret-down {
+            color: silver !important; 
+        }
+
+        .footer_copy{
+            margin-top:0px;
+        }
+
+        .popover {
+            border:1px solid #e8e8e8;
+            left: 310px;
+            margin-top: -47px;
+            width: 200px;
+        }
+        .popover-title {
+            background-color: #fff;
+            border-bottom:0px !important;
+        }
+
+        .popover-content {
+            font-family: "omnesatt_iiregular";
+        }
+        .popover::before {
+            content: '';
+            position: absolute;
+            z-index: 1;
+            left:-18px; 
+            top: 38px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 21px 19px 21px 0;
+            border-color: transparent #ffffff transparent transparent;
+        }
+        .glyphicon {
+            position: absolute;
+            right: 0px; 
+        }
+        .search_button {
+            right: 31px; 
+            top: 3px; 
+            z-index: 100; 
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }/*
+        @media (max-width: 480px) {
+            table {
+                width: 100px !important;
+            }
+        }*/
+        @media (max-width: 900px) {
+            #caseListTable_paginate {
+                display: block;
+            }
+            body {
+                overflow-x: visible !important;
+            }
+        }
+    </style>
+    
+    <div class="manage_content_sc">
+        <div class="table-container">
+            <div class="row">
+                <div class="title-container">
+                    <h1 class="mb-40">Support Center</h1> 
+                    <hr class="blue_hr"/>
+                    <h2>Case List</h2>
+                </div>
+            </div>
+            <div class="container">
+                <div class="table-container">
+                    <apex:outputPanel >   
+                        <table id="caseListTable" class="display" border="1">  <!-- style="margin: 0px !important" -->
+                            <thead>
+                                <tr>
+                                    <th class="case-number-header"><span class="header-label">Case #</span> 
+                                        <span class="carets"><span class="caret-down"></span><span class="caret-up"></span></span>
+                                    </th>
+                                    <th class="status-header" data-filter="true">
+                                        <span class="header-label">Status </span><div class='caret-down' data-status='closed'></div>
+                                    </th>
+                                    <th class="topic-header" data-filter="true">
+                                        <span class="header-label">Topic </span><div class='caret-down' data-status='closed'></div>
+                                    </th>
+                                    <th class="category-header" data-filter="true">
+                                        <span class="header-label">Category </span><div class='caret-down' data-status='closed'></div>
+                                    </th>
+                                    <!-- <th class="category-header" data-filter="true"> <span class="header-label">Category </span>
+                                        <span class="carets"><span class="caret-down"></span><span class="caret-up"></span></span>
+                                    </th> -->
+                                    <th><span class="header-label">Product </span>
+                                        <span class="carets"><span class="caret-down"></span><span class="caret-up"></span></span>
+                                    </th>
+                                    <th class="contact-name-header" data-filter="true">
+                                        <span class="header-label">Contact Name </span><div class='caret-down' data-status='closed'></div>
+                                    </th>
+                                    <th><span class="header-label">Opened (CT) </span>
+                                        <span class="carets"><span class="caret-down"></span><span class="caret-up"></span></span>
+                                    </th>
+                                    <th><span class="header-label">Closed (CT) </span>
+                                        <span class="carets"><span class="caret-down"></span><span class="caret-up"></span></span>
+                                    </th>
+                                    <th class="oppid">Opportunity ID </th> 
+                                    <th class="ticket">SP Internal Ticket Number</th>
+                                    <th class="order-num">Order Number</th> 
+                                   
+                                </tr>     
+                                
+                            </thead>
+                            <tbody>
+                                <!-- BRANDON: FIX FOR CHANGE SET "SupportCenter V3" -->
+                                <apex:repeat value="{!listCase}" var="case">
+                                    <tr>
+                                        <td class="case-number"><apex:outputText value="{!case.CaseNumber}" /></td>
+                                        <td class="status"><apex:outputText value="{!case.Status}" /></td>
+                                        <td class="topicCell"><apex:outputText value="{!case.Topic}" /></td>
+                                        <td class="categoryCell"><apex:outputText value="{!case.Category}" /></td>
+                                        <td class="productsCell"><apex:outputText value="{!case.Product}" /></td>
+                                        <td class="contact-name"><apex:outputText value="{!case.Contactname}" /></td>
+                                        <td class="created"><apex:outputText value="{!case.CreatedDate}" /></td>
+                                        <td class="closed"><apex:outputText value="{!case.ClosedDate}" /></td>
+                                         <td class="oppid"><apex:outputText value="{!case.OpportunityID}"/></td> 
+                                        <td class="ticket"><apex:outputText value="{!case.SP_Internal_Ticket_Number}"/></td>
+                                        <td class="order-num"><apex:outputText value="{!case.Order_Number}"/></td>
+                                       
+                                    </tr>   
+                                </apex:repeat>
+                            </tbody>
+                        </table>
+                    </apex:outputPanel> 
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="table-container">
+                    <hr class="blue_hr"></hr>
+                    <div class="goto-sc" style="float:right"><a href="/Support_Center">Go To Support Center</a></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="table-container">
+                    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <apex:includeScript value="{!$Resource.atomjqueryjs}"/>    
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/bootstrap.min.js')}" />
+    <apex:includeScript value="{!$Resource.support_center_dataTables_JS}" />
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $.fn.DataTable.ext.pager.simple_numbers_no_ellipses = function(page, pages){
+               var numbers = [];
+               var buttons = $.fn.DataTable.ext.pager.numbers_length;
+               var half = Math.floor( buttons / 2 );
+             
+               var _range = function ( len, start ){
+                  var end;
+                
+                  if ( typeof start === "undefined" ){
+                     start = 0;
+                     end = len;
+             
+                  } else {
+                     end = start;
+                     start = len;
+                  }
+             
+                  var out = [];
+                  for ( var i = start ; i < end; i++ ){ out.push(i); }
+                
+                  return out;
+               };
+                 
+             
+               if ( pages <= buttons ) {
+                  numbers = _range( 0, pages );
+             
+               } else if ( page <= half ) {
+                  numbers = _range( 0, buttons);
+             
+               } else if ( page >= pages - 1 - half ) {
+                  numbers = _range( pages - buttons, pages );
+             
+               } else {
+                  numbers = _range( page - half, page + half + 1);
+               }
+             
+               numbers.DT_el = 'span';
+             
+               return [ 'previous', numbers, 'next' ];
+            };
+          
+            $.fn.dataTableExt.pager.numbers_length = 5; // Number of page buttons to show
+            $("#caseListTable tbody td:nth-child(4)").each(function (){
+              if($(this).text() == "Cancellation & Disconnects"){
+                $(this).text("Cancellation and Disconnects")
+              }
+            });            
+            
+            $('#caseListTable').DataTable({
+                "aoColumns": [
+                    null,
+                    { "bSortable": false },
+                    { "bSortable": false },
+                    { "bSortable": false },
+                    null,
+                    { "bSortable": false },
+                    null,
+                    null,
+                    null,
+                    null,
+                    null
+
+                  
+                ], 
+                "drawCallback": function( settings ) {
+                    $("tr").find("td:eq(0)").each(function () {
+                        $(this).addClass("case-number");
+                    });
+                    $(".case-number").each( function () {
+                        var myText = $(this).text();
+                        //Phani: Wrapping anchor tag inside td tag using contents method
+                        $(this).contents().wrap("<a href='http://"+window.location.host+"/support_center_case_details?CaseNumber="+myText+"'></a>");
+                    });
+                    $("#caseListTable tbody td:nth-child(4)").each(function (){
+                      if($(this).text() == "Cancellation and Disconnects"){
+                        $(this).text("Cancellation & Disconnects")
+                      }
+                    });
+                },
+                'pagingType': 'simple_numbers_no_ellipses'
+            });            
+                     
+            (function () {
+                Filter = {
+                    GlobalObjects: {           
+                        table:              $("#caseListTable").DataTable(),
+                        cachedTable:        [],
+                        filteredResults:    []
+                    },
+                    Init: function (){
+                        this.BuildListArray();
+                        this.BuildCachedTable();
+                        this.FilterSelect();
+                    },
+                    BuildCachedTable: function () {
+                        $.each(Filter.GlobalObjects.table.data(), function (index, value) {
+                            Filter.GlobalObjects.cachedTable[index] =  Filter.GlobalObjects.table.data()[index];
+                        });
+                    },
+                    BuildListArray: function () {
+                        // Build Contact Name Array
+                        var Contactnames = Filter.GlobalObjects.table.column(5).data();
+                        var uniqueContactNames = [];
+                        $.each(Contactnames, function(i, el){
+                            if($.inArray(el, uniqueContactNames) === -1) uniqueContactNames.push(el);
+                        });
+
+                        // Build Status Array
+                        var Status = Filter.GlobalObjects.table.column(1).data();
+                        var uniqueStatus = [];
+                        $.each(Status, function(i, el){
+                            if($.inArray(el, uniqueStatus) === -1) uniqueStatus.push(el);
+                        });
+
+                        // Build Topic Array
+                        var Topics = Filter.GlobalObjects.table.column(2).data();
+                        var uniqueTopics = [];
+                        $.each(Topics, function(i, el){
+                            if($.inArray(el, uniqueTopics) === -1) uniqueTopics.push(el);
+                        });
+
+                        // Build Category Array
+                        // var Categories = Filter.GlobalObjects.revisedCategories();
+                        var Categories = Filter.GlobalObjects.table.column(3).data();
+                        var uniqueCategories = [];
+                        $.each(Categories, function(i, el){
+                            var me = el.toString();                            
+                            if($.inArray(el, uniqueCategories) === -1) uniqueCategories.push(el);
+                        });
+
+                       Filter.BuildFilterSelect(uniqueContactNames, uniqueStatus, uniqueTopics, uniqueCategories);
+                    },
+                    FilterTable: function (myVal, myCol) {
+                        var count = 0, NewTable = [];
+                        $.each(Filter.GlobalObjects.cachedTable, function (index, value) {
+                          if(value[myCol] == myVal ) {
+                            NewTable[count] = value;
+                            count++
+                          }
+                        });
+                        Filter.GlobalObjects.table.clear();
+                        Filter.GlobalObjects.table.rows.add(NewTable).draw();
+                    },
+                    FilterSelect: function () {
+                        $(document).delegate(".filter-item", "click", function () {
+                            $(this).parents(".filter-body").removeClass("filter-body-open");
+                            $(this).parents(".filter-select").removeClass("filter-select-clickable");
+                            $(".sorting_disabled .caret-down").each( function () {
+                                $(this).attr("data-status","closed");
+                            });
+                            var myVal = $(this).attr("data-value"), myCol = $(this).attr("data-col");
+                            myVal == "All" ? Filter.ResetTable() : Filter.FilterTable(""+myVal+"", myCol);
+                        });
+                    },
+                    ResetTable: function () {
+                        Filter.GlobalObjects.table.clear();
+                        Filter.GlobalObjects.table.rows.add(Filter.GlobalObjects.cachedTable).draw();
+                    },
+                    BuildFilterSelect: function (uniqueContactNames, uniqueStatus, uniqueTopics, uniqueCategories){
+
+                        var contactNameFilter   = "<div class='filter-select filter-contact-name'>"+
+                                                    "<div class='filter-body filter-contact-name-body'></div>"+
+                                                    "</div>";
+                        var statusFilter        = "<div class='filter-select filter-status'>"+
+                                                    "<div class='filter-body filter-status-body'></div>"+
+                                                    "</div>";
+                        var categoryFilter      = "<div class='filter-select filter-category'>"+
+                                                    "<div class='filter-body filter-category-body'></div>"+
+                                                    "</div>";
+                        var topicFilter         = "<div class='filter-select filter-topic'>"+
+                                                    "<div class='filter-body filter-topic-body'></div>"+
+                                                    "</div>";
+
+                        // Contact Name Filtering
+                        $(".contact-name-header").append(contactNameFilter);
+                        $(".filter-contact-name-body").append("<div class='filter-item' data-value='All'>All</div>");
+                        $.each(uniqueContactNames, function (index, value) {
+                          $(".filter-contact-name-body").append("<div class='filter-item' data-col='5' data-value='"+value+"'>"+value+"</div>")
+                        });
+
+                        // Status Filtering
+                        $(".status-header").append(statusFilter);
+                        $(".filter-status-body").append("<div class='filter-item' data-value='All'>All</div>");
+                        $.each(uniqueStatus, function (index, value) {
+                          $(".filter-status-body").append("<div class='filter-item' data-col='1' data-value='"+value+"'>"+value+"</div>")
+                        });
+
+                        // Topic Filtering
+                        $(".topic-header").append(topicFilter);
+                        $(".filter-topic-body").append("<div class='filter-item' data-value='All'>All</div>");
+                        $.each(uniqueTopics, function (index, value) {
+                          $(".filter-topic-body").append("<div class='filter-item' data-col='2' data-value='"+value+"'>"+value+"</div>")
+                        });
+
+                        // Category Filtering
+                        $(".category-header").append(categoryFilter);
+                        $(".filter-category-body").append("<div class='filter-item' data-value='All'>All</div>");
+                        $.each(uniqueCategories, function (index, value) {
+                          $(".filter-category-body").append("<div class='filter-item' data-col='3' data-value='"+value+"'>"+value+"</div>")
+                        });
+                        $(".filter-item[data-value='Cancellation and Disconnects']").text("Cancellation & Disconnects");
+
+
+                        $(".sorting_disabled").click( function () {
+                            var myStatus = $(this).find(".caret-down").attr("data-status");
+
+                            $(".filter-body").each( function () { $(this).removeClass("filter-body-open") });
+                            $(".sorting_disabled").find(".filter-select").removeClass("filter-select-clickable");
+                            $(".sorting_disabled .caret-down").each( function () { $(this).attr("data-status","closed") });
+
+                            if (myStatus == "closed") {
+                                $(this).find(".filter-body").addClass("filter-body-open");
+                                $(this).find(".filter-select").addClass("filter-select-clickable");
+                                $(this).find(".caret-down").attr("data-status", "open");
+                                setTimeout(function () {
+                                    $(".filter-body-open").addClass("toClose")
+                                }, 300);
+                            } if (myStatus == "open") {
+                                $("filter-body-open").removeClass("toClose");
+                                $(this).find(".filter-body").stop().removeClass("filter-body-open");
+                                $(this).find(".filter-select").removeClass("filter-select-clickable");
+                                $(this).find(".caret-down").attr("data-status", "closed");
+                            }
+                        });
+
+                        $("body").click(function () {
+                            if($(".toClose").length > 0){
+                                $(".toClose").removeClass("toClose");
+                                $(".filter-body-open").removeClass("filter-body-open");
+                                $(".filter-select-clickable").removeClass("filter-select-clickable");
+                                $(".caret-down").each(function () {
+                                    $(this).attr("data-status", "closed");  
+                                });
+                            }
+                        });
+
+                        // var contactNameWidth    = $(".filter-contact-name").outerWidth() - 100;
+                        // var statusWidth         = $(".filter-status").outerWidth() - 50;
+                        // var categoryWidth       = $(".filter-category").outerWidth() - 60;
+                        // var topicWidth          = $(".filter-topic").outerWidth() - 60;
+                        // Filter.PositionFilters(contactNameWidth, statusWidth, categoryWidth);                        
+                    }, 
+                    PositionFilters: function (contactNameWidth, statusWidth, categoryWidth, topicWidth) {
+                        // $(".filter-contact-name").css({"right":-(contactNameWidth)});
+                        // $(".filter-status").css({"right":-(statusWidth)});
+                        // $(".filter-topic").css({"right":-(topicWidth)});
+                        // BRANDON: FIX FOR CHANGE SET "SupportCenter V3"
+                        // $(".filter-category").css({"right": -(categoryWidth)});
+                    }
+                }
+                Filter.Init();
+            })(); 
+
+            // ADD TITLE TO TABLE CELLS
+            $("tbody td").each(function () {
+              var myText = $(this).text();
+              $(this).attr("title", myText);
+            });
+            
+           
+             var popContent = "Search supports column headings, Order Number, SP Ticket Number and Opportunity ID";
+            var popover = "<div class='popover right'><div class='popover-content'><p>"+popContent+"</p></div></div>"
+            $("input[type='search']")
+                .parent("label")
+                .css({"width":"295px"})
+                .append("<span class='glyphicon glyphicon-info-sign' style='float:right;margin-top: 7px;'></span>"+popover);
+
+            $("input[type='search']")
+                .css({"display":"inline", "margin-left":"8px", "border-color":"#ddd"})
+                .attr("placeholder","Search")
+                .before("<span class='dataTableManageCustSearchButton search_button'></span>");
+
+            $(".glyphicon-info-sign").mouseover(function () {
+                $(".popover").show();
+            }).mouseout(function (){
+                $(".popover").hide();
+            });
+            
+            $("th").click( function () {
+                if($(this).hasClass("sorting_asc") || $(this).hasClass("sorting")){
+                    $(this).find(".caret-up").css({"color":"#0568ae"})
+                    $(this).find(".caret-down").css({"color":"silver"})
+                } else if($(this).hasClass("sorting_desc")){
+                    $(this).find(".caret-up").css({"color":"silver"})
+                    $(this).find(".caret-down").css({"color":"#0568ae"})
+                }
+            });
+            $("#caseListTable_paginate")
+                .prepend("<a class='paginate_button firstLink'>First</a>")
+                .append("<a class='paginate_button lastLink'>Last</a>");
+            $("#caseListTable_previous").html("Previous")    
+            $("#caseListTable_next").html("Next")    
+            $(".firstLink").click( function () {
+              Filter.GlobalObjects.table.page("first").draw("page");
+            });
+            $(".lastLink").click( function () {
+              Filter.GlobalObjects.table.page("last").draw("page");
+            });
+            if(Filter.GlobalObjects.table.page.info().page == 0 ) {
+              $(".firstLink, #caseListTable_previous").addClass("inactive-button");
+            }
+            $('#caseListTable').on("draw.dt", function () {
+
+                // ADD TITLE TO TABLE CELLS
+                $("tbody td").each(function () {
+                  var myText = $(this).text();
+                  $(this).attr("title", myText);
+                });
+                
+                $("table tr td:nth-last-of-type(11n + 1), table tr td:nth-last-of-type(11n + 2), table tr td:nth-last-of-type(11n + 3)").css({"display":"none"});
+                $("#caseListTable_paginate")
+                    .prepend("<a class='paginate_button firstLink'>First</a>")
+                    .append("<a class='paginate_button lastLink'>Last</a>");
+
+                $("#caseListTable_previous").html("Previous")    
+                $("#caseListTable_next").html("Next")  
+                $(".firstLink").click( function () {
+                  Filter.GlobalObjects.table.page("first").draw("page");
+                });
+
+                $(".lastLink").click( function () {
+                  Filter.GlobalObjects.table.page("last").draw("page");
+                });
+
+                if(Filter.GlobalObjects.table.page.info().page + 1 == Filter.GlobalObjects.table.page.info().pages ) {
+                  $(".lastLink, #caseListTable_next").addClass("inactive-button");
+                }
+
+                if(Filter.GlobalObjects.table.page.info().page == 0 ) {
+                  $(".firstLink, #caseListTable_previous").addClass("inactive-button");
+                }
+
+                $("#caseListTable tbody tr td:contains('C-1')").each( function () {
+                    $(this).attr("class","case-number");
+                });
+                $(".case-number").each( function () {
+                    var myText = $(this).text();
+                    $(this).contents().wrap("<a href='http://"+window.location.host+"/support_center_case_details?CaseNumber="+myText+"'></a>");
+                });
+            });
+            //Remove default from case number and add sorting functionality to Opened date
+            $("#caseListTable thead th:nth-child(7)").trigger("click");
+            $("#caseListTable thead th:nth-child(7)").trigger("click");
+        } );
+    </script>
+</apex:page>

@@ -1,0 +1,134 @@
+<apex:page docType="html-5.0" controller="PortalDesignController"  standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />
+    <apex:stylesheet value="{!$Resource.products_css}"/>
+    <apex:includeScript value="{!URLFOR($Resource.productMobileMenuJS)}" />
+    <style type="text/css">
+        .PortalDesign_IOT_Overview {
+            display: block;
+        }
+        .page-include {
+            display: none;
+        }
+        .sub-open2::after {
+          border-left: 7px solid transparent !important;
+          border-right: 7px solid transparent !important;
+          border-style: solid !important;
+          border-top: 7px solid #0568ae !important;
+          border-width: 7px 7px 0 !important;
+          color: #0568ae !important;
+          content: "";
+          height: 0;
+          position: absolute;
+          right: 15px;
+          top: 17px !important;
+          width: 0;
+        }
+
+        li.active.sub-open2::after {
+          color: #0568ae !important;
+        }
+
+        .mobileNav-sub .active {
+          color: #0568ae;
+          background-color: transparent !important;
+        }
+
+        .sub-open2 {
+          border-top: 2px solid #0568ae;
+          background-color: transparent !important;
+          color: #0568ae !important;
+        }
+
+        .sub-open2 a {
+          color: #0568ae !important;
+        }
+    </style> 
+    
+    <!-- REDIRECTION LOGIC FOR UNAUTHORIZED ACCESS -->
+       <script>
+            redirectToUnauthorizedAccessPage();
+    
+            function redirectToUnauthorizedAccessPage() {
+                // for maintenance page redirection
+                var byPassFreeze = "{!isWirelessProduct}";            
+                if (byPassFreeze == 'false') {
+                    window.location="/apex/UnauthorizedAccess";
+                }
+            }
+        
+    </script>
+    <!-- END REDIRECTION LOGIC FOR UNAUTHORIZED ACCESS --> 
+      
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="iot jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                    <h1 class="hero_badge_1">{!$Label.IOT}</h1>
+                    <h2 class="hero_badge_2">Build solutions for the future.</h2>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+    
+    <!-- BODY SLICE -->
+    <div class="products-body product-page col-sm-12">
+        <div class="row">
+            <div class="leftNavCol col-sm-3">
+                <div class="leftNav mobile-leftNav">
+                    <ul class="mainLinks" role="tablist">
+                        <li class="active" data-page="PortalDesign_IOT_Overview"><a class="btn btn-link" role="tab" data-toggle="tab">Overview</a></li>
+                        <li class="learnmore-li" data-page="PortalDesign_IOT_Learn" data-sub="learnmore-sub"><a class="btn btn-link" data-status="hidden" role="tab" data-toggle="tab">Learn More</a></li>
+                        <ul class="leftNav-sub" id="learnmore-sub">
+                            <li data-page="PortalDesign_IOT_Learn_Control_Center"><a class="btn btn-link" data-status="hidden" role="tab" data-toggle="tab">AT&amp;T Control Center</a></li>
+                            <!-- <li data-page="PortalDesign_IOT_Learn_Cargo_View"><a class="btn btn-link" data-status="hidden" role="tab" data-toggle="tab">AT&amp;T Cargo View</a></li> -->
+                            <li data-page="PortalDesign_IOT_Learn_Solutions_Center"><a class="btn btn-link" data-status="hidden" role="tab" data-toggle="tab">Solutions Center</a></li>
+                        </ul>
+                        <li data-page="PortalDesign_IOT_Start"><a class="btn btn-link" role="tab" data-toggle="tab">Get Started</a></li>
+                        <li data-page="PortalDesign_IOT_Pricing"><a class="btn btn-link" role="tab" data-toggle="tab">Pricing</a></li>
+                    </ul>
+                </div>
+
+                <div class="mobile-content-menu">
+                    <div class="dropdown-label" data-status="closed">
+                        Overview 
+                        <span class="ionicons ion-ios7-arrow-down" style="position: relative; top: 3px; left: 7px; "></span>
+                    </div>
+                    <ul class="mobile-dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                        <a data-page="PortalDesign_IOT_Overview" role="menuitem"><li role="presentation">Overview</li></a>
+                        <a data-page="PortalDesign_IOT_Learn" role="menuitem"><li role="presentation">Learn More</li></a>
+                        <ul class="mobileNav-sub">
+                            <a class="btn-link" role="tab" data-toggle="tab"><li data-page="PortalDesign_IOT_Learn_Control_Center">AT&amp;T Control Center</li></a>
+                            <!-- <a class="btn-link" role="tab" data-toggle="tab"><li data-page="PortalDesign_IOT_Learn_Cargo_View">AT&amp;T Cargo View</li></a> -->
+                            <a class="btn-link" role="tab" data-toggle="tab"><li data-page="PortalDesign_IOT_Learn_Solutions_Center">Solutions Center</li></a>
+                        </ul>
+                        <a data-page="PortalDesign_IOT_Start" role="menuitem"><li role="presentation">Get Started</li></a>
+                        <a data-page="PortalDesign_IOT_Pricing" role="menuitem"><li role="presentation">Pricing</li></a>            
+                    </ul>
+                </div>
+            </div>            
+            <div class="contentCol col-sm-8 body-load-content">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="overview">
+                        <div class="page-include PortalDesign_IOT_Overview"><apex:include pageName="PortalDesign_IOT_Overview" id="PortalDesign_IOT_Overview" />  </div>
+                        <div class="page-include PortalDesign_IOT_Learn"><apex:include pageName="PortalDesign_IOT_Learn" id="PortalDesign_IOT_Learn" /> </div>
+                        <div class="page-include PortalDesign_IOT_Start"><apex:include pageName="PortalDesign_IOT_Start" id="PortalDesign_IOT_Start" /> </div>
+                        <div class="page-include PortalDesign_IOT_Pricing"><apex:include pageName="PortalDesign_IOT_Pricing" id="PortalDesign_IOT_Pricing" />  </div>
+                        <div class="page-include PortalDesign_IOT_Learn_Control_Center"><apex:include pageName="PortalDesign_IOT_Learn_Control_Center" id="PortalDesign_IOT_Control_Center" /></div>
+                        <!-- <div class="page-include PortalDesign_IOT_Learn_Cargo_View"><apex:include pageName="PortalDesign_IOT_Learn_Cargo_View" id="PortalDesign_IOT_Cargo_View" /></div> -->
+                        <div class="page-include PortalDesign_IOT_Learn_Solutions_Center"><apex:include pageName="PortalDesign_IOT_Learn_Solutions_Center" id="PortalDesign_IOT_Solutions_Center" /></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+   
+    <!-- END BODY SLICE -->
+    
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+    <apex:includescript value="{!$Resource.LeftNav_Controller}" />
+</apex:page>

@@ -1,0 +1,1593 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Custom objected created at request of Sales Operations &amp; Pricing Team. Allows team to input details of prospective deals. Complementary to Opportunity, but does not interact with or feed to Opportunity. This object is intended to have a limited life, and serve as a middle-term solution to consolidate Sales &amp; Pricing manual tracking.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>Private</externalSharingModel>
+    <fields>
+        <fullName>Access_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates if the mix of Ethernet vs TDM for access circuits in this deal. Select Not Applicable for Mobility-related deals.</inlineHelpText>
+        <label>Access Type</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Only Ethernet</fullName>
+                    <default>false</default>
+                    <label>Only Ethernet</label>
+                </value>
+                <value>
+                    <fullName>Only TDM</fullName>
+                    <default>false</default>
+                    <label>Only TDM</label>
+                </value>
+                <value>
+                    <fullName>Mostly Ethernet</fullName>
+                    <default>false</default>
+                    <label>Mostly Ethernet</label>
+                </value>
+                <value>
+                    <fullName>Mostly TDM</fullName>
+                    <default>false</default>
+                    <label>Mostly TDM</label>
+                </value>
+                <value>
+                    <fullName>Not Applicable</fullName>
+                    <default>false</default>
+                    <label>Not Applicable</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Approved_MRC__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Monthly Recurring Charges final offer, generated &amp; to be populated by Pricing Team</inlineHelpText>
+        <label>Approved MRC</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>CAM_LargeDeal__c</fullName>
+        <description>This is pulled from the Account field &quot;CAM [back-end name: Owner]&quot;.</description>
+        <externalId>false</externalId>
+        <formula>SolutionProviderLargeDeal__r.Owner.FirstName &amp; &quot; &quot; &amp; SolutionProviderLargeDeal__r.Owner.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This is a read-only field within this page, and cannot be edited within this page. 
+
+This value is pulled automatically from the Account record for this SP. 
+
+This is pulled from the Account field &quot;CAM&quot;.</inlineHelpText>
+        <label>CAM</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Created_Date_Time_LargeDeal__c</fullName>
+        <externalId>false</externalId>
+        <formula>CreatedDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Created Date &amp; Time</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Current_Pricing_Team_Engaged__c</fullName>
+        <externalId>false</externalId>
+        <label>Current Pricing Team Engaged</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>APEX</fullName>
+                    <default>false</default>
+                    <label>APEX</label>
+                </value>
+                <value>
+                    <fullName>WHL ICB</fullName>
+                    <default>false</default>
+                    <label>WHL ICB</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Deal_Status__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates current milestone in the life cycle of this deal.</inlineHelpText>
+        <label>Deal Status</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>Sales Pending</fullName>
+                    <default>true</default>
+                    <label>Sales Pending</label>
+                </value>
+                <value>
+                    <fullName>Pricing Pending</fullName>
+                    <default>false</default>
+                    <label>Pricing Pending</label>
+                </value>
+                <value>
+                    <fullName>SP Pending</fullName>
+                    <default>false</default>
+                    <label>SP Pending</label>
+                </value>
+                <value>
+                    <fullName>Closed</fullName>
+                    <default>false</default>
+                    <label>Closed</label>
+                </value>
+                <value>
+                    <fullName>Lost</fullName>
+                    <default>false</default>
+                    <label>Lost</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Deal_TCV__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Approved_MRC__c = 0,(VALUE(Text(Term_Length_months__c)) * Rate_Card_MRC__c),(VALUE(Text(Term_Length_months__c)) * Approved_MRC__c))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Value is calculated automatically:
+
+If Approved MRC Field is populated, then TCV = Approved MRC x Term Length
+
+If Approved MRC Field is blank, then TCV = Rate Card MRC x Term Length</inlineHelpText>
+        <label>Deal TCV</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Deal_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Definitions:
+
+New – New Customer
+Growth – New Sale
+Acquisition – SP acquired the customer line or account
+Blended – Combination of New/Growth/Acquisition
+Other – All others, could be a renewal or a special construction</inlineHelpText>
+        <label>Deal Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>New</fullName>
+                    <default>false</default>
+                    <label>New</label>
+                </value>
+                <value>
+                    <fullName>Growth</fullName>
+                    <default>false</default>
+                    <label>Growth</label>
+                </value>
+                <value>
+                    <fullName>Blended</fullName>
+                    <default>false</default>
+                    <label>Blended</label>
+                </value>
+                <value>
+                    <fullName>Acquisition</fullName>
+                    <default>false</default>
+                    <label>Acquisition</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>End_User_Customer__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates the company name that is the SP&apos;s customer.</inlineHelpText>
+        <label>End-User Customer</label>
+        <length>40</length>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Estimated_Close_Date__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates date this deal is expected to close.</inlineHelpText>
+        <label>Estimated Close Date</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>2018 January</fullName>
+                    <default>false</default>
+                    <label>2018 January</label>
+                </value>
+                <value>
+                    <fullName>2018 February</fullName>
+                    <default>false</default>
+                    <label>2018 February</label>
+                </value>
+                <value>
+                    <fullName>2018 March</fullName>
+                    <default>false</default>
+                    <label>2018 March</label>
+                </value>
+                <value>
+                    <fullName>2018 April</fullName>
+                    <default>false</default>
+                    <label>2018 April</label>
+                </value>
+                <value>
+                    <fullName>2018 May</fullName>
+                    <default>false</default>
+                    <label>2018 May</label>
+                </value>
+                <value>
+                    <fullName>2018 June</fullName>
+                    <default>false</default>
+                    <label>2018 June</label>
+                </value>
+                <value>
+                    <fullName>2018 July</fullName>
+                    <default>false</default>
+                    <label>2018 July</label>
+                </value>
+                <value>
+                    <fullName>2018 August</fullName>
+                    <default>false</default>
+                    <label>2018 August</label>
+                </value>
+                <value>
+                    <fullName>2018 September</fullName>
+                    <default>false</default>
+                    <label>2018 September</label>
+                </value>
+                <value>
+                    <fullName>2018 October</fullName>
+                    <default>false</default>
+                    <label>2018 October</label>
+                </value>
+                <value>
+                    <fullName>2018 November</fullName>
+                    <default>false</default>
+                    <label>2018 November</label>
+                </value>
+                <value>
+                    <fullName>2018 December</fullName>
+                    <default>false</default>
+                    <label>2018 December</label>
+                </value>
+                <value>
+                    <fullName>2019 January</fullName>
+                    <default>false</default>
+                    <label>2019 January</label>
+                </value>
+                <value>
+                    <fullName>2019 February</fullName>
+                    <default>false</default>
+                    <label>2019 February</label>
+                </value>
+                <value>
+                    <fullName>2019 March</fullName>
+                    <default>false</default>
+                    <label>2019 March</label>
+                </value>
+                <value>
+                    <fullName>2019 April</fullName>
+                    <default>false</default>
+                    <label>2019 April</label>
+                </value>
+                <value>
+                    <fullName>2019 May</fullName>
+                    <default>false</default>
+                    <label>2019 May</label>
+                </value>
+                <value>
+                    <fullName>2019 June</fullName>
+                    <default>false</default>
+                    <label>2019 June</label>
+                </value>
+                <value>
+                    <fullName>2019 July</fullName>
+                    <default>false</default>
+                    <label>2019 July</label>
+                </value>
+                <value>
+                    <fullName>2019 August</fullName>
+                    <default>false</default>
+                    <label>2019 August</label>
+                </value>
+                <value>
+                    <fullName>2019 September</fullName>
+                    <default>false</default>
+                    <label>2019 September</label>
+                </value>
+                <value>
+                    <fullName>2019 October</fullName>
+                    <default>false</default>
+                    <label>2019 October</label>
+                </value>
+                <value>
+                    <fullName>2019 November</fullName>
+                    <default>false</default>
+                    <label>2019 November</label>
+                </value>
+                <value>
+                    <fullName>2019 December</fullName>
+                    <default>false</default>
+                    <label>2019 December</label>
+                </value>
+                <value>
+                    <fullName>2020 January</fullName>
+                    <default>false</default>
+                    <label>2020 January</label>
+                </value>
+                <value>
+                    <fullName>2020 February</fullName>
+                    <default>false</default>
+                    <label>2020 February</label>
+                </value>
+                <value>
+                    <fullName>2020 March</fullName>
+                    <default>false</default>
+                    <label>2020 March</label>
+                </value>
+                <value>
+                    <fullName>2020 April</fullName>
+                    <default>false</default>
+                    <label>2020 April</label>
+                </value>
+                <value>
+                    <fullName>2020 May</fullName>
+                    <default>false</default>
+                    <label>2020 May</label>
+                </value>
+                <value>
+                    <fullName>2020 June</fullName>
+                    <default>false</default>
+                    <label>2020 June</label>
+                </value>
+                <value>
+                    <fullName>2020 July</fullName>
+                    <default>false</default>
+                    <label>2020 July</label>
+                </value>
+                <value>
+                    <fullName>2020 August</fullName>
+                    <default>false</default>
+                    <label>2020 August</label>
+                </value>
+                <value>
+                    <fullName>2020 September</fullName>
+                    <default>false</default>
+                    <label>2020 September</label>
+                </value>
+                <value>
+                    <fullName>2020 October</fullName>
+                    <default>false</default>
+                    <label>2020 October</label>
+                </value>
+                <value>
+                    <fullName>2020 November</fullName>
+                    <default>false</default>
+                    <label>2020 November</label>
+                </value>
+                <value>
+                    <fullName>2020 December</fullName>
+                    <default>false</default>
+                    <label>2020 December</label>
+                </value>
+                <value>
+                    <fullName>2017 April</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>2017 April</label>
+                </value>
+                <value>
+                    <fullName>2017 August</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>2017 August</label>
+                </value>
+                <value>
+                    <fullName>2017 December</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>2017 December</label>
+                </value>
+                <value>
+                    <fullName>2017 February</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>2017 February</label>
+                </value>
+                <value>
+                    <fullName>2017 January</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>2017 January</label>
+                </value>
+                <value>
+                    <fullName>2017 July</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>2017 July</label>
+                </value>
+                <value>
+                    <fullName>2017 June</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>2017 June</label>
+                </value>
+                <value>
+                    <fullName>2017 March</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>2017 March</label>
+                </value>
+                <value>
+                    <fullName>2017 May</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>2017 May</label>
+                </value>
+                <value>
+                    <fullName>2017 November</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>2017 November</label>
+                </value>
+                <value>
+                    <fullName>2017 October</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>2017 October</label>
+                </value>
+                <value>
+                    <fullName>2017 September</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>2017 September</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Executive_Top_Opportunity__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Check to indicate this deal should be included in Executive reporting.</inlineHelpText>
+        <label>Executive Top Opportunity</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Incumbent__c</fullName>
+        <externalId>false</externalId>
+        <label>Incumbent</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>AT&amp;T (direct sales)</fullName>
+                    <default>false</default>
+                    <label>AT&amp;T (direct sales)</label>
+                </value>
+                <value>
+                    <fullName>BT and Orange</fullName>
+                    <default>false</default>
+                    <label>BT and Orange</label>
+                </value>
+                <value>
+                    <fullName>Century Link</fullName>
+                    <default>false</default>
+                    <label>Century Link</label>
+                </value>
+                <value>
+                    <fullName>Charter</fullName>
+                    <default>false</default>
+                    <label>Charter</label>
+                </value>
+                <value>
+                    <fullName>Comcast</fullName>
+                    <default>false</default>
+                    <label>Comcast</label>
+                </value>
+                <value>
+                    <fullName>Cox</fullName>
+                    <default>false</default>
+                    <label>Cox</label>
+                </value>
+                <value>
+                    <fullName>Earthlink</fullName>
+                    <default>false</default>
+                    <label>Earthlink</label>
+                </value>
+                <value>
+                    <fullName>Level 3</fullName>
+                    <default>false</default>
+                    <label>Level 3</label>
+                </value>
+                <value>
+                    <fullName>Sprint</fullName>
+                    <default>false</default>
+                    <label>Sprint</label>
+                </value>
+                <value>
+                    <fullName>T-Mobile</fullName>
+                    <default>false</default>
+                    <label>T-Mobile</label>
+                </value>
+                <value>
+                    <fullName>Time Warner</fullName>
+                    <default>false</default>
+                    <label>Time Warner</label>
+                </value>
+                <value>
+                    <fullName>Verizon</fullName>
+                    <default>false</default>
+                    <label>Verizon</label>
+                </value>
+                <value>
+                    <fullName>Virtela</fullName>
+                    <default>false</default>
+                    <label>Virtela</label>
+                </value>
+                <value>
+                    <fullName>Windstream</fullName>
+                    <default>false</default>
+                    <label>Windstream</label>
+                </value>
+                <value>
+                    <fullName>XO</fullName>
+                    <default>false</default>
+                    <label>XO</label>
+                </value>
+                <value>
+                    <fullName>Zayo</fullName>
+                    <default>false</default>
+                    <label>Zayo</label>
+                </value>
+                <value>
+                    <fullName>UNKNOWN</fullName>
+                    <default>false</default>
+                    <label>UNKNOWN</label>
+                </value>
+                <value>
+                    <fullName>NOT APPLICABLE</fullName>
+                    <default>false</default>
+                    <label>NOT APPLICABLE</label>
+                </value>
+                <value>
+                    <fullName>OTHER</fullName>
+                    <default>false</default>
+                    <label>OTHER</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Last_Modified_Date_Time_LaregDeal__c</fullName>
+        <externalId>false</externalId>
+        <formula>LastModifiedDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Last Modified Date &amp; Time</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Mobility_TSC_LargeDeal__c</fullName>
+        <externalId>false</externalId>
+        <formula>SolutionProviderLargeDeal__r.Mobility_TSC__r.FirstName &amp; &quot; &quot; &amp; SolutionProviderLargeDeal__r.Mobility_TSC__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This is a read-only field within this page, and cannot be edited within this page. 
+
+This value is pulled automatically from the Account record for this SP. 
+
+This is pulled from the Account field &quot;Mobility TSC&quot;.</inlineHelpText>
+        <label>Mobility TSC</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Number_of_Sites_Lines__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Input the count of sites or lines for this deal.</inlineHelpText>
+        <label>Number of Sites/Lines</label>
+        <precision>18</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Picklist__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates the sales channel to which this deal belongs.</inlineHelpText>
+        <label>Channel</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>APEX</fullName>
+                    <default>false</default>
+                    <label>APEX</label>
+                </value>
+                <value>
+                    <fullName>MMA</fullName>
+                    <default>false</default>
+                    <label>MMA</label>
+                </value>
+                <value>
+                    <fullName>WHL</fullName>
+                    <default>false</default>
+                    <isActive>false</isActive>
+                    <label>WHL</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Pricing_Team_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>Pricing Team Notes</label>
+        <length>32768</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Probability_to_Win__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicates estimated likelihood that AT&amp;T will win this deal.</inlineHelpText>
+        <label>Probability to Win</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>10%</fullName>
+                    <default>false</default>
+                    <label>10%</label>
+                </value>
+                <value>
+                    <fullName>20%</fullName>
+                    <default>false</default>
+                    <label>20%</label>
+                </value>
+                <value>
+                    <fullName>30%</fullName>
+                    <default>false</default>
+                    <label>30%</label>
+                </value>
+                <value>
+                    <fullName>40%</fullName>
+                    <default>false</default>
+                    <label>40%</label>
+                </value>
+                <value>
+                    <fullName>50%</fullName>
+                    <default>false</default>
+                    <label>50%</label>
+                </value>
+                <value>
+                    <fullName>60%</fullName>
+                    <default>false</default>
+                    <label>60%</label>
+                </value>
+                <value>
+                    <fullName>70%</fullName>
+                    <default>false</default>
+                    <label>70%</label>
+                </value>
+                <value>
+                    <fullName>80%</fullName>
+                    <default>false</default>
+                    <label>80%</label>
+                </value>
+                <value>
+                    <fullName>90%</fullName>
+                    <default>false</default>
+                    <label>90%</label>
+                </value>
+                <value>
+                    <fullName>100%</fullName>
+                    <default>false</default>
+                    <label>100%</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Product_Family__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Product__c , 
+&apos;ADE&apos; , &apos;Wireline&apos;, 
+&apos;AIA&apos; , &apos;Wireline&apos;, 
+&apos;ADI (MIS)&apos;, &apos;Wireline&apos;, 
+&apos;ANIRA&apos;, &apos;Wireline&apos;, 
+&apos;ASE&apos;, &apos;Wireline&apos;, 
+&apos;AVPN&apos;, &apos;Wireline&apos;, 
+&apos;COLO&apos;, &apos;Wireline&apos;, 
+&apos;EPLS WAN&apos;, &apos;Wireline&apos;, 
+&apos;Flexware&apos;, &apos;Wireline&apos;, 
+&apos;IP Flex&apos;, &apos;Wireline&apos;, 
+&apos;NBFW&apos;, &apos;Wireline&apos;, 
+&apos;Mobility&apos;, &apos;Mobility&apos;, 
+&apos;IoT&apos;, &apos;Mobility&apos;, 
+&apos;Mixed(more than 1 product)&apos;, &apos;Mixed&apos;, 
+NULL)</formula>
+        <inlineHelpText>Auto-populated based on value in the Product field on this record.</inlineHelpText>
+        <label>Product Family</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Product__c</fullName>
+        <externalId>false</externalId>
+        <label>Product</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>ADE</fullName>
+                    <default>false</default>
+                    <label>ADE</label>
+                </value>
+                <value>
+                    <fullName>ADI (MIS)</fullName>
+                    <default>false</default>
+                    <label>ADI (MIS)</label>
+                </value>
+                <value>
+                    <fullName>AIA</fullName>
+                    <default>false</default>
+                    <label>AIA</label>
+                </value>
+                <value>
+                    <fullName>ANIRA</fullName>
+                    <default>false</default>
+                    <label>ANIRA</label>
+                </value>
+                <value>
+                    <fullName>ASE</fullName>
+                    <default>false</default>
+                    <label>ASE</label>
+                </value>
+                <value>
+                    <fullName>AVPN</fullName>
+                    <default>false</default>
+                    <label>AVPN</label>
+                </value>
+                <value>
+                    <fullName>COLO</fullName>
+                    <default>false</default>
+                    <label>COLO</label>
+                </value>
+                <value>
+                    <fullName>EPLS WAN</fullName>
+                    <default>false</default>
+                    <label>EPLS WAN</label>
+                </value>
+                <value>
+                    <fullName>Flexware</fullName>
+                    <default>false</default>
+                    <label>Flexware</label>
+                </value>
+                <value>
+                    <fullName>IoT</fullName>
+                    <default>false</default>
+                    <label>IoT</label>
+                </value>
+                <value>
+                    <fullName>IP Flex</fullName>
+                    <default>false</default>
+                    <label>IP Flex</label>
+                </value>
+                <value>
+                    <fullName>Mixed(more than 1 product)</fullName>
+                    <default>false</default>
+                    <label>Mixed(more than 1 product)</label>
+                </value>
+                <value>
+                    <fullName>Mobility</fullName>
+                    <default>false</default>
+                    <label>Mobility</label>
+                </value>
+                <value>
+                    <fullName>NBFW</fullName>
+                    <default>false</default>
+                    <label>NBFW</label>
+                </value>
+                <value>
+                    <fullName>Other</fullName>
+                    <default>false</default>
+                    <label>Other</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Prompt_AMDB__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>false</externalId>
+        <inlineHelpText>Input the deal ID exactly as it appears in Prompt/AMDB (examples: Q-00323376, MAN7335, MAN1164-RepriceExt)</inlineHelpText>
+        <label>Deal ID (Prompt/AMDB)</label>
+        <length>40</length>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>ROME_Opportunity_ID__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Required only for WHL ICB deals. 
+
+Input the ROME Opportunity ID exactly as it appears in ROME. Example: &quot;1-77K6QTG&quot;</inlineHelpText>
+        <label>ROME Opportunity ID</label>
+        <length>12</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Rate_Card_MRC__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Monthly Recurring Charge for this deal based on the standard pricing listed, assuming no discounts or adjustments, etc.</inlineHelpText>
+        <label>Deal MRC (Rate Card)</label>
+        <precision>18</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Sales_Director__c</fullName>
+        <externalId>false</externalId>
+        <formula>SolutionProviderLargeDeal__r.Sales_Director__r.FirstName &amp; &quot; &quot; &amp; SolutionProviderLargeDeal__r.Sales_Director__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This is a read-only field within this page, and cannot be edited within this page. 
+
+This value is pulled automatically from the Account record for this SP. 
+
+This is pulled from the Account field &quot;Sales Director&quot;.</inlineHelpText>
+        <label>Sales Director</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sales_Manager_LargeDeal__c</fullName>
+        <externalId>false</externalId>
+        <formula>SolutionProviderLargeDeal__r.Sales_Manager__r.FirstName &amp; &quot; &quot; &amp; SolutionProviderLargeDeal__r.Sales_Manager__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This is a read-only field within this page, and cannot be edited within this page. 
+
+This value is pulled automatically from the Account record for this SP. 
+
+This is pulled from the Account field &quot;Sales Manager&quot;.</inlineHelpText>
+        <label>Sales Manager</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sales_Team_Notes_LargeDeal__c</fullName>
+        <externalId>false</externalId>
+        <label>Sales Team Notes</label>
+        <length>32768</length>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>SolutionProviderLargeDeal__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Solution Provider</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Large Deals</relationshipLabel>
+        <relationshipName>Large_Deals</relationshipName>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Target_MRC_SP__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The Monthly Recurring Charge requested by the Solution Provider for this deal.</inlineHelpText>
+        <label>Target MRC (SP)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Term_Length_months__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Duration of proposed contract in months</inlineHelpText>
+        <label>Term Length (months)</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>12</fullName>
+                    <default>false</default>
+                    <label>12</label>
+                </value>
+                <value>
+                    <fullName>24</fullName>
+                    <default>false</default>
+                    <label>24</label>
+                </value>
+                <value>
+                    <fullName>36</fullName>
+                    <default>false</default>
+                    <label>36</label>
+                </value>
+                <value>
+                    <fullName>60</fullName>
+                    <default>false</default>
+                    <label>60</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Top_Competitor__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Select the name of the company recognized to be the competition for winning this deal.</inlineHelpText>
+        <label>Top Competitor</label>
+        <required>true</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+        <valueSet>
+            <restricted>true</restricted>
+            <valueSetDefinition>
+                <sorted>false</sorted>
+                <value>
+                    <fullName>AT&amp;T (direct sales)</fullName>
+                    <default>false</default>
+                    <label>AT&amp;T (direct sales)</label>
+                </value>
+                <value>
+                    <fullName>BT and Orange</fullName>
+                    <default>false</default>
+                    <label>BT and Orange</label>
+                </value>
+                <value>
+                    <fullName>Century Link</fullName>
+                    <default>false</default>
+                    <label>Century Link</label>
+                </value>
+                <value>
+                    <fullName>Charter</fullName>
+                    <default>false</default>
+                    <label>Charter</label>
+                </value>
+                <value>
+                    <fullName>Comcast</fullName>
+                    <default>false</default>
+                    <label>Comcast</label>
+                </value>
+                <value>
+                    <fullName>Cox</fullName>
+                    <default>false</default>
+                    <label>Cox</label>
+                </value>
+                <value>
+                    <fullName>Earthlink</fullName>
+                    <default>false</default>
+                    <label>Earthlink</label>
+                </value>
+                <value>
+                    <fullName>Level 3</fullName>
+                    <default>false</default>
+                    <label>Level 3</label>
+                </value>
+                <value>
+                    <fullName>Sprint</fullName>
+                    <default>false</default>
+                    <label>Sprint</label>
+                </value>
+                <value>
+                    <fullName>T-Mobile</fullName>
+                    <default>false</default>
+                    <label>T-Mobile</label>
+                </value>
+                <value>
+                    <fullName>Time Warner</fullName>
+                    <default>false</default>
+                    <label>Time Warner</label>
+                </value>
+                <value>
+                    <fullName>Verizon</fullName>
+                    <default>false</default>
+                    <label>Verizon</label>
+                </value>
+                <value>
+                    <fullName>Virtela</fullName>
+                    <default>false</default>
+                    <label>Virtela</label>
+                </value>
+                <value>
+                    <fullName>Windstream</fullName>
+                    <default>false</default>
+                    <label>Windstream</label>
+                </value>
+                <value>
+                    <fullName>XO</fullName>
+                    <default>false</default>
+                    <label>XO</label>
+                </value>
+                <value>
+                    <fullName>Zayo</fullName>
+                    <default>false</default>
+                    <label>Zayo</label>
+                </value>
+                <value>
+                    <fullName>UNKNOWN</fullName>
+                    <default>false</default>
+                    <label>UNKNOWN</label>
+                </value>
+                <value>
+                    <fullName>OTHER</fullName>
+                    <default>false</default>
+                    <label>OTHER</label>
+                </value>
+            </valueSetDefinition>
+        </valueSet>
+    </fields>
+    <fields>
+        <fullName>Wireline_TSC_LargeDeal__c</fullName>
+        <externalId>false</externalId>
+        <formula>SolutionProviderLargeDeal__r.TSC__r.FirstName &amp; &quot; &quot; &amp; SolutionProviderLargeDeal__r.TSC__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This is a read-only field within this page, and cannot be edited within this page. 
+
+This value is pulled automatically from the Account record for this SP. 
+
+This is pulled from the Account field &quot;Wireline TSC&quot;.</inlineHelpText>
+        <label>Wireline TSC</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Large Deal</label>
+    <listViews>
+        <fullName>All_Large_Deals</fullName>
+        <columns>NAME</columns>
+        <columns>Prompt_AMDB__c</columns>
+        <columns>SolutionProviderLargeDeal__c</columns>
+        <columns>End_User_Customer__c</columns>
+        <columns>Deal_TCV__c</columns>
+        <columns>Product__c</columns>
+        <columns>Access_Type__c</columns>
+        <columns>Number_of_Sites_Lines__c</columns>
+        <columns>Term_Length_months__c</columns>
+        <columns>Estimated_Close_Date__c</columns>
+        <columns>Probability_to_Win__c</columns>
+        <columns>Sales_Director__c</columns>
+        <columns>Picklist__c</columns>
+        <columns>Created_Date_Time_LargeDeal__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Large Deals</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Large_Deals_Access_Ethernet_Only</fullName>
+        <columns>NAME</columns>
+        <columns>Prompt_AMDB__c</columns>
+        <columns>SolutionProviderLargeDeal__c</columns>
+        <columns>End_User_Customer__c</columns>
+        <columns>Deal_TCV__c</columns>
+        <columns>Product__c</columns>
+        <columns>Access_Type__c</columns>
+        <columns>Number_of_Sites_Lines__c</columns>
+        <columns>Term_Length_months__c</columns>
+        <columns>Estimated_Close_Date__c</columns>
+        <columns>Probability_to_Win__c</columns>
+        <columns>Sales_Director__c</columns>
+        <columns>Picklist__c</columns>
+        <columns>Created_Date_Time_LargeDeal__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Access_Type__c</field>
+            <operation>equals</operation>
+            <value>Only Ethernet</value>
+        </filters>
+        <label>Large Deals - Access: Ethernet Only</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Large_Deals_Access_TDM_Only</fullName>
+        <columns>NAME</columns>
+        <columns>Prompt_AMDB__c</columns>
+        <columns>SolutionProviderLargeDeal__c</columns>
+        <columns>End_User_Customer__c</columns>
+        <columns>Deal_TCV__c</columns>
+        <columns>Product__c</columns>
+        <columns>Access_Type__c</columns>
+        <columns>Number_of_Sites_Lines__c</columns>
+        <columns>Term_Length_months__c</columns>
+        <columns>Estimated_Close_Date__c</columns>
+        <columns>Probability_to_Win__c</columns>
+        <columns>Sales_Director__c</columns>
+        <columns>Picklist__c</columns>
+        <columns>Created_Date_Time_LargeDeal__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Access_Type__c</field>
+            <operation>equals</operation>
+            <value>Only TDM</value>
+        </filters>
+        <label>Large Deals - Access: TDM Only</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Large_Deals_By_Status_SP_Pending</fullName>
+        <columns>NAME</columns>
+        <columns>Prompt_AMDB__c</columns>
+        <columns>SolutionProviderLargeDeal__c</columns>
+        <columns>End_User_Customer__c</columns>
+        <columns>Product__c</columns>
+        <columns>Access_Type__c</columns>
+        <columns>Number_of_Sites_Lines__c</columns>
+        <columns>Term_Length_months__c</columns>
+        <columns>Estimated_Close_Date__c</columns>
+        <columns>Probability_to_Win__c</columns>
+        <columns>Picklist__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Deal_Status__c</field>
+            <operation>equals</operation>
+            <value>SP Pending</value>
+        </filters>
+        <label>_Large Deals - Status: SP Pending</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Large_Deals_Director_Chapes</fullName>
+        <columns>NAME</columns>
+        <columns>Prompt_AMDB__c</columns>
+        <columns>SolutionProviderLargeDeal__c</columns>
+        <columns>End_User_Customer__c</columns>
+        <columns>Deal_TCV__c</columns>
+        <columns>Product__c</columns>
+        <columns>Access_Type__c</columns>
+        <columns>Number_of_Sites_Lines__c</columns>
+        <columns>Term_Length_months__c</columns>
+        <columns>Sales_Director__c</columns>
+        <columns>Estimated_Close_Date__c</columns>
+        <columns>Probability_to_Win__c</columns>
+        <columns>Picklist__c</columns>
+        <columns>Created_Date_Time_LargeDeal__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Sales_Director__c</field>
+            <operation>contains</operation>
+            <value>Chapes</value>
+        </filters>
+        <label>Large Deals - Director: Chapes</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Large_Deals_Director_Hannel</fullName>
+        <columns>NAME</columns>
+        <columns>Prompt_AMDB__c</columns>
+        <columns>SolutionProviderLargeDeal__c</columns>
+        <columns>End_User_Customer__c</columns>
+        <columns>Deal_TCV__c</columns>
+        <columns>Product__c</columns>
+        <columns>Access_Type__c</columns>
+        <columns>Number_of_Sites_Lines__c</columns>
+        <columns>Term_Length_months__c</columns>
+        <columns>Sales_Director__c</columns>
+        <columns>Estimated_Close_Date__c</columns>
+        <columns>Probability_to_Win__c</columns>
+        <columns>Picklist__c</columns>
+        <columns>Created_Date_Time_LargeDeal__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Sales_Director__c</field>
+            <operation>contains</operation>
+            <value>Hannel</value>
+        </filters>
+        <label>Large Deals - Director: Hannel</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Large_Deals_Director_McCrary</fullName>
+        <columns>NAME</columns>
+        <columns>Prompt_AMDB__c</columns>
+        <columns>SolutionProviderLargeDeal__c</columns>
+        <columns>End_User_Customer__c</columns>
+        <columns>Deal_TCV__c</columns>
+        <columns>Product__c</columns>
+        <columns>Access_Type__c</columns>
+        <columns>Number_of_Sites_Lines__c</columns>
+        <columns>Term_Length_months__c</columns>
+        <columns>Sales_Director__c</columns>
+        <columns>Estimated_Close_Date__c</columns>
+        <columns>Probability_to_Win__c</columns>
+        <columns>Picklist__c</columns>
+        <columns>Created_Date_Time_LargeDeal__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Sales_Director__c</field>
+            <operation>contains</operation>
+            <value>McCrary</value>
+        </filters>
+        <label>Large Deals - Director: McCrary</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Large_Deals_Mobility</fullName>
+        <columns>NAME</columns>
+        <columns>Prompt_AMDB__c</columns>
+        <columns>SolutionProviderLargeDeal__c</columns>
+        <columns>End_User_Customer__c</columns>
+        <columns>Deal_TCV__c</columns>
+        <columns>Product__c</columns>
+        <columns>Access_Type__c</columns>
+        <columns>Number_of_Sites_Lines__c</columns>
+        <columns>Term_Length_months__c</columns>
+        <columns>Estimated_Close_Date__c</columns>
+        <columns>Probability_to_Win__c</columns>
+        <columns>Sales_Director__c</columns>
+        <columns>Picklist__c</columns>
+        <columns>Created_Date_Time_LargeDeal__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Product_Family__c</field>
+            <operation>equals</operation>
+            <value>Mobility</value>
+        </filters>
+        <label>Large Deals - Mobility</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Large_Deals_Pricing_Pending</fullName>
+        <columns>NAME</columns>
+        <columns>Prompt_AMDB__c</columns>
+        <columns>SolutionProviderLargeDeal__c</columns>
+        <columns>End_User_Customer__c</columns>
+        <columns>Product__c</columns>
+        <columns>Access_Type__c</columns>
+        <columns>Number_of_Sites_Lines__c</columns>
+        <columns>Term_Length_months__c</columns>
+        <columns>Estimated_Close_Date__c</columns>
+        <columns>Probability_to_Win__c</columns>
+        <columns>Picklist__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Deal_Status__c</field>
+            <operation>equals</operation>
+            <value>Pricing Pending</value>
+        </filters>
+        <label>_Large Deals - Status: Pricing Pending</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Large_Deals_Sales_Pending</fullName>
+        <columns>NAME</columns>
+        <columns>Prompt_AMDB__c</columns>
+        <columns>SolutionProviderLargeDeal__c</columns>
+        <columns>End_User_Customer__c</columns>
+        <columns>Product__c</columns>
+        <columns>Access_Type__c</columns>
+        <columns>Number_of_Sites_Lines__c</columns>
+        <columns>Term_Length_months__c</columns>
+        <columns>Estimated_Close_Date__c</columns>
+        <columns>Probability_to_Win__c</columns>
+        <columns>Picklist__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Deal_Status__c</field>
+            <operation>equals</operation>
+            <value>Sales Pending</value>
+        </filters>
+        <label>_Large Deals - Status: Sales Pending</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Large_Deals_Status_Closed</fullName>
+        <columns>NAME</columns>
+        <columns>Prompt_AMDB__c</columns>
+        <columns>SolutionProviderLargeDeal__c</columns>
+        <columns>End_User_Customer__c</columns>
+        <columns>Product__c</columns>
+        <columns>Access_Type__c</columns>
+        <columns>Number_of_Sites_Lines__c</columns>
+        <columns>Term_Length_months__c</columns>
+        <columns>Estimated_Close_Date__c</columns>
+        <columns>Probability_to_Win__c</columns>
+        <columns>Picklist__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Deal_Status__c</field>
+            <operation>equals</operation>
+            <value>Closed</value>
+        </filters>
+        <label>_Large Deals - Status: Closed</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Large_Deals_Status_Lost</fullName>
+        <columns>NAME</columns>
+        <columns>Prompt_AMDB__c</columns>
+        <columns>SolutionProviderLargeDeal__c</columns>
+        <columns>End_User_Customer__c</columns>
+        <columns>Product__c</columns>
+        <columns>Access_Type__c</columns>
+        <columns>Number_of_Sites_Lines__c</columns>
+        <columns>Term_Length_months__c</columns>
+        <columns>Estimated_Close_Date__c</columns>
+        <columns>Probability_to_Win__c</columns>
+        <columns>Picklist__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Deal_Status__c</field>
+            <operation>equals</operation>
+            <value>Lost</value>
+        </filters>
+        <label>_Large Deals - Status: Lost</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Large_Deals_Wireline</fullName>
+        <columns>NAME</columns>
+        <columns>Prompt_AMDB__c</columns>
+        <columns>SolutionProviderLargeDeal__c</columns>
+        <columns>End_User_Customer__c</columns>
+        <columns>Deal_TCV__c</columns>
+        <columns>Product__c</columns>
+        <columns>Access_Type__c</columns>
+        <columns>Number_of_Sites_Lines__c</columns>
+        <columns>Term_Length_months__c</columns>
+        <columns>Estimated_Close_Date__c</columns>
+        <columns>Probability_to_Win__c</columns>
+        <columns>Sales_Director__c</columns>
+        <columns>Picklist__c</columns>
+        <columns>Created_Date_Time_LargeDeal__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Product_Family__c</field>
+            <operation>equals</operation>
+            <value>Wireline</value>
+        </filters>
+        <label>Large Deals - Wireline</label>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <nameField>
+        <displayFormat>LD-{YY}{MM}{DD}-{00000}</displayFormat>
+        <label>Large Deal Number</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Large Deals</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Prompt_AMDB__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>SolutionProviderLargeDeal__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>End_User_Customer__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Deal_TCV__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Product__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Number_of_Sites_Lines__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Term_Length_months__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Estimated_Close_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Probability_to_Win__c</customTabListAdditionalFields>
+        <excludedStandardButtons>ChangeOwner</excludedStandardButtons>
+        <excludedStandardButtons>Accept</excludedStandardButtons>
+        <lookupDialogsAdditionalFields>Prompt_AMDB__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>SolutionProviderLargeDeal__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>End_User_Customer__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Deal_TCV__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Product__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Number_of_Sites_Lines__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Term_Length_months__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Estimated_Close_Date__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Probability_to_Win__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Prompt_AMDB__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>SolutionProviderLargeDeal__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>End_User_Customer__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Deal_TCV__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Product__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Number_of_Sites_Lines__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Term_Length_months__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Estimated_Close_Date__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Probability_to_Win__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Private</sharingModel>
+    <validationRules>
+        <fullName>Advance_from_Sales_Pend_to_Pricing_Pend</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(ISPICKVAL(Deal_Status__c, &quot;Pricing Pending&quot;),
+   ISBLANK(TEXT(Current_Pricing_Team_Engaged__c)))</errorConditionFormula>
+        <errorDisplayField>Current_Pricing_Team_Engaged__c</errorDisplayField>
+        <errorMessage>This field must be populated before this record can be saved with a status of Pricing Pending.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Rome_Oppty_ID_Required</fullName>
+        <active>true</active>
+        <description>If picklist &quot;Current Pricing Team Engaged&quot; is set to &quot;WHL ICB&quot;, then text field &quot;Rome Opportunity ID&quot; cannot be blank.</description>
+        <errorConditionFormula>AND(ISPICKVAL(Current_Pricing_Team_Engaged__c, &quot;WHL ICB&quot;), 
+ISBLANK (ROME_Opportunity_ID__c))</errorConditionFormula>
+        <errorDisplayField>ROME_Opportunity_ID__c</errorDisplayField>
+        <errorMessage>This field cannot be blank if the Wholesale ICB Team has been engaged.  
+
+Review the field &quot;Current Pricing Team Engaged&quot; and/or populate the ROME Opportunity ID here.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

@@ -1,0 +1,87 @@
+<apex:page docType="html-5.0" controller="PortalDesignController" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />
+    <apex:stylesheet value="{!$Resource.products_css}"/>
+    <apex:includeScript value="{!URLFOR($Resource.productMobileMenuJS)}" />
+    <style type="text/css">
+    .page-include {
+        display: none;
+    }
+    .PortalDesign_IA_Overview {
+        display: block;
+    }
+    </style>
+     <!-- REDIRECTION LOGIC FOR UNAUTHORIZED ACCESS -->
+     <script>
+            redirectToUnauthorizedAccessPage();
+    
+            function redirectToUnauthorizedAccessPage() {
+                // for maintenance page redirection
+                var byPassFreeze = "{!isAIA}";            
+                if (byPassFreeze == 'false') {
+                    window.location="/apex/UnauthorizedAccess";
+                }
+            }
+     </script>
+    <!-- END REDIRECTION LOGIC FOR UNAUTHORIZED ACCESS --> 
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="ia jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                    <h1 class="hero_badge_1">AT&amp;T Internet Access </h1>
+                    <!-- Robyn 5/26/16: PE Request C0525_1441, text edit -->
+                    <h2 class="hero_badge_2">Stay connected with fast and reliable access.</h2>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+
+    <!-- BODY SLICE -->
+    <div class="products-body col-sm-12 product-page IA">
+        <div class="row">
+            <div class="leftNavCol col-sm-3">
+                <div class="leftNav">
+                    <!-- Nav tabs -->
+                    <ul class="" role="tablist">
+                        <li class="active" data-page="PortalDesign_IA_Overview"><a class="btn btn-link" href="#PortalDesign_IA_Overview" role="tab" data-toggle="tab">Overview</a></li>
+                         <li class="" data-page="PortalDesign_IA_Learn"><a class="btn btn-link" href="#PortalDesign_IA_Learn" role="tab" data-toggle="tab">Learn More</a></li>
+                        <li class="" data-page="PortalDesign_IA_Pricing"><a class="btn btn-link" href="#PortalDesign_IA_Pricing" role="tab" data-toggle="tab">Pricing</a></li>
+                       
+                    </ul>  
+                </div>
+
+                <div class="mobile-content-menu">
+                <div class="dropdown-label" data-status="closed">
+                    Overview 
+                    <span class="ionicons ion-ios7-arrow-down" style="position: relative; top: 3px; left: 7px; "></span>
+                </div>
+                <ul class="mobile-dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                    <a data-page="PortalDesign_IA_Overview" role="menuitem" href="#PortalDesign_IA_Overview" ><li role="presentation">Overview</li></a>
+                    <a data-page="PortalDesign_IA_Learn" role="menuitem" href="#PortalDesign_IA_Learn"><li role="presentation">Learn More</li></a>
+                    <a data-page="PortalDesign_IA_Pricing" role="menuitem" href="#PortalDesign_IA_Pricing" ><li role="presentation">Pricing</li></a>
+                    
+                </ul>
+            </div>
+            </div>            
+            <div class="contentCol col-sm-8 body-load-content">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="overview">
+                        <div class="page-include PortalDesign_IA_Overview"><apex:include pageName="PortalDesign_IA_Overview" id="PortalDesign_IA_Overview" />
+                        </div>
+                         <div class="page-include PortalDesign_IA_Learn"><apex:include pageName="PortalDesign_IA_Learn" id="PortalDesign_IA_Learn" />
+                        </div>
+                        <div class="page-include PortalDesign_IA_Pricing"><apex:include pageName="PortalDesign_IA_Pricing" id="PortalDesign_IA_Pricing" />
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <apex:includescript value="{!$Resource.LeftNav_Controller}" />
+    <!-- END BODY SLICE -->
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+</apex:page>

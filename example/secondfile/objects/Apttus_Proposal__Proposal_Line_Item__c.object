@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fields>
+        <fullName>AT_T_Customer_Site__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>AT&amp;T Customer Site</label>
+        <referenceTo>CustomerSite__c</referenceTo>
+        <relationshipLabel>Proposal Line Items</relationshipLabel>
+        <relationshipName>Proposal_Line_Items</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Access_Speed__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos; &amp;&amp; (OR (TEXT( Apttus_QPConfig__ChargeType__c)==&apos;Access Speed Fee&apos;,TEXT(Apttus_QPConfig__ChargeType__c)==&apos;Access Speed Mileage Fee&apos;)),TEXT(Apttus_QPConfig__AttributeValueId__r.Access_Speed_MIS__c),
+	If(Product_Code__c==&apos;AVPN&apos; &amp;&amp; (OR (TEXT( Apttus_QPConfig__ChargeType__c)==&apos;Access Speed Fee&apos;,TEXT(Apttus_QPConfig__ChargeType__c)==&apos;Access Speed Mileage Fee&apos;)),TEXT(Apttus_QPConfig__AttributeValueId__r.Access_Speed_AVPN__c)
+	,TEXT(Apttus_QPConfig__OptionId__r.Access_Speed__c)))</formula>
+        <label>Access Speed</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Access_Type__c</fullName>
+        <description>For Capturing Access Type details</description>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos;,TEXT(Apttus_QPConfig__AttributeValueId__r.Access_Type__c),
+If(Product_Code__c==&apos;AVPN&apos;,TEXT(Apttus_QPConfig__AttributeValueId__r.Access_Type_AVPN__c)
+,&apos;&apos;))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Access Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Additional_DNS__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos; &amp;&amp; TEXT(Apttus_QPConfig__ChargeType__c)==&apos;Additional DNS Fee&apos;,TEXT(Apttus_QPConfig__AttributeValueId__r.Additional_DNS__c),&apos;&apos;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Additional DNS</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Bill_Display_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill Display Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Existing_AVPN_Name__c</fullName>
+        <description>This field is used to capture the existing AVPN name for a user in the course of the Anira buyflow</description>
+        <externalId>false</externalId>
+        <label>Existing AVPN Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HiCapFlex__c</fullName>
+        <description>For Hi Cap flex- UBB Port</description>
+        <externalId>false</externalId>
+        <formula>Apttus_QPConfig__AttributeValueId__r.Hi_Cap_Flex__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Hi Cap Flex</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Ip_Flex_Reach_Plan__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Apttus_QPConfig__AttributeValueId__r.IP_Flexible_Reach_Plan__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Ip Flex Reach Plan</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Managed_Router__c</fullName>
+        <externalId>false</externalId>
+        <formula>Apttus_QPConfig__AttributeValueId__r.Managed_Router__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Managed Router</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Net_Price_with_Deal_Reg_Discounts__c</fullName>
+        <description>This field stores the net price after Deal Reg Discounts are applied</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field stores the net price after Deal Reg Discounts are applied</inlineHelpText>
+        <label>Net Price with Deal Reg Discounts</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Net_Price_with_SP_Order_Discounts__c</fullName>
+        <description>This field stores the net price after SP and Order Discounts are applied</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field stores the net price after SP and Order Discounts are applied</inlineHelpText>
+        <label>Net Price with SP/Order Discounts</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>No_Of_Remote_Access_Users__c</fullName>
+        <description>Used during the ANIRA buyflow</description>
+        <externalId>false</externalId>
+        <label>No Of Remote Access Users</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>No_Of_Soho_CPE_Devices__c</fullName>
+        <description>Used to capture the No of Soho CPE Devices during the ANIRA buyflow</description>
+        <externalId>false</externalId>
+        <label>No Of Soho CPE Devices</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>One_Time_Fee__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos; &amp;&amp; TEXT(Apttus_QPConfig__ChargeType__c)==&apos;One Time Fee&apos;,TEXT(Apttus_QPConfig__AttributeValueId__r.Install_Option_MIS__c), 
+If(Product_Code__c==&apos;AVPN&apos; &amp;&amp; TEXT(Apttus_QPConfig__ChargeType__c)==&apos;One Time Fee&apos;,TEXT(Apttus_QPConfig__AttributeValueId__r.Install_Option_AVPN__c) 
+,&apos;&apos;))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>One Time Fee</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Option_Group__c</fullName>
+        <externalId>false</externalId>
+        <formula>Apttus_QPConfig__ProductOptionId__r.Apttus_Config2__ProductOptionGroupId__r.Apttus_Config2__OptionGroupId__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Option Group</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Port_Speed__c</fullName>
+        <description>For Capturing the port speed from configuration</description>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos; &amp;&amp; TEXT(Apttus_QPConfig__ChargeType__c)==&apos;Port Speed Fee&apos;,TEXT(Apttus_QPConfig__AttributeValueId__r.Port_Speed_MIS__c),
+If(Product_Code__c==&apos;AVPN&apos; &amp;&amp; TEXT(Apttus_QPConfig__ChargeType__c)==&apos;Port Speed Fee&apos;,TEXT(Apttus_QPConfig__AttributeValueId__r.Port_Speed_AVPN__c)
+,&apos;&apos;))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Port Speed</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Port_Type__c</fullName>
+        <description>For Capturing Port Type</description>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos;,TEXT(Apttus_QPConfig__AttributeValueId__r.Port_Type_MIS__c),
+If(Product_Code__c==&apos;AVPN&apos;,TEXT(Apttus_QPConfig__AttributeValueId__r.Port_Type_AVPN__c)
+,&apos;&apos;))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Port Type</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Product_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Apttus_Proposal__Proposal__r.Product_Name__c==&apos;AT&amp;T Managed Internet Service&apos;,&apos;AMIS&apos;,if(Apttus_Proposal__Proposal__r.Product_Name__c==&apos;AT&amp;T Virtual Private Network&apos;,&apos;AVPN&apos;,&apos;&apos;))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Product Code</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>UBBSpeed__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(Product_Code__c==&apos;AMIS&apos;,TEXT(Apttus_QPConfig__AttributeValueId__r.UBB_Speed_MIS__c), 
+If(Product_Code__c==&apos;AVPN&apos;,TEXT(Apttus_QPConfig__AttributeValueId__r.UBB_Speed_AVPN__c) 
+,&apos;&apos;))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>UBB Speed</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>VASA_Region__c</fullName>
+        <description>For capturing VASA on proposal line item</description>
+        <externalId>false</externalId>
+        <formula>if(TEXT(Apttus_QPConfig__ChargeType__c)==&apos;Access Speed Fee&apos;,TEXT(Apttus_QPConfig__AttributeValueId__r.VASA_Region__c), 
+If(TEXT(Apttus_QPConfig__ChargeType__c)==&apos;Access Speed Fee&apos;,TEXT(Apttus_QPConfig__AttributeValueId__r.VASA_Region__c) 
+,&apos;&apos;))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>VASA Region</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Voip__c</fullName>
+        <externalId>false</externalId>
+        <formula>if(Apttus_QPConfig__AttributeValueId__r.Concurrent_Calls__c&lt;=12,TEXT(12) ,TEXT(500)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Voip</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Wireline_Promo_Discount_Deal_Reg__c</fullName>
+        <description>This field stores the Wireline Promotion Discount (Deal Reg) applied on the Line Item</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This field stores the Wireline Promotion Discount (Deal Reg) applied on the Line Item</inlineHelpText>
+        <label>Wireline Promo Discount % (Deal Reg)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Wireline_Promotion_Name_Applied__c</fullName>
+        <externalId>false</externalId>
+        <label>Wireline Promotion Name Applied</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Wireline_Promotion_Number_Applied__c</fullName>
+        <externalId>false</externalId>
+        <label>Wireline Promotion Number Applied</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+</CustomObject>
