@@ -1,0 +1,71 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    <div class="overview product-page">
+
+        <!-- Intro -->
+        <h2>Mobility has the power to transform nearly every aspect of the way you conduct&nbsp;business.</h2>
+        
+        <p>Adding mobility to your product offering can help you increase your customer base, offer a more complete solution, and improve revenue.</p>
+        <p>AT&amp;T&#39;s broad portfolio of mobility solutions can help ensure your employees, partners, customers, processes and assets are securely connected and can be optimized on the go.</p>
+        <p>Choose AT&amp;T for fast, dependable, comprehensive global network coverage.</p>
+        
+        <!-- Promo Cards -->
+        <div class="row mt-40 mb-40" style="margin-right: -5px; margin-left: -5px;">
+            <div class="col-lg-4" style="padding-right: 5px; padding-left: 5px;">
+                <!-- BRANDON 6.14.2016: New unclickable promo box icon font -->
+                <div class="unclickable text-center">
+                 <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-speed.svg')}" />
+                    <h4>Our network is best in&nbsp;class.</h4>
+                    <p>You get fast speeds and great reliability across&nbsp;AT&amp;T’s 4G LTE&nbsp;network.</p>
+                </div>
+            </div>
+            <div class="col-lg-4" style="padding-right: 5px; padding-left: 5px;">
+                <div class="unclickable text-center">
+                 <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-united-states.svg')}" />
+                    <h4>The overall AT&amp;T network covers more than 99% of&nbsp;Americans<sup>1</sup>.</h4>
+                    <p>Nationwide coverage you can count&nbsp;on.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center" style="padding-right: 5px; padding-left: 5px;">
+                <div class="unclickable text-center">
+                  <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-smartphone.svg')}" />
+                    <h4>The AT&amp;T network has the fewest dropped&nbsp;calls<sup>2</sup>.</h4>
+                    <p>We’re proud to say that keeping you connected is one of our top&nbsp;priorities.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Video -->
+        <!-- <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 text-center">
+                <h4 class="text-left video-heading">Growing through Mobility</h4>
+                <div class="mt-25 embed-responsive embed-responsive-16by9">        
+                    <iframe preload="true" width="500" height="281" src="https://player.vimeo.com/video/147382338" autoplay="true" autostart="true"></iframe>
+                </div>
+            </div>
+        </div> -->
+
+        <hr class="blue_hr mt-40" />
+        
+        <!-- Section 1 Documents: Breaking News -->
+        <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-tv.svg')}" />Breaking News</h3>
+            <apex:outputPanel >   
+                <apex:repeat value="{!DocMapOverview}" var="docMap"> 
+                     <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}"  target="_blank" styleClass="document-file">
+                        <div class="document-row">
+                            <div class="file-type file-{!docMap.type}"></div>
+                            <div class="details">
+                                <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                <p><apex:outputText value="{!docMap.description}"/></p>
+                            </div>
+                        </div>
+                    </apex:outputLink>                         
+                </apex:repeat>    
+            </apex:outputPanel>          
+
+        <!-- Footnotes -->        
+        <ol class="numbered footnotes mb-30">
+            <li>Based on coverage in U.S. licensed/roaming areas. Compatible device required. Coverage not available everywhere.</li>
+            <li>Claim based on nationwide carriers' dropped call performance.</li>
+        </ol>
+    </div>   
+</apex:page>

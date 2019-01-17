@@ -1,0 +1,221 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />
+    <apex:stylesheet value="{!$Resource.products_css}" />
+    <apex:includeScript value="{!URLFOR($Resource.productMobileMenuJS)}" />
+    <style type="text/css">
+
+        .page-include {
+          display: none;
+        }
+
+        .PortalDesign_Mobile_Overview {
+          display: block;
+        }
+
+        .sub-open2::after {
+          border-left: 7px solid transparent !important;
+          border-right: 7px solid transparent !important;
+          border-style: solid !important;
+          border-top: 7px solid #0568ae !important;
+          border-width: 7px 7px 0 !important;
+          color: #0568ae !important;
+          content: "";
+          height: 0;
+          position: absolute;
+          right: 15px;
+          top: 17px !important;
+          width: 0;
+        }
+
+        li.active.sub-open2::after {
+          color: #0568ae !important;
+        }
+
+        .mobileNav-sub .active {
+          color: #0568ae;
+          background-color: transparent !important;
+        }
+
+        .sub-open2 {
+          border-top: 2px solid #0568ae;
+          background-color: transparent !important;
+          color: #0568ae !important;
+        }
+
+        .sub-open2 a {
+          color: #0568ae !important;
+        }
+    </style>
+    
+    <!-- REDIRECTION LOGIC FOR UNAUTHORIZED ACCESS -->
+    <script>
+        redirectToUnauthorizedAccessPage();
+
+        function redirectToUnauthorizedAccessPage(){
+            var productCheckFlag = "{!isWirelessProduct}";            
+            if (productCheckFlag == 'false') {
+                window.location="/apex/UnauthorizedAccess";
+            }
+        }        
+    </script>
+    <!-- END REDIRECTION LOGIC FOR UNAUTHORIZED ACCESS --> 
+          
+    <!-- HERO SLICE -->
+    <!-- FIXME: update class name on div#slice_hero to style with correct hero image -->
+    <div id="slice_hero" class="mobile jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                    <h1 class="hero_badge_1">{!$Label.Mobile_Services}</h1>
+                    <h2 class="hero_badge_2">Help transform your business with end-to-end mobility solutions.</h2>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+    
+    <!-- BODY SLICE -->
+    <div class="products-body col-sm-12">
+        <div class="row">
+            <div class="leftNavCol col-sm-3">
+                <div class="leftNav mobile-leftNav">
+                  <ul class="mainLinks" role="tablist">
+                    <li class="active" data-page="PortalDesign_Mobile_Overview"><a class="btn btn-link" role="tab" data-toggle="tab">Overview</a></li>
+                    <li class="learnmore-li" data-page="PortalDesign_Mobile_Learn" data-sub="learnmore-sub"><a class="btn btn-link" data-status="hidden" role="tab" data-toggle="tab">Learn More</a></li>
+                    <ul class="leftNav-sub" id="learnmore-sub">
+                        <li data-page="PortalDesign_Mobile_Learn_Training"><a class="btn btn-link" data-status="hidden" role="tab" data-toggle="tab">Training</a></li>
+                        <li data-page="PortalDesign_Mobile_Learn_Playbook"><a class="btn btn-link" data-status="hidden" role="tab" data-toggle="tab">Enablement Playbook</a></li>
+                        <li data-page="PortalDesign_Mobile_Learn_Equipment"><a class="btn btn-link" data-status="hidden" role="tab" data-toggle="tab">Equipment</a></li>
+                        <li data-page="PortalDesign_Mobile_Learn_Rates"><a class="btn btn-link" data-status="hidden" role="tab" data-toggle="tab">Rate Plans</a></li>
+                        <li data-page="PortalDesign_Mobile_Learn_International"><a class="btn btn-link" data-status="hidden" role="tab" data-toggle="tab">International</a></li>
+                        <li data-page="PortalDesign_Mobile_Learn_Applications"><a class="btn btn-link" data-status="hidden" role="tab" data-toggle="tab">Applications</a></li>
+                    </ul>
+                    <li data-page="PortalDesign_Mobile_Start"><a class="btn btn-link startClicked" role="tab" data-toggle="tab">Start Selling</a></li>
+                    
+                    <li data-page="PortalDesign_Mobile_Pricing"><a class="btn btn-link" role="tab" data-toggle="tab"> Pricing</a></li>
+                  </ul><!-- Nav tabs -->
+                </div>
+             <div class="mobile-content-menu">
+               <div class="dropdown-label" data-status="closed">
+                Overview 
+                <span class="ionicons ion-ios7-arrow-down" style="position: relative; top: 3px; left: 7px; "></span>
+              </div>
+              <ul class="mobile-dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                <a data-page="PortalDesign_Mobile_Overview" role="menuitem" ><li role="presentation">Overview</li></a>
+                <a data-page="PortalDesign_Mobile_Learn" role="menuitem" ><li role="presentation">Learn More</li></a>
+                <ul class="mobileNav-sub">
+                    <a class="btn-link" role="tab" data-toggle="tab"><li data-page="PortalDesign_Mobile_Learn_Training">Training</li></a>
+                    <a class="btn-link" role="tab" data-toggle="tab"><li data-page="PortalDesign_Mobile_Learn_Playbook">Enablement Playbook</li></a>
+                    <a class="btn-link" role="tab" data-toggle="tab"><li data-page="PortalDesign_Mobile_Learn_Equipment">Equipment</li></a>
+                    <a class="btn-link" role="tab" data-toggle="tab"><li data-page="PortalDesign_Mobile_Learn_Rates">Rate Plans</li></a>
+                    <a class="btn-link" role="tab" data-toggle="tab"><li data-page="PortalDesign_Mobile_Learn_International">International</li></a>
+                    <a class="btn-link" role="tab" data-toggle="tab"><li data-page="PortalDesign_Mobile_Learn_Applications">Applications</li></a>
+                </ul>
+                 <a data-page="PortalDesign_Mobile_Start" role="menuitem" ><li role="presentation">Start Selling</li></a>   
+              
+                <a data-page="PortalDesign_Mobile_Pricing" role="menuitem" ><li role="presentation">Pricing</li></a>    
+               </ul>
+            </div>
+            </div>            
+            <div class="contentCol col-sm-8 body-load-content">
+              <!-- Tab panes -->
+              <!-- FIXME: create includes and update pageNames -->
+              <div class="tab-content">
+                <div class="tab-pane active" id="overview">
+                    <div class="page-include PortalDesign_Mobile_Overview">
+                      <apex:include pageName="PortalDesign_Mobile_Overview" id="PortalDesign_Mobile_Overview" />   
+                    </div>
+                 
+                    <div class="page-include PortalDesign_Mobile_Learn">
+                      <apex:include pageName="PortalDesign_Mobile_Learn" id="PortalDesign_Mobile_Learn" />   
+                    </div>
+                    <div class="page-include PortalDesign_Mobile_Start">
+                      <apex:include pageName="PortalDesign_Mobile_Start" id="PortalDesign_Mobile_Start" />   
+                    </div>
+                    <div class="page-include PortalDesign_Mobile_Pricing">
+                      <apex:include pageName="PortalDesign_Mobile_Pricing" id="PortalDesign_Mobile_Pricing" />   
+                    </div>
+                    <div class="page-include PortalDesign_Mobile_Learn_Training">
+                      <apex:include pageName="PortalDesign_Mobile_Learn_Training" id="PortalDesign_Mobile_Training" />   
+                    </div>
+                    <div class="page-include PortalDesign_Mobile_Learn_Playbook">
+                      <apex:include pageName="PortalDesign_Mobile_Learn_Playbook" id="PortalDesign_Mobile_Playbook" />   
+                    </div>
+                    <div class="page-include PortalDesign_Mobile_Learn_Equipment">
+                      <apex:include pageName="PortalDesign_Mobile_Learn_Equipment" id="PortalDesign_Mobile_Equipment" />   
+                    </div>
+                    <div class="page-include PortalDesign_Mobile_Learn_Rates">
+                      <apex:include pageName="PortalDesign_Mobile_Learn_Rates" id="PortalDesign_Mobile_Rate" />   
+                    </div>
+                    <div class="page-include PortalDesign_Mobile_Learn_International">
+                      <apex:include pageName="PortalDesign_Mobile_Learn_International" id="PortalDesign_Mobile_International" />   
+                    </div>
+                    <div class="page-include PortalDesign_Mobile_Learn_Applications">
+                      <apex:include pageName="PortalDesign_Mobile_Learn_Applications" id="PortalDesign_Mobile_Applications" />   
+                    </div>
+                </div>
+              </div>
+            </div>
+        </div>        
+        
+       
+    <div id="IRU_RegisterCustomer" class="modal fade" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">   
+        <div class="modal-content">
+            <apex:include pageName="IRU_RegisterCustomer" id="IRU_RegisterCustomer_Modal" /> 
+        </div>
+      </div>
+    </div>      
+    
+    <div id="Thank_You" class="modal fade" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">   
+        <div class="modal-content">
+            <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h2 class="modal-title" style="color:#007a3e !important;">Thank You!</h2>
+            </div>
+            <div class="modal-body">
+                <div class="new-thanks"><p>You will receive the Foundation Account Numbers (FAN) and other relevent information for the end customers by email within two weeks. Please reach out to your Channel Account Manager or Marketing Consultant with any questions.</p></div>
+                <div class="existing-thanks"><p>We will review your request and respond to you within two weeks. Please reach out to your Channel Account Manager or Marketing Consultant with any questions.</p> </div>
+            </div>
+            <!-- Modal Footer -->
+            <div class="modal-footer"> 
+                <button type="button" class="pull-right btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+      </div>
+    </div>  
+            
+     <div id="IRU_RegisterMultipleCustomers" class="modal fade" role="dialog" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <apex:include pageName="IRU_RegisterMultipleCustomers" id="IRU_RegisterMultipleCustomers_Modal" /> 
+        </div>
+       </div>
+      </div>           
+            
+    </div>
+    <!-- END BODY SLICE -->
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+    <script type="text/javascript" src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready( function () {
+          var winSearchString = window.location.search;
+          var substring = "ThankYou";
+          if(winSearchString.indexOf(substring) > -1) {
+              var getSearch = window.location.search;
+              var cleanString = getSearch.replace("?","");
+              var arrFormat = cleanString.split("="); 
+
+              $("."+arrFormat[1]+"-thanks").show();
+              $('#Thank_You').modal('show');
+              window.location.hash = "PortalDesign_Mobile_Start";
+              history.replaceState({}, null, window.location.pathname +"#PortalDesign_Mobile_Start"); 
+          }
+      });
+    </script>
+    <apex:includescript value="{!$Resource.LeftNav_Controller}" />
+    
+</apex:page>

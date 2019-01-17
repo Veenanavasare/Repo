@@ -1,0 +1,264 @@
+<apex:page sidebar="false" showHeader="true" standardStylesheets="true">
+    <style>
+        .cafiltersupermenu.zen .zen-options a {color: #005aa2;display: block;font-weight: normal; padding: 12px 14px 12px 20px; text-align: left; text-decoration: none; font-size: 13px; line-height: 17px; }
+        .cxfooter{ visibility: hidden !important; }
+         body a:hover { background:E7EBEB; color: #015BA7; text-decoration: underline; }
+        .leftContent h3, .datacategorylinks h3 { 
+            display: block;
+            font-size: 14px;
+            line-height: 17px;
+            color: #6D6E71;
+            margin-left: 4px;
+            padding-top: 10px;
+            font-weight: normal;
+            background: #f0f0f0;
+            padding-left: 10px;
+            padding-bottom: 8px;
+        }
+         .csfeedcontainer .feeditemcommentplaceholder input{height: 28px;}
+        .serviceCommunitySearchBox .searchtext{font-size: 1.2em !important;}
+        .feedlinks, .datacategorylinks { border-radius: 5px ; background-image:url('/Connect/resource/1407481379000/answerNavBgTop'); box-shadow:0 0 5px #b7b7b7; list-style: none outside none; width: 225px; /* Robyn 6/21/16 margin-top:-60px;*/ margin-bottom:-15px; background-repeat:no-repeat; background-size: 225px;}
+        .directoryHeadlineDiv { font-family: Arial; font-size: 25px; line-height: 25px; width:970px; }
+        .datacategorylinks .csChildOption a { padding-left: 25px; font-size: 13px; line-height: 27px; color:#005AA2; }
+        .datacategorylinks li a { background: none repeat scroll 0 0 rgba(0, 0, 0, 0); color: #015BA7; display: block; font-size: 13px; line-height: 27px; padding: 4px 25px 3px; }
+        .datacategorylinks li.selected a:hover { background-color: #1589B1; }
+        .datacategorylinks a:hover { background-color: #E7E8EB; }
+        .colBetDiv{ width:200px; padding: 10px 10px 10px 10px; background-color: #E7E1E1; }
+        .csoptimizequestion .leftContent li.selected a, #cs\:profile.csoptimizequestion li.selected a, .csoptimizequestion.datacategorylinks li.selected a { background-color: #1589B1; color: #000000; width: 219px;margin-left: 4px; }
+        .breadComMenu { margin: 40px 0px 0 5px; }
+        .headerHeadlineDiv { font-family: Arial; font-size: 26px; line-height: 24px; padding-left: 5px; padding-top: 0px; }
+        .serviceCommunitySearchBox .searchbox { background-color: #FFFFFF; border: 1px solid #CCCCCC; border-radius: 3px 3px 3px 3px; height: 40px; margin: -10px 0 5px; }
+        #searchValue { border-top-left-radius: 3px; border-bottom-left-radius: 3px; }
+        .cafiltersupermenu.zen .zen-options { background: none repeat scroll 0 0 rgba(255, 255, 255, 0.95); border: 1px; list-style: none outside none; margin-top: 5px; overflow: hidden; width: 203px; z-index: 1000; }
+        .cafiltersupermenu .facetheader h4 { background-color: #FCF9F9; color: #6D6E71; display: block; font-size: 12px; line-height: 34px; font-weight: normal; margin: 0; padding: 15px 20px 0px 20px; text-transform: uppercase; }
+        .globalHeaderBar {display:none; }yy
+        .breadComMenu { margin: 50px 20px 0px; }
+        .mainDiv{ padding-top:0px; min-height:0px; }       
+        .navConnect{ background-image: url('/Connect/resource/1406703229000/NavConnect'); background-repeat:no-repeat; 
+                     background-attachment:scroll; background-color:transparent; position:relative; min-height:90px; max-height:90px; min-width:200px; background-position:-7px -151px; margin-top:-1px;}       
+        #secNav{ position: relative; list-style-type:none; margin-top:-28px; margin-left:40px; font-family:Arial; font-size:13px; line-height: 20px; font-color:#333333; }       
+        #searchValue{ width: 235px; padding:5px; height:18px; -moz-margin-start:462px; -webkit-margin-start:462px; background-image: url('https://devsep-attpartnerexchange.cs18.force.com/Connect/resource/1405217774000/Search_bar_middle_img');
+            background-repeat:repeat; border-top: none; border-bottom: none; border-right: 1px solid #CACAC4; border-left: 1px solid #CACAC4; }       
+        .breadcomActive{ color:#3381B7; font-family: Arial; font-size: 12px; Line-Height: 130%; Font-Style: Regular; Anti-Alias: Crisp; cursor:pointer; }
+        .breadcomActive:hover{ text-decoration:underline; }
+        .deActive{ color:#999999; font-family: Arial; font-size: 12px; Line-Height: 130%; Font-Style: Regular; Anti-Alias: Crisp ; }
+        .linkActive{  color:#369; text-decoration:underline !important; font-size: 13px ; } 
+        .linkActiveAnswer {  color:#369; text-decoration:underline !important; font-size: 13px ; }         
+        .linkInActive{ text-decoration:none; font-size: 13px ; }       
+        .headerHeadlineDiv{ padding-top:14px; padding-left:20px; font-size:26px; font-family:Arial; Line-Height:24px; }    
+        .breadComMenu { margin: 50px 20px 0px;}
+              
+        .navConnect{ background-image: url('https://ebm.my.salesforce.com/resource/1390015546000/NavConnect'); background-repeat:no-repeat; 
+                     background-attachment:scroll; background-color:transparent; position:relative; min-height:90px; max-height:90px; min-width:209px; background-position:-7px -151px;}       
+        #secNav{ position: relative; list-style-type:none; margin-top:-28px; margin-left:40px; font-family:Arial; font-size:13px; line-height: 20px; font-color:#333333; }              
+        .breadcomActive{ color:#3381B7; font-family: Arial; font-size: 12px; Line-Height: 130%; Font-Style: Regular; Anti-Alias: Crisp; cursor:pointer; }
+        .breadcomActive:hover{ text-decoration:underline; }
+        .deActive{ color:#999999; font-family: Arial; font-size: 12px; Line-Height: 130%; Font-Style: Regular; Anti-Alias: Crisp; }
+        .headerHeadlineDiv{ padding-top:10px; padding-left:20px; font-size:26px; font-family:Arial; Line-Height:24px; }         
+         li.zen-checked .zen-visualization {background: none; height: 10px; margin-left: 15px; margin-top: 15px; position: absolute; width: 15px; }
+        .csoptimizequestion .feeditemfirstentity a, .csoptimizequestion .feedcommentuser a, .csoptimizequestion .feeditemfirstentity {color: #666666; font-size: 12px; }
+        .csoptimizequestion .cxquestiontitlewithlink a, .csoptimizequestion .articlelinktitle a { color: #0671B8; font-size: 18px; font-weight: bold; }
+        .csfeedcontainer .cxquestionheader .feeditemtext { line-height: 20px; font-size: 14px; color:#333333; display:block; }
+        .feeditemfooter li { font-size: 12px; }
+        .feeditembestreplyheader { line-height: 16px; margin: 9px 0 17px; text-indent: 15px; font-size: 12px; color: #666666;font-weight: bold; }
+        .csfeedcontainer .feedcommentarrow { background: none; border-bottom: 0px; margin-top: -4px; }
+        .csfeedcontainer .feeditemcomment, .csfeedcontainer .feedcommentsshowmore, .csfeedcontainer .feeditemcommentplaceholder, .csfeedcontainer .feeditemaddcomment, .csfeedcontainer .header {
+            background: none repeat scroll 0 0 #FCF9F9; border-bottom: 1px solid #FCF9F9; border-radius: 5px 5px 5px 5px; border-top: 1px solid #FCF9F9; box-shadow: 0 0 1px #b7b7b7;}
+        .csfeedcontainer .feedcommenttext { color: #000000; }
+        .cafiltersupermenu .zen-options li.zen-checked .zen-visualization { background: none; height: 10px; margin-left: 15px; margin-top: 15px; position: absolute; transition: 0; width: 15px; }
+        .cafiltersupermenu .zen-options li.zen-checked a { font-weight: normal; }
+        .csoptimizequestion .leftContent li.selected a, #cs\:profile.csoptimizequestion li.selected a, .csoptimizequestion.datacategorylinks li.selected a {
+         background-color: #1589B1; color: #000000;  width: 219px;  margin-left: 4px; }
+         .datacategorylinks a:hover { background-color: #E7E8EB; width: 165px; margin-left: 4px;}
+        .cafiltersupermenu.zen .zen-options {border-radius: 5px ; background-image:url('/resource/1412997535000/answerNavBgTop');list-style: none outside none; width: 208px; margin-top:-15px; margin-bottom:-15px;box-shadow:0 0 5px #b7b7b7; overflow: hidden; width: 203px; z-index: 1000;}
+       .breadComMenu { margin: 42px 20px 0px;}
+       .serviceCommunitySearchDeflection .filter-menu li { margin-right: -10px;}
+       .feeditembestreplyheader { border-bottom: 1px solid #e7e7e7; padding-bottom: 10px;}
+       .csfeedcontainer .feeditemcomment, .csfeedcontainer .feedcommentsshowmore, .csfeedcontainer .feeditemcommentplaceholder, .csfeedcontainer .feeditemaddcomment { background: none; border-radius:0px; background-size: 644px; width:546px; }
+       .csfeedcontainer .header{ background:#FFFFFF;  background: none; background-size: 644px; border-radius:0px;}
+       .csfeedcontainer .header h3{ margin-left: 15px; }
+       .cxnewcomment{ background-image: url({!($Resource.replyBgTop)}); background-size:640px;}
+       .fieldDescription { color: #222222;  margin: 0 0 12px; }
+       #contentWrapper:before, #contentWrapper:after { content: ""; display: table; }
+       #contentWrapper { min-width: 0px;}
+       .usericon { width:45px; height:45px; margin-right:15px; }
+       .cxsingleitemdetailfeed { margin-left:15px; }
+       .articleAvatarIcon { width:45px; height:45px; margin-right:15px;}
+       .cxuserimage { width:45px; height:45px; }
+       .cxsingleitemdetailfeed { margin-left:0px;}
+       .serviceCommunityDeflectionActions .actions .proceedtopost button { width:164px; height:33px;margin: 5px 522px 0 20px;}
+       .serviceCommunityDeflectionActions .actions .proceedtopost .uiButton.default .label {display:none;}
+       .serviceCommunitySearchAskWidgetMain .msgbox { padding-top: 10px; height:40px;}
+       /* Robyn 6/21/16 
+       .serviceCommunitySearchAskWidgetMain { margin-top:-47px; }*/
+       .serviceCommunitySearchAskWidgetMain .msgboxdismiss { margin-top:4px; }
+       .fieldDescription { color: #000000; margin: 0 0 12px; font-size:12px; }
+       .csfeedcontainer .feeditemcommentbody .feedText { font-weight: normal; margin-left: 15px; position: relative;}
+        .csfeedcontainer .feedcommenttext { color: #000000; margin-left: 15px; }
+        .feeditemcommentbody .feeditemfooter { margin: 0 0 0 15px; }
+        .usericon img { border: 0px none; }
+        .csfeedcontainer .showmorecommentscontainer a { width:550px; }
+        .csfeedcontainer .feeditemextras .feeditemcommentplaceholder, .csfeedcontainer .feeditemcommentnew { padding-right:10px; }
+        .feedcommentuser { font-weight:normal; }
+        .csoptimizequestion .feeditemfirstentity a, .csoptimizequestion .feedcommentuser a, .csoptimizequestion .feeditemfirstentity { color:#666666; font-weight:normal; }
+        .mainDiv { margin-left: auto; margin-right: auto; -webkit-margin-left: auto; -webkit-margin-right: auto;}
+        .cxfield { color: #000000; }
+        .singleArticleTitle {margin: 0;font-size: 14px;display: block; color:#333333}
+        .csoptimizequestion .articlelinktitle a { font-size: 18px; font-weight: bold; margin-bottom: 10px; line-height: 22px; }
+        .serviceCommunitySearchBox .searchbutton {height: 37px;}
+        .uiButton--default {
+            box-shadow: none;
+        }
+        /* Robyn 6/21/16: update rule for new hero style and image */
+        .chatterImg{ 
+            height: 234px;
+            padding-top: 0;
+            background-size: cover !important;
+            background-position: right top !important;
+            background-image: url("/resource/1466407886000/hero_community/hero_community_answers.jpg") !important;
+            margin-bottom: 50px; /* margin attribute needed on the chatter and answers pages for spacing */
+        }
+        html .brandQuaternaryBgr {
+            background: #fff none repeat scroll 0% 0% !important;
+        }
+        .homeTab .brdPalette {
+            border-top-color: #056fab !important;
+        }
+        .mainDiv {
+            padding-top: 0px;
+            min-height: 0px !important;
+        }
+        .feedlinks, .datacategorylinks {
+            border-radius: 0px;
+            background-image: none;
+            box-shadow: none;
+        }
+        .navbar-nav.navbar-right:last-child {
+            margin-right: 0px !important;
+        }
+        .noSidebarCell {
+            padding: 0px !important;
+        }
+        /* Robyn 6/21/16 commenting out, wrong syntax
+        hero_badge{
+            position: relative;
+            top: 150px;
+            max-width: 750px;
+            width: 100%;
+            padding: 16px;
+            background-color: rgba(255, 255, 255, 0.7);
+            z-index: 3;
+        }
+        hero_badge_1{
+            font-family: omnes_light;
+            font-size: 2.625em;
+            color: #666;
+        }
+        hero_badge_2{
+        }*/
+        /* Robyn 6/21/16 
+        .feedlinks, .datacategorylinks {
+            margin-top: -48px !important;
+        }*/
+        .csoptimizequestion.datacategorylinks li.selected a {
+            padding-left: 10px !important;
+        }
+        .directMessagingNavigation{
+            display:block;
+        }
+        .chatterTabNavigation .directMessagingNavigation .chatterNavigationGroup{
+            display:block;
+        }
+        
+        #slice_footer > footer > div > div.col-sm-6.footer_copy > div > img {
+            top: -10px;
+            position: absolute;
+            margin-left: -30px;
+        }
+        .csDropdown a, .csDropdown .csActionDisabled {
+            padding: 0px 9px !important;
+        }
+        .zen-pageMessages zen-mrl zen-mbm{
+            display:block;
+        }
+        .serviceCommunitySearchAskWidgetMain .searchboxContainer {
+            width: 550px;
+        }
+        .networkMsgsWithCustomHeader .zen-pageMessages {
+            z-index: 1;
+            margin-top: 71px;
+        }
+</style>  
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-1.9.1.js')}"/>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+    <script type="text/javascript">  
+       $j = jQuery.noConflict(); 
+       $j(window).ready(function() { 
+          $j("#provider >a ").addClass("linkInActive");
+            $j("#events >a ").addClass("linkInActive");
+            $j("#answers >a ").addClass("linkActive");
+       });
+    </script>
+     <script>
+
+        $j(window).ready(function() {
+            setInterval(function(){$j(".cxuserimage").attr('src', '/resource/1453977691000/question_Icon');}, 50);
+            setInterval(function(){$j('#searchInput').attr('placeholder','Ask a question')}, 50);
+            $j("*").each(function () {
+    if ($j(this).children().length == 0) {
+        $j(this).text($j(this).text().replace('Browse by categories','All Answers'));
+    }
+});
+             
+           
+        });         
+</script>
+<script type="text/javascript">
+           $i = jQuery.noConflict(); 
+                    $i(".welcomeDivClass").mouseover( function () {
+                        alert("ok");              
+                 });
+                    $i(".welcomeDivClass").mouseout( function () {
+                                      
+                    });
+             });
+        </script>
+
+    <body>
+        <div class="mainDiv">
+            <div class="chatterImg">
+                <!-- Robyn 6/21/16: modify inline styles for hero update -->
+                <div id ="chatterHeadline" class="headerHeadlineDiv" style="position: relative; top: 72px; width: auto; padding: 16px; background-color: #eee; border-radius: 4px; z-index: 3; float:left; margin-left:6%;">  
+                    <p style="font-family: omnes_light !important; font-size: 42px; color: #666 !important; margin: 0 !important; display: block; line-height:1em;">Find Answers</p>
+                    <p style="font-size: 16px !important; color: #000 !important; line-height: 1em !important; display: block; font-family: 'omnesatt_iiregular'; font-weight: normal; margin: 0;">Browse official documentation or post questions to the Community</p>
+                </div>
+                <div style="clear:both;"></div>
+                <!-- END Robyn 6/21/16 -->
+            </div> 
+            <!--
+            <div data-status="open" class="profile-dropdown-container" style="display: none;margin-top: -60px;z-index: 1;">
+                
+                <div class="dropdown-link-container">
+                    <apex:form >                                       
+                        <apex:outputLink value="/apex/Profile" title="My Profile" style="margin-top:8px; margin-left:10px;color:#3BC1F4;font-family: omnesatt_iiregular;font-size: 16px;text-decoration: none;" >My Profile</apex:outputLink><br/>       
+                        <apex:commandLink value="Logout" action="{!portalLogOut}" style="margin-top:6px; margin-left:10px; color:#3BC1F4;font-family: omnesatt_iiregular;font-size: 16px;text-decoration: none;"  oncomplete="javascrit:window.top.location.href='{!$Label.PortalLogOutUrl}';" />    
+                    </apex:form>
+                </div>
+            </div>
+            -->
+            <div style="width:1200px; margin-left:auto; margin-right:auto;">   
+            
+            <div style="float:left;">
+                <div >
+                     <chatteranswers:datacategoryfilter communityId="{!$Label.Chatter_Answers_Zone_Partner_Exchange_Portal}"></chatteranswers:datacategoryfilter>
+                </div>
+            </div>
+            <div style="float:left; padding-left: 45px; color: red !important; width:975px;margin-top:0px !important;">
+                <chatteranswers:searchask communityId="{!$Label.Chatter_Answers_Zone_Partner_Exchange_Portal}"> </chatteranswers:searchask>
+                <chatteranswers:feedfilter > </chatteranswers:feedfilter>    
+               <chatteranswers:feeds communityId="{!$Label.Chatter_Answers_Zone_Partner_Exchange_Portal}"> </chatteranswers:feeds>
+            </div>
+            </div>
+        </div>
+    </body>
+</apex:page>

@@ -1,0 +1,138 @@
+<!--************************************************************************************
+@Author : Smarjit Debata
+@Company: Accenture Services Pvt. Ltd.
+@Email : smarjit.debata@accenture.com
+@Created Date : 01/August/2014
+@Description : Controller class of PromotionEngineCreationPage VF page.
+************************************************************************************ -->
+
+<apex:page standardController="Promotion_Engine__c" extensions="PromoEngineController" sidebar="false">
+
+<style>
+.tertiaryPalette, .individualPalette .Custom72Block .tertiaryPalette, .layoutEdit .individualPalette .Custom72Block .tertiaryPalette {
+background-color: #1797c0;
+border-color: #1797c0;
+}
+.secondaryPalette, .individualPalette .Custom72Block .secondaryPalette {
+background-color: #1797c0;
+border-color: #1797c0;
+}
+
+fieldset {
+    font-family: sans-serif;
+    border: 3px solid #1797c0;
+    background: #FFFFFF;
+}
+
+fieldset legend {
+
+    background: #1797c0;
+    color: #FFFFFF;
+    padding: 3px 10px;
+    font-size: 19px;
+    border-radius: 5px;
+    box-shadow: 0 0 0 3px #ddd;
+    margin-left: 30px;
+}
+    .requiredasterisk{
+     color: red;
+        font-size: 20px;
+        position: absolute;
+        padding-left: 5px;
+        //display:none;
+        visibility:hidden;
+    }
+</style>
+
+<script>
+    function populateFields( inpId, inpType ){
+    
+        ajaxFetchInputFields(inpId, inpType)
+    }
+</script>
+    <apex:form id="frm_PromoEngineDetails">
+        <apex:pageBlock id="pbs_PromoEngine">
+            
+            <apex:actionFunction name="ajaxFetchInputFields" action="{!createListInputFields}" reRender="pbt_RuleCriteria" status="statusLoader" >
+                <apex:param name="inpId" assignTo="{!ajaxParamId}" value="" />
+                <apex:param name="inpType" assignTo="{!ajaxParamType}" value="" />
+            </apex:actionFunction>
+            <apex:actionstatus id="statusLoader">
+                <apex:facet name="start">
+                    <div class="waitingSearchDiv" id="loading" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;"> 
+                            <div class="waitingHolder" style="top: 200px; left:600px; width: 91px; position: fixed;"> 
+                            <img class="waitingImage" src="{!$Resource.LoadingGif}" title="Please Wait..." />
+                            <span class="waitingDescription">Please wait...</span> 
+                           </div> 
+                    </div>
+                </apex:facet> 
+            </apex:actionstatus>
+            <fieldset>
+                <legend>Instructions</legend>
+                1. Numeric input and Output only available<br></br> 
+                2. Please Check Active to activate the Rule<br></br>
+            </fieldset>
+            <br />
+            <apex:pageMessages id="errorMsg1"></apex:pageMessages> 
+            <apex:messages id="erorEx" rendered="" />            
+            <apex:pageBlockSection id="pbs_PromoEngineDetails" title="Please fill the promotion engine details" collapsible="false">
+                <apex:inputField value="{!promoEngineDetails.Promotion_Name__c}" label="Rule Name *" />
+                <apex:inputField value="{!promoEngineDetails.Promotion_Description__c}" />
+                <apex:inputField value="{!promoEngineDetails.Activation_Date__c}" label="Rule Start Date *"/>
+                <apex:inputField value="{!promoEngineDetails.Expiration_Date__c}" label="Rule End Date *"/>
+                <apex:inputField value="{!promoEngineDetails.Currently_Active__c}" />
+                <apex:inputField value="{!promoEngineDetails.Discount_Percentage__c}" label="Discount Percentage *"/>
+                <apex:inputField value="{!promoEngineDetails.BCC_Code__c}" label="BCC Code *"/>
+                <apex:inputField value="{!promoEngineDetails.Valid_For_Product__c}"/>
+                <apex:inputField value="{!promoEngineDetails.Rank__c}" label="Rank *"/>
+                <apex:inputField value="{!promoEngineDetails.Category_Order__c}" label="Category order *"/>
+                <apex:inputField value="{!promoEngineDetails.Rule_Category__c}" label="Rule Category *"/>
+                <!-- <apex:inputField value="{!promoEngineDetails.Product_Name__c }" label="Product Name *"/> -->
+             
+                
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Please set the criteria" collapsible="false"></apex:pageBlockSection>
+            <apex:pageBlockTable id="pbt_RuleCriteria" value="{!lstRuleCriteria}" var="eachCriteria" columnsWidth="20%,20%,20%,10%,20%,10%">
+                <apex:column headerValue="Criteria Name" >
+                    <apex:inputText value="{!eachCriteria.CriteriaName}" />
+                </apex:column>
+                <apex:column headerValue="Field Type" >
+                    <apex:selectList value="{!eachCriteria.selectedDataType}" multiselect="false" size="1" onchange="populateFields('{!eachCriteria.itemId}', this.value)" >
+                        <apex:selectOptions value="{!eachCriteria.listDataType}" />
+                    </apex:selectList>  
+                </apex:column> 
+                <apex:column headerValue="Input Field" >
+                    <apex:selectList value="{!eachCriteria.selectedField}" multiselect="false" size="1"> 
+                        <apex:selectOptions value="{!eachCriteria.listFieldName}" />           
+                    </apex:selectList>
+                </apex:column>
+                <apex:column headerValue="Operator" >
+                    <apex:selectList value="{!eachCriteria.selectedOperator}" multiselect="false" size="1"> 
+                        <apex:selectOptions value="{!eachCriteria.listOperator}" />           
+                    </apex:selectList>
+                </apex:column>
+                <apex:column headerValue="Value" >
+                    <apex:inputText value="{!eachCriteria.inputValue}"/>
+                </apex:column>
+                <apex:column headerValue="Condition" >
+                    <apex:selectList value="{!eachCriteria.selectedConOperator}" multiselect="false" size="1"> 
+                        <apex:selectOptions value="{!eachCriteria.listConditionalOperator}" />           
+                    </apex:selectList>
+                </apex:column>
+                 <apex:column headerValue="Deal Reg Decision" >
+                    <apex:selectList value="{!eachCriteria.selectedDealregdec}" multiselect="false" size="1"> 
+                        <apex:selectOptions value="{!eachCriteria.listDealregdec}" />           
+                    </apex:selectList>
+                </apex:column>
+                <apex:column headerValue="Deal Reg Discount"  >
+                    <apex:inputText value="{!eachCriteria.percent}"/>
+                </apex:column>
+  
+            </apex:pageBlockTable>    
+        </apex:pageBlock>
+       <center>
+           <apex:commandButton action="{!savePromotionAndCriteria}" value="Save"/>
+           <apex:commandButton action="{!cancelPromotion}" value="Cancel" immediate="true" html-formnovalidate="formnovalidate"  />
+       </center>
+    </apex:form>
+</apex:page>

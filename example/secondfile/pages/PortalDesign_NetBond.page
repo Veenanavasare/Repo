@@ -1,0 +1,116 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />
+    <apex:stylesheet value="{!$Resource.products_css}"/>
+    <apex:includeScript value="{!URLFOR($Resource.productMobileMenuJS)}" />
+    <apex:stylesheet value="{!$Resource.peCustom}" />
+                
+    <!-- HERO SLICE -->
+             
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="netbond jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                    <h1 class="hero_badge_1">{!$Label.NetBond}</h1>
+                    <h2 class="hero_badge_2">Highly secure connectivity to your cloud based applications.</h2>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+    
+    <!-- BODY SLICE -->
+    <div class="products-body col-sm-12 product-page NetBond">
+        <div class="row">
+            <div class="leftNavCol col-sm-3">
+                <div class="leftNav">
+                    <ul class="" role="tablist">
+                        <li class="active" data-page="PortalDesign_NetBond_Overview"><a class="btn btn-link" href="#PortalDesign_NetBond_Overview" role="tab" data-toggle="tab">Overview</a></li>
+                        <li class="" data-page="PortalDesign_NetBond_Learn"><a class="btn btn-link" href="#PortalDesign_NetBond_Learn" role="tab" data-toggle="tab">Learn More</a></li>
+                        <li class="" data-page="PortalDesign_NetBond_Start"><a class="btn btn-link" href="#PortalDesign_NetBond_Start" role="tab" data-toggle="tab">Get Started</a></li>
+                     <!--   <li class="" data-page="PortalDesign_NetBond_Pricing"><a class="btn btn-link" href="#PortalDesign_NetBond_Pricing" role="tab" data-toggle="tab">Pricing</a></li> -->
+                    </ul><!-- Nav tabs -->
+                </div>
+
+                <div class="mobile-content-menu">
+                    <div class="dropdown-label" data-status="closed">
+                        Overview 
+                        <span class="ionicons ion-ios7-arrow-down" style="position: relative; top: 3px; left: 7px; "></span>
+                    </div>
+                    <ul class="mobile-dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                        <a data-page="PortalDesign_NetBond_Overview" role="menuitem" href="#PortalDesign_NetBond_Overview" ><li role="presentation">Overview</li></a>
+                        <a data-page="PortalDesign_NetBond_Learn" role="menuitem" href="#PortalDesign_NetBond_Learn" ><li role="presentation">Learn More</li></a>
+                        <a data-page="PortalDesign_NetBond_Start" role="menuitem" href="#PortalDesign_NetBond_Start"><li role="presentation">Get Started</li></a>
+                       <!-- <a data-page="PortalDesign_NetBond_Pricing" role="menuitem" href="#PortalDesign_NetBond_Pricing"><li role="presentation">Pricing</li></a>  -->         
+                    </ul>
+                </div>
+            </div>            
+            <div class="contentCol col-sm-8 body-load-content">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="overview">
+                        <div class="page-include PortalDesign_NetBond_Overview"><apex:include pageName="PortalDesign_NetBond_Overview" id="PortalDesign_NetBond_Overview" />  </div>
+                        <div class="page-include PortalDesign_NetBond_Learn"><apex:include pageName="PortalDesign_NetBond_Learn" id="PortalDesign_NetBond_Learn" /> </div>
+                        <div class="page-include PortalDesign_NetBond_Start"><apex:include pageName="PortalDesign_NetBond_Start" id="PortalDesign_NetBond_Start" /> </div>
+                    <!--    <div class="page-include PortalDesign_NetBond_Pricing"><apex:include pageName="PortalDesign_NetBond_Pricing" id="PortalDesign_NetBond_Pricing" />  </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="{!URLFOR($Resource.ProductVideos_JSON)}"></script>
+    <!-- Script for Akamai Video -->
+    <script type="text/javascript">
+        $.each(ProductVideos, function (property, value) {
+            if(value.product == "mis"){
+                var vidLink = '<li><a class="video-link" data-description="'+value.description+'" data-hls="'+value.hls+'" data-hds="'+value.hds+'">'+value.title+'</a></li>'
+               $(".video-list").append(vidLink);
+            }
+        });
+
+        $(document).delegate(".poster","click", function () {
+          vidContainer = $(this).parents(".video-container").attr("id");
+          HLS = $(this).attr("data-hls");
+          HDS = $(this).attr("data-hds");
+
+          vidPlayer(vidContainer, HLS, HDS);
+          $(this).fadeOut(200);
+        });
+
+        $(document).delegate(".video-link","click", function () {
+          vidContainer = $(".video-container:visible").attr("id");
+          var description  = $(this).attr("data-description");
+          HLS = $(this).attr("data-hls");
+          HDS = $(this).attr("data-hds");
+
+          $(".video-desc").html(description);
+          $(".akamai-video-layer:visible, .akamai-overlays-layer:visible").remove();
+
+          vidPlayer(vidContainer, HLS, HDS);
+          $(".poster:visible").fadeOut(200);
+        });
+
+        function vidPlayer(vidContainer, HLS, HDS){   
+            var config_overrides = 
+            {
+                autoplay: true,
+                media: 
+                {
+                    source: 
+                    [
+                       {src: HDS, type: "video/f4m"},
+                       {src: HLS, type: "application/x-mpegURL"}
+                    ] 
+                }
+            };
+            amp = new akamai.amp.AMP(""+vidContainer+"", config_overrides);    
+            // amp.controls.player.play();          
+        }
+    </script>
+    <apex:includescript value="{!$Resource.LeftNav_Controller}" />
+    <!-- END BODY SLICE -->
+    
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+
+</apex:page>

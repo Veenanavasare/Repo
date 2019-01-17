@@ -1,0 +1,278 @@
+<apex:page controller="PortalDesignHeaderController" docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+    <script type="text/javascript" src="https://cdn.datatables.net/r/bs-3.3.5/jqc-1.11.3,dt-1.10.8/datatables.min.js"></script>
+    <apex:include pageName="PortalDesignHeader_UIUX" />
+    
+    <head>    
+        <style>
+            .body{overflow-y: hidden;}
+            .dash {border: 1px dashed #cccccc !important;}
+            .notificationsContainer {padding-top:50px;}
+            .notificationSearchBtn {top:28px;}
+            .notifyDesc{width:90%;float:left}
+            .notifyTime{text-align:right;width:10%;float:right;padding-right:5px;}
+            #searchNotifications{margin-top:-10px;}
+            .unreadMessages{padding-top:45px;}
+            .unreadMessages, .searchResultMsgs {
+                float:right;
+                color: #ea7400;
+                font-size: 16px;
+                font-family: omnes_att_iimedium;
+            }
+
+            .unReadIndicator {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                display: inline-block;
+                margin-right: 10px;
+                background: #ea7400;
+            }
+
+            .styled-select {
+                width:156px;
+                font-size:15px;
+            }
+
+            .showFilterSelect {
+                float:right;
+                text-align: right;
+                padding-top: 12px;
+                margin-right:36px;
+            }
+            .searchline{text-decoration: underline;}
+            .upper{text-transform: uppercase;}
+            
+            /*#shadowDiv{margin:160px 0px;}*/
+        </style>
+        
+        <script type="text/javascript" charset="utf-8">
+            $(document).ready(function() {
+                checkNotification();
+                $('#notificationsTable').dataTable( {
+                    "columns": [
+                        {"searchable": true}, //1st column
+                        {"searchable": true} //2nd column            
+                    ],
+                    "order": [],
+                    "lengthMenu": [[10, 25, 50, 100], ['10 Per Page', '25 Per Page', '50 Per Page', '100 Per Page']],
+                    "pagingType": "full_numbers",
+                    "fnDrawCallback": function(oSettings) {
+                        removeString();
+                        replaceString();
+                        createUnderline();
+                    }
+                });
+                
+                cleanUpPage(); // clean-up the page once the datatable is rendered.
+                
+                $('#notificationsTable_length select').on('change', function() {
+                    removeString();
+                });
+
+            } );
+
+            function checkNotification() {
+                Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.PortalDesignHeaderController.updateUserOnNotificationSeen}',
+                    function(result, event){
+                        if (result) {
+                            $('#unSeenNotificationCount').css('display','none');
+                        } else {
+                            console.log('Failed::VF Remoting to update Unseen Notification');
+                        }
+                    }
+                );
+            }
+
+            //hack to clean-up the page after dataTable DOM is loaded 
+            function cleanUpPage() {
+                $("#notificationsTable_filter").hide();
+                $("#searchResultMsgs").hide();
+                $("#notificationsTable_info").css('marginTop', '25px');
+                $('#notificationsTable_length label').contents().eq(0).replaceWith(''); // empty the first content
+                $('#notificationsTable_length label').contents().eq(1).replaceWith(''); // empty the 3rd content
+                $('#notificationsTable_length label').addClass('styled-select');
+                $('#notificationsTable_length select').attr('style','width: 156px;font-size:15px;');
+
+                //chage the location of default filter and sorter
+                $('#notificationsTable_wrapper').find('div:first').addClass('div1row1');
+                $('#notificationsTable_wrapper .div1row1').find('div:first').addClass('showFilterSelect').removeClass('col-sm-6');
+                $('#notificationsTable_wrapper').children().last().addClass('div1row3');
+                $('.div1row3').children().first().removeClass('col-sm-5').addClass('col-sm-3');
+                $('.div1row3').children().last().removeClass('col-sm-7').addClass('col-sm-9 showPageTxt');
+
+                $('.showPageTxt').append($('.showFilterSelect'));
+                $('#notificationsTable td').addClass('dash');
+            }
+
+            function removeString() {
+                var x = $('#notificationsTable_info').text();
+                x = x.replace('entries', '').replace('to', '-');
+                $('#notificationsTable_info').text(x);
+            }
+            
+            function createUnderline() {
+                $('.paginate_button').attr('onclick','underlineSearchValue();');    
+            }
+
+            function replaceString() {
+                // for the search show
+                var y = $('#notificationsTable_info').text();
+                y = y.replace('entries','').replace('to','-');
+                y = y.split('(')[0];
+                $('#notificationsTable_info').text(y);
+
+                // for the search count
+                var searchText = $('#notificationsTable_info').text();
+                var newCount = searchText.trim().slice(-2);
+                $("#searchCount").text(newCount);
+            }
+            
+            function underlineSearchValue() {
+                var searchValue= $("#notifySearch").val();
+
+                if (searchValue) {
+                    //remove underline by default
+                    $('.notifyDesc').each(function(index) {
+                        var searchToRemove= $('.searchline').text();
+                        if (searchToRemove) {
+                            $('.searchline').each(function(index) {
+                                var srch = $(this).html();
+                                $(this).replaceWith(srch);
+                            });
+                        
+                        }
+                    });
+
+                    //for underline of search result
+                    var searchRegEx = new RegExp('(' + searchValue + ')', 'gi');
+                    $('.notifyDesc').each(function(index) {
+                        var desc= $(this).html();
+                        desc= desc.replace(searchRegEx,'<span class="searchline">$1</span>');
+                        $(this).html(desc);
+                    });
+
+                    $('.upper').each(function(index) {
+                        var desc2= $(this).html();
+                        desc2= desc2.replace(searchRegEx,'<span class="searchline">$1</span>');
+                        $(this).html(desc2);
+                    });
+
+                } else {
+                    $('.searchline').removeClass('searchline');
+                }            
+            }
+
+            // passing the value of seach field to the actual serach div doing the works
+            function passSearchValue() {
+                var valuer = $('#notifySearch').val();
+                $('#notificationsTable_filter :input').val(valuer);
+                $('#notificationsTable_filter :input').keyup();
+
+                if(!valuer) {
+                    $('#searchResultMsgs').hide();
+                    $('.unreadMessages').show();
+                    //remove underline for no search value
+                    $('.notifyDesc').each(function(index) {
+                        var searchToRemove= $('.searchline').text();
+                        $('.searchline').each(function(index) {
+                            var srch = $(this).html();
+                            $(this).replaceWith(srch);
+                        });
+                    });                    
+                } else {
+                    $('#searchResultMsgs').show();
+                    $('.unreadMessages').hide();
+                    underlineSearchValue();
+                }
+            
+                // hide the table if search has no results
+                var searchCountTxt = $('#searchCount').text();
+                if (searchCountTxt.trim() == '0') {
+                    $('#notificationsTable_wrapper').hide();
+                    $('#shadowDiv').show();
+                } else {
+                    $('#notificationsTable_wrapper').show();
+                    $('#shadowDiv').hide();
+                }
+            }
+
+            function notifyClick(id,readNotification){
+                var notificationId = String.valueOf(id);
+                var unreadMsgsCtr = $('#unreadMsgs').text();             
+                var dotDisplay = $('.'+id).css('display');
+                
+                //if ($('.'+id).length > 0 && dotDisplay == 'inline-block') {
+                    Visualforce.remoting.Manager.invokeAction( 
+                       '{!$RemoteAction.PortalDesignHeaderController.updateUserOnNotificationRead}', 
+                       id, 
+                       function(result, event){ 
+                           if (result) {
+                                if (unreadMsgsCtr > 0) {
+                                    unreadMsgsCtr = unreadMsgsCtr -1;
+                                }
+                            $('#unreadMsgs').text(unreadMsgsCtr);
+                            $('.'+id).css('display','none'); 
+                            } else {
+                                console.log('Failed::Backend Method to update notification as read');
+                            } 
+                       } 
+                    );
+                //}
+            }
+        </script>
+    </head>
+
+    <div class="portalNotifications">
+        <div class="container manage_content notificationsContainer">
+            <div id="header">
+                <div style="float:left;"><h1>Notifications</h1></div>
+                <div class="unreadMessages"><span id="unreadMsgs">{!unreadNotificationCount}</span> Unread Notifications</div>
+                <div style="clear:both;"></div>
+            </div>
+            <hr class="blue_hr" />
+
+            <div id="searchNotifications">
+                <div class="input-group col-xs-3" style="display:block;">
+                    <div class="notificationSearchBtn search_button" onclick="passSearchValue();"></div>
+                    <input type="text" id="notifySearch" placeholder="Search notifications" onchange="passSearchValue();"/>
+                </div>
+                <div id="searchResultMsgs" class="searchResultMsgs">Your search has revealed <span id="searchCount"></span> results</div>
+                <div style="clear:both;"></div>
+            </div>
+
+            <div style="margin-top:20px;">
+                <table id="notificationsTable" class="display notificationsDataTable table table-bordered table-striped table-hover">
+                    <thead style="display:none;">
+                        <tr>
+                            <th>Notification</th>
+                            <th style="display:none;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!wpList}" var="eNotify">
+                            <tr>
+                                <td id="notifyTD_{!eNotify.notificationId}" onclick="notifyClick('{!eNotify.notificationId}','{!eNotify.readCheck}');" style="cursor:pointer;">
+                                    <div class="notifyDesc">
+                                        {!eNotify.description}
+                                    </div>
+                                    <div class="notifyTime">
+                                        <apex:outputPanel rendered="{!IF(eNotify.readCheck == false,true,false)}">
+                                            <span class="unReadIndicator {!eNotify.notificationId}"></span>
+                                        </apex:outputPanel>
+                                        <span class="upper">{!eNotify.timeLeft}</span>
+                                    </div>
+                                    <div style="clear:both;"></div>
+                                </td>
+                                <td style="display:none;"></td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+            </div>
+            <div id="shadowDiv">&nbsp;</div>
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+    <apex:include pageName="PortalDesignFooter"/>
+</apex:page>

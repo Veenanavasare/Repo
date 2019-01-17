@@ -1,0 +1,462 @@
+<apex:page standardStylesheets="false" docType="html-5.0" sidebar="false" showHeader="false" Controller="GetPdfsController">
+<style type="text/css">
+    .sponsorship,
+    .discount-request {
+        display: none;
+    }
+    .iru-email-domain2,
+    .iru-email-domain3,
+    .iru-email-domain4,
+    .iru-email-domain5,
+    .iru-email-domain6,
+    .iru-email-domain7,
+    .iru-email-domain8,
+    .iru-email-domain9,
+    .iru-email-domain10,
+    .remove-discount-att,
+    .remove-sponsorship-att {
+        display: none;
+        margin-bottom: 10px;
+    }
+    .iru-email-domain1 {
+        margin-bottom: 10px;
+    }
+    .new-customer, 
+    .existing-customer {
+        display: none;
+    }
+    .error {
+        color: #a94442;
+    }
+    .submit-button-clone {
+        visibility: hidden;
+    }
+    .add-domain-container {
+        position: absolute; 
+        bottom: 20px; 
+        right: -43%;
+    }
+    @media only screen and (max-width: 1000px) {
+        .add-domain-container {
+            position: relative !important; 
+            bottom: inherit !important;
+            right: inherit !important;
+        }
+    }
+</style>
+   <apex:form styleClass="reg-form">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>            
+            <h2 class="modal-title new-customer">Register End Customer</h2>
+            <h2 class="modal-title existing-customer">Update Existing End Customer</h2>
+        </div>
+    
+        <!-- Modal Body -->
+        <div class="modal-body">
+            <!-- Form Intro: New Customer --> 
+            <p class="new-customer">Complete this form to register your end customer for the Employee Sponsorship Program. When you register, you will receive the Foundation Account Number (FAN) and other relevant information for the end customer by email in up to two weeks. After you receive this information, customize marketing materials from the Employee Sponsorship Editable Templates. Your customers' employees will need the FAN and verification to receive the discount on wireless services.</p>
+            
+            <!-- Form Intro: Update Existing Customer --> 
+            <p class="existing-customer">Complete the required fields to update an existing Sponsorship Foundation Account Number (FAN) in the Employee Sponsorship Program. This can be used to update existing customer information or request an update to the current discount percentage.</p>
+            
+            <!-- Form Section: Exisitng Customer Information -->
+            <h4 class="existing-customer form-heading gray">Provide Existing End Customer Information</h4> 
+            <div class="row existing-customer">
+                <div class="col-sm-6 form-group">
+                    <apex:outputLabel value="Existing Sponsorship FAN" for="iru-fan" styleClass="control-label"></apex:outputLabel>  (Required)
+                    <apex:input value="{!esFAN}" styleClass="form-control iru-fan fan-number" html-validate="required"/>
+                </div>
+                <div class="col-sm-6 form-group">
+                    <apex:outputLabel value="Existing Business Name" for="ex-iru-biz-name" styleClass="control-label"></apex:outputLabel>  (Required)
+                    <apex:input value="{!esBName}" styleClass="form-control ex-iru-biz-name" html-validate="required"/>
+                </div>
+            </div>
+            <hr class="existing-customer gray-hr" />
+
+            <!-- Instructional Heading for Update Existing Customer --> 
+            <h4 class="existing-customer form-heading gray">Provide any changes you have in the fields below</h4> 
+            
+            <!-- All form content below is the same for both New Customer and Existing Customer forms -->
+            
+            <!-- Form Section: End Customer Business Information -->
+            <h5>End Customer Business Information</h5>
+            <div class="row">
+                <div class="col-sm-6 form-group">                    
+                   <apex:outputLabel value="Business Name" for="iru-biz-name" styleClass="control-label"></apex:outputLabel> <span class="new-customer"> (Required)</span><br />
+                   <apex:input value="{!bName}" styleClass="form-control iru-biz-name" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 form-group safari-height-hack" style="position: relative;">
+                    <apex:outputLabel value="Email Domain" for="iru-email-domain" styleClass="control-label"></apex:outputLabel> <span class="new-customer">(Required) you can add up to 10</span><br />
+                    <apex:input value="{!eDomain1}" styleClass="form-control iru-email-domain1 email-domain urlField" html-placeholder="example: http://mydomain.com" /> 
+                    <apex:input value="{!eDomain2}" styleClass="form-control iru-email-domain2 email-domain urlField" html-placeholder="example: http://mydomain.com"  html-validate=""/> 
+                    <apex:input value="{!eDomain3}" styleClass="form-control iru-email-domain3 email-domain urlField" html-placeholder="example: http://mydomain.com"  html-validate=""/> 
+                    <apex:input value="{!eDomain4}" styleClass="form-control iru-email-domain4 email-domain urlField" html-placeholder="example: http://mydomain.com"  html-validate=""/> 
+                    <apex:input value="{!eDomain5}" styleClass="form-control iru-email-domain5 email-domain urlField" html-placeholder="example: http://mydomain.com"  html-validate=""/> 
+                    <apex:input value="{!eDomain6}" styleClass="form-control iru-email-domain6 email-domain urlField" html-placeholder="example: http://mydomain.com"  html-validate=""/> 
+                    <apex:input value="{!eDomain7}" styleClass="form-control iru-email-domain7 email-domain urlField" html-placeholder="example: http://mydomain.com"  html-validate=""/> 
+                    <apex:input value="{!eDomain8}" styleClass="form-control iru-email-domain8 email-domain urlField" html-placeholder="example: http://mydomain.com"  html-validate=""/> 
+                    <apex:input value="{!eDomain9}" styleClass="form-control iru-email-domain9 email-domain urlField" html-placeholder="example: http://mydomain.com"  html-validate=""/> 
+                    <apex:input value="{!eDomain10}" styleClass="form-control iru-email-domain10 email-domain urlField" html-placeholder="example: http://mydomain.com"  html-validate=""/> 
+                    <div class="add-domain-container"><a href="javascript:void(0)" class="add-domain" >+ Add Another Domain</a></div><br />
+                </div>
+            </div>
+
+            <!-- Form Section: End Customer Contact Information -->
+            <h5>End Customer Contact Information</h5>
+            <div class="row">
+                <div class="col-sm-6 form-group">
+                    <apex:outputLabel value="First Name" for="iru-contact-name" styleClass="control-label"></apex:outputLabel><br />
+                    <apex:input value="{!fname}" styleClass="form-control iru-contact-name first-name"/>
+                </div>
+                <div class="col-sm-6 form-group">
+                    <apex:outputLabel value="Last Name" for="iru-contact-name" styleClass="control-label"></apex:outputLabel><br />
+                    <apex:input value="{!lname}" styleClass="form-control iru-contact-name" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 form-group">
+                    <apex:outputLabel value="Email" for="iru-contact-email" styleClass="control-label"></apex:outputLabel><br />
+                    <apex:input value="{!email}" styleClass="form-control iru-contact-email email-address" />
+                </div> 
+                <div class="col-sm-6 form-group">
+                    <apex:outputLabel value="Phone Number" for="iru-contact-ph" styleClass="control-label"></apex:outputLabel><br />
+                    <apex:input value="{!phno}" styleClass="form-control iru-contact-ph phone-number" /> 
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 form-group">
+                    <apex:outputLabel value="Address" for="iru-contact-adr" styleClass="control-label"></apex:outputLabel><br />
+                    <apex:input value="{!address}" styleClass="form-control iru-contact-adr" />
+                </div>
+                <div class="col-sm-6 form-group">
+                    <apex:outputLabel value="City" for="iru-contact-city" styleClass="control-label"></apex:outputLabel><br />
+                    <apex:input value="{!city}" styleClass="form-control iru-contact-city" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6 form-group">
+                <apex:outputLabel value="State" for="iru-contact-city" styleClass="control-label"></apex:outputLabel><br />
+                    <apex:selectList value="{!state}" label="State" required="false" multiselect="false" id="iru-contact-state" size="1" styleClass="form-control">
+                        <apex:selectOptions value="{!items}"/> 
+                    </apex:selectList> 
+                </div>
+                <div class="col-sm-6 form-group">
+                    <apex:outputLabel value="Zip Code" for="iru-contact-zip" styleClass="control-label"></apex:outputLabel><br />
+                    <apex:input value="{!zcode}" styleClass="form-control iru-contact-zip zip-code" />
+                </div>
+            </div>
+            
+            <!-- Form Section: Additional Information -->
+            <h5>Additional Information</h5>
+            
+            <div class="row">
+                <div class="col-sm-12">
+                    <span>
+                        Does your customer have a Sponsorship Account with a competitor?
+                    </span>
+                    <span class="check-group">
+                        <apex:inputCheckbox value="{!isSAcct}" styleClass="sponsorship-check iru-checkbox"/>
+                        <apex:outputLabel value="Yes, my customer has a Sponsorship Account with a competitor." for="iru-comp-acct" styleClass="control-label iru-checkbox-label"></apex:outputLabel>
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Display if isSAcct=='true' These form elements should only show if user checks "Yes" -->
+            <div class="sponsorship">
+                <div class="row">
+                    <div class="col-sm-6 form-group">
+                        <apex:outputLabel value="Provider Name" for="" styleClass="control-label"></apex:outputLabel> (Required)<br/>
+                        <apex:input value="{!pName}" html-validate="required" styleClass="form-control"/>
+                    </div>
+                    <div class="col-sm-6 form-group">
+                        <apex:outputLabel value="Discount %" for="" styleClass="control-label "></apex:outputLabel> (Required)<br/>                      
+                        <apex:input value="{!discount}" html-validate="required" styleClass="form-control discVal"/><br/>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-sm-12">
+                        <apex:outputLabel value="Upload Supporting Documentation " for="" styleClass="control-label"></apex:outputLabel>
+                        (Required) <span class="help-text">Supported file formats: .pdf, .doc, .docx, .jpg Maximum file size: 1MB</span>
+                    </div>
+                    <div class="col-sm-6">
+                        <apex:inputFile fileName="{!fileName1}" title="ChooseFile" value="{!sdUpload1}" styleClass="sponsorship-att"/> <br/>
+                        <span><a class="remove-sponsorship-att" href="javascript:void(0)">Remove Attachment</a></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <apex:outputLabel value="Comments" for="comments" styleClass="control-label"></apex:outputLabel><br/> 
+                        <apex:inputTextarea value="{!comments}" styleClass="form-control comments"/><br/>
+                    </div>
+                </div>    
+            </div>
+            
+            <hr class="gray-hr" />
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <span class="check-group">
+                        Do you have a special discount request?
+                    </span>
+                    <span class="check-group">
+                        <apex:inputCheckbox value="{!isDiscount}" styleClass="discount-request-check iru-checkbox"/>
+                        <apex:outputLabel value="Yes, I have a special discount request." for="iru-discount-req" styleClass="control-label iru-checkbox-label"></apex:outputLabel>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Display if isDiscount=='true' These form elements should only show if user checks "Yes, I have a special discount request" -->
+            <div class="discount-request">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <apex:outputLabel value="Description" for="iru-contact-city" styleClass="control-label"></apex:outputLabel> (Required)<br/>
+                        <apex:inputTextarea value="{!desp}" html-validate="required" styleClass="form-control iru-discount-req" /><br/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <apex:outputLabel value="Upload Supporting Documentation"  for="iru-contact-city" styleClass="control-label"></apex:outputLabel>
+                        <span class="help-text">Supported file formats: .pdf, .doc, .docx, .jpg Maximum file size:1MB</span><br/>
+                    </div>
+                    <div class="col-sm-6">
+                        <apex:inputFile fileName="{!fileName2}" title="ChooseFiles" value="{!sdUpload2}" styleClass="discount-att"/> <br/>
+                        <span><a class="remove-discount-att" href="javascript:void(0)">Remove Attachment</a></span>                    
+                    </div>                      
+                </div>    
+            </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="modal-footer"> 
+            <!-- FIXME: submit formaction does not work with the styleClass names and disabled attribute for the style and smart button logic -->
+            <apex:commandButton action="{!sendEmail}" styleClass="btn btn-primary submit-button-clone"/>
+            <apex:commandButton action="{!sendEmail}" value="Submit" styleClass="pull-right btn btn-primary submit-button"/>
+            <!-- <apex:commandButton action="{!sendEmail}" value="Submit" style="float:right; width:auto; min-width: 175px;" /> -->
+            <!-- <apex:commandButton action="{!sendEmail}" value="Submit" styleClass="pull-right btn btn-primary submit-button" disabled="true" /> -->
+            <button type="button" class="pull-right cancel-button" data-dismiss="modal">Cancel</button>
+        </div>
+        <script type="text/javascript">
+            var counter = 2
+            $(".add-domain").click( function () {
+                $(".iru-email-domain"+counter+"").show();
+                console.log($(".safari-height-hack"));
+                $(".safari-height-hack").css({"width":"49.9%"}); //SAFARI HACK 
+                $(".safari-height-hack").css({"width":"50%"});  //SAFARI HACK 
+                counter++;
+            });
+        </script>
+    </apex:form>
+    <script type="text/javascript">
+        $(document).ready( function () {
+
+            $(".submit-button").attr("disabled","disabled");
+            $(".sponsorship input").attr("uploader","sponsorship-uploader");
+            $(".discount-request input").attr("uploader","discount-uploader");
+            $(".regSheet-att").attr("uploader","mult-uploader");
+
+            $("[type='checkbox']").each(function () {
+              $(this).val("false");
+            });
+            $("[type='checkbox']").click(function (){
+              if($(this).is(":checked")== true){
+                $(this).val("true");
+              }  if($(this).is(":checked")== false){
+                $(this).val("false");
+              }
+            });
+
+
+            function Validate() {
+                validator = 0;
+
+                $("[validate='required']:visible, [title='ChooseFile']:visible").each( function () {
+                    if($(this).val() != ""){                    
+                        validator += 1;
+                       // console.log(validator);
+                    } else if($(this).val() == "") {
+                        validator -= 1;
+                        //console.log(validator);
+                    }
+                    var vCheck = $("[validate='required']:visible").length + $("[title='ChooseFile']:visible").length;
+                    //console.log("vCheck is: "+vCheck);
+                    if(validator != vCheck){
+                        $(".submit-button").attr("disabled", "disabled");
+                    }
+                    else if(validator == vCheck){
+                        $(".submit-button").removeAttr("disabled");
+                    }
+                }); 
+            }
+
+
+            $('[type="file"]').bind('change', function() {
+              var fileSize = this.files[0].size;
+              var sponsorshipUploader =  $(".sponsorship input").attr("uploader");
+              var discountUploader =  $(".discount-request input").attr("uploader");
+              var multUploader =  $(".regSheet-att").attr("uploader");
+
+              if($(this).attr("uploader") == multUploader){
+                var fileExtension = [ 'xls', 'xlsx'];
+                var file = $(this).val().split('.').pop().toLowerCase();
+                $(".file-type-error").remove();
+                if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                    var file = $(this).val().split('.').pop().toLowerCase();
+                    $(".submit-button-multiple").attr("disabled", "disabled");
+                    $(this).val("");
+                    $(this).after("<div class='file-type-error error'>Please upload either a .xls, or .xlsx file.</div>");
+                }
+              }
+              if($(this).attr("uploader") == sponsorshipUploader){
+                var fileExtension = [ 'pdf', 'doc', 'docx', 'jpg', 'jpeg'];
+                var file = $(this).val().split('.').pop().toLowerCase();
+                $(".file-type-error").remove();
+                if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                    var file = $(this).val().split('.').pop().toLowerCase();
+                    $(".submit-button").attr("disabled", "disabled");
+                    $(this).val("");
+                    $(this).after("<div class='file-type-error error'>Please upload either a .doc, .docx, .jpg, .jpeg, or .pdf file.</div>");
+                }
+              }
+              if($(this).attr("uploader") == discountUploader){
+                var fileExtension = [ 'pdf', 'doc', 'docx', 'jpg', 'jpeg'];
+                var file = $(this).val().split('.').pop().toLowerCase();
+                $(".file-type-error").remove();
+                if ($.inArray($(this).val().split('.').pop().toLowerCase(), fileExtension) == -1) {
+                    var file = $(this).val().split('.').pop().toLowerCase();
+                    $(".submit-button").attr("disabled", "disabled");
+                    $(this).val("");
+                    $(this).after("<div class='file-type-error error'>Please upload either a .doc, .docx, .jpg, .jpeg, or .pdf file.</div>");
+                }
+
+              }
+
+              $(".file-size-error").remove();
+              if(fileSize > 1024000){
+                $(this).val("")
+                .after("<div class='file-size-error error'>The file size exceeds the maximum limit size of 1 MB</div>");
+                $(".submit-button").attr("disabled", "disabled");
+              } else {
+                $(".file-size-error").remove();
+              }
+              
+            });
+
+            
+            $(document).delegate("[validate='required']:visible", "keyup", Validate);
+            $(document).delegate("[validate='required']:visible", "change", Validate);
+            $(document).delegate("[title='ChooseFile']:visible", "change", function() {
+                Validate();
+                var myClass = $(this).attr("class");
+                if($(this).val() == ""){
+                    $(".remove-"+myClass+"").hide();
+                }else if($(this).val() != ""){
+                    $(".remove-"+myClass+"").show();
+                }
+            });
+            $(document).delegate("[title='ChooseFiles']:visible", "change", function() {
+                var myClass = $(this).attr("class");
+                if($(this).val() == ""){
+                    $(".remove-"+myClass+"").hide();
+                }else if($(this).val() != ""){
+                    $(".remove-"+myClass+"").show();
+                }
+            });
+            $(document).delegate(".add-domain, .remove-sponsorship-att, .remove-discount-att", "click", function () {
+                setTimeout(function () {
+                    Validate();
+                }, 200)
+            });
+            $(document).delegate(":checkbox", "click", function () {
+                setTimeout(function () {
+                    Validate();
+                }, 400)
+            });
+            /////////////// END FORM VALIDATION///////////////
+
+
+           
+
+            $(".remove-sponsorship-att").click( function () {
+                $(this).hide();
+                $(".sponsorship-att").val("");
+            });
+
+            $(".remove-discount-att").click( function () {
+                $(this).hide();
+                $( ".discount-att").val("");
+            });
+
+            $(".sponsorship-check").click( function (){
+                if($(this).prop("checked")){
+                    $(".sponsorship").show(200);
+                }else{
+                    $(".sponsorship").hide(200);
+                }
+            });
+            $(".discount-request-check").click( function (){
+                if($(this).prop("checked")){
+                    $(".discount-request").show(200);
+                }else{
+                    $(".discount-request").hide(200);
+                }
+            }); 
+        });
+    </script>
+    <apex:includeScript value="{!$Resource.jqValidate}"/>
+    <script type="text/javascript">
+        $(document).ready( function () {
+            $(".reg-form").validate();
+            $( ".urlField" ).each( function () {
+                $(this).rules( "add", {
+                  url: true,
+                  messages: {
+                    url: jQuery.validator.format("Please enter a valid email domain.")
+                  }
+                });
+            });
+            $( ".email-address" ).rules( "add", {
+              email: true,
+              messages: {
+                email: jQuery.validator.format("Please enter a valid email address.")
+              }
+            });
+            $( ".discVal" ).rules( "add", {
+              digits: true,
+              range: [0, 100],
+              messages: {
+                email: jQuery.validator.format("Discount must be digits only."),
+                range: jQuery.validator.format("Discount maximum 100%."),
+              }
+            });
+            $( ".phone-number" ).rules( "add", {
+              rangelength: [10,10],
+              digits: true,
+              messages: {
+                rangelength: jQuery.validator.format("Phone Number must be 10 digits."),
+                digits: jQuery.validator.format("Phone Number must be digits only.")
+              }
+            });
+            $( ".zip-code" ).rules( "add", {
+              rangelength: [5,5],
+              digits: true,
+              messages: {
+                rangelength: jQuery.validator.format("ZIP code must be 5 digits."),
+                digits: jQuery.validator.format("ZIP code must be digits only.")
+              }
+            });
+            $( ".fan-number" ).rules( "add", {
+              rangelength: [7,7],
+              digits: true,
+              messages: {
+                rangelength: jQuery.validator.format("Sponsorship FAN must be 7 digits."),
+                digits: jQuery.validator.format("Sponsorship FAN must be digits only.")
+              }
+            });
+        });
+    </script>
+
+</apex:page>

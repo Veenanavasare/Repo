@@ -1,0 +1,24 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    <div class="playbook">
+        <!-- Intro -->
+        <h2>Activate the key components of your mobility&nbsp;strategy.</h2>
+        <p>Making the leap into offering mobility solutions can be daunting. AT&amp;T Partner Exchange<sup>&reg;</sup> has taken steps to ease the transition into mobility by creating the Mobility Enablement Playbook. This step-by-step guide outlines the key considerations on the path to mobility sales success.</p>
+         
+        <!-- Document List: Enablement Playbook -->
+        <div class="mt-40 mb-30">
+            <apex:outputPanel >   
+                <apex:repeat value="{!DocMapEnablementPlaybook}" var="docMap">                     
+                    <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                        <div class="document-row">
+                            <div class="file-type file-{!docMap.type}"></div>
+                            <div class="details">
+                                <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                <p><apex:outputText value="{!docMap.description}"/></p>
+                            </div>
+                        </div>
+                    </apex:outputLink>        
+                </apex:repeat>    
+            </apex:outputPanel>            
+        </div>
+    </div>
+</apex:page>

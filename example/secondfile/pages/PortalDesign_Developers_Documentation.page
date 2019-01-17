@@ -1,0 +1,24 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    
+    <div class="Developers_Documentation col-sm-12">
+        
+        <h3>Documentation</h3>
+        
+        <apex:outputPanel >   
+            <div class="">
+                <apex:repeat value="{!DocMapDevDocumentation}" var="docMap"> 
+                    <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                        <div class="document-row">
+                            <div class="file-type file-{!docMap.type}"></div>
+                            <div class="details">
+                                <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                <p><apex:outputText value="{!docMap.description}"/></p>
+                            </div>
+                        </div>
+                    </apex:outputLink>        
+                </apex:repeat>    
+            </div>
+        </apex:outputPanel> 
+        
+    </div>
+</apex:page>

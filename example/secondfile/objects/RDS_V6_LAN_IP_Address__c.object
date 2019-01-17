@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Premise Details-Premise Data-Circuit and VLAN Details-VLAN Information-V6 Family Data-RDS-V6 LAN IP Address</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <externalSharingModel>ReadWrite</externalSharingModel>
+    <fields>
+        <fullName>Address_Type__c</fullName>
+        <description>Premise Details-Premise Data-Circuit and VLAN Details-VLAN Information-V6 Family Data-RDS-V6 LAN IP Address-Address Type</description>
+        <externalId>false</externalId>
+        <label>Address Type</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IP_Address__c</fullName>
+        <description>Premise Details-Premise Data-Circuit and VLAN Details-VLAN Information-V6 Family Data-RDS-V6 LAN IP Address-IP Address</description>
+        <externalId>false</externalId>
+        <label>IP Address</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Length__c</fullName>
+        <description>Premise Details-Premise Data-Circuit and VLAN Details-VLAN Information-V6 Family Data-RDS-V6 LAN IP Address-Length</description>
+        <externalId>false</externalId>
+        <label>Length</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MACD_Type__c</fullName>
+        <description>This is a technical field to indicate that record has been created due to MACD Disconnect. Not required on page layout.</description>
+        <externalId>false</externalId>
+        <label>MACD Type</label>
+        <length>5</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>RDS_V6_Family_Data__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Premise Details-Premise Data-Circuit and VLAN Details-VLAN Information-V6 Family Data-RDS-V6 LAN IP Address-RDS-V6 Family Data</description>
+        <externalId>false</externalId>
+        <label>RDS-V6 Family Data</label>
+        <referenceTo>V6_Family_Data__c</referenceTo>
+        <relationshipLabel>RDS-V6 LAN IP Address</relationshipLabel>
+        <relationshipName>RDS_V6_LAN_IP_Address</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>RDS-V6 LAN IP Address</label>
+    <listViews>
+        <fullName>All</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
+    <nameField>
+        <displayFormat>V6-{00000}</displayFormat>
+        <label>RDS-V6 LAN IP Address Name</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>RDS-V6 LAN IP Address</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Record_Lock_after_Deal_Hash_creation_V6L</fullName>
+        <active>true</active>
+        <errorConditionFormula>(((ISNULL(RDS_V6_Family_Data__r.RDS_Circuit_and_VLAN_Details_V6__c) || ISBLANK(RDS_V6_Family_Data__r.RDS_Circuit_and_VLAN_Details_V6__c))&amp;&amp; ( RDS_V6_Family_Data__r.RDS_VLAN_Information__r.Circuit_and_VLAN_Details__r.Premise__r.DealHash__r.IsDealHashCreationSuccess__c = true &amp;&amp; $Profile.Name &lt;&gt; &apos;System Administrator&apos; &amp;&amp; $Profile.Name &lt;&gt; &apos;SI_API User&apos; &amp;&amp; $Profile.Name &lt;&gt; &apos;SI_EBM_DEV_OPS&apos;)) || ((ISNULL(RDS_V6_Family_Data__r.RDS_VLAN_Information__c) || ISBLANK(RDS_V6_Family_Data__r.RDS_VLAN_Information__c))&amp;&amp; (  RDS_V6_Family_Data__r.RDS_Circuit_and_VLAN_Details_V6__r.Premise__r.DealHash__r.IsDealHashCreationSuccess__c = true &amp;&amp; $Profile.Name &lt;&gt; &apos;System Administrator&apos; &amp;&amp; $Profile.Name &lt;&gt; &apos;SI_API User&apos; &amp;&amp; $Profile.Name&lt;&gt;&apos;ATT Partner Community User&apos; &amp;&amp; $Profile.Name &lt;&gt; &apos;SI_EBM_DEV_OPS&apos;))) &amp;&amp; NOT( ISNEW())</errorConditionFormula>
+        <errorMessage>Record cannot be updated after Deal Hash has been created.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Restrict_Creation_for_Non_MACD_D_v6Lan</fullName>
+        <active>true</active>
+        <description>This validation rule will prevent creation of records for SI EBM Admin and EBM DEV OPs profile when the record is not of MACD Disconnect type</description>
+        <errorConditionFormula>AND(MACD_Type__c &lt;&gt; &apos;D&apos;, MACD_Type__c &lt;&gt; &apos;C&apos;, 
+OR($Profile.Name = &apos;SI_EBM_DEV_OPS&apos;,$Profile.Name = &apos;SI_EBM Admin&apos;), 
+ISNEW() )</errorConditionFormula>
+        <errorMessage>You do not have permission to create a new RDS-V6 LAN IP Address record.</errorMessage>
+    </validationRules>
+    <visibility>Public</visibility>
+</CustomObject>

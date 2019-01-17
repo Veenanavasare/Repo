@@ -1,0 +1,105 @@
+<apex:page standardController="Directory__c" extensions="RecallButtonController"  >
+ 
+    <style>
+         input.btn[name="piRemove"] {
+                display: none;
+         }
+
+   </style>
+   <style>
+         input.btn[name="piSubmit"] {
+                display: none;
+         }
+
+   </style>
+ <apex:form id="commonForm">
+ 
+ <apex:commandButton rendered="{!showRecallBtn && (profileName = 'System Administrator' || profileName = 'SI_EBM_DEV_OPS'|| profileName = 'SI_API User'|| profileName = 'System Admin Read Only(Developers/Testers)'|| profileName = 'SI_EBM Admin'|| profileName = 'SI_EBM BD & Sales SME'|| profileName = 'Developer Administrator')}" styleClass="btn" style="height:21px;margin-left:40%" value="Recall Approval Request" oncomplete="redirectToTheTarget();" action="{!recallForApproval}" rerender="commonForm"/> 
+ 
+ <input type="hidden" value="{!retURL}" id="urlHDN" />
+ 
+  
+ </apex:form>
+ <apex:form id="commonForm1">
+   
+  <apex:commandButton rendered="{!showRecallBtn1}" id="submit" styleClass="btn" style="height:21px;margin-left:40%" value="Submit for approval" oncomplete="redirectToTheTargetSubmit();" action="{!submitForApproval}" rerender="commonForm1"/>  
+  <input type="hidden" value="{!retURL1}" id="urlHDN1" />
+  <input type="hidden" value="{!retURL2}" id="urlHDN2" />
+  <input type="hidden" value="{!stageName}" id="stagename" />
+  <input type="hidden" value="{!legalReviewer}" id="legalReviewer" />
+  <input type="hidden" value="{!providerDirectoryReviewer}" id="providerDirectoryReviewer" />
+  <input type="hidden" value="{!profileName}" id="profile" />
+   <input type="hidden" value="{!Username}" id="user" />
+   <input type="hidden" value="{!Userid}" id="useid" />
+   <input type="hidden" value="{!condition2}" id="Condtn" />
+  
+ </apex:form>
+  
+<apex:relatedList list="ProcessSteps">
+</apex:relatedList>
+ 
+  
+   <script>
+
+    window.onload = function(){ hideUnwantedLinks(); };
+    
+    function hideUnwantedLinks(){
+    
+        var colList = [];
+        var arLinksToRemove = ['Reassign','Approve / Reject'];
+        
+        colList = document.getElementsByTagName("a");
+       
+        
+        for( var i = 0; i < colList.length; i++ ){
+            for( var j = 0; j < arLinksToRemove.length; j++ ){
+                if( colList[i].innerHTML == arLinksToRemove[j] ){
+                    colList[i].style.display = 'none';
+                }
+            }
+        }
+    }
+    function redirectToTheTargetSubmit(){
+        var urlParam = document.getElementById("urlHDN1").value;
+        var profile1 = document.getElementById("profile").value;
+        var user1 = document.getElementById("user").value;
+        var Cond2 = document.getElementById("Condtn").value;
+        var userid = document.getElementById("useid").value;
+        var urlParam1 = document.getElementById("urlHDN2").value;
+        var stageName1  = document.getElementById("stagename").value;
+        var legalReviewer1 = document.getElementById("legalReviewer").value;
+        var  providerDirectoryReviewer1 = document.getElementById("providerDirectoryReviewer").value;
+        var ent =confirm("Once u submit the record for approval,you might not be able to edit it or recall it from the approval process depending on your settings. Continue?");
+        if(ent==true){
+          
+         if(stageName1=='Pending Approval' && legalReviewer1!='null' && providerDirectoryReviewer1==userid ){
+          
+         window.top.location.href = urlParam; 
+         }
+          else if (Cond2=='true')
+      
+         {
+             
+         window.top.location.href = urlParam; 
+         
+         }
+         else{
+         window.top.location.href = urlParam1;
+         }
+         }
+         
+        else{
+         alert('akshay11');
+          
+    }
+    }
+    function redirectToTheTarget(){
+    
+        var urlParam = document.getElementById("urlHDN").value;
+        window.top.location.href = urlParam; 
+    }
+    
+  
+</script>
+
+</apex:page>

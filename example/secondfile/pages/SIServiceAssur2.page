@@ -1,0 +1,30 @@
+<apex:page standardController="SP_Account_Ticket__c" extensions="SIServiceAssurController"  
+    showHeader="true"  sidebar="true">
+<script src="/soap/ajax/23.0/connection.js"/>
+<apex:form >
+    <apex:sectionHeader title="SP Account Ticket Detail" subtitle="{!accountTicket.Name}"/>
+    <apex:pageBlock id="pgBlckId">
+        <b><apex:pageMessages id="pagemessage" /></b>
+        <apex:actionStatus id="loadingStatus">
+             <apex:facet name="start">
+                <apex:outputPanel style="color:red;font-weight:bold;">
+                   <apex:image value="/img/loading32.gif"/>
+                   <sup>&nbsp;&nbsp;Loading page, Please wait...</sup>
+                </apex:outputPanel>
+             </apex:facet>      
+        </apex:actionStatus>    
+        <apex:pageBlockSection columns="2" title="Ticket Description">
+            <apex:repeat value="{!$ObjectType.SP_Account_Ticket__c.FieldSets.Service_Assurance}" var="fieldVal">
+                <apex:outputField value="{!accountTicket[fieldVal.fieldPath]}" label="{!fieldVal.Label}"/>
+            </apex:repeat>
+       </apex:pageBlockSection>     
+       <apex:dynamicComponent componentValue="{!pageBlockSection}"/>
+       <apex:pageBlockButtons >
+            <input type="button" onclick="fetchServiceAssurJs()" value="Refresh Ticket" class="btn"/>
+       </apex:pageBlockButtons>       
+   </apex:pageBlock>
+   <apex:actionFunction action="{!doFetchServiceAssurance}" name="fetchServiceAssurJs" 
+         status="loadingStatus" reRender="pgBlckId"/>
+</apex:form>
+   <apex:relatedList list="WebserviceLogs__r"/>
+</apex:page>

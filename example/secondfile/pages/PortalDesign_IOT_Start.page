@@ -1,0 +1,68 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    <div class="startselling">
+        
+        <!-- Intro -->
+        <h2>Extend the benefits of IoT to your&nbsp;customers.</h2>
+        
+        <p class="mb-40">Whether you wish to plug-in connectivity or package together an IoT solution, we're ready to help you start your IoT journey.</p>
+
+        <hr class="blue_hr mb-40" />
+
+        <p>Regardless of which path you wish to take, the IoT Readiness Assessment is a great first step to determine your current IoT capabilities.</p>
+        <div class="mb-40">
+            <apex:outputPanel >
+                <apex:repeat value="{!DocMapIOTAssess}" var="docMap"> 
+                    <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}"  target="_blank" styleClass="document-file">
+                        <div class="document-row">     
+                            <div class="file-type file-{!docMap.type}"></div>
+                            <div class="details">
+                                <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                <p><apex:outputText value="{!docMap.description}"/></p>
+                            </div>
+                        </div>                    
+                    </apex:outputLink>        
+                </apex:repeat>    
+            </apex:outputPanel>
+        </div>
+
+        <hr class="blue_hr mb-40" />
+        <p>Read the Getting Started with AT&amp;T Control Center PDF to understand how you can take advantage of IoT and start creating new business models, automating processes, and working to improve operational efficiencies.</p>
+        <div class="mb-40">
+            <apex:outputPanel >   
+                <apex:repeat value="{!DocMapIOTStart}" var="docMap"> 
+                    <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}"  target="_blank" styleClass="document-file">
+                        <div class="document-row">     
+                            <div class="file-type file-{!docMap.type}"></div>
+                            <div class="details">
+                                <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                <p><apex:outputText value="{!docMap.description}"/></p>
+                            </div>
+                        </div>               
+                    </apex:outputLink>        
+                </apex:repeat>    
+            </apex:outputPanel>
+        </div>
+
+        <!--*********************************************************************************************************************-->
+
+        <!-- <p>Read the Getting Started with AT&amp;T Cargo View with FlightSafe<sup>&reg;</sup> PDF to understand how to take advantage of the end-to-end cloud-based IoT solution.</p>
+        <div class="mt-40 mb-40">
+            <apex:outputPanel >   
+                <apex:repeat value="{!DocMapIOTSCRetail2}" var="docMap"> 
+                    <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                        <div class="document-row">     
+                            <div class="file-type file-{!docMap.type}"></div>
+                            <div class="details">
+                                <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                <p><apex:outputText value="{!docMap.description}"/></p>
+                            </div>
+                        </div>                    
+                    </apex:outputLink>        
+                </apex:repeat>    
+            </apex:outputPanel>
+        </div> -->
+
+        <!--*********************************************************************************************************************-->
+
+    </div>
+</apex:page>

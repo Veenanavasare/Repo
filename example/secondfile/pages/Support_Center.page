@@ -1,0 +1,230 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="ContactPrototypeController">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8" />
+<!-- <apex:stylesheet value="{!$Resource.bootstrap_CSS}"/> -->
+<!-- <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" /> -->
+<apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />
+<apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+<apex:stylesheet value="{!$Resource.icon_framework_CSS}"/>
+<apex:stylesheet value="{!$Resource.main_stylesheet_CSS}"/>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<style type="text/css">
+    .mobility-selected,
+    .mobility-takeout {
+        display: none;
+    }
+    .subject-title-main {
+        font-size: 18px !important;
+        font-weight: bold;
+    }
+    .subject-title-description-1, .subject-title-description-2 {
+        font-size: 14px !important;
+        text-align: center;
+    }
+    @media (min-width: 900px) {
+        .topic-title {
+            max-height: 200px !important;
+        } 
+    }
+    @media (min-width: 761px) and (max-width: 899px) {
+        .topic-title {
+            max-height: 222px !important;
+        }
+    }
+    @media (max-width: 760px) {
+        .topic-tile {
+            max-height: 245px !important;
+        }
+    }
+    /*********************Modal Pop-Up**********************/
+    /* The Modal (background) */
+    /*.modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        padding-top: 20%;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgb(0,0,0);
+        background-color: rgba(0,0,0,0.4);
+    }
+    .modal-header {
+        color: #cf2a2a;
+        text-align: left !important;
+        line-height: 1.22857143;
+        font-weight: normal;
+        font-size: 1.5em !important;
+        font-family: Arial;
+    }
+    .modal-para {
+        padding:20px 0px;
+        color: #333;
+        font-size: 20px;
+        line-height: 1.428;
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 0px;
+        border: 1px solid #888;
+        text-align: center;
+        width: 50%;
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s;
+    }
+    .clsModal {
+        margin-right: 5px;
+    }
+    .modal-footer-sc {
+        border-top: 1px solid #d2d2d2 !important;
+        background-color: #f2f2f2;
+        padding: 20px 30px;
+        border-radius: inherit;
+        text-align: right;
+    }*/
+    /* Add Animation */
+    /*@-webkit-keyframes animatetop {
+        from {top:-300px; opacity:0} 
+        to {top:0; opacity:1}
+    }
+
+    @keyframes animatetop {
+        from {top:-300px; opacity:0}
+        to {top:0; opacity:1}
+    }*/
+    /*****************End Modal*******************/
+</style>
+
+<style type="text/css">
+    @font-face { font-family: "Ionicons"; 
+        src: url("{!URLFOR($Resource.icon_fonts_FONTS,'ionicons.eot?v=2.0.0')} "); 
+        src: url("{!URLFOR($Resource.icon_fonts_FONTS,'ionicons.eot?v=2.0.0#iefix')}") 
+        format("embedded-opentype"), url("{!URLFOR($Resource.icon_fonts_FONTS,'ionicons.ttf?v=2.0.0')}") 
+        format("truetype"), url("{!URLFOR($Resource.icon_fonts_FONTS,'ionicons.woff?v=2.0.0')}") 
+        format("woff"), url("{!URLFOR($Resource.icon_fonts_FONTS,'ionicons.svg?v=2.0.0#Ionicons')}") 
+        format("svg"); font-weight: normal; font-style: normal; }
+</style>
+
+<div class="container">
+        <div class="content welcome">
+            <div class="row">
+            <h1 class="col-sm-9">Support Center</h1>
+            <a href="{!URLFOR($Page.Support_Center_Case_List)}" class="col-sm-3 text-right case-list-link">View Case List</a>
+            </div>
+            <hr class="blue_hr  mb-40" />
+            <p class="welcome-content">Welcome, <apex:outputText > {!userName}</apex:outputText>. Please choose a topic below so we can get you the assistance you need.</p>
+        </div>
+        <div class="row bcrumb-container">
+            <div class="col-sm-3 bcrumb topic-bcrumb active-status"><div class="bcrumb-text">Choose a Topic</div></div>
+            <div class="col-sm-3 bcrumb category-bcrumb"><div class="bcrumb-text">Choose a Category</div></div>
+            <div class="col-sm-3 bcrumb complete-form"><div class="bcrumb-text">Complete the Form</div></div>
+            <div class="col-sm-3 bcrumb confirmation"><div class="bcrumb-text">Confirm your Entry</div></div>
+        </div>
+        <div class="row form-confirm-container">                             
+            <div class="content">
+                <h1>Please confirm your entry before submitting.</h1>
+            </div>
+            <div class="content">
+                <label>Submitted By: </label>
+                <apex:outputText > {!userName}</apex:outputText>
+            </div>
+            <div class="content">
+                <label>Company: </label>
+                <apex:outputText > {!companyName}</apex:outputText>    
+            </div>
+            <div class="content">
+                <label>Email: </label>
+                <apex:outputText > {!contactEmail}</apex:outputText>    
+            </div>
+            <div class="confirm"></div>  
+            <div class="content">
+                <div class="form-buttons">
+                    <div class="btn btn-link">Cancel</div>
+                    <div class="btn btn-default edit-button">Edit</div>
+                    <div class="btn btn-primary confirm-button">Confirm and Submit</div>
+                </div>
+            </div>
+        </div>
+    <div class="row form-container "></div>
+    <div class="subject-sub-container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="back-link">Back</div>
+            </div>
+        </div>
+        <div class="row categories-container"></div>
+    </div>
+    <div class="subject-container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="topic topic-title" data-map="Service Delivery" data-categories="SD_Categories">
+                    <div class="subject-title subject-title-main">Service Delivery</div> 
+                    <div class="subject-title-description-1">Request MACDs and support on wireline orders from RDS through activation</div>
+                    <div class="subject-title-description-2">Request assistance with mobility provisioning and activations</div>
+                    <div class="slide-desc">
+                        <p>Escalations, RDS Assistance, Cancellations &amp; Disconnect Requests, Mobility Requests and MACDs</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="topic topic-title" data-map="Service Assurance" data-categories="SA_Categories">
+                    <div class="subject-title subject-title-main">Service Assurance</div>
+                    <div class="subject-title-description-1">Request escalation support and technical information for wireline and mobility services that have been activated</div>
+                    <div class="slide-desc">
+                        <p>Trouble Ticket Creation, Trouble Ticket Escalation, Information Requests</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="topic topic-title" data-map="Billing" data-categories="B_Categories">
+                    <div class="subject-title subject-title-main">Billing </div>
+                    <div class="subject-title-description-1">Request assistance with taxes and exemptions</div>
+                    <div class="subject-title-description-2">Address billing disputes and inquiries specific to mobility, ASE services, Early termination Fees and Contractual Credits</div>
+                    <div class="slide-desc">
+                        <p>Disputes, Taxes and Exemptions, General Billing Questions</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="topic topic-title" data-map="System Access Issue" data-categories="SysA_Categories">
+                    <div class="subject-title subject-title-main">System Access Issues</div>
+                    <div class="subject-title-description-1">Report issues with AT&amp;T Partner Exchange tools <br /> and applications</div>
+                    <div class="slide-desc">
+                        <p>Partner Exchange Portal, Business Direct Tools, and Mobility Platforms</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <!-- <div id="myModalSC" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Something isn&#39;t working</h2>
+            </div>
+            <p class="modal-para">Please review the form...</p>
+            <div class="modal-footer-sc">
+                <div class="btn btn-default clsModal">Cancel</div>
+                <div class="btn btn-primary edit-button edit-button-modal">Edit</div>
+            </div>
+        </div>
+    </div> -->
+    <!-- End Of Modal -->
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+</div>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css"/>
+<apex:includeScript value="{!$Resource.main_controller_JS}"/>
+<script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#caseListTable').DataTable();
+    });
+</script>
+</apex:page>

@@ -1,0 +1,949 @@
+<apex:page Controller="Inventorylookup_SiteInventoryController"  docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:includeScript value="{!$Resource.jquery_confirm_js}"/>
+    <script type="text/javascript">
+        var __sfdcSessionId = '{!GETSESSIONID()}';
+    </script>
+    <script src="/soap/ajax/28.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/28.0/apex.js" type="text/javascript"></script> 
+
+    <style>     
+        <!-- Style For Tooltip -->
+        .tooltip.top .tooltip-arrow{border-top-color: #fff!important;}
+        .tooltip.right .tooltip-arrow{border-right-color: #fff!important;}
+        .tooltip.bottom .tooltip-arrow{border-bottom-color: #fff!important;}
+        .tooltip.left .tooltip-arrow{border-left-color: #fff!important;}
+        .tooltip-inner{background-color: #fff;color: #000;box-shadow: 2px 2px 8px 8px rgba(0, 0, 0, 0.1);}
+        
+        .disableButton{background-color: #e6e6e6; color: #a0a0a0;}      
+        .enableButton{background-color: #fff;}
+        .noborder{border:0px solid #ddd;}
+        .errorText {color: #a94442;} 
+        table a {cursor: pointer;}
+        .dataTables_length {display: none;}
+        .dataTables_info {
+            bottom: 22px;
+            position: absolute;
+            left: 0;
+            width: 50%;
+        }
+        .manage_user_name {width: 17% !important;}
+        #manage_content .pagination > a {
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #056fab;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+        .paginate_enabled_previous, .paginate_enabled_next {cursor: pointer;}
+        .paginate_disabled_previous, .paginate_disabled_next {cursor: no-drop !important;}
+        .adjust-select-small {width: 230px;}
+        .adjust-select-small select {
+            padding: 0 5px;
+            line-height: 17px;
+        }
+        h1 {
+            font-family: omnesatt_iiregular;
+            margin-top: 40px;
+        }
+        #headerNav3,
+        #headerNav4,
+        #headerNav5 {
+            background: #edf8fd;
+        }
+
+        .tHeadNavType ul {
+            padding-left: 10px;
+            min-width: 300px;
+        }
+        .tHeadNavStatus ul {
+            padding-left: 10px;
+            min-width: 300px;
+        }
+        .tHeadNavProduct ul {
+            padding-left: 10px;
+            min-width: 300px;
+        }
+
+        .dataTables_wrapper tbody td {border-style: dashed !important;}
+        
+        .dataTables_empty a{pointer-events: none !important;color: #686868;}
+        .dataTableManageServiceSearchButton {
+            position: absolute;
+            display: inline;
+            top: 13px;
+            z-index: 9;
+        }
+        .dataTableManageServiceSearch {
+            width: 300px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .dataTableManageService thead th:nth-child(1) {width: 70px !important;}
+        .dataTableManageService thead th:nth-child(2) {width: 100px !important;}
+        .dataTableManageService thead th:nth-child(3) {width: 80px !important;border-right:0px solid #ddd;}
+        .dataTableManageService thead th:nth-child(4) {width: 15px !important;border-left:0px solid #ddd;}
+        .dataTableManageService thead th:nth-child(5) {width: 70px !important;}
+        .dataTableManageService thead th:nth-child(6) {width: 10px !important;}
+
+        .dataTables_length {display: none;}
+        .manageQuotesPage .dataTables_info {
+            bottom: 22px;
+            position: absolute;
+            left: 15px;
+        }
+        .paginate_active {
+            z-index: 2;
+            color: #fff;
+            cursor: default;
+            background-color: #428bca;
+            border-color: #428bca;
+        }
+        .paginate_button_disabled {
+            cursor: no-drop !important;
+            color: #cfcfcf !important;
+        }
+        .paginate_button, .paginate_active {
+            float: left;
+            padding: 3px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #428bca;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        .paginate_active {
+            z-index: 2;
+            color: #fff;
+            cursor: default;
+            background-color: #428bca;
+            border-color: #428bca;
+        }
+        
+        .table-hover>tbody>tr:hover>td, .table-hover>tbody>tr:hover>th {background-color: #f5f5f5;}
+        .dataTableManageService th {vertical-align: top !important;}
+        #manage_content, .manage_content {padding: 0 0 0 40px;}
+         .customDropdownMenu {
+            right: 0 !important;
+            width: 330px;
+            padding: 10px;
+            margin-top: 10px;
+            left: inherit;
+            top: 80%;
+        }
+        .dataTableManageCustSearchButton {
+            position: absolute;
+            display: inline;
+            top: 13px;
+            z-index: 9;
+        }
+        .manageQuotesPage .styled-select-small {
+            height: auto; overflow: visible; width: 520px; border: none; background-color: transparent !important;
+        }
+        .manageQuotesPage .customDropdownMenu li a{
+            font-size: 20px; border-bottom: 1px solid #ddd; padding: 5px;
+        }
+        .manageQuotesPage .customDropdownMenu li:last-child a {border-bottom: 0;}
+        
+        .nscustomer_details{margin-top: 50px;}
+        
+        .nscustomer_details li{display:inline;}
+        
+        .cust_head{padding-left:16%;}
+        
+        .input-group{
+           margin-top:10px;
+           display: inline;
+        }
+
+        .add_new_site{
+            float: right;
+            display: inline;
+            position: relative; 
+            margin-top: 21px;
+        }
+        .message{margin-bottom: 10px;}
+        
+        .table_value {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .backbutton_class{
+            margin-bottom: 100px;
+            position: relative;
+            margin-top: 40px;
+        }
+
+        .label_head {
+            font-weight: bold;
+            color: #686868;
+            font-size: 18px;
+        }
+
+        .label {
+            font-weight: bold;
+            color: #686868;
+            font-size: 15px;
+        }
+
+        .no-sort{
+            color: #067AB4;
+            cursor: default !important;
+        }
+
+        .click_disable{
+          pointer-events: none !important;
+          color:#ccc !important;
+          background-color:#eee !important;
+          //width:120px;
+        }
+        
+        .cursor_noDrop{
+            cursor:no-drop !important;
+        }
+        
+        .dropdown-menu>li>a {
+          display: block;
+          padding: 3px 20px;
+          clear: both;
+          font-weight: 400;
+          line-height: 1.42857143;
+          white-space: nowrap;
+        }
+
+        .false{
+          pointer-events: none !important;
+          color:#ccc !important;
+          background-color:#eee !important;
+        }  
+        
+        <!--Added New Button-->
+        
+         #MacdSelectListId li a.dropdown_options {      
+            padding-left: 48px;          
+        }       
+
+        #MacdSelectListId li a.dropdown_options_heading{       
+            color:#000000 !important;       
+            pointer-events: none;       
+        }           
+                    
+        #MacdSelectListId li a.click_disable {       
+            pointer-events: none;       
+            color: #E1E1E1 !important;        
+        }           
+        #MacdSelectListId li a.dropdown_options click_enable { color: #3BC1F4 !important;}   
+        
+        a:hover {
+            color: #067AB4 !important;  
+        }
+        <!--Added New Button-->
+
+        .cursor_noDrop{
+            cursor:no-drop !important;
+        }
+        
+       .click_enable{
+           color:#3bc1f4 !important;
+        }
+        .contract_enable{
+            color:#3bc1f4 !important;
+            background-color:#FFF;
+            width: 140px;
+        }
+        .contract_disable{
+          //pointer-events: none !important;        
+          background-color: #d1d1d1;
+          color:#fff;
+          border:none; 
+          width: 140px;
+        }
+        .addsite_disable
+        {
+            background-color: #d1d1d1;
+            color:#fff;
+            border:none; 
+            width: 140px;
+        }
+        
+        .dropdown-menu>li>a {
+            display: block;
+            padding: 3px 20px;
+            clear: both;
+            font-weight: 400;
+            line-height: 1.42857143;
+            font-family:omnes_light !important;
+            font-size:18px !important;
+            white-space: nowrap;
+            text-align:left;
+        }
+          .dropdown-menu{
+              margin: 2px -161px 0px !important;
+              border-radius:0px !important; 
+          }
+
+        #blanket {position:absolute; z-index:1040; height:500%; width:100%; background-color:#000; opacity: 0.6; margin-top:-100px;    }
+        #secDiv { top:37px;  background-color:white; width:500px; height:200px; margin:0 auto;-webkit-border-radius: 10px; border-radius: 10px;  } 
+        
+        /*.tooltip .tooltip-inner {
+            background-color: #fff !important;
+            color: #000 !important;
+            text-align: left;
+            line-height: 18px;
+            font-size: 14px;
+            padding: 10px;
+            max-width: 250px !important;
+            width:240px;
+            top: 0px;
+            right: 10px;
+            position: relative;
+            border-radius: 5px;
+            filter: drop-shadow(rgba(0, 0, 0, 0.1) 0 2px 10px);
+        }
+        .tooltip.left .tooltip-arrow{
+            color: #fff !important;
+            border-left-color: #fff !important; 
+            right: 5px;
+            border-width: 10px 0 10px 10px;
+            z-index: 999;
+            top: 25px !important;
+        }*/
+        .renew_contract_cls{
+            float: right;
+            display: inline;
+            position: relative; 
+            margin-top: 21px;
+            padding-right:25px;
+        }
+    </style>
+
+
+    <script>
+        function showSelectedRecords(val) {
+            var selctdVal = val;
+            showSelectedRecords1(selctdVal);
+        }
+
+        $( "#nbtn" ).click(function() {
+            $('#blanket').css('display', 'none');
+            $('#secDiv').css('display', 'none');
+            $('html, body').css('overflow','inherit');
+        });
+    </script>
+    
+    <!-- Second Popup --->  
+    <div id="blanket" style="display: none;"></div>
+    <div tabindex="-1" role="dialog" aria-hidden="false" style="display: none;" id="secDiv" class="modal">
+        <div class="modal-body">
+            <div style="text-align:center;font-weight:bold">Would you like to disconnect existing VLANs to make for new VLANs?room</div>
+        </div>
+        <div class="modal-footer" style="text-align:center;border:0px;">
+            <button style="width:150px;" class="btn btn-default" id="nbtn" type="button">No</button>
+            <button style="width:150px;" class="btn btn-primary" id="ybtn" type="button">Yes</button>
+        </div>
+    </div>
+    <!-- End Second Popup --->
+    
+    <div class="bootstrap">
+        <div class="content_container manageQuotesPage" id="manageCustomerWrapperId">
+            <apex:form id="frmNew">
+                <div id="manage_content" class="page">
+                    <div class="" style="">
+                        <h1>Network Sites</h1>
+                    </div>
+                    
+                    <div class="nscustomer_details">
+                         <ul style="padding-bottom: 10px;">
+                            <li class="label_head">Customer:</li>
+                             <li>{!customerName}</li>
+                         </ul>
+                          <ul style="margin-bottom: 5px;">
+                            <li class="label" style="margin-left:-8px !important">Subaccount:</li>
+                             <li>{!subAccNo}</li>
+                             <li class="cust_head label">Product:</li>
+                             <li>{!productName}</li>
+                             <li class="cust_head label">Term End Date:</li>
+                             <li>{!conEndDate}</li>
+                         </ul>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <hr class="blue_hr" />
+                        </div>
+                    </div>
+                    
+                    <div class="message">
+                         <ul style="margin-bottom: 0;">
+                            <li><b>View site details or modify a site by selecting an option under Action</b>.</li>
+                         </ul>
+                         <ul>
+                            <li><span style="display:{!IF(productName == 'AT&T Managed Internet Service' && enableAddSitesOption,'none','initial')}">Click on <b>Add New Site</b> to add one or more sites to this network.</span> Only expired contracts are eligible for renewal. If your contract is expired, changes are only available after contract renewal is complete.</li>                     
+                         </ul>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="searchField input-group w50p">
+                                <span class=" dataTableManageServiceSearchButton search_button"></span>
+                                <input type="text" class="custom_filter dataTableManageServiceSearch dataTableManageServiceSearch" placeholder="Search by site information" />
+                            </div>
+                            <div id="idadd_new_site" class="add_new_site">
+                                <apex:outputPanel rendered="{!IF(isManualFlagload || IsDealHashCreationSuccess == false || userBeginQuote == false || IsContractExpired ,true,false)}">
+                                   <input type="button" class="addsite_disable" value="Add New Site"/>                                
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!!IF(isManualFlagload || IsDealHashCreationSuccess == false || userBeginQuote == false || IsContractExpired,true,false)}">
+                                    <apex:outputPanel rendered="{!IF(productName == 'AT&T Managed Internet Service' && enableAddSitesOption,true,false)}">
+                                        <input type="button" class="MISAddSite addsite_disable" value="Add New Site" data-toggle="tooltip" data-placement="left" data-container="body" title="This Sub Account is not eligible for Add New Site. Please start a new order."/> 
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(productName == 'AT&T Managed Internet Service' && enableAddSitesOption,false,true)}">
+                                       <a href="/apex/API_MACD_Buyflow?sub_acount_number={!subAccNo}"><input type="button" style="background-color:#FFF;width:140px;" class="click_enable" value="Add New Site"/></a>                                
+                                    </apex:outputPanel>
+                                </apex:outputPanel>                                                             
+                            </div>
+                            <apex:outputPanel rendered="{!contractRenewalCIflag}"> 
+                            <div id="idrenew_contract" class="renew_contract_cls">
+                                <apex:outputPanel rendered="{!!contractRenewalEnable}">
+                                   <input type="button" class="contract_disable" value="Renew Contract"/>                                
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!contractRenewalEnable}">
+                                     <a href="/apex/RenewContract?sub_account_number={!subAccNo}&parent=ns"><input type="button" class="contract_enable" value="Renew Contract" /> </a>
+                                </apex:outputPanel> 
+                            </div>
+                            </apex:outputPanel>  
+                        </div>
+                    </div>
+                    <div class="row">
+                        <apex:pageBlock id="quoteBlock">
+                            <apex:outputPanel id="thePanel">
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="manage_quotes_table">
+                                        <div id="manage_users_table_wrapper" class="dataTables_wrapper" role="grid">
+                                            <table id="iddataTableManageService" class="dataTableManageService list table table-bordered table-striped" style="font-size: 15px !important; min-width: 100%; background: #fff; font-family: 'omnes_att_iimedium';" width="100%">
+                                                <thead>
+                                                    <th><a class="sorting">Site Name</a><div class="reorder_btn"></div></th>
+                                                    <th><a class="sorting">Address</a><div class="reorder_btn"></div></th>
+                                                    <th id="circuit" class="no-sort" style="min-width:140px;">Circuit ID &amp; Number of Circuits</th>
+                                                    <th><a class="sorting">&nbsp;</a><div class="reorder_btn"></div></th>   
+                                                    <th><a class="sorting">Status</a><div class="reorder_btn"></div></th>
+                                                    <th class="no-sort">Action</th>
+                                                    <th class="no-sort" style="display:none;">Id</th>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div> 
+                            </apex:outputPanel>
+                        </apex:pageBlock>   
+                    </div>
+                    
+                    <div id="backbutton" class="backbutton_class">
+                       <a href="apex/ManageExistingNetworkServiceInventry"> <input type="button" style="background-color:#FFF; width:150px;" value="Back" /> </a>
+                    </div>
+                </div>
+                    
+                <script>
+                    function setErrorAndEncryptString() {
+                        
+                    }
+                </script>
+
+            </apex:form>
+        </div>
+    </div>
+
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/libs/jquery.dataTables.js')}"/>        
+    <script>
+        function handleSelect(elm) {
+            if (elm == 1) {
+                window.location = "/apex/Network_Site";
+            }
+        }
+
+       var fbResponse;
+       window.alert = (function() {
+            var nativeAlert = window.alert;
+            return function(message) {
+                window.alert = nativeAlert;
+                message.indexOf("DataTables warning") === 0 ?
+                    console.warn(message) :
+                    nativeAlert(message);
+            }
+        })();
+
+    function callManageCustDataTable(searchCalled) {
+        var r,fieldName;
+        r = [];
+        endCustFields = [];
+        var searchText1 = '';
+        endCustFields = ['Premise_Friendly_Name__c', 'Complete_Site_Address__c', 'Access_Circuit_ID__c','No_Of_Circuits__c', 'SiteStatusSpecificToInventory__c','Id', 'SiteStatusSpecificToInventory__c'];
+        var aoColumns = [];
+        
+        if(searchCalled == 'loadSearch'){
+            searchText1 = $('.dataTableManageServiceSearch').val();
+        }        
+        for (var i = 0; i < endCustFields.length; i++) {            
+            aoColumns.push({'mData': endCustFields[i]});            
+        }
+        
+        $('.dataTableManageService thead tr th td:last-child').html('<div class="check-label"><input class="css-checkbox" id="checkboxAll" name="checkboxAll" type="checkbox"><label class="css-label radGroup1 clr" for="checkboxAll"></label></div>');
+        
+        
+        /************************ Data table code starts ******************************/
+        
+        $('.dataTableManageService').dataTable({
+            "iDisplayLength": 8,
+            "oLanguage": {
+                "sInfo": "Showing _START_ - _END_ of _TOTAL_",
+                "sProcessing": '<div class="waitingSearchDiv" id="loadingDatatable" style="background-color: #fbfbfb;height: 10000px;opacity: 0.65;width: 10000px;position: fixed;z-index: 999999;left: 0;top: 0;"><div class="waitingHolder" style="top: 40%; left: 50%; position: fixed;"><img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" /></div></div>'
+            },
+            "aoColumnDefs": [
+                        { "bVisible": true, "bSearchable": false, "bSortable": false, "aTargets": [5] }
+                    ],
+            'bPaginate': true,
+            'sPaginationType': 'full_numbers',
+            'aoColumns': aoColumns,
+            'bProcessing': true,
+            'bServerSide': true,
+            'bFilter': false,
+            'bDestroy': false,
+            'bLengthChange': false,
+            'sAjaxSource': 'fakeUrl',
+            'fnServerData': function(sSource, aoData, fnCallback) {
+                //Set the search text in aoData
+                aoData.push({"name":"searchText","value":searchText1});
+                
+                // Call the @RemoteAction JavaScript function
+                Inventorylookup_SiteInventoryController.fetchPremiseAndCircuitVlanRecords(aoData,{!$CurrentPage.parameters.id}, function(result, event) {
+                    if (event.type != 'exception') {
+                        fbResponse = JSON.parse(JSON.stringify(result));
+                        fnCallback(result, searchText1);
+                    } else {
+                        console.log(event.type+'-----'+event.message);
+                    }   
+                });
+            },
+            'fnDrawCallback': function (oSettings, tokenStr) {                    
+                
+                $(".dataTableManageService thead tr th td:last-child").replaceWith( "<td style='width: 25px;'><a>Action</a></td>" );
+                window.alert = (function() {
+                    var nativeAlert = window.alert;
+                    return function(message) {
+                        window.alert = nativeAlert;
+                        message.indexOf("DataTables warning") === 0 ?
+                            console.warn(message) :
+                        nativeAlert(message);
+                    }
+                })();
+                addCheckbox(); // Inserting checkboxes in first column
+                if( typeof tokenStr != 'undefined' )
+                    hightLightCall(tokenStr, oSettings);
+            }   
+            
+        });
+        /************************ Data table code ends ******************************/
+        $('#manageCustomerWrapperId .dataTables_paginate').addClass('pagination'); 
+    }
+    function hightLightCall (wildCard, dataObj){
+        var ac = wildCard;               
+        for (var i = 0; i < dataObj.aaData.length; i++) {
+            r = dataObj.aaData[i]; 
+            for (var j = 0; j < endCustFields.length; j++) {
+                fieldName = endCustFields[j];
+                //alert(typeof r[field]);
+                if (ac != ''){
+                    //r[fieldName]=r[fieldName].replace(ac,'<span class="highlight">' + ac + '</span>');
+                    //document.getElementById('manage_users_table_wrapper').innerHTML = document.getElementById('manage_users_table_wrapper').innerHTML.split(ac).join('<span class="highlight">' + ac + '</span>');
+                }
+                if (r[fieldName] == undefined) {
+                    //DataTables pops a dialog for undefined values
+                    r[fieldName] = null;
+                }                                     
+            }                                
+        } 
+    }
+            
+          function getCssClass(val)
+           {   
+                 if(val==false)
+                   return "click_disable cursor_noDrop";
+                 else
+                   return "click_enable";      
+           }  
+          
+          function  showDisconnectPopUp(value){
+               $.confirm({
+                        title: "<div style='text-align:center;font-weight:bold; margin-top:-10px;'>  </div>",   
+                        text: "<div style='text-align:center;font-weight:bold;margin-top:15px;line-height: 1.3;'>Are you sure you want to disconnect VLAN/Multiple Logical Channel?</div>",
+                        confirm: function(button) {                        
+                          window.location.href= "/sitedetails?pid="+value+"&action=VLANdisconnect&subaccount={!subAccNo}";
+                        },
+                        cancel: function(button) {
+                       
+                        },
+                        confirmButton: "Yes",
+                        cancelButton: "No"
+                    });
+                    $('.modal-content').css('width', '360px');
+                $('.modal-content').css('height', '165px');
+                $('.modal-content').css('margin-left', 'auto');
+                $('.modal-content').css('margin-right', 'auto');
+                $('.modal-dialog').css('top', '60px'); 
+                $('.modal-content .btn').attr('style','padding: 6px 60px !important');
+                $('.cancel').attr('style','background: white none repeat scroll 0% 0%;color: #666666;border: 1px solid #d3d3d3 !important;padding: 6px 60px !important;');             
+                $('.modal-header').css('min-height', '31.429px');
+                $('.modal-body').css('padding', '0px'); 
+         }
+
+         function showRemoveCosPopUp(value){
+               $.confirm({
+                    title: "<div style='text-align:center;font-weight:bold; margin-top:-10px;'>  </div>",
+                    text: "<div style='margin-left: 391px; height: 16px; width: 62px; color: rgb(192, 192, 192);'></div><div style='text-align: center;margin-top: 24px;margin-left: 18px;margin-bottom: 28px;font-family: omnes_att_iimedium;font-size: 22px;width: 380px;font-weight: normal;'>Are you sure you want to remove Class of Service (CoS) from this site?</div>",
+                        confirm: function(button) {
+                        window.location.href= "/apex/Sitedetails?pid="+value+"&action=removecos&subaccount={!subAccNo}";
+                        $('html, body').animate({
+                        scrollTop: $('#cosRemoveVlandiv').offset().top
+                    },1000);
+                    },
+                    cancel: function(button) {
+                        //logic here for No click                      
+                    },
+                    confirmButton: "Yes",
+                    cancelButton: "No"
+                });
+                              
+                $('.modal-content').css('width','450px');
+                $('.modal-content').css('height', '245px');
+                $('.modal-content').css('margin-left', 'auto');
+                $('.modal-content').css('margin-right', 'auto');
+                $('.modal-dialog').css('top', '170px'); 
+                $('.modal-footer').css('padding', '20px'); 
+                $('.modal-content .btn').attr('style','padding: 6px 60px !important;width: 175px !important;height: 40px;font-family: omnes_att_iimedium !important;font-size: 16px !important;'); 
+                $('.cancel').attr('style','background: white none repeat scroll 0% 0%;color: #666666;border: 1px solid #d3d3d3 !important;padding: 6px 60px !important;width: 175px !important;height: 40px;font-family: omnes_att_iimedium !important;font-size: 16px !important;');               
+                $('.modal-header').css('min-height', '31.429px');
+                $('.modal-body').css('padding', '0px');
+                
+         }
+        
+       
+
+        function showRemoveUBBPopUp(value){
+          var soql= "select id,Current_Version__c,VLAN_Count__c,Site_Status__c,Combined_VLAN_Speed__c,Port_Speed__c  from RDS_Premise_Details__c WHERE ID = '" +value+ "'";
+          var result = sforce.connection.query(soql);
+          var records = result.getArray("records");
+          var recordsArry = records[0];
+          var ubbportspeed = recordsArry.Port_Speed__c;
+               $.confirm({
+                   title: "<div style='text-align:center;font-weight:bold; margin-top:-10px;'>  </div>",
+                   text: "<div style='text-align:center;font-weight:bold;margin-top:18px'>If you remove Hi-Cap Flex,<br/>you will be billed for your full " +ubbportspeed+ " Mbps port speed monthly.<br/><br/>Are you sure you want to remove Hi-Cap Flex?</div>",
+                        confirm: function(button) {
+                        window.location.href= "/apex/Sitedetails?pid="+value+"&action=ubbremove&subaccount={!subAccNo}";
+                        $('html, body').animate({
+                        scrollTop: $('#ubbdiv').offset().top
+                    },1000);
+                    },
+                    cancel: function(button) {
+                        //logic here for No click                      
+                    },
+                    confirmButton: "Yes",
+                    cancelButton: "No"
+                });
+                              
+                $('.modal-content').css('width','530px');
+                $('.modal-content').css('height', '220px');
+                $('.modal-content').css('margin-left', 'auto');
+                $('.modal-content').css('margin-right', 'auto');
+                $('.modal-dialog').css('top', '60px'); 
+                $('.modal-footer').css('padding', '20px'); 
+                            
+                $('.modal-content .btn').attr('style','padding: 6px 60px !important;font-family: omnes_att_iimedium !important;font-size: 16px !important;background: #067ab4;');             
+                $('.cancel').attr('style','background: white none repeat scroll 0% 0%;color: #666666;border: 1px solid #666 !important;padding: 6px 60px !important;font-family: omnes_att_iimedium !important;font-size: 16px !important;');              
+                $('.modal-header').css('min-height', '31.429px');
+                $('.modal-body').css('padding', '0px'); 
+                
+         }
+
+          //To check the Preconditions  Venkata Ramaiah 
+    function addVlanValidation(curSiteID){
+        var soql= "select id,Current_Version__c,VLAN_Count__c,Site_Status__c,Combined_VLAN_Speed__c,Port_Speed__c  from RDS_Premise_Details__c WHERE ID = '" +curSiteID+ "'";
+        var result = sforce.connection.query(soql);
+        var records = result.getArray("records");
+        for(var i=0 ; i<records.length; i++){
+            var recordsArry = records[i];
+            if(recordsArry.VLAN_Count__c == 11 ){
+                $.confirm({
+                    text: "<div style='text-align:center;font-weight:bold'>Adding a VLAN will reach your maximum number of 12 VLANs. Would you like to do that now?</div>",
+                    confirm: function(button) {
+                        window.location.href = "/apex/Sitedetails?pid="+curSiteID+"&action=vlanadd&subaccount={!subAccNo}";
+                        $('#AVPNLogicalID').css('display', 'none');
+                    },
+                    cancel: function(button) {
+                        $('#blanket').css('display', 'block');
+                        $('#secDiv').css('display', 'block');
+                        $('html, body').css('overflow','hidden');
+                        $( "#ybtn" ).click(function() {
+                            $('#blanket').css('display', 'none');
+                            $('#secDiv').css('display', 'none');
+                            $('html, body').css('overflow','inherit');
+                            window.location.href = "/apex/Sitedetails?pid="+curSiteID+"&action=VLANdisconnect&subaccount={!subAccNo}";
+                        });
+                    },
+                    confirmButton: "Yes",
+                    cancelButton: "No"
+                });
+            }else{
+                window.location.href = "/apex/Sitedetails?pid="+curSiteID+"&action=vlanadd&subaccount={!subAccNo}";
+                $('#AVPNLogicalID').css('display', 'none');
+            }
+        }                       
+    }           
+    
+    function closeM(){
+        $('.confirmation-modal').modal('hide');
+    }          
+                    
+          function addCheckbox() {
+               $('.dataTableManageService tbody tr').each(function(){ $('tbody tr').css('height', '50px'); });
+                $('.dataTableManageService tbody tr td:last-child').not('td.dataTables_empty').each(function(){ 
+                    var custId = $(this).text();
+                    var currentSiteID = $(this).parent('tr').children('td:nth-child(6)').text();                    
+                    var arr=fbResponse.mapMacdOptions[currentSiteID];
+                    var newCreateField = '<div class="dropdown actionDataContent" id="MacdSelectListId">'+
+                    '<button class="btn btn-default dropdown-toggle" type="button" style="width:auto;position:absolute;" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">'+
+                        'Select '+
+                        '<span class="caret" ></span>'+
+                    '</button>'+
+                    '<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" style="margin-top: 35px !important; margin-left: -182px !important;" >'+
+                        '<li role="presentation">'+
+                            '<a role="menuitem" tabindex="-1" id="idViewSiteDetails" class="'+getCssClass(arr[0])+'" href="/apex/SiteDetails?pid='+currentSiteID+'&action=sitedetail">'+
+                                'View Site Details'+
+                            '</a>'+
+                        '</li>'+ 
+                        '<li role="presentation" style="font-family: omnes_light !important; font-size: 18px !important;">'+
+                            '<a role="menuitem" tabindex="-1" class="'+getCssClass(arr[0])+' dropdown_options_heading">'+
+                                'Speed Change'+
+                            '</a>'+
+                        '</li>'+ 
+                          
+                        '<li role="presentation">'+
+                            '<a role="menuitem" tabindex="-1" id="idCancelPortAccessSite" class="'+getCssClass(arr[6])+' dropdown_options" href="/apex/sitedetails?pid='+currentSiteID+'&action=speedchange&subaccount={!subAccNo}" data-toggle="modal">'+
+                               'Change Port & Access Speed'+
+                            '</a>'+
+                        '</li>'+
+                         '<li role="presentation">'+
+                            '<a role="menuitem" tabindex="-1" id="idVlanSpeed" class="'+getCssClass(arr[9])+' dropdown_options" href="/apex/sitedetails?pid='+currentSiteID+'&action=vlanspeedchange&subaccount={!subAccNo}" data-toggle="modal">'+
+                               'Change VLAN Speed'+
+                            '</a>'+                                 
+                        '</li>'+ 
+                         '<li role="presentation" style="font-family: omnes_light !important; font-size: 18px !important;">'+
+                            '<a role="menuitem" tabindex="-1" class="'+getCssClass(arr[0])+' dropdown_options_heading" href="/apex/SiteDetails?pid='+currentSiteID+'&action=sitedetail">'+
+                                'Class of Service (CoS)'+
+                            '</a>'+
+                        '</li>'+  
+                         '<li role="presentation">'+
+                            '<a role="menuitem" tabindex="-1" id="idAddCoS" class="'+getCssClass(arr[10])+' dropdown_options" href="/apex/sitedetails?pid='+currentSiteID+'&action=addcos&subaccount={!subAccNo}" data-toggle="modal">'+
+                               'Add CoS'+
+                            '</a>'+                                 
+                        '</li>'+ 
+                        '<li role="presentation">'+
+                            '<a role="menuitem" tabindex="-1" id="idMACDCOSProfileChangepall" class="'+getCssClass(arr[8])+' dropdown_options"  href="/apex/Sitedetails?pid='+currentSiteID+'&action=MACDCOSProfileChange&subaccount={!subAccNo}" data-toggle="modal">'+
+                               'Change CoS'+
+                            '</a>'+
+                        '</li>'+
+                       
+                         '<li role="presentation">'+
+                               '<a role="menuitem" tabindex="-1" id="idRemoveCoS" class="'+getCssClass(arr[11])+' dropdown_options" onclick="showRemoveCosPopUp(\''+currentSiteID+'\');" data-toggle="modal">'+
+                               'Remove CoS'+
+                               '</a>'+
+                        '</li>'+  
+                          '<li role="presentation" style="font-family: omnes_light !important; font-size: 18px !important;">'+
+                            '<a role="menuitem" tabindex="-1" class="'+getCssClass(arr[0])+' dropdown_options_heading" >'+
+                                'Hi-Cap Flex '+
+                            '</a>'+
+                        '</li>'+ 
+                        
+                          '<li role="presentation">'+
+                            '<a role="menuitem" tabindex="-1" id="idAddHiCapFlex" class="'+getCssClass(arr[3])+' dropdown_options" href="/apex/Sitedetails?pid='+currentSiteID+'&action=ubbadd&subaccount={!subAccNo}" data-toggle="modal">'+
+                               'Add Hi-Cap Flex'+
+                            '</a>'+
+                        '</li>'+
+                        '<li role="presentation">'+
+                            '<a role="menuitem" tabindex="-1" id="idChangeMinimumBandwidthCommitment" class="'+getCssClass(arr[4])+' dropdown_options" href="/apex/Sitedetails?pid='+currentSiteID+'&action=ubbchange&subaccount={!subAccNo}" data-toggle="modal">'+
+                               'Change MBC'+
+                            '</a>'+
+                        '</li>'+
+                          '<li role="presentation">'+
+                            '<a role="menuitem" tabindex="-1" id="idRemoveHiCapFlex" class="'+getCssClass(arr[5])+' dropdown_options"  onclick="showRemoveUBBPopUp(\''+currentSiteID+'\');" data-toggle="modal">'+ 
+                               'Remove Hi-Cap Flex'+
+                            '</a>'+
+                        '</li>'+
+                        '<li role="presentation" style="font-family: omnes_light !important; font-size: 18px !important;">'+
+                            '<a role="menuitem" tabindex="-1" class="'+getCssClass(arr[0])+' dropdown_options_heading" >'+
+                                'VLANs/Logical Channels'+
+                            '</a>'+
+                        '</li>'+  
+                         '<li role="presentation">'+
+                            '<a role="menuitem" tabindex="-1" id="idAddMultipleLogisticalChannelVLAN" class="'+getCssClass(arr[1])+' dropdown_options" href="" data-toggle="modal" onclick="addVlanValidation(\''+currentSiteID+'\');" >'+
+                               'Add VLANs'+
+                            '</a>'+
+                        '</li>'+
+                        
+                         '<li role="presentation">'+
+                            '<a role="menuitem" tabindex="-1" id="idDisconnectMultipleLogisticalChannelVLAN" class="'+getCssClass(arr[2])+' dropdown_options"  data-toggle="modal" onclick="showDisconnectPopUp(\''+currentSiteID+'\');">'+
+                               'Disconnect VLANs'+
+                            '</a>'+
+                        '</li>'+                              
+                      
+                        //Added for Inflight
+                        '<li role="presentation">'+
+                            <!--'<a role="menuitem" tabindex="-1" id="idCancelSite" onclick="invokeCancelSite(this)" class="'+getCssClass(arr[7])+'" href="" data-toggle="modal">'+-->
+                            '<a role="menuitem" tabindex="-1" id="idMACDInflightCancel" class="'+getCssClass(arr[7])+'" onclick="invokeCancelSite(\''+currentSiteID+'\');">'+
+                               'Cancel Site'+
+                            '</a>'+
+                        '</li>'+
+                        //End of Inflight
+                     
+                  '</ul>'+
+                '</div>';
+                
+                $(this).html(newCreateField);                
+                });
+
+                $('.dataTableManageService tbody tr td:nth-child(1)').each(function(){
+                    var businessName = $(this).text();
+                    var custId = $(this).parent('tr').children('td:first-child').find('input.checkbox').attr('id');
+                     var businessNameID = $(this).parent('tr').children('td:nth-child(6)').text();
+                     var hideIdCol = $(this).parent('tr').children('td:nth-child(6)').hide();
+                    //var newCreateField = '<a href="/apex/Inventorylookup_SiteInventory">'+businessName+'</a>';
+                    var newCreateField = '<a href="/apex/sitedetails?pid='+businessNameID +'">'+businessName+'</a>';
+                    $(this).html(newCreateField);
+                });               
+                //document.getElementById('manage_users_table_wrapper').innerHTML = document.getElementById('manage_users_table_wrapper').innerHTML.split(searchText1).join('<span class="highlight">' + searchText1 + '</span>');
+                
+            }
+        
+        initiateSearch();
+        function initiateSearch() {
+            $('.dataTableManageServiceSearch').on('keyup', function(ev) {
+                ev.stopPropagation();
+                ev.preventDefault();
+                if(this.value.length == 0){
+                    $('.dataTableManageService').dataTable().fnDestroy();
+                    setTimeout(function() {
+                        $('.dataTableManageService').dataTable().fnDestroy();
+
+                        window.alert = (function() {
+                                var nativeAlert = window.alert;
+                                return function(message) {
+                                    window.alert = nativeAlert;
+                                    message.indexOf("DataTables warning") === 0 ?
+                                        console.warn(message) :
+                                        nativeAlert(message);
+                                }
+                            })();
+                        callManageCustDataTable('loadDefault')
+                    }, 3000);
+                } else if(this.value.length >= 2 || ev.keyCode == 13) {                
+                    setTimeout(function(){
+                        $('.dataTableManageService').dataTable().fnDestroy();
+
+                        window.alert = (function() {
+                                var nativeAlert = window.alert;
+                                return function(message) {
+                                    window.alert = nativeAlert;
+                                    message.indexOf("DataTables warning") === 0 ?
+                                        console.warn(message) :
+                                        nativeAlert(message);
+                                }
+                            })();
+                        callManageCustDataTable('loadSearch')
+                    }, 3000);              
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            chkValArr=[];
+            isManualFlagload = {!isManualFlagload};
+            callManageCustDataTable('loadDefault'); 
+            contractRenhovermessage();
+        });
+        $( ".MISAddSite" ).hover(
+            function() {
+                $(this).tooltip("show");
+            }, function() {
+                $(this).tooltip("hide");
+            }
+        );  
+            
+        function contractRenhovermessage()
+        {
+            if($("#idrenew_contract input").hasClass('contract_disable'))
+            {
+                if("{!DealStatus}" == "Expired")                  
+                {
+                    if(!"{!IsAllSiteActive}" || "{!contractRenewalStage}" != 'undefined')              
+                        $("#idrenew_contract input").attr({"title":"{!ContractActionTooltip}","data-toggle":"tooltip","data-container":"body","data-placement":"left"}).tooltip();                          
+                }
+                else
+                    $("#idrenew_contract input").attr({"title":"{!ContractActionTooltip}","data-toggle":"tooltip","data-container":"body","data-placement":"left"}).tooltip();                                                      
+            }
+        }
+        
+        /*function createNewQuote(){
+                createNewQuoteAction();
+            
+        }*/   
+    </script>
+    <script>
+    /*========CANCEL SITE DIALOG START=========================*/
+    function invokeCancelSite(e){ 
+        
+        //id="idCancelSite"
+        
+        $.confirm({
+            title:"<div style='font-size:24px;text-align:center;font-weight:bold'>Caution!</div>",
+            text: "<div style='text-align:center;font-weight:bold'>You have selected to cancel this pending site order.</div><br><div style='text-align:center;font-weight:bold'>Do you still want to proceed?</div>",
+            confirm: function(button) {
+                //logic here for yes click
+                window.location.href ="/apex/Sitedetails?pid="+e+"&action=cancelsite&subaccount={!subAccNo}";
+                
+            },
+            cancel: function(button) {
+                //logic here for No click
+                return;
+            },
+            confirmButton: "Yes",
+            cancelButton: "No"
+        });
+    }
+
+        /*========CANCEL SITE DIALOG END=========================*/
+    </script>
+    <style>
+    .ui-dialog button.custom { background: black }
+    .ui-widget-content {border:none}
+    .ui-dialog-buttonset {width:60%}
+    .ui-dialog-buttonpane.ui-widget-content.ui-helper-clearfix{border:none;display:true}
+    .ui-dialog-titlebar { 
+      font-family: omnes_att_iimedium;
+      background-color: #F9A7AE;
+      color: #000;  
+      text-align: center;
+      font-size: 1.38em;   
+      font-style:bold;     
+    }
+    .titleDialog{
+        display: none;
+        text-align:center;
+        font-size: 0.94em;
+        font-style:bold; 
+    }
+     .reorder_btn {
+     margin-right: 3px !important;
+    </style>
+</apex:page>
