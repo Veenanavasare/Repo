@@ -1,0 +1,32 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" Controller="GetPdfsController">
+    <div>
+        <!-- Intro -->
+        <h2>Pricing</h2>
+        <!-- User with Begin Quote Permission -->
+        <!-- Document List: Pricing -->
+        <apex:outputPanel rendered="{!$User.Begin_Quote__c}">
+            <p class="mb-40">The AT&amp;T Virtual Private Network Rate Card provides the latest pricing available to solution providers in the AT&amp;T Partner Exchange program.</p>
+            <hr class="blue_hr" />
+            <apex:outputPanel >   
+                <div class="mt-40 mb-40">
+                    <apex:repeat value="{!DocMapSEGPricing}" var="docMap"> 
+                        <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                            <div class="document-row">
+                                <div class="file-type file-{!docMap.type}"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                    <p><apex:outputText value="{!docMap.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>        
+                    </apex:repeat>    
+                </div>
+            </apex:outputPanel> 
+        </apex:outputPanel>
+        <!-- User without Begin Quote Permission -->
+        <apex:outputPanel rendered="{!!$User.Begin_Quote__c}">
+            <p class="mb-30">We’re sorry. You need permission to access this content. Ask your <a href="/apex/manage_users">Admin </a> for details.</p>
+        </apex:outputPanel>    
+    
+    </div>   
+</apex:page>

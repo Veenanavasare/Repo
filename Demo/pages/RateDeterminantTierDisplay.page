@@ -1,0 +1,162 @@
+<apex:page controller="RateDeterminantTierDisplay">
+    <apex:pageMessages >
+    </apex:pageMessages>
+    <apex:form >
+        <apex:pageBlock >
+            <style>
+            body .bPageBlock .pbBody .white .pbSubheader{
+            background-color:#FBFBEF;
+            font-size:15px;
+            }
+            </style>
+            
+            <apex:outputPanel style="width:800px;font-weight:bold;" layout="block">
+                <div style="text-align:center;">
+                <apex:outputText value="Changes can only be made during the"/>
+                <apex:outputText value=" "/>
+                <apex:outputText value="{!admin.Master_Occurrence_new__c}"/>
+                
+                <apex:outputText value="-" rendered="{!admin.Master_Rate_Edit_Day__c != null}"/>
+                <apex:outputText value="{!admin.Master_Rate_Edit_Day__c}"/>
+                <apex:outputText value=" "/>
+                <apex:outputText value="of every month"/>
+                <apex:outputText value=" "/>
+                <apex:outputText value="between" rendered="{!admin.Master_Edit_Start_Time__c !=null}"/>
+                <apex:outputText value=" "/>
+                <apex:outputText value="{!admin.Master_Edit_Start_Time__c}"/>
+                <apex:outputText value="-" rendered="{!admin.Master_Edit_End_Time__c !=null}"/>
+                <apex:outputText value="{!admin.Master_Edit_End_Time__c}"/>
+                </div>
+            </apex:outputPanel>
+            
+            <apex:outputPanel layout="block" styleClass="white">
+                <apex:pageBlockSection columns="1" collapsible="true">
+                
+                <apex:facet name="header">
+                    <span style="color:black">Rate-PBI</span>
+                </apex:facet>
+                
+                <apex:outputField value="{!pbirecord.Rate_Plan_ID__c}"/> 
+                <apex:outputField value="{!pbirecord.Rate_Plan_Name__c}"/>
+                <apex:outputField value="{!pbirecord.PBI_Number__c}"/>
+                <apex:outputField value="{!pbirecord.PBI_Name__c}"/>
+                <apex:outputField value="{!pbirecord.Start_Date__c}"/>
+                <apex:outputField value="{!pbirecord.End_Date__c}"/>
+                </apex:pageBlockSection>
+            </apex:outputpanel>
+            
+            <apex:outputPanel layout="block" styleClass="white">
+                <apex:pageBlockSection >
+                <apex:facet name="header">
+                    <span style="color:black">Rate-Determinants</span>
+                </apex:facet>
+                    <apex:pageBlockTable value="{!determinantlist}" var="d">
+                
+                        <apex:column headerValue="Determinant Set Id">
+                        <apex:outputField value="{!d.Determinant_Set_ID__c}"/>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Fixed Determinant Set Id">
+                        <apex:outputField value="{!d.Fixed_Determinant_Set_ID__c}"/>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Currency Code">
+                        <apex:outputField value="{!d.Currency_Code__c}"/>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Determinant Code">
+                        <apex:outputField value="{!d.Determinant_Code__c}"/>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Determinant Description">
+                        <apex:outputField value="{!d.Determinant_Description__c}"/>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Determinant Value">
+                        <apex:outputField value="{!d.Determinant_Value__c}"/>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Determinant Value Description">
+                        <apex:outputField value="{!d.Determinant_Value_Description__c}"/>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Component Service Type">
+                        <apex:outputField value="{!d.Component_Service_Type__c}"/>
+                        </apex:column>
+                        
+                        <apex:column headerValue="BEID">
+                        <apex:outputField value="{!d.BEID__c}"/>
+                        </apex:column>
+                        
+                        <apex:column headerValue="SOC Country Code">
+                        <apex:outputField value="{!d.SOC_Country_Code__c}"/>
+                        </apex:column>
+                        
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+            
+            <apex:outputPanel layout="block" styleClass="white">
+                <apex:pageBlockSection >
+                    <apex:facet name="header">
+                    <span style="color:black">Rate-Tiers</span>
+                    </apex:facet>
+                    <apex:pageBlockTable value="{!tierList}" var="t" style="width:125%">
+                    
+                        <apex:column headerValue="Determinant Set Id" style="width:20px">
+                        <apex:outputField value="{!t.Determinant_Set_ID__c}"/>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Fixed Determinant Set Id" style="width:85px">
+                        <apex:outputField value="{!t.Fixed_Determinant_Set_ID__c}"/>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Currency Code" style="width:20px">
+                        <apex:outputField value="{!t.Currency_Code__c}"/>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Low Level" style="width:30px">
+                        <apex:outputField value="{!t.Low_Level__c}"/>
+                        </apex:column>
+                        
+                        <apex:column headerValue="High Level" style="width:80px">
+                        <apex:outputField value="{!t.High_Level__c}"/>
+                        </apex:column>
+                        
+                        
+                       <apex:column headerValue="Current Amount" style="width:80px">
+                        <apex:outputField value="{!t.Amount__c}"/>
+                        </apex:column>     
+                        
+                        <apex:column headerValue="New Amount" style="width:50px">
+                        <apex:outputField value="{!t.Temp_Amount__c}">
+                        <apex:inlineEditSupport event="ondblclick" showOnEdit="inlinesave"/>
+                        </apex:outputField>
+                        </apex:column>
+                        
+                        <apex:column headerValue="Surcharge" style="width:60px"> 
+                        <apex:outputField value="{!t.Surcharge_Amount__c}"/>
+                        </apex:column>
+                        
+                        <apex:column style="width:250px" headerValue="Bill Display Name">
+                        <apex:outputField value="{!t.Bill_Display_Name__c}"/>
+                        </apex:column>
+                        <!--<apex:column value="{!t.Bill_Display_Name__c}" width="500px"/>-->
+                        
+                        <apex:column headerValue="Rate Sync Status" style="width:50px">
+                        <apex:outputField value="{!t.Rate_Sync_Status__c}"/>
+                        </apex:column>
+                        
+                    </apex:pageBlockTable> 
+                </apex:pageBlockSection>
+            </apex:outputPanel>
+            
+            <apex:pageBlockButtons >
+           <apex:commandButton value="Submit" action="{!amountupdate}" id="inlinesave" disabled="{!IF(submiton= true,true,false)}"/>     
+           <apex:commandButton value="Close" onclick="return window.top.close();"/> 
+           
+            </apex:pageBlockButtons>
+        
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

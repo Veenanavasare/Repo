@@ -1,0 +1,969 @@
+<apex:page controller="QuoteInfoController_ASE" standardStylesheets="false" sidebar="false" showHeader="false" action="{!setupCartWithSelectedSites}">
+    <!--
+    <apex:includeScript value="{!$Resource.atomjqueryjs}"/>     
+    <apex:includeScript value="{!$Resource.atombootstrapminjs}"/>
+    <apex:stylesheet value="{!$Resource.ConfigurSiteCss}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />   
+    <apex:includeScript value="{!$Resource.ConfigureSitesJs}"/>
+    -->
+
+    <apex:stylesheet value="{!$Resource.ConfigurSiteCss}" />
+    <style>
+        .greenText {
+            color: green !important;
+            padding: 10px 15px 0 15px;
+        }
+        /* Firefox specific styling for the dropdown issue */
+        @-moz-document url-prefix() {
+            .styled-select-small select {
+                width: 110%;
+            }
+        }
+        .user_badge {
+            margin-top: 6px;
+        }
+        a.btn-prevSite,
+        a.btn-nextSite {
+            border: 1px solid #ddd !important;
+            padding: 5px 10px !important;
+            color: #056fab;
+            background: #fff !important;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        div.products-container span.monthlyprice {
+            margin-top: 20px;
+        }
+        
+        .tabbed_menu li a {
+            cursor: default !important; /* Added to ensure the cursor is default for all tabs */
+        }
+        
+        ul.mainnav li.disabled.active > a,ul.mainnav li.disabled.active > a:hover, ul.mainnav li.disabled.active_tab > a,
+        ul.mainnav li.disabled.active_tab > a:hover, .tabbed_menu .mainnav li.active::after {
+            cursor: default; /* Added to ensure the cursor is default for the active tab */
+            color: #fff;
+        }
+        
+        ul.mainnav li.disabled a, ul.mainnav li.disabled a:hover
+        {
+            cursor: default;
+            color: #356fab;
+        }
+    </style>
+    <script type="text/javascript">
+        
+        var disableApplyFlag = false;
+
+        function disableApplyBtnAfterReRender() {
+            if (disableApplyFlag) {
+                disableApplyButton();
+                disableApplyFlag = false;
+            }
+        }
+
+        function setDisableApplyFlag() {
+            disableApplyFlag = true;
+        }
+    </script>
+    <apex:pageMessages escape="true" id="errmsghead"></apex:pageMessages>
+    <apex:form id="frmUp">
+        <!--<apex:actionstatus id="loading">
+            <apex:facet name="start">
+                <div class="waitingSearchDiv" id="loading" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;z-index:999999"> 
+                    <div class="waitingHolder" style="top: 200px; left:700px; width: 91px; position: fixed;"> 
+                    </div> 
+                </div>
+            </apex:facet> 
+        </apex:actionstatus>-->
+        <style type="text/css">
+            #configaddedsites {
+                margin-top: 20px;
+                background: #fff !important;
+                height: 370px;
+                overflow-y: auto;
+                border: 1px solid #ddd;
+            }
+            #configaddedsites tr {
+                border-bottom: 1px dashed #ddd;
+            }
+            #configaddedsites td {
+                border: 0 !important;
+            }
+            #configaddedsites td:nth-child(odd) {
+                display: none;
+            }
+            #configaddedsites td:nth-child(even) {
+                width: 100%;
+                padding: 10px 20px;
+            }
+            #theTable1 td {
+                border: none !important;
+                padding: 15px;
+            }
+            .monthlyprice {
+                font-family: 'omnes_att_iimedium';
+                background: #fff;
+                border-radius: 4px;
+                padding: 6px 12px;
+                text-align: right;
+                width: 100%;
+                line-height: 1.42857143;
+            }
+            .noborders td {
+                border: 0 !important;
+            }
+            .tooltipTrigger {
+                cursor: pointer;
+            }
+            /* Begin Styles for the modal messages */
+            #formEVC .message {
+                margin: 0 0 10px 0;
+            }
+            #formEVC select.inputCIR {
+                width: 110px;
+            }
+            /* Prevent the style of margin-top: -30px style being applied */
+            .message.errorM3 {
+                margin-top: 0 !important;
+            }
+            /* End Styles for the modal messages */
+        </style>
+        <script type="text/javascript">
+            //Function to check URL parameters for site id and then according to current site id we will highlight the row when coming back from Review Quote page.
+            function GetURLParameterReconfig(sParam) {
+                var sPageURL = window.location.search.substring(1);
+                var sURLVariables = sPageURL.split('&');
+                for (var i = 0; i < sURLVariables.length; i++) {
+                    var sParameterName = sURLVariables[i].split('=');
+                    if (sParameterName[0] == sParam) {
+                        return sParameterName[1];
+                    }
+                }
+            }
+
+            function highlightReconfiguredSite(){               
+                var highlightSiteId = GetURLParameterReconfig('siteid');
+                if(highlightSiteId){
+                    // $('#configaddedsites tbody tr').removeClass('active');
+                    $('#configaddedsites tbody tr td a').parent('td').parent('tr').removeClass('active');
+                    $('#configaddedsites tbody a.'+highlightSiteId).parent('td').parent('tr').addClass('active');
+                }
+            }
+
+            function disableFirstOpt() {
+            $('#configSites select').each(function () {
+                $(this).children('option:first-child').attr('disabled', 'false');
+            });
+            $('#configaddedsites tbody tr td a').on('click', function () {
+                highlightRowId = $(this).attr('class');
+                // Fetch the selected row and store this row within the array
+                var sSiteID = $(this).attr('id');
+                storeSite(sSiteID);
+                // Remove all the active classes
+                $('#configaddedsites tbody tr td a').parent('td').parent('tr').removeClass('active');
+                // Add the active class for that particular row
+                $('#configaddedsites tbody tr td a.' + highlightRowId).parent('td').parent('tr').addClass('active');
+            });
+
+            hideFilteredSites(); //Calling Function to remove empty TDs while filter configured/nonconfigured sites
+            initializeArrowButtons();
+            highlightReconfiguredSite();
+            intializeTooltips();
+        }
+        // Add the click handlers to the > and the < buttons
+        function initializeArrowButtons() {
+            // Previous Site
+            $("a.btn-prevSite").on("click", function () {
+                $(this).next().trigger("click");
+            });
+            // Next Site
+            $("a.btn-nextSite").on("click", function () { 
+                $(this).prev().trigger("click");
+            });
+        }
+         // Function to hide the site rows that are filtered
+        function hideFilteredSites() {
+            // Null check to see if the dropdown is present
+            if ($(".inputFilterSites")[0]) {
+                {
+                    // Hide the tds that do not have any content within them
+                    $("td.dataCell+td.dataCell").each(function () {
+                        // Check if there is any content present
+                        var oCurrentRow = $(this);
+                        var sRowContent = oCurrentRow.html();
+                        // If the checkbox is present, then there is content so check
+                        // the HTML Content for the checkbox string
+                        if (-1 === sRowContent.indexOf("checkbox")) {
+                            oCurrentRow.addClass("hide");
+                        } else {
+                            oCurrentRow.removeClass("hide");
+                        }
+                    });
+                }
+            }
+        }
+        disableApplyBtnAfterReRender();
+        </script>
+        <apex:outputPanel rendered="true">
+            <div class="container">
+                <div class="col-xs-12">
+                    <div class="tab-pane ng-scope active" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab">
+                        <div class="ng-scope">
+                            <div class="p10 ng-scope">
+                                <apex:pageMessages escape="true" id="errmsg"></apex:pageMessages>
+                                <!--<div class="row">    
+                                    <div class="col-xs-5"></div>
+                                    <div class="col-xs-7 text-right">
+                                        <apex:outputText value="${0, number, ###,###,##0.00}" id="grandTot" styleClass="font21">
+                                            <h3 class="p0 m0" style="color: #ef6f00 !important;">Total for all sites: <apex:param value="{!grandTot}" />
+                                            </h3>
+                                        </apex:outputText> 
+                                    </div>
+                                </div>-->
+                            </div>
+                            <div class="panel-group" ng-transclude="">
+                                <div class="br-1">
+                                    <div id="configBlock" class="panel-collapse collapse in" style="height: auto;">
+                                        <div class="panel-body" style="padding: 0; padding: 0; border-bottom: 1px dashed #ddd;">
+                                            <h3>{!quoteObj.End_Customer__r.Name}</h3>
+                                            <div class="row p0" style="margin-bottom: 20px; margin-top: 10px;">
+                                                <div class="col-xs-3 p0">
+                                                    <label style="margin-right: 10px !important;">
+                                                        <apex:outputText value="Quote Name" />
+                                                    </label>
+                                                    <apex:outputText value="{!custSiteQuoteIns.AT_T_Quote__r.Apttus_Proposal__Proposal_Name__c}" />
+                                                </div>
+                                                <div class="col-xs-3 p0">
+                                                    <label style="margin-right: 10px !important;">
+                                                        <apex:outputText value="Quote Id" />
+                                                    </label>
+                                                    <apex:outputText value="{!custSiteQuoteIns.AT_T_Quote__r.Name}" />
+                                                </div>
+                                                <div class="col-xs-4 p0">
+                                                    <label style="margin-right: 10px !important;">
+                                                        <apex:outputText value="Product" />
+                                                    </label>
+                                                    <apex:outputText value="{!custSiteQuoteIns.AT_T_Quote__r.Product__r.Name}" />
+                                                </div>
+                                                <div class="col-xs-2">
+                                                    <label style="margin-right: 10px !important;">
+                                                        <apex:outputText value="Term" />
+                                                    </label>
+                                                    <apex:outputText value="{!custSiteQuoteIns.AT_T_Quote__r.Apttus_Proposal__Payment_Term__c}" />
+                                                </div>
+                                            </div>
+                                            <hr class="blue_hr" />
+                                            <div class="row m0 p0 ng-scope">
+                                                <div class="col-xs-12 m0 p10">
+                                                    <apex:pageBlock id="PageBlockSelectHub">
+                                                        <apex:pageBlockSection id="hubSpoke" columns="1">
+                                                            <apex:pageBlockSectionItem rendered="{!TypeConnection}">
+                                                                Select a site as a hub
+                                                            </apex:pageBlockSectionItem>
+                                                            <apex:pageBlockSectionItem rendered="{!TypeConnection}">
+                                                                <apex:selectList id="selectHub" value="{!SelectSiteHub}" multiselect="false" size="1">
+                                                                    <apex:selectOptions value="{!sitesForHub}" />
+                                                                    <apex:actionSupport event="onchange" action="{!updateHub}" status="loading" />
+                                                                </apex:selectList>
+                                                            </apex:pageBlockSectionItem>
+                                                        </apex:pageBlockSection>
+                                                    </apex:pageBlock>
+                                                </div>
+                                                <div class="col-xs-12 m0 p10">
+                                                    <p class="pull-right">
+                                                        <apex:commandButton value="{!$Label.Add_Address}" styleClass="blueText pull-right m-l-10" oncomplete="openAddAddressPop();" style="background: none !important; color: #2A6496 !important;" action="{!GotoAddAddressPage}" />
+                                                    </p>
+                                                    <p>Select a site below, then configure your product.</p>
+                                                </div>
+                                                <div class="row" style="border: none;">
+                                                    <div class="col-xs-12">
+                                                        <div class="add_state_input_div">
+                                                            <div class="add_site_location_adjust">
+                                                                <div class="styled-select-small adjust-select-small">
+                                                                    <apex:selectList id="optgrp" styleClass="form-control inputFilterSites" style="width: 250px;" value="{!selectedFilter}" size="1" rendered="true" onchange="handlefilterSites();disableFirstOpt();">
+                                                                        <apex:selectOptions value="{!FilterOptions}" />
+                                                                    </apex:selectList>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div vertical="true" type="pills border-r-0" class="ng-isolate-scope">
+                                                <div class="col-xs-6">
+                                                    <div class="siteTrigger" id="configaddedsites">
+                                                        <apex:pageBlock id="PageBlockSelectSite">
+                                                            <!-- In our table we are displaying the cContact records -->
+                                                            <apex:pageBlockTable value="{!ListCustomerSite}" var="c" id="pbtable" styleclass="table">
+                                                                <apex:column id="Column1">
+                                                                    <apex:facet name="header">
+                                                                        <apex:inputCheckbox onclick="headSynchFun(this)" onchange="javascript:updateNextBtn(this);" id="chk1" disabled="false">Select All</apex:inputCheckbox>
+                                                                    </apex:facet>
+                                                                </apex:column>
+                                                                <apex:column id="Column2" style="padding: 10px 8px;" colspan="2">
+                                                                    <apex:inputCheckbox value="{!c.selected}" id="chk2" disabled="false" rendered="{!c.showSites}" />
+                                                                    <apex:commandLink value="{!c.custSiteIns.Site_Name__c}" action="{!showDetail}" reRender="detail,addaddress,form1,grandTot,siteTot,thetable1,PageBlockSelectSiteHeader" oncomplete="addYearRadio();linkRefreshed1();setRadioButtonValue();linkRefreshed();" styleClass="{!c.custSiteIns.Id}" status="loading" style="font-size: 14px;" rendered="{!c.showSites}">
+                                                                        <apex:param assignTo="{!siteid}" name="siteid" value="{!c.custSiteIns.Id}" />
+                                                                    </apex:commandLink>
+                                                                    <!--<span id="tick{!c.custSiteIns.Id}" class="glyphicon glyphicon-ok" style="{!c.spanClass} float: right;">-->
+                                                                    <span id="tick{!c.custSiteIns.Id}" style="{!c.spanClass} float: right; padding: 10px 0 0 0;">
+                                                                    <apex:image url="{!URLFOR($Resource.legendicons,'icon_circle_check.png')}" style="width: 25px; height: 25px;" />                                                                
+                                                                </span>
+                                                                    <br/>
+                                                                    <apex:outputText value="{!c.custSiteIns.Address_Line__c}, {!c.custSiteIns.City__c}, {!c.custSiteIns.State__c}" style="margin-left: 18px;" rendered="{!c.showSites}" />
+                                                                </apex:column>
+                                                                <!-- This is how we access the contact values within our cContact container/wrapper -->
+                                                            </apex:pageBlockTable>
+                                                        </apex:pageBlock>                                                        
+                                                        <script type="text/javascript">disableFirstOpt();selectSite();</script>
+                                                    </div>
+                                                </div>
+                                                <!-- products container -->
+                                                <div class="products-container col-xs-6 bglightgrey2 ng-scope">
+                                                    <form class="form-horizontal ng-pristine ng-valid" role="form">
+                                                        <div class="row m0 p0">
+                                                            <div class="col-xs-6"></div>
+                                                            <div class="col-xs-6 text-right" style="margin-bottom: 20px;">
+                                                                <apex:actionFunction id="af2" name="selectedValue" action="{!grandTotalPopulate}" status="loading" reRender="grandTot,grandTot2,hiddenValId,radio1,radio2" onComplete="selectSite();setRadioButtonValue();linkRefreshed();">
+                                                                    <apex:param name="selectRadioVal" value="" />
+                                                                </apex:actionFunction>
+                                                            </div>
+                                                        </div>
+                                                        <apex:outputPanel id="PageBlockSelectSiteHeader">
+                                                            <apex:outputText value="{!custSiteInsSelectedValue.Site_Name__c}" styleClass="{!custSiteInsSelectedValue.Id}">
+                                                            </apex:outputText>
+                                                            <br/>
+                                                            <apex:outputText value="{!custSiteInsSelectedValue.Address_Line__c}, {!custSiteInsSelectedValue.City__c}, {!custSiteInsSelectedValue.State__c}" />
+                                                        </apex:outputPanel>
+                                                        <br/>
+                                                        <br/>
+                                                        <apex:outputpanel id="detail">
+                                                            <div style="maring-bottom: 20px;">
+                                                                <div class="pull-right text-right">
+                                                                    <h5 style="margin-bottom: 10px;"><a href="javascript:void(0);" onclick="handleClearUI()">Clear Form</a></h5>
+                                                                    <h5><strong>Monthly</strong></h5>
+                                                                </div>
+                                                                <h3>ASE Configuration</h3>
+                                                            </div>
+                                                            <apex:pageblock >
+                                                                <apex:pageblocksection >
+                                                                    <apex:pageblocksectionItem id="EndCust">
+                                                                        <apex:outputLabel value="Customer Name" />
+                                                                    </apex:pageblocksectionItem>
+                                                                    <apex:pageblocksectionItem id="EndCustomer">
+                                                                        <apex:selectList id="Cust" value="{!selectedCustomer}" onchange="setEndCustomer();" size="1">
+                                                                            <apex:selectOptions value="{!RelatedCust}" />
+                                                                        </apex:selectList>
+                                                                    </apex:pageblocksectionItem>
+                                                                </apex:pageblocksection>
+                                                            </apex:pageblock>
+                                                            <!-- <apex:pageMessages escape="true" id="errmsg"></apex:pageMessages>   -->
+                                                            <apex:dataTable value="{!sPricingWrap.optionsList}" var="opg" styleClass="table noborders" id="theTable1">
+                                                                <apex:column style="width: 50%; padding-left: 0;">
+                                                                    <apex:outputPanel id="op1a">
+                                                                        <apex:inputCheckbox value="{!opg.isSelected}" id="checkdone1" rendered="{!opg.showOption}" onchange="getSelCheckVal('{!JSENCODE(opg.name)}','{!JSENCODE(opg.productId)}')">
+                                                                        </apex:inputCheckbox>
+                                                                        <apex:outputText value="{!opg.name}" rendered="{!opg.showOption}" style="font-size: 16px;" />
+                                                                    </apex:outputPanel>
+                                                                    <apex:outputPanel id="op1" rendered="{!opg.showListOption}">
+                                                                        <apex:outputText value="{!opg.name}" rendered="{!opg.showListOption}" />
+                                                                        <div class="add_state_input_div">
+                                                                            <div class="add_site_location_adjust">
+                                                                                <div class="styled-select-small adjust-select-large">
+                                                                                    <apex:selectList id="optgrp" styleClass="form-control dynamicOptionSelector {!opg.name}Selector" value="{!opg.selectedProduct}" onchange="getSelectedOptGroup('{!$Component.optgrp}','{!JSENCODE(opg.name)}'); " size="1" rendered="{!opg.showListOption}">
+                                                                                        <apex:selectOptions value="{!opg.prodOptnsLst}" />
+                                                                                    </apex:selectList>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </apex:outputPanel>
+                                                                </apex:column>
+                                                                <apex:column styleClass="text-right bglightgrey yearBlock" style="padding-right: 0;">
+                                                                    <apex:outputText id="ASE_Price" value="${0, number, ###,###,##0.00}" styleClass="monthlyprice" style="width: 100%; display: block;" rendered="{!(NOT(opg.price == NULL) && (opg.price > 0))}">
+                                                                        <apex:param value="{!opg.price}" />
+                                                                    </apex:outputText>
+                                                                </apex:column>
+                                                            </apex:dataTable>
+                                                        </apex:outputpanel>
+                                                        <div class="row" style="margin: 15px 0;">
+                                                            <div class="col-xs-12 p0">
+                                                                <label>Site Pricing Summary</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row" style="margin: 10px 0;">
+                                                            <div class="col-xs-6 p0 text-left">
+                                                                One-Time Total
+                                                            </div>
+                                                            <div class="col-xs-6 text-right">
+                                                                $0.00
+                                                            </div>
+                                                        </div>
+                                                        <div class="row" style="margin: 10px 0;">
+                                                            <div class="col-xs-6 p0 text-left">
+                                                                Site Total
+                                                            </div>
+                                                            <div class="col-xs-6 text-right">
+                                                                <apex:outputText value="${0, number, ###,###,##0.00} /mo" id="siteTot">
+                                                                    <apex:param value="{!siteTotal}" />
+                                                                </apex:outputText>
+                                                            </div>
+                                                        </div>
+                                                        <apex:commandButton value="Apply" styleClass="btn btn-primary pull-right m-r-20 applyBtnSelector" style="padding: 7px 20px !important;" action="{!applyProdOpt}" rerender="errmsg, pbtable, detail, siteTot, grandTot,grandTot2,PageBlockSelectSite, btnId" status="loading" oncomplete="selectSite();disableFirstOpt();intializeTooltips();disableApplyButton();" />
+                                                        <apex:commandLink action="{!eligibleSitesPop}" value="Apply Configuration To Eligible Sites" rerender="addaddress,form1" status="loading" styleClass="addaddressTrigger pull-right m-r-10 m-t-10 font14" style="display: block; width: 100%; text-align: right; margin-bottom: 20px !important;" oncomplete="linkRefreshed();disableApplyButton();" />
+                                                        <div class="clear"></div>
+                                                        <div class="row" style="margin: 20px 0; padding-bottom: 10px; border-bottom: 1px dashed #ddd;">
+                                                            <div class="pull-right">
+                                                                <a href="javascript:void(0)" class="btn btn-prevSite">&#60;</a> 
+                                                                <apex:commandLink id="prevSite" value=" Previous Site" action="{!siteTraverseMethodPrevious}" rendered="true" reRender="detail,addaddress,form1,grandTot,thetable1,prevSite,nextSite,siteTot" oncomplete="moveHighlight(true);linkRefreshed();" status="loading" style="padding: 0 10px; border-right: 1px solid #ddd;">
+                                                                </apex:commandLink>&nbsp;&nbsp;
+                                                                <apex:commandLink id="nextSite" value="Next Site " action="{!siteTraverseMethodNext}" rendered="{!NOT(disableNext)}" reRender="detail,addaddress,form1,grandTot,thetable1,prevSite,nextSite,siteTot" oncomplete="moveHighlight(false);linkRefreshed();" status="loading" style="padding: 0 10px;">
+                                                                </apex:commandLink>
+                                                                <a href="javascript:void(0)" class="btn btn-nextSite">&#62;</a> 
+                                                            </div>
+                                                        </div>
+                                                        <apex:actionFunction id="af7" name="selectOptGrpAF" action="{!selectedOptGrpQuery}" reRender="detail,grandTot,grandTot2,siteTot,theTable2,pbtable,theTable2a,ASE_Price,btnId" status="loading" oncomplete="disableFirstOpt();selectSite();validateApplyButton_ase();">
+                                                            <apex:param name="selectOptGrp" assignTo="{!selectOptGrp}" value="" />
+                                                            <apex:param name="selectOptGrpVal" assignTo="{!selectOptGrpVal}" value="" />
+                                                        </apex:actionFunction>
+                                                        <apex:actionFunction id="af1" name="handleConfigureSitePage" action="{!setupCartWithSelectedSites}" reRender="frmUp,detail,grandTot,grandTot2,siteTot,theTable2,PageBlockSelectSite,pbtable,theTable2a,ASE_Price,form1" status="loading" oncomplete="linkRefreshed();activeFirstSite('false');">
+                                                            <apex:param name="quoteId" value="" />
+                                                        </apex:actionFunction>
+                                                        <apex:actionFunction id="reConfigFuncId" name="handleReviewQuoteCallBack" action="{!setupCartWithSelectedSites}" reRender="frmUp,detail,grandTot,grandTot2,siteTot,theTable2,pbtable,theTable2a,ASE_Price,form1" status="loading" oncomplete="linkRefreshed();activeFirstSite('true');">
+                                                            <apex:param name="quoteId" value="" />
+                                                        </apex:actionFunction>
+                                                        <apex:actionFunction id="applyEligibleConfigUI" name="handleApplyEligibleConfigUI" action="{!handleApplyEligibleConfigUI}" reRender="frmUp,detail,grandTot,grandTot2,siteTot,theTable2,pbtable,theTable2a,ASE_Price,form1" status="loading" oncomplete="linkRefreshed();activeFirstSite('true');">
+                                                            <apex:param name="quoteId" value="" />
+                                                            <apex:param name="cartId" value="" />
+                                                            <apex:param name="siteId" value="" />
+                                                        </apex:actionFunction>
+                                                        <apex:actionFunction id="clearUI" name="handleClearUI" action="{!handleClearUI}" reRender="frmUp,detail,grandTot,grandTot2,siteTot,theTable2,pbtable,theTable2a,form-2,form1" status="loading" oncomplete="linkRefreshed();activeFirstSite('true');">
+                                                            <apex:param name="quoteId" value="" />
+                                                        </apex:actionFunction>
+                                                        <apex:actionFunction id="filterSites" name="handlefilterSites" action="{!handlefilterSites}" reRender="frmUp,detail,grandTot,grandTot2,siteTot,theTable2,pbtable,theTable2a,form-2,form1" status="loading" oncomplete="disableFirstOpt();selectSite();linkRefreshed();activeFirstSite('true');">
+                                                            <apex:param name="quoteId" value="" />
+                                                        </apex:actionFunction>
+                                                        <apex:actionFunction name="setEndCustomer" status="loading" action="{!updateCustomer}" reRender="" />
+                                                    </form>
+                                                </div>
+                                                <!-- /products container -->
+                                            </div>
+                                            <!-- end ngRepeat: tab in tabs -->
+                                            <div class="clear m-b-20 ng-scope"></div>
+                                            <div class="row ng-scope">
+                                                <div class="col-xs-6 col-xs-offset-6">
+                                                    <p class="m-b-10"><strong>Pricing Summary</strong>
+                                                    </p>
+                                                    <div class="row">
+                                                        <div class="col-xs-6 p0 text-left">
+                                                            <h3 style="color: #4A6496 !important; font-size: 21px; font-weight: bold;">Total</h3>
+                                                        </div>
+                                                        <div class="col-xs-6 text-right">
+                                                            <apex:outputText value="${0, number, ###,###,##0.00}" id="grandTot2" styleClass="font21" style="text-align: right; color: #4A6496 !important; font-size: 21px; font-weight: bold;">
+                                                                <h3 style="display: block; text-align: right;"><apex:param value="{!grandTot}" /></h3>
+                                                            </apex:outputText>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <hr class="blue_hr" />
+                                                <div class="col-xs-12" style="margin: 10px 0;">
+                                                    <apex:commandButton styleClass="btn btn-primary pull-right nextToReview" id="btnId" action="{!finalizeCart}" oncomplete="linkRefreshed1('{!haserrors}');initializeCIRValidation();" status="loading" rerender="formEVC,errmsg" disabled="{!isAllSitesNotProcessed}" value="Continue" style="padding: 7px 20px !important;"></apex:commandButton>
+                                                    <apex:commandButton styleClass="m-r-10 pull-right btn-secondary" id="btnId2" action="{!SaveandExit}" status="loading" value="Save and Exit" style="padding: 7px 20px !important;"></apex:commandButton>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+    </apex:form>
+    <!-- table starts -->
+    <div class="modal fade addaddressConfig" id="" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span>
+                    </button>
+                    <h4 class="m-t-0">Apply Configuration to Eligible Sites</h4> 
+                </div>
+                <apex:form styleClass="form-horizontal" id="form1">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <apex:pageMessages escape="true" id="errmsgModal"></apex:pageMessages>
+                                <blockquote>
+                                    <apex:outputLabel value="Choose from eligible sites to apply the configuration." for="theEligibleModal" rendered="{!AND(eligibleSitesLst != null,eligibleSitesLst.size > 0)}" />
+                                </blockquote>
+                                <apex:pageBlock rendered="{!AND(eligibleSitesLst != null,eligibleSitesLst.size > 0)}">
+                                    <apex:pageBlockTable value="{!eligibleSitesLst}" var="item" id="EligibleSitesTable" styleClass="table table-bordered table-striped table-hover">
+                                        <apex:column value="{!item.custSiteIns.Site_Name__c}" />
+                                        <apex:column value="{!item.custSiteIns.Address_Line__c}" />
+                                        <apex:column value="{!item.custSiteIns.City__c}" />
+                                        <apex:column value="{!item.custSiteIns.State__c}" />
+                                        <apex:column headerValue="Select">
+                                            <apex:inputCheckbox value="{!item.eligibleSelected}" />
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                    <apex:commandButton styleClass="btn btn-primary br-0 m-t-10 pull-right" status="loading" value="Apply" action="{!eligibleSitesApply}" rerender="addaddress,detail,grandTot2" oncomplete="disableFirstOpt();selectSite();completePricing1();setDisableApplyFlag();" style="margin-bottom: 10px !important;" />
+                                </apex:pageBlock>
+                                <apex:inputHidden value="{!quoteId}" id="selectedQuote" />
+                                <apex:inputHidden value="{!cartId}" id="selectedCart" />
+                                <apex:inputHidden value="{!siteId}" id="selectedSite" />
+                            </div>
+                        </div>
+                    </div>
+                </apex:form>
+            </div>
+        </div>
+    </div>
+
+    <!-- table ends -->
+    <div class="modal waitingSearchDiv" id="remotingScroll" style="display:none; background-color: #fbfbfb; opacity:0.65; position:fixed; width:100%; height:100%; top:0px; left:0px; z-index:1000;">
+        <div class="waitingHolder" style="top: 200px; left:700px; width: 91px; position: fixed;">
+            <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+        </div>
+    </div>
+    <!-- Begin Modal -->
+    <div class="modal fade" id="addEVCModal">
+        <div class="modal-dialog" style="height:50%;width:50%;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span>
+                    </button>
+                    <h4>Add EVC Connection</h4>
+                </div>
+                <apex:form id="formEVC">
+                    <div class="modal-body">
+                        <!-- /add EVC Connection (if you make this a seperate page, you only need this section of the code -->
+                        <div id="addEVCConnection">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <p>
+                                        <apex:pageMessages id="errmsg2" escape="true">
+                                        </apex:pageMessages>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <h4>Please enter an EVC name for each connection</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <apex:pageblock >
+                                        <!-- <apex:pageMessages escape="true" id="errmsg2">
+                                        </apex:pageMessages> -->
+                                        <apex:pageblocktable value="{!evcListTable}" var="EVCCon" styleClass="table table-bordered table-striped table-hover">
+                                            <apex:column headerValue="EVC Name">
+                                                <apex:inputtext label="EVC Name" value="{!EVCCon.Name}" html-placeholder="Optional field" />
+                                            </apex:column>
+                                            <apex:column headerValue="EVC From">
+                                                <apex:outputText value="Hub - " rendered="{!TypeConnection}" />
+                                                <apex:outputtext value="{!EVCCon.EVCfrom.AT_T_Customer_Site__r.Site_Name__c}" />
+                                            </apex:column>
+                                            <apex:column headerValue="EVC to">
+                                                <apex:outputText value="Spoke - " rendered="{!TypeConnection}" />
+                                                <apex:outputtext value="{!EVCCon.EVCto.AT_T_Customer_Site__r.Site_Name__c}" />
+                                            </apex:column>
+                                            <apex:column headerValue="Committed Info Rate">
+                                                <apex:selectList styleClass="inputCIR" id="selectHub" value="{!EVCCon.EVCCir}" size="1" onchange="changedValue('{!$Component.selectHub}');">
+                                                    <apex:selectOptions value="{!EVCCon.CIRSubset}" />
+                                                </apex:selectList>
+                                            </apex:column>
+                                        </apex:pageblocktable>
+                                    </apex:pageblock>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /add EVC Connection -->
+                    </div>
+                    <!-- /body -->
+                    <div class="modal-footer">
+                        <Apex:commandButton styleClass="btn inputEVCModalContinue disabled" value="Continue" action="{!continueClick}" oncomplete="isReviewSelected();handleReviewQuotePageCall();" onclick="$('.inputEVCModalContinue').prop('disabled', true)"/>
+                    </div>
+                    <!--<apex:actionFunction name="changelistVal" status="loading" action="{!beforecontinue}"/>-->
+                </apex:form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
+    <script>
+        function completePricing1() {
+            Visualforce.remoting.timeout = 120000; // Set timeout at page level
+            var quoteId = document.getElementById('{!$Component.form1.selectedQuote}').value;
+            var cartId = document.getElementById('{!$Component.form1.selectedCart}').value;
+            var siteId = document.getElementById('{!$Component.form1.selectedSite}').value;
+            if (quoteId != null && cartId != null && siteId != null) {
+                // added jquery to display grey background with loading img
+                $("[Id$=remotingScroll]").show();
+
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.QuoteInfoController_ASE.IsPricingUpdateRequired}', quoteId, cartId, siteId,
+                    function (result, event) {
+                        if (event.status) {
+                            if (result === true) {
+                                completePricing1();
+                                //alert ('Entered completePricing');
+                            } else {
+                                // added jquery to hide grey background in case of error
+                                $("[Id$=remotingScroll]").hide();
+                                handleApplyEligibleConfigUI(quoteId, cartId, siteId);
+                                //alert ('Entered handleApplyEligibleConfigUI');
+                            }
+                        } else if (event.type === 'exception') {
+                            // added jquery to hide grey background in case of error
+                            $("[Id$=remotingScroll]").hide();
+                            alert(event.message);
+                        } else {
+                            // added jquery to hide grey background in case of error
+                            $("[Id$=remotingScroll]").hide();
+                            alert(event.message);
+                        }
+                    }, {
+                        escape: true
+                    }
+                );
+            }
+            $('.addaddressConfig').modal('hide');
+        }
+        selValueCir = 'select';
+
+        function updateH() {
+            //alert('Enter');
+            updateHub();
+            //alert('Hi');
+        }
+
+        function linkRefreshed1(errstr) {
+            if (errstr.toLowerCase() == 'true') {
+                $('#addEVCModal').modal('hide');
+            } else {
+                $('#addEVCModal').modal('show');
+            }
+        }
+
+        radioBtnVal = '';
+
+        function getSelectedOptGroup(theId, theoptGrpVal) {
+            var theIdVal = document.getElementById(theId).value;
+            selectOptGrpAF(theoptGrpVal, theIdVal);
+        }
+
+        function getSelCheckVal(theoptGrpVal, theIdVal) {
+            selectOptGrpAF(theoptGrpVal, theIdVal);
+        }
+
+        function changedValue(changeSelectedVal) {
+            selValueCir = document.getElementById(changeSelectedVal).value;
+        }
+
+        function handleReviewQuotePageCall() {
+            quoteId = '{!quoteId}';
+            if (quoteId != null && quoteId != '' && selValueCir != 'select') {
+                handleReviewQuotePage(quoteId);
+                $('#addEVCModal').modal('hide');
+                $("a[data-name='reviewQuote']").parent('li').removeClass("disabled");
+                $('a[data-name="reviewQuote"]').attr({
+                    'data-toggle': "tab",
+                    href: "#reviewQuote"
+                });
+                $("a[data-name='reviewQuote']").trigger("click");
+            } else {
+                alert('Please select CIR Value !!');
+            }
+        }
+
+        function handleSiteAddressPageCallBack() {
+            if (generatedQuoteId != null && generatedQuoteId != '') {
+                handleSiteAddressPage(generatedQuoteId);
+                $("a[data-name='enterAddress']").attr('data-toggle', 'tab').attr('href', '#enterAddress').parent('li').removeClass('disabled').children('a').trigger("click");
+                $("a[data-name='configProduct']").removeAttr('data-toggle href').parent('li').addClass("disabled");
+            }
+        }
+
+        function setRadioButtonValue() {
+            if (radioBtnVal == '1 Year') {
+                document.getElementById('radio1YearId').checked = true;
+            } else {
+                document.getElementById('radio1YearId').checked = false;
+            }
+            if (radioBtnVal == '3 Year') {
+                document.getElementById('radio3YearId').checked = true;
+            } else {
+                document.getElementById('radio3YearId').checked = false;
+            }
+        }
+
+        function headSynchFun(obj) {
+            var len = parseInt(document.getElementById("{!$Component.frmUp.PageBlockSelectSite.pbtable}").rows.length);
+            if (obj.checked == true)
+                for (var i = 0; i < len; i++) {
+                    var st = "{!$Component.frmUp.PageBlockSelectSite}" + ":pbtable:" + i + ":chk2";
+                    document.getElementById(st).checked = true;
+                } else
+                    for (var i = 0; i < len; i++) {
+                        var st = "{!$Component.frmUp.PageBlockSelectSite}" + ":pbtable:" + i + ":chk2";
+                        document.getElementById(st).checked = false;
+                    }
+            updateNextBtn(obj.checked);
+        }
+
+        function synchFun(obj, tickId) {
+            if (obj.checked == true) {
+                var flag = chkStatus();
+                if (flag)
+                    document.getElementById("{!$Component.frmUp.PageBlockSelectSite.pbtable.chk1}").checked = true;
+                $(tickId).show();
+                updateNextBtn(flag);
+            } else {
+                document.getElementById("{!$Component.frmUp.PageBlockSelectSite.pbtable.chk1}").checked = false;
+                $(tickId).hide();
+                updateNextBtn(false);
+            }
+        }
+
+        function chkStatus() {
+            var len = parseInt(document.getElementById("{!$Component.frmUp.PageBlockSelectSite.pbtable}").rows.length, 10);
+            len--;
+            for (var i = 0; i < len; i++) {
+                var st = "{!$Component.frmUp.PageBlockSelectSite}" + ":pbtable:" + i + ":chk2";
+                if (document.getElementById(st).checked == false)
+                    return false;
+            }
+            if (len == 0)
+                return false;
+            return true;
+        }
+
+        function enableButton() {
+            $('.nextToReview').removeClass('disabled');
+        }
+
+        function enableApplyButton() {
+            //$('.applyBtn').removeClass('disabled');
+        }
+
+        function isReviewSelected() {
+            //Disable current tab code starts  
+            $("a[data-name='configProduct']").parent('li').addClass("disabled");
+            $("a[data-name='configProduct']").removeAttr('data-toggle href');
+            //Disable current tab code starts 
+            $('a[data-name="reviewQuote"]').parent('li').removeClass('disabled');
+            $('a[data-name="reviewQuote"]').attr({
+                'data-toggle': "tab",
+                href: "#reviewQuote"
+            });
+        }
+
+         //fakeCheckVal = 0;
+        function activeFirstSite(actId) {
+            //fakeCheckVal++;
+            if (actId === 'false') { //3rd to 4th
+                $('.siteTrigger li:first-child a').trigger('click');
+                $('.siteTrigger li:first-child').addClass('active');
+            } else if (actId === 'true') { // 5th to 4th 
+                $('.siteTrigger li a.' + selSiteId).trigger('click');
+                $('.siteTrigger li a.' + selSiteId).parent('li').addClass('active');
+                //Triggering click of year radio button
+                if (selIntervalTime == '1 Year') {
+                    $('#radio1YearId').trigger('click');
+                } else if (selIntervalTime == '3 Year') {
+                    $('#radio3YearId').trigger('click');
+                }
+                // Enabling Next button
+                enableButton();
+            }
+        }
+
+        function updateNextBtn(flag) {
+            if (flag)
+                $('.nextToReview').removeClass('disabled');
+            else
+                $('.nextToReview').addClass('disabled');
+        }
+
+        function setTick(tickId, flag) {
+            var headSitesCheck = false;
+            if (flag) {
+                headSitesCheck = chkStatus();
+                $(tickId).show();
+            } else {
+                $(tickId).hide();
+            }
+            updateNextBtn(headSitesCheck);
+        }
+
+         // Function to enable or disable the continue button based on the CIR values in each of the dropdowns
+        function validateCIR() {
+            // Check if all the selected dropdowns are filled in. If yes enable the button
+            // If no, disable the button
+            var boolIsCIRValid = true;
+            $(".inputCIR").each(function () {
+                // Check if each of the dropdowns are filled
+                // Return false if there is a single one having the default value in selected index (0)
+                if (0 === this.selectedIndex) {
+                    boolIsCIRValid = false;
+                    return false;
+                }
+            });
+            boolIsCIRValid ? $(".inputEVCModalContinue").removeClass("disabled") : $(".inputEVCModalContinue").addClass("disabled");
+        }
+
+         // Function to add validations to each of the CIR Dropdowns
+        function initializeCIRValidation() {
+            -
+            // Add the on change event to each of the CIR Dropdowns
+            $(".inputCIR").on("change", function () {
+                validateCIR();
+            });
+            // Prevent the first option CIR from being selected
+            // Set the attribute to disabled
+            $('.inputCIR').each(function () {
+                $(this).children('option:first-child').attr('disabled', 'disabled');
+            });
+        }
+
+        function toggleFunc() {
+            $('.accordion-toggle-config').on('click', function () {
+                $('#configBlock').slideToggle();
+            });
+        }
+
+        function linkRefreshed() {
+            $('.siteTrigger  li').on('click', function () {
+                $('.siteTrigger  li').removeClass('active');
+                $('ul.siteTrigger li:first-child a').attr('style', 'background: transparent; color:#015ba7;');
+                var linkId = $(this).attr('id');
+                console.log("Link Id = " + linkId);
+                $(this).addClass('active');
+            });
+            $('.addaddressTrigger').on('click', function () {
+                $('.addaddressConfig').modal('show');
+            });
+            $('.addaddressConfig a strong').on('click', function () {
+                $('.addaddressConfig').modal('hide');
+            });
+            activeTabIcon(); //Function for adding tick mark in active tab
+        }
+
+         // Function to initialize the tooltips within the Configure Sites form
+        function intializeTooltips() {
+            $(".tooltipTrigger").tooltip();
+        }
+
+
+         // Used to store the selected site
+        var arrSelectedSites = [];
+
+         // Function that will push the selected site into the global array
+        function storeSite(sSiteID) {
+            // console.log("storeSite Called");
+            // Store the selected items ID in a global array and access the same.
+            // Once we perform a rerender, we will retrieve this value and select the same.
+            // Clear the array as only one site can be selected at a time
+            arrSelectedSites.length = 0;
+            // Push the selected site into this array
+            arrSelectedSites.push(sSiteID);
+            // console.log("Currently, the selected site is: " + arrSelectedSites[0]);
+        }
+
+         // Function to retrieve the selected site from the array and select that particular row
+        function selectSite() {
+            // console.log("selectSite Called");
+            // Fetch the Site from the global array and access the same.
+            // Add the active class to that specific row
+            var sSelectedSite = arrSelectedSites[0];
+            // Once this is selected, we can select the site by applying the active class to the parent TR
+            // Fetch the element using JS since the : operator doesnt work well with jQuery
+            var oSelectedSite = document.getElementById(sSelectedSite);
+            if (oSelectedSite) {
+                $(oSelectedSite).parent('td').parent('tr').addClass('active');
+                highlightReconfiguredSite();
+            }
+        }
+
+
+        function moveHighlight(isPrevious) {
+            // Check if the previous site row is present, if yes then highlight this row
+            // If no, do nothing
+            // Similarly, if the next site is present, we need to highlight this row
+            // If no, do nothing
+            var oCurrentlyActiveRow = $("#configaddedsites .active");
+            if (oCurrentlyActiveRow[0]) {
+                //check if the previous row is hidden, then do not select it
+                var oNextActive = isPrevious ? oCurrentlyActiveRow.prev() : oCurrentlyActiveRow.next();
+                if (oNextActive[0] && (!oNextActive.find("td.hide")[0])) {
+                    // Select this row by clicking on the link within it
+                    var oNextLink = oNextActive.find("a");
+                    if (oNextLink[0]) {
+                        oNextLink[0].click();
+                    }
+                }
+            }
+        }
+
+        function validateApplyButton_ase() {
+            var selectedCount = $(".dynamicOptionSelector [selected]").length;
+            var totalDDDs = $(".dynamicOptionSelector").length;
+            var runningCount = 0;
+            var classList = [];
+            var containsMACSelector = false;
+            var isMACSelectorElementSelected = false;
+            // logic to find if MAC Limit exist as a drop down value, if present 
+            // display apply button as its an optional value
+            $(".dynamicOptionSelector").each(function () {
+                console.log($(this).attr('class'));
+                console.log($(this).attr('class').indexOf('MAC LimitSelector') > -1);
+                if ($(this).attr('class').indexOf('MAC LimitSelector') > -1) {
+                    containsMACSelector = true;
+                    var optValue = $(this).val();
+                    isMACSelectorElementSelected = (optValue && optValue !== 'select' && optValue !== '') ? true : false;
+                }
+            })
+            $(".dynamicOptionSelector :selected").each(function () {
+                var optValue = $(this).val();
+                // console.log('optValue: ' + optValue + ' Text: ' + $(this).text());
+                if (optValue && optValue !== 'select' && optValue !== '') {
+                    runningCount++;
+                }
+            })
+            if (((totalDDDs == runningCount)) ||
+                (containsMACSelector && ((totalDDDs - runningCount) == 1 && !isMACSelectorElementSelected))) {
+                $('.applyBtnSelector').removeClass('disabled');
+                $('.applyBtnSelector').prop('disabled', false);
+            } else {
+                $('.applyBtnSelector').addClass('disabled');
+                $('.applyBtnSelector').prop('disabled', true);
+            }
+        }
+
+        
+
+        function disableApplyButton() {
+            //DE100302 - Apply button to be disbled by default
+            $('.applyBtnSelector').addClass('disabled');
+            $('.applyBtnSelector').prop('disabled', true);
+        }
+
+        $(document).ready(function () {
+            toggleFunc();
+            linkRefreshed();
+            // Call to initialize the tool-tip hover functionality
+            intializeTooltips();
+            initializeFieldValidations();
+            $('#configaddedsites tbody tr:nth-child(1)').addClass('active');
+            // Push this id into the array storing the selected sites
+            var sSiteID = $('#configaddedsites tbody tr:nth-child(1) td a').attr("id");
+            storeSite(sSiteID);
+            disableFirstOpt();
+            validateApplyButton_ase();
+            disableApplyButton();
+        });
+    </script>
+</apex:page>

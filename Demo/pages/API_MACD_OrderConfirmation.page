@@ -1,0 +1,83 @@
+<apex:page controller="API_MACD_SubmitOrderController" standardStylesheets="false" sidebar="false" showHeader="false" tabStyle="Apttus_Proposal__Proposal__c" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false">
+    <style>
+        .thankYouLabel{
+            font-family:omnes_att_iimedium;
+            font-size:32px;
+        }
+    </style>
+    <apex:form >
+        <div class="row" style="margin-top: 40px;">     
+            <div class="col-xs-12 col-md-12" style="margin-left: -14px;"> 
+                <h3 class="m-b-10 cust_label">
+                    <apex:outputText id="cnameheader" value="{!quoteObj.End_Customer__r.Name}" />
+                </h3>    
+                <div class="row p0" style="margin-bottom: 20px; margin-top: 10px;">
+                    <div class="col-xs-5 p0">
+                        <label style="margin-right: 10px !important;"><apex:outputText value="Quote Name" /></label>
+                        <apex:outputText value="{!quoteObj.Apttus_Proposal__Proposal_Name__c}" />
+                    </div>
+                    <div class="col-xs-4 p0">
+                        <label style="margin-right: 10px !important;"><apex:outputText value="Quote ID" /></label>
+                        <apex:outputText value="{!quoteObj.Name}" />
+                    </div>
+                    <div class="col-xs-2">
+                        <label style="margin-right: 10px !important;"><apex:outputText value="Term" /></label>
+                        <apex:outputText value="{!quoteObj.Apttus_Proposal__Payment_Term__c}" />
+                    </div>
+                </div>
+            </div>
+        </div>     
+        <div class="p20" id="isConfirmationOpen">
+        <hr class="dividerHr" />
+            <div style="font-size: 18px;">
+                <apex:outputPanel rendered="{!NOT(flag == 'true')}">
+                    <apex:outputPanel rendered="{!isApprover}">
+                        <apex:outputPanel rendered="{!showDenialReason}">
+                            <p class="greenText f-s-xxl thankYouLabel">
+                               Submission received. 
+                            </p><br/>
+                             <div>
+                                <p>
+                                   We received your denial decision of the Pricing Schedule Addendum for Order Number {!quoteObj.Name} <br/>
+                                </p>
+                                <p>
+                                   To view the status of your order, check <strong>Manage Quotes &amp; Orders </strong>on <strong>My Dashboard.</strong>
+                                </p>
+                            </div>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel rendered="{!!showDenialReason}">
+                            <p class="greenText f-s-xxl thankYouLabel">Thank You!</p>
+                            <br/>
+                            <p style="font-size:18px;"> We received your approval of the Pricing Schedule Addendum for Order Number {!opptyName}<br/>
+                            You'll receive an email when the contract has been countersigned by AT&amp;T Partner Exchange.<br/><br/>
+                            To view the status of your order, check <strong> Manage Quotes &amp; Orders</strong> on<strong> My Dashboard.</strong></p>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                
+                    <apex:outputPanel rendered="{!!isApprover}">
+                        <p class="greenText f-s-xxl">Thank you!</p>
+                        <br/>
+                        You'll receive an email when the contract has been approved by Approver.
+                        <br/><br/>
+                        To view the status of your order,check <strong>Manage Quotes &amp; Orders</strong> on <strong>My Dashboard.</strong>   
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!(flag == 'true')}">
+                    <p class="greenText f-s-xxl">
+                        {!$Label.Submitted_for_Processing}
+                    </p>
+                    <br/><p>Your Order Number is {!opptyName}.</p>
+                    <br/><p>You can check <strong>Manage Quotes &amp; Orders</strong> on <strong>My Dashboard </strong> in about 10 minutes for an updated status.</p>
+                    <br/><p>Once the status shows "Accepted" you can proceed with signing the pricing schedule and completing your order.</p>
+                </apex:outputPanel>
+                
+                <br/><br/>
+                <hr class="dividerHr" />
+                <a href="/apex/PortalDashboard_UI" class="attLinkBlue" style="float:right;font-weight: bold; ">{!$Label.Dashboard}</a>
+            </div>
+            <br/>
+        </div>
+    </apex:form>
+</apex:page>

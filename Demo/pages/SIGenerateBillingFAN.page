@@ -1,0 +1,601 @@
+<apex:page standardController="Account" extensions="SIGenerateFANRequest" contenttype="application/vnd.ms-excel#FANRequest.xls"  sidebar="false">
+<apex:form id="frmid">
+ <html>
+  <head>
+  <style>
+  tbody 
+   {color:black;}
+   table,th,td{border:1px solid black;border-collapse:collapse;font-family:calibri}
+  </style>
+ </head>
+ <tbody>
+ <table width="70%" id="tblId" >
+      <tr width="100">
+         <td colspan="2" align="center" bgcolor="#BDBDBD"><B>Billing FAN Request for {!contactList[0].Account.Name} with Agreement ID: {!contactList[0].Account.AgreementID__c} </b> <br/> E-Mail completed form to NBO Profiles in the GAL</td>
+      </tr>   
+       <tr>
+          <td align="right" bgcolor="#A9E2F3"><b>Request Type *</b></td>
+          <td  align="center">Billing FAN Request</td>
+      </tr>
+      <tr style="font-size:16pt;font-family:calibri;" >
+      <td bgcolor="#58D3F7">Submitter Information</td>
+      <td align="center" bgcolor="#58D3F7">New Contract - NEW FAN</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;" >
+          <td align="right" bgcolor="#A9E2F3"><b>Date Submitted (DD-MM-YY Format) *</b></td>
+          <td  align="center"> {!submittedDate}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td  align="right" bgcolor="#A9E2F3"><b>Submitter Name *</b></td>
+          <td  align="center">{!usr.Name}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>E-Mail *</b></td>
+          <td  align="center">{!usr.Email}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td  align="right" bgcolor="#A9E2F3"><b>Phone *</b></td>
+          <td  align="center">{!usr.Phone}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Preferred Method of Communication *</b></td>
+          <td  align="center">E-mail</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Comments to the Profile Team (Optional)</b></td>
+          <td  align="center">This is a request for an AT&#38;T Partner Exchange FAN creation.  
+          This should reflect <br/>similar requests for other AT&#38;T Partner Exchange requests.  
+          Please create 2 FANs <br/>with 0% service discount, name them "<b>APEX FAN -{!contactList[0].Account.Name} CFU 0%</b>" (CFU Stands for Consume For Use) and "<b>APEX FAN-{!contactList[0].Account.Name} 0%</b>"</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Contract Type *</b></td>
+          <td  align="center">CCDA</td>
+      </tr>
+      <tr>
+          <td bgcolor="#A9E2F3"></td>
+         <td></td>
+      </tr>
+      <tr style="font-size:16pt;font-family:calibri;" >
+          <td bgcolor="#58D3F7">Company Information</td>
+          <td bgcolor="#58D3F7"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Agreement Name and Number *</b></td>
+          <td  align="center"> {!contactList[0].Account.Name} and {!contactList[0].Account.AgreementID__c} </td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td  bgcolor="#A4A4A4"><b>Foundation Account Information</b></td>
+          <td  align="center" bgcolor="#A4A4A4"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Location Account Number *</b></td>
+          <td  align="center">{!contactList[0].Account.Mobility_L2_ID__c}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Customer Designation (10 Characters)</b></td>
+          <td  align="center"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Company E-Mail Domain *</b></td>
+          <td  align="center">{!mainContactDomainID}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>User Defined Label 1 (Optional)</b></td>
+          <td  align="center"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>User Defined Label 2 (Optional)</b></td>
+          <td  align="center"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>User Defined Label 3 (Optional)</b></td>
+          <td  align="center"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>User Defined Label 4 (Optional)</b></td>
+          <td  align="center"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td  bgcolor="#A4A4A4"><b>Business Address *</b></td>
+          <td  align="center" bgcolor="#A4A4A4"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Business Name</b></td>
+          <td  align="center">{!contactList[0].Account.Name}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Street</b></td>
+          <td  align="center">{!contactList[0].Account.BillingStreet}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>City, State, Zip</b></td>
+          <td  align="center">{!contactList[0].Account.BillingCity},{!contactList[0].Account.BillingState} ,{!contactList[0].Account.BillingPostalCode}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Country</b></td>
+          <td  align="center">{!contactList[0].Account.BillingCountry}</td>
+      </tr>
+      <tr style="font-size:16pt;font-family:calibri;" >
+          <td colspan="2" bgcolor="#58D3F7">Customer Contact Information</td>
+          
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td  bgcolor="#A4A4A4"><b>Day to Day (Telecom Manager)</b></td>
+          <td  align="center" bgcolor="#A4A4A4"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Name *</b></td>
+          <td  align="center">{!mainContactName}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Address *</b></td>
+          <td  align="center">{!mainContactAddress}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>City, State, Zip *</b></td>
+          <td  align="center">{!mainContactCityStateZip}</td>
+      </tr>
+       <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>E-Mail</b></td>
+          <td  align="center">{!mainContactEmail}</td>
+      </tr>
+       <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Phone Number *</b></td>
+          <td  align="center">{!mainContactPhone}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Fax</b></td>
+          <td  align="center">{!mainContactFax}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td  bgcolor="#A4A4A4"><b>Initial Premier User</b></td>
+          <td  align="center" bgcolor="#A4A4A4">Same as Day to Day Contact</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Same As Day to Day Contact</b></td>
+          <td  align="center">Yes</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Name *</b></td>
+          <td  align="center">{!mainContactName}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Address *</b></td>
+          <td  align="center">{!mainContactAddress}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>City, State, Zip *</b></td>
+          <td  align="center">{!mainContactCityStateZip}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>E-Mail</b></td>
+          <td  align="center">{!mainContactEmail}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Phone Number *</b></td>
+          <td  align="center">{!mainContactPhone}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Fax</b></td>
+          <td  align="center">{!mainContactFax}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td  bgcolor="#A4A4A4"><b>User Label Contact</b>(Required Only if Company Has User Labels)</td>
+          <td  align="center" bgcolor="#A4A4A4">No User Labels - Not Required</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Name *</b></td>
+          <td  align="center"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Address *</b></td>
+          <td  align="center"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>City, State, Zip *</b></td>
+          <td  align="center"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>E-Mail</b></td>
+          <td  align="center"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Phone Number *</b></td>
+          <td  align="center"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Fax</b></td>
+          <td  align="center"></td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td  bgcolor="#A4A4A4"><b>Authorized Company Order Placer(s)</b></td>
+          <td  align="center" bgcolor="#A4A4A4"></td>
+      </tr>
+      <!--Repeat Here----->
+      <apex:repeat var="cx" value="{!premierContactList}"> 
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Name *<br/>Address *<br/>City, State, Zip *<br/>E-Mail<br/>Phone Number *<br/>Fax</b></td>
+          <td  align="center">{!cx.Name}<br/>{!cx.MailingStreet}<br/>{!cx.MailingCity},{!cx.MailingState},{!cx.MailingPostalCode}<br/>{!cx.Email}<br/>{!cx.Phone}<br/>{!cx.Fax}</td>
+      </tr>
+      <p></p>
+      <!--
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Address *</b></td>
+          <td  align="center">{!cx.MailingStreet}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>City, State, Zip *</b></td>
+          <td  align="center">{!cx.MailingCity},{!cx.MailingState}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>E-Mail</b></td>
+          <td  align="center">{!cx.Email}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Phone Number *</b></td>
+          <td  align="center">{!cx.Phone}</td>
+      </tr>
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Fax</b></td>
+          <td  align="center"></td>
+      </tr>
+           -->
+     </apex:repeat> 
+   <!--Repeate ends here -->   
+     <tr style="font-size:16pt;font-family:calibri;" >
+          <td colspan="2" bgcolor="#58D3F7">Profile Information</td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td  bgcolor="#A4A4A4"><b>Equipment Payment Options *</b></td>
+          <td  align="center" bgcolor="#A4A4A4"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Credit Card</b></td>
+          <td  align="center">
+             <select>
+                  <option value="Select an Option">Select an Option</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+             </select> 
+          </td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Bill to Airtime (BTA)</b></td>
+          <td  align="center">
+           <select>
+                  <option value="Select an Option">Select an Option</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+             </select> 
+          </td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td title="hello" align="right" bgcolor="#A9E2F3"><b>Separate Equipment Invoice</b></td>
+          <td  align="center">
+            <select>
+                  <option value="Select an Option">Select an Option</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+             </select> 
+          </td>
+     </tr> 
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Tax Exempt for Equipment? *</b></td>
+          <td  align="center">
+             <select>
+                  <option value="Select an Option">Select an Option</option>
+                  <option value="Yes">Yes</option>
+                  <option value="No">No</option>
+             </select> 
+         </td>
+     </tr> 
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>If Yes, please list states:</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3">(Select each state that needs to be included)</td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td  bgcolor="#A4A4A4"><b>Airtime Payment Options *</b></td>
+          <td  align="center" bgcolor="#A4A4A4"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Credit Card</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Electronic Funds Transfer (EFT)</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Wireless Airtime Invoice</b></td>
+          <td  align="center"></td>
+     </tr> 
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td  bgcolor="#A4A4A4"><b>Miscellaneous</b></td>
+          <td  align="center" bgcolor="#A4A4A4"></td>
+     </tr> 
+      <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Shipping Carrier</b></td>
+          <td  align="center"></td>
+     </tr>
+    <tr style="font-size:11pt;font-family:calibri;">
+          <td  bgcolor="#A4A4A4"><b>Global Instructions</b></td>
+          <td  align="center" bgcolor="#A4A4A4"></td>
+     </tr> 
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Passwords</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Multiple FAN CD (If required, provide Parent &#38; Child FAN IDs)</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Additional Information</b></td>
+          <td  align="center"></td>
+     </tr>   
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td  bgcolor="#A4A4A4"><b>End User Care Maintenance Table</b></td>
+          <td  align="center" bgcolor="#A4A4A4"></td>
+     </tr>  
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td  align="right" bgcolor="#A9E2F3"><b><font color="red">Add/Delete Feature - No MRC (Monthly Recurring Charge) Only / PPU Allowed</font></b></td>
+          <td  align="center">Yes</td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td  align="right" bgcolor="#A9E2F3"><b><font color="red">IMEI / SIM Changes</font></b></td>
+          <td  align="center">Yes</td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td  align="right" bgcolor="#A9E2F3"><b><font color="red">Order SIM Only</font></b></td>
+          <td  align="center">Yes</td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td  align="right" bgcolor="#A9E2F3"><b><font color="red">Reinstate Service Lost / Stolen</font></b></td>
+          <td  align="center">Yes</td>
+     </tr>   
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td  align="right" bgcolor="#A9E2F3"><b><font color="red">Warranty / Exchange / XBM</font></b></td>
+          <td  align="center">Yes</td>
+     </tr>   
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td  align="right" bgcolor="#A9E2F3"><b>Accessory Order - BTA / SEI</b></td>
+          <td  align="center"></td>
+     </tr>   
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Account Consolidation</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Account Split</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Add / Delete Feature - International</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Add / Delete Feature - See Notes</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Cancel Service</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Change Billing Address</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Change Voice Plan Only</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Change Data Plan Domestic Only</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Change Data Plan (Domestic / International)</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Change Voice / Data Plan - See Notes</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Change Wireless Number</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Equipment Upgrade Orders</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Equipment Upgrade Orders - Premier Only</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>FAN Enrollments</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>IMEI / SIM Changes - See Notes</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Order Wireless Service</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Order Wireless Service - Premier Only</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Reinstate Service</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Reinstate from Cancelled</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Reinstate from Suspend</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Cancel / Suspend / Reinstate - See Notes</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Remove Device from Block List</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Suspend Service</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>Transfer of Billing Responsibility (ToBR)</b></td>
+          <td  align="center"></td>
+     </tr>
+     <tr style="font-size:11pt;font-family:calibri;">
+          <td align="right" bgcolor="#A9E2F3"><b>User Info Change</b></td>
+          <td  align="center"></td>
+     </tr>
+                                          
+ </table>
+ </tbody> 
+ </html>
+</apex:form>
+</apex:page>

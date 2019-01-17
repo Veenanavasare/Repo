@@ -1,0 +1,25 @@
+<apex:page controller="PricingScheduleLaunchcontroller" id="thepage" showChat="false" showHeader="false" sidebar="false">
+<script src="/soap/ajax/32.0/connection.js"></script>
+<apex:form >
+<script>
+    document.body.onload = function() {
+        quoteId = '{!$CurrentPage.parameters.quoteid}';
+        mode = '{!$CurrentPage.parameters.mode}';
+        code = '{!$CurrentPage.parameters.code}';
+        docid = '{!$CurrentPage.parameters.docid}';
+        
+        try{
+        sforce.connection.sessionId = '{!$Api.Session_ID}';
+        var quoteobj = new sforce.SObject('Apttus_Proposal__Proposal__c');
+        quoteobj.id = quoteId;
+        quoteobj.Contract_Signed__c = true;
+        result = sforce.connection.update([quoteobj]);
+        }
+        catch(e){
+            alert('***'+e);
+        }
+        window.open('{!$Page.dealreg}?mode='+mode+'&quoteId='+quoteId+'&code='+code, '_parent');
+    }
+</script>
+</apex:form>
+</apex:page>

@@ -1,0 +1,158 @@
+<apex:page standardController="SPProduct__c" extensions="SIDiscountController" showHeader="false" tabStyle="SPProduct__c" id="pg">
+<script>
+function saveclose(paramVal) {
+    var comRootId = 'pg:pf:comPgBlck:comPgSecBlck:';
+    var comBelowId = 'pg:pf:comPgBlck:calResId:';
+    var rejComments = document.getElementById(comRootId+'inRej').value;
+    var discountedPrice = document.getElementById(comBelowId +'inDiscountPrice').value;    
+    
+    if(paramVal == 'appDis') {
+        var disPrice = document.getElementById(comBelowId +'inComSt').value;
+        if(discountedPrice <= 0) {
+            alert('You entered 0% discount.Please enter valid discount/Calculate Discount');
+        } else if(disPrice != 'Competitive Pricing Approved') {
+            alert('Please calculate Discounted Price by clicking on the button Calculate Discount !');
+        } 
+    } else if(paramVal == 'rejComm') {
+        if(rejComments == '') {
+            alert('Please enter Reject/More Info Comment field !');
+        } 
+    } else {
+        if(discountedPrice <= 0) {
+             alert('You entered 0% discount.Please enter valid discount');
+             return;
+        }        
+        computeDiscount();
+    }
+}
+function computeDiscount(discountTypeVar) {
+    var comRootId = 'pg:pf:comPgBlck:comPgSecBlck:';
+    var comBelowId = 'pg:pf:comPgBlck:calResId:';
+    
+    var pgStatusFlat = document.getElementById(comRootId+'inDisChk').checked;
+    var pgStatusPer = document.getElementById(comRootId+'inPDChk').checked;
+    
+    document.getElementById(comRootId+'inRej').value = '';
+    var discountedPrice = document.getElementById(comBelowId +'inDiscountPrice').value;
+    
+    if(discountTypeVar == 'Percentage Discount') {
+        if(pgStatusPer) {
+            document.getElementById(comRootId+'inDisChk').disabled = true;
+            document.getElementById(comRootId+'inpFV').value = '';
+            document.getElementById(comRootId+'inpFV').disabled = true;
+            //document.getElementById(comRootId+'disPer').disabled = false;
+        } else {
+            document.getElementById(comRootId+'inDisChk').disabled = false;
+            document.getElementById(comRootId+'inpFV').disabled = false;
+            document.getElementById(comRootId+'disPer').value = '';
+        }
+    } else if(discountTypeVar == 'Flat Discount') {
+        if(pgStatusFlat) {
+            document.getElementById(comRootId+'inPDChk').disabled = true;
+            document.getElementById(comRootId+'disPer').value = '';
+            document.getElementById(comRootId+'disPer').disabled = true;
+            //document.getElementById(comRootId+'inpFV').disabled = false
+        } else {
+            document.getElementById(comRootId+'inPDChk').disabled = false;
+            document.getElementById(comRootId+'disPer').disabled = false;
+            document.getElementById(comRootId+'inpFV').value = '';
+        }
+    } else {
+        var listPriceVal = document.getElementById(comBelowId+'inListP').value; 
+        if(pgStatusPer) {
+            //Percentage Discount
+            var disPerVal = document.getElementById(comRootId+'disPer').value;
+            if(disPerVal == '') {
+                alert('Discount Percentage is required !');
+            } else {
+                //for discounted price
+                document.getElementById(comBelowId+'inDis').value = listPriceVal * disPerVal;
+            } 
+        }else if(pgStatusFlat) {
+            // Flat Value
+            var flatVal = document.getElementById(comRootId+'inpFV').value;
+            if(flatVal == '') {
+                alert('Fixed Discount Price is required !');
+            } else {
+                //for discounted price
+                document.getElementById(comBelowId+'inDis').value = flatVal;
+            }
+        } else {
+            alert('Please select a Discount Method !');
+        }
+    }//End of if-else
+}
+function discountPrice() {
+    var comRootId = 'pg:pf:comPgBlck:comPgSecBlck:';
+    var comBelowId = 'pg:pf:comPgBlck:cpr:';
+    
+    var discountedVal = document.getElementById(comBelowId+'inDis').value;
+    if(discountedVal == '') {
+        alert('Please compute the \'Discounted Price\'');
+        return false;
+    } else {
+        var rejMorInfoVal = document.getElementById(comRootId +'inRej').value;
+        if(rejMorInfoVal != '') {
+            var areUSure = confirm('Are you sure you want to wipe \'Reject/More Info Comment\' info ?');
+            if(areUSure == true) {
+                document.getElementById(comRootId +'inRej').value;
+                window.close();
+                return true;
+            } else {
+                alert('\'Reject/More Info Comment\' is not required for \'Approve Discount\'');
+                return false;
+            }
+         } else {
+            return false;
+         }
+    }
+    return false;
+}
+</script>
+<apex:sectionHeader title="Special Pricing Wizard" id="sh"/>
+    <apex:form id="pf">
+      <apex:pageBlock rendered="{!isGuiMsg}" id="msPgBlck">
+          <apex:pageMessages ></apex:pageMessages>
+      </apex:pageBlock><br/>
+      <apex:pageBlock rendered="{!NOT(isGuiMsg)}" id="comPgBlck">
+          <apex:pageMessages ></apex:pageMessages>
+          <apex:pageblockSection title="Please select Discount Method and Enter Value" id="comPgSecBlck"> 
+               <apex:inputCheckbox label="Percentage Discount" 
+                   value="{!discountProductObj.Percentage_Discount__c}" 
+                   onclick="computeDiscount('Percentage Discount')"
+                   id="inPDChk"/>
+               <apex:inputField label="Discount Percentage (%)"
+                   value="{!discountProductObj.Discount_Percentage__c}" id="disPer"/>
+               <apex:inputCheckbox label="Fixed Price" 
+                   value="{!discountProductObj.Flat_Discount__c}"
+                   onclick="computeDiscount('Flat Discount')"
+                   id="inDisChk"/>
+               <apex:inputField label="Fixed Discounted Price"  value="{!discountProductObj.Flat_Discount_Value__c}" id="inpFV"/>
+               <apex:inputTextArea label="Reject/More Info Comment" rows="3" cols="60"  
+                   value="{!discountProductObj.Reject_More_Info_Comment__c}" 
+                   id="inRej" />
+            </apex:pageblockSection>
+           <apex:pageblockSection title="Competitive Pricing Result" columns="2" id="calResId">        
+               <apex:outputField value="{!discountProductObj.List_Price__c}" id="inListP"/>
+               <apex:outputLabel value="" id="inListPa"/>
+               <apex:outputField value="{!discountProductObj.Discount_Amount__c}" id="disAmt"/>
+               <apex:outputField value="{!discountProductObj.Discounted_Percentage__c}" label="Discounted Percentage" id="disPer"/>
+               <hr width="60%" align="left" size="4px" noshade="true"/><apex:outputLabel value="" id="inListEmpty"/>
+               <apex:outputField label="Discounted Price($)" value="{!discountProductObj.Discounted_Price__c}" id="inDis" />
+               <apex:inputHidden value="{!discountProductObj.Competitive_Pricing_Status__c}" id="inComSt"/>
+               <apex:inputHidden value="{!discountProductObj.Discounted_Percentage__c}" id="inDiscountPrice"/>
+            </apex:pageblockSection><br/>
+            <div align="center">
+                <apex:commandButton value="Calculate Discount" action="{!doCalculateDiscount}" oncomplete="saveclose('calDis')" rerender="calResId"/>  
+                <!--<apex:commandButton value="Approve Discount" action="{!doApproveDiscount}" oncomplete="saveclose('appDis')" rerender="calResId"/>-->
+                     <apex:commandButton value="Approve Discount" action="{!doApproveDiscount}" oncomplete="saveclose('appDis')" rerender="calResId"/>
+                <!--<apex:commandButton value="Reject Discount" action="{!doRejectDiscount}" oncomplete="saveclose('rejComm')" rerender="validuser"/>-->
+                    <apex:commandButton value="Reject Discount" action="{!doRejectDiscount}" oncomplete="saveclose('rejComm')" rerender="validuser"/>
+                <!--<apex:commandButton value="More Info Needed" action="{!doMoreInfo}" oncomplete="saveclose('rejComm')" rerender="validuser"/>-->
+                    <apex:commandButton value="More Info Needed" action="{!doMoreInfo}" oncomplete="saveclose('rejComm')" rerender="validuser"/> 
+                <!--<input type="button" value="Close" id="cdId" onclick="window.close();return false;" class="btn"/>-->
+                    <apex:commandButton value="Close" action="{!Cancel}" /> 
+           </div>           
+        </apex:pageBlock>
+      </apex:form>
+</apex:page>

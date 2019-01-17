@@ -1,0 +1,124 @@
+<apex:page standardController="Account" extensions="SIAccountController" tabStyle="Heat_Map__tab">
+<style type="text/css">
+table.gridtable {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 100px;
+    border-color: #666666;
+    border-collapse: collapse;
+    border-radius: 3px 3px 3px 3px    
+}
+table.gridtable th {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: black;
+    background-color: #dedede;
+    border-radius: 3px 3px 3px 3px
+}
+table.gridtable td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 3px 3px 3px 3px    
+}
+</style>
+<apex:form id="formId">
+    <table width="100%" align="left" border="0">
+        <tr>
+            <td width="50%">
+               <!-- <apex:outputPanel rendered="{!AND(NOT(isDisplay),heatMapController.isHeatMapDisplay)}">
+                    <apex:outputLabel ><b>Displaying Heat Map for {!Account.Name}</b></apex:outputLabel>
+                </apex:outputPanel> -->
+                <apex:outputPanel rendered="{!isDisplay}">
+                    <input type="button" value="Refresh" class="btn" onClick="generateHeatMap('{!actId}')"/>&nbsp;&nbsp;
+                </apex:outputPanel>    
+                <apex:actionStatus startText="Generating Heat Map please wait..." startStyle="color:red;font-weight:bold;"
+                      stoptext="" stopStyle="color:green;font-weight:bold;" 
+                      id="heatMapStatus"/><br/><br/>
+                     
+                <apex:pageBlock tabStyle="Account" id="heatMapGridId" rendered="{!heatMapController.isHeatMapDisplay}">
+                    <apex:pageBlockSection title="Heat Map Grid {!IF(NOT(isDisplay),' for '+Account.Name,'')}" columns="2" collapsible="true">
+                    <apex:outputLabel id="heatMapPBGridId" title="Heat Map Grid">
+                        <table class="gridtable" boder="0">
+                            <thead>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th>AVPN</th>
+                                    <th>CaaS</th>
+                                    <th>StaaS</th>
+                                    <th>MIS</th>
+                                    <th>MPLS PNT</th>
+                                </tr>
+                            </thead>
+                            <apex:repeat value="{!heatMapController.persistedHeatMapList}" var="heatMapObj">
+                                 <tr>
+                                    <td nowrap="nowrap">
+                                        <a href="/{!IF(heatMapController.searchType == 'account',heatMapObj.endCustomerId,heatMapObj.accountId)}">
+                                            {!IF(heatMapController.searchType == 'account',heatMapObj.endCustomerName,heatMapObj.accountName)}
+                                        </a>    
+                                    </td>
+                                    <td bgcolor="{!heatMapObj.productCodeMap['AVPN']}">&nbsp;</td>
+                                    <td bgcolor="{!heatMapObj.productCodeMap['CaaS']}">&nbsp;</td>
+                                    <td bgcolor="{!heatMapObj.productCodeMap['StaaS']}">&nbsp;</td>
+                                    <td bgcolor="{!heatMapObj.productCodeMap['MIS']}">&nbsp;</td>
+                                    <td bgcolor="{!heatMapObj.productCodeMap['MPLSPNT']}">&nbsp;</td>
+                                </tr>
+                            </apex:repeat>
+                        </table><br/>
+                        <apex:outputPanel rendered="{!isDisplay}">
+                           <b>
+                               Displaying {!IF(isRefreshClicked, totalEndCustomers, '3')} of &nbsp;
+                               <apex:outputLink value="/apex/SIAccountHeatmap?id={!Account.Id}&isMore=false" target="_parent">
+                                   {!totalEndCustomers}
+                               </apex:outputLink>
+                           </b>
+                        </apex:outputPanel>
+                    </apex:outputLabel>
+                   </apex:pageBlockSection>                         
+                </apex:pageBlock>
+            </td>
+            <td width="50%">
+                &nbsp;
+            </td>
+         </tr>       
+    </table>
+    <apex:pageBlock rendered="{!heatMapController.isHeatMapDisplay}">
+      <apex:pageBlockSection title="Legend" columns="1" collapsible="true">
+          <apex:outputLabel id="legendLbl" title="Heat Map Grid">
+              <table class="gridtable" boder="0">
+                     <tr>
+                         <td bgcolor="Green">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                         <td>Deal Available, the end-customer does not have the product with an existing SP.</td>
+                         <td bgcolor="Blue">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                         <td>AT&amp;T, the end customer is on the named account list.</td>
+                     </tr>                     
+                     <tr>
+                         <td bgcolor="Yellow">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                         <td>Deal Pending, the deal has been submitted by 
+                         another SP and is pending approval by the EBM team or has been approved but the solution is not sold.</td>
+                         <td bgcolor="Orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                         <td>Deal Pending, the deal has been submitted by the current SP and is pending approval 
+                         by the EBM team or has been approved but the solution is not sold</td>
+                     </tr>                     
+                     <tr>
+                         <td bgcolor="Red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                         <td>Deal Closed, the deal has been approved by EBM and the solution has been 
+                             sold to the end customer by another SP.</td>
+                         <td bgcolor="#8A0808">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                         <td>Deal Closed, the deal has been approved by EBM and the solution has been 
+                             sold to the end customer by the current SP.</td>
+                     </tr>                                                                                                         
+                 </table>
+          </apex:outputLabel>
+      </apex:pageBlockSection>
+    </apex:pageBlock> 
+
+    <apex:actionFunction action="{!generateAccountHeatMap}" name="generateHeatMap" rerender="heatMapGridId" status="heatMapStatus">
+        <apex:param name="actId" value="" assignTo="{!actId}"/>
+    </apex:actionFunction>
+    
+</apex:form>
+</apex:page>

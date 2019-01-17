@@ -1,0 +1,1737 @@
+<apex:page Controller="RDSDetailsController"  docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader" />   
+    <!-- Javascript -->
+    <apex:includescript value="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js" />
+    <apex:includescript value="//cdn.datatables.net/plug-ins/1.10.11/features/searchHighlight/dataTables.searchHighlight.min.js" />
+    <apex:includescript value="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" />
+    <apex:includescript value="//cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js" />
+    <apex:includescript value="//cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js" />
+    <apex:includeScript value="{!$Resource.downloadJS}"/> 
+        <style> 
+        .scrollToTop{    
+            width:75px; 
+            height:100px;
+            padding:10px; 
+            text-align:center; 
+            font-weight: bold;
+            color: #444;
+            position:fixed;
+            bottom: 55px;
+            right:40px;
+            z-index:9999;
+            background: url('{!$Resource.TopArrow}') no-repeat 0px 20px;
+            display:none;
+        }
+        .modal-footer input{
+            width: auto !important;
+        }  
+        .botalign{
+            margin-top: 10px !important;
+        }
+        form.RDSDetailsForm{
+            margin:0 80px 0 80px; 
+            padding: 0 5px;
+        }   
+        #jumpTo{
+            font-weight:normal;
+            font-size:18px;
+            line-height :18px;
+            font-family:omnes_att_iimedium;
+            color:#010101;
+            margin-bottom: 23px !important;
+        }
+        #QuoteDetails .SiteStatus tbody tr:nth-child(even){
+            background : none !important;
+        }
+        #QuoteDetails .SiteStatus tbody tr:nth-child(odd){
+            background : none !important;
+        }
+        #QuoteDetails{
+            font-family:omnes_att_iiregular;
+            font-weight:bold;
+            margin-bottom: 15px !important;
+            padding-bottom:2px;
+            line-height :15px;
+            font-size: 15px;
+            effect:none;
+            color:#010101;
+        }
+        #CustomerDetails{
+            font-family: omnes_att_iimedium;
+            color:#000000 !important;
+            text-align:left;
+            line-height:19px;
+            font-size: 18px;
+            effect:none;
+            margin-top: 23px !important;
+        }
+        #RDSDetails{
+            font-family: omnes_light !important;
+            color:#040404;
+            margin-top:28px;
+            padding-bottom:15px; 
+            padding-left:50px;
+            letter-spacing:0 em;
+            font-weight:bold;
+            text-align:left;
+            line-height :1.71em;
+            font-size: 2em;
+            effect:none; 
+        }
+        #blueline{
+            margin-bottom:25px !important;
+        }
+        #main-container{
+            background: #fff;
+            border: 1px solid #e1e1e1;
+            border-radius: 8px;
+        }
+        .rdsSubSection{
+            font-family: omnes_att_iimedium;
+            background : none !important;
+            margin: 22px 22px;    
+            text-align:left;
+            line-height:1.18em;
+            font-size: 1.38em;
+            color:#000000;
+            effect:none; 
+        }
+        .rdsSubSection label{
+            font-weight: normal;
+            font-family: omnes_att_iimedium;
+            padding-right:6px;
+        }
+        .rdsSubSection td>span{
+            font-weight: normal;
+            font-family: omnes_light;
+        }
+        #subtopic{
+            font-family: omnes_att_iimedium;
+            line-height:19px;
+            font-size:18px;
+            color:#000000;
+        }
+        #Enhanced{
+            font-family: omnes_att_iimedium;
+            background : none !important;    
+            margin-top:32px;
+            font-style:bold;
+            text-align:left;
+            line-height:1.18em;
+            font-size: 20px;
+            color:#000000;
+            effect:none;
+        }
+        #vlanSpeedBar{
+            font-family: omnes_att_iimedium;
+            background:#ffffff !important;
+        }
+        #SiteContactdiv{
+            font-family: omnes_att_iimedium;
+            color:#000000 !important;
+            text-align:left;
+            line-height:19px;
+            font-size: 18px;
+            margin-left: 16px;
+            effect:none;
+        }
+        #Quotediv{
+            font-family: omnesatt_iiregular;
+            color:#000000; 
+            text-align:left;
+            line-height:19px;
+            font-size: 15px;
+            margin-bottom:15px !important;
+            background:none !important;
+        }
+        .QuoteID tbody tr:nth-child(odd){
+            background : none !important;
+        }           
+        .QuoteID tbody tr:nth-child(even){
+            background : none !important;
+        }       
+        .SiteStatus tbody tr:nth-child(odd){
+            background : none !important;
+        }           
+        .SiteStatus tbody tr:nth-child(even){
+            background : none !important;
+        }       
+        table.SiteContactTable{
+            font-family: omnes_att_iimedium;
+            color:#000000; 
+            text-align:left;
+            line-height:19px;
+            font-size: 18px;
+            effect:none; 
+            background:#ffffff !important;
+        }
+        .SiteContactTable tbody tr:nth-child(even){
+            background : none !important;
+        }
+        .SiteContactTable tbody tr:nth-child(odd){
+            background : none !important;
+        }
+        div.rdsSubSection h3.title{
+            margin: 0px;
+            margin-top: 12px;
+        }
+        #downloadSection{
+            margin-top:28px;
+        }
+        .downloadLink a{
+            color: #0568ad !important;
+            font-size: 16px;
+            font-family: omnes_att_iimedium;
+            font-weight: bold;
+            text-align: right;
+            cursor:pointer;
+        }
+        .downloadLink {
+            text-align: right;
+            padding-right:40px;
+        }
+        .grey_hr{
+            background: #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+        .footer_copy{
+            margin-top:48px;
+        }
+        div.questionnaireSection, div.moveRequirementsSection{
+            margin-bottom:30px;
+        }
+        div.rdsSubSection .panel-heading{
+            padding: 0;
+            border:0;
+            background-color:#fff;
+        }
+        div.rdsSubSection .panel-group{
+            margin-right:40px;
+            margin-bottom:13px;
+        }
+        div.panel-heading span{
+            font-family: omnes_light !important;
+            color:#000;
+        }
+        div.panel-heading>a:hover{
+            color: #000 !important;
+        }
+        .panel-title>a, .panel-title>a:active{
+            display:block;
+            padding:15px;
+            color:#000 !important;
+            font-size:18px;
+            font-weight:normal;
+            font-family:omnes_att_iimedium;
+            letter-spacing:1px;
+            word-spacing:3px;
+            text-decoration:none;
+        }
+        .panel-title>a:hover{
+            color:#000;
+        }
+        .panel-heading  a:before {
+            font-family: 'Glyphicons Halflings';
+            content: "\e114";
+            float: right;
+            transition: all 0.5s;
+            color:#067ab5;
+            font-color:#000;
+        }
+        .panel-heading.active a:before {
+            -webkit-transform: rotate(180deg);
+            -moz-transform: rotate(180deg);
+            transform: rotate(180deg);
+        } 
+        #vlanMultiBlock{
+            margin-top:40px;
+        }
+        div.panel-body{
+            font-size:18px;
+        }
+        .containerMargin{
+            padding-left: 34px !important;
+        }
+        .rightSection{
+            padding-right: 40px;
+        }
+        a.disabled {
+            pointer-events: none;
+            cursor: none;
+            color : #808080 !important;
+        }
+        div.rdsDetailsContainer label{
+            padding-right:5px;
+        }
+        li.uploadedFileLink a{
+            font-family:omnes_att_iimedium;
+            font-size:18px;
+            white-space:nowrap;
+        }
+        .uploadedFileLink{
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width:500px;
+            width:100%;
+        }
+        .PBXRestriction{
+            padding-bottom: 10px;
+        }
+        .addmargin{
+            margin-top:30px !important;
+        }
+        form.RDSDetailsForm div.siteDetailsdiv{
+            background: #F0F0F0 !important; 
+        }
+    </style> 
+    <script>
+        var conResponse;
+        var count=0;   
+        var zipFile = new JSZip();
+        var jsAtt;
+        var zipFileCount = 1;
+        var arr = new Array();
+        var totalFileSize=0;
+        var lastAttachment=0;
+        var attachmentCounter = 0;
+        var dataTableComp;
+        var downloadDataTableComp;
+        var chkValArr=[];
+        var singleFileDownloadArr = [];
+        var fileSiteName='{!siteName}';
+        var index=0;
+        var hideProcessing=false;
+        
+        function downloadRDSDetails(){
+            if(typeof $('#walkme-player') != 'undefined'){
+                $('#walkme-player').hide();
+            }
+            var isVLAN = false;
+            var nonCollapsableBlock = $('.panel-heading.active').attr('id');
+            if($('#vlanMultiBlock').length>0){
+                isVLAN = true;
+                $('.collapse').collapse('show');
+            }   
+            setTimeout(function(){
+            var canvasHeight = $(document).height();
+            var canvasWidth = $(document).width(); 
+            var pdf = new jsPDF('p', 'pt', [canvasHeight,canvasWidth]);
+            pdf.addHTML(document.body, function() {
+                pdf.save(fileSiteName+'_RDSDetails.pdf');
+                if(isVLAN){
+                    setTimeout(function(){
+                        $('.collapse.in').collapse('hide');
+                        if(typeof nonCollapsableBlock != 'undefined'){
+                            $('[aria-labelledby='+nonCollapsableBlock+']').collapse('show');
+                        }
+                    },200); 
+                }
+                if(typeof $('#walkme-player') != 'undefined'){
+                $('#walkme-player').show();
+            }
+            });
+            },300);
+            return false;
+        }
+
+        function downloadZip(){
+            zipFileCount =1;
+            totalFileSize=0;
+            attachmentCounter = 0;
+            var chkValArr = {!attachmentIdList};
+            var fileName = '';
+            $("#loading").parent().show();
+            if(chkValArr.length>1){
+                chkValArr.forEach(function(attId) {
+                     Visualforce.remoting.Manager.invokeAction(
+                     '{!$RemoteAction.RDSDetailsController.getDocumentCnt}',
+                     attId,
+                     function(result,event) 
+                     {
+                         if(event.status)
+                         {
+                             jsAtt = result;
+                             var attachmentData;
+                             hideProcessing = true;
+                             $.each(jsAtt, function(key,value) 
+                             {
+                                                
+                                totalFileSize+=value.attFileSize;
+                                
+                                if(attachmentCounter==0){
+                                    zipFile = new JSZip();
+                                    fileName = fileSiteName+'_Archive Documents'+zipFileCount+'.zip';
+                                    
+                                }
+                                attachmentCounter++;
+                                if (totalFileSize <26203910)
+                                {
+                                    compressFile(zipFile,value.attName,value.attEncodedBody);
+                                    if(attachmentCounter ==  chkValArr.length){
+                                        setTimeout(function(){
+                                            attachmentData = zipFile.generate();
+                                            download('data:application/zip;base64,'+attachmentData,fileName,'application/zip');
+                                        },300); 
+                                        setTimeout(function(){$("#loading").parent().hide();},1000);
+                                        hideProcessing = false;
+                                    }
+                                }  
+                                else{
+                                    zipFileCount++;
+                                    totalFileSize=value.attFileSize;
+                                    attachmentData = zipFile.generate();
+                                    download('data:application/zip;base64,'+attachmentData,fileName,'application/zip');  
+                                    zipFile = new JSZip();
+                                    fileName = fileSiteName+'_Archive Documents'+zipFileCount+'.zip';
+                                        compressFile(zipFile,value.attName,value.attEncodedBody);
+                                        if(attachmentCounter ==  chkValArr.length){ 
+                                            setTimeout(function(){
+                                            attachmentData = zipFile.generate();
+                                            download('data:application/zip;base64,'+attachmentData,fileName,'application/zip'); 
+                                            setTimeout(function(){$("#loading").parent().hide();},1000);
+                                            hideProcessing = false;
+                                            },300);  
+                                        }
+                                    
+                                }
+                                 
+                                
+                             });
+                             
+                         }
+                         
+                    },{buffer: false,escape: true, timeout: 90000});
+                 });
+             }
+             else if(chkValArr.length ==1){
+                if(typeof ($('[id='+chkValArr[0]+']'))[0] != 'undefined'){
+                    ($('[id='+chkValArr[0]+']'))[0].click();
+                }
+                ($('[id='+chkValArr[0]+']')).trigger("click");
+                setTimeout(function(){$("#loading").parent().hide()},1000);                                  
+            }
+             
+             return false;
+         }
+
+        function compressFile(zipFile, name, data){
+            zipFile.file(name, data, {base64:true});
+        }
+
+        var jumpToPosition = 0;
+        $(document).ready(function(){
+            jumpToPosition = $("#jumpTo").offset().top;
+            var ipFlexInformationFlag = '{!ipFlexInformation}';
+            console.log(typeof ipFlexInformationFlag+'  :: '+ipFlexInformationFlag);
+            if(ipFlexInformationFlag == "false")
+            {
+                $("#downloadDocumentId").attr("disabled","true"); 
+            }
+            $('.scrollToTop').click(function(){
+                $('html, body').animate({scrollTop : 0},500);
+                return false;
+            });
+            $(window).scroll(function(){
+                if ($(this).scrollTop() > 200) {
+                    $('.scrollToTop').fadeIn();
+                } else {
+                    $('.scrollToTop').fadeOut();
+                }
+            });
+            window.addEventListener("hashchange", function () {
+                window.scrollTo(window.scrollX, window.scrollY-100);
+            });
+            $('.uploadedFileLink a').each(function(){
+                var str = $(this).text();
+                if (str.length > 50) {
+                    str = str.substr(0, 25) + '...' + str.substr(str.length-25, str.length);
+                    $(this).text(str);
+                }
+            }); 
+            
+        });
+        $( window ).bind( "load", function() {  
+
+            /* Toggle VLAN */
+            $('.panel-collapse').on('show.bs.collapse', function () {
+                $(this).siblings('.panel-heading').addClass('active');
+            });
+
+            $('.panel-collapse').on('hide.bs.collapse', function () {
+                $(this).siblings('.panel-heading').removeClass('active');
+            });
+
+        });
+
+    </script>
+
+    <div class="clearfix"></div>
+
+    <div id="rdsDetailsContainerId" class="content_container rdsDetailsContainer">
+        <div class="m0">
+            <a href="#" class="scrollToTop arrowImageDim"></a>
+        </div>
+        <apex:form id="RDSDetailsForm" styleClass="RDSDetailsForm">
+            <div class="container p0 m0">
+                <div class="row">
+                    <div id="RDSDetails" class="col-md-6">RDS Details</div>
+                    <div class="col-md-6" id="downloadSection">
+                        <ul class="pull-right downloadLink">
+                            <li>
+                                <a onclick="return downloadRDSDetails();">Download RDS</a>
+                            </li>
+                            <li>
+                                <a onclick="return downloadZip();" id="downloadDocumentId" class="{!IF(ipFlexInformation==false || attachmentIdList.size == 0,'disabled','')}">Download Related Documents</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 p0 m0 containerMargin" id="SiteContactdiv" >
+                <label style="font-weight: 500 !important;">{!$Label.Customer}</label><span style="font-family: omnesatt_iiregular;">{!customerName}</span>
+            </div>
+            <div class="col-xs-12 p0 m0 containerMargin" id="Quotediv">
+                <div class="col-xs-4 p0 m0" id="quoteDetails">
+                    <label style="font-family:omnes_att_iimedium; font-weight:500; color:#000000;">{!$Label.Quote_Number}{!$Label.Colon}</label><span style="font-family: omnes_light;">{!quoteId}</span>
+                </div>
+                <div class="col-xs-4" id="productId">
+                    <label style="font-family:omnes_att_iimedium; font-weight:500; color:#000000;">{!$Label.Product}</label><span style="font-family: omnes_light;">{!productName}</span>
+                </div>
+                <div class="col-xs-4 rightSection" id="termId" style="text-align:right">
+                    <label style="font-family:omnes_att_iimedium; font-weight:500; color:#000000;">{!$Label.Term_End_Date}</label><span style="font-family: omnes_light;">{!termEndDate}</span>
+                </div>
+            </div>
+
+            <!-- SiteDetail -->
+            <div class="col-xs-12 p0 m0 siteDetailsdiv">
+                <hr class="blue_hr lineAdjust col-xs-12 p0 m0"></hr>
+                <div id="CustomerDetails" class="col-xs-12 p0 m0 containerMargin">
+                    <label style="font-weight: bold !important;">{!$Label.Site_Name}{!$Label.Colon}</label><span style="font-family: omnes_light;">{!siteName}</span>
+                </div>
+                <div id="siteDetails" class="col-xs-12 p0 m0 containerMargin">
+                    <div class="col-xs-4 p0 m0" id="address"><span style="font-family:omnes_att_iimedium; font-weight:500; color:#000000;">{!siteFullAddr}</span></div>
+                    <div class="col-xs-4" id="buildingId">
+                        <table class="SiteStatus" style="margin-bottom: 19px !important;">  
+                            <tr>
+                                <apex:outputPanel rendered="{!IF(building ==null || building == '',false,true)}">
+                                    <td><label class="m0">{!$Label.Building} </label> <span style="font-weight: normal;"> {!building} </span></td>
+                                </apex:outputPanel>  
+                            </tr>
+                            <tr>
+                            <apex:outputPanel rendered="{!IF(floor ==null || floor == '',false,true)}">
+                                <td><label class="m0">{!$Label.Floor}{!$Label.Colon}</label> <span style="font-weight: normal;"> {!floor} </span></td>
+                            </apex:outputPanel>
+                            </tr>
+                            <tr>
+                            <apex:outputPanel rendered="{!IF(room ==null || room == '',false,true)}">
+                                <td><label class="m0">{!$Label.Room} </label> <span style="font-weight: normal;">{!room} </span></td>
+                            </apex:outputPanel>      
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-xs-4 pull-right rightSection" style="text-align:right;" id="installation">
+                        <table class="SiteStatus" style="margin-bottom: 19px !important;">
+                            <apex:outputPanel rendered="{!isMIS}"><!--MIS-->
+                            <tr>
+                                <td>
+                                    <div style="text-align:right"><label class="m0">{!$Label.Installation_Type} </label> <span style="font-weight: normal;">{!installationType} </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            </apex:outputPanel>
+                            <tr>
+                                <td>
+                                    <div style="text-align:right"><label class="m0">{!$Label.Installation_Date} </label> <span style="font-weight: normal;">{!installationDate} </span>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>
+                                    <div style="text-align:right">
+                                        <label class="m0">{!$Label.Site_Phone_Number} </label> <span style="font-weight: normal;">{!sitePhoneNumber} </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 m0 p0" >
+                   <hr class="blue_hr lineAdjust col-xs-12 p0 m0"></hr>
+            </div>
+
+            <!-- VPN FOR AVPN -->
+            <apex:outputPanel rendered="{!isAVPN}">
+            
+            <div id="VPNid" class="col-xs-12 p0 m0 containerMargin" style="margin-bottom: 13px !important;margin-top: 20px !important;">
+                <div class="col-xs-4 p0 m0"><label style="font-family:omnes_att_iimedium; font-weight:500; color:#000000;">{!$Label.VPN_Name}</label><span style="font-family: omnes_light;">{!vpnName}</span></div>
+                <div class="col-xs-4"><label style="font-family:omnes_att_iimedium; font-weight:500; color:#000000;">{!$Label.VPN_Connectivity_Policy}</label><span style="font-family: omnes_light;">{!vpnConnectionPolicy}</span></div>
+                <div class="col-xs-4 rightSection" style="text-align:right"><label style="font-family:omnes_att_iimedium; font-weight:500; color:#000000;">{!$Label.Hub}</label><span style="font-family: omnes_light;">{!hub}</span></div>
+            </div>
+            <div class="col-xs-12 m0 p0" >
+                <hr class="blue_hr lineAdjust col-xs-12 p0 m0"></hr>
+            </div>
+            </apex:outputPanel>
+            
+            <!-- Jump To (chnage to repeat list)-->
+            <div id="jumpTo" class="containerMargin">
+             <div class="col-xs-12 m0 p0" >
+                <br/>
+            </div>
+               
+                <!-- MIS order without Managed Router and IPFlex-->
+                <apex:outputPanel rendered="{!IF(isAVPN == true && vlanWrapperList.size > 1 && ipFlexInformation == true,true,false)}">
+                    <td>{!$Label.Jump_to}
+                        <a href="#portInformationId">Port Information </a>
+                        <span style="color:solid black">|</span>
+                        <a href="#VLANInformationId"> VLAN Information</a>
+                        <span style="color:solid black">|</span>
+                        <a href="#ipFlexInformationId"> IP Flexible Reach Information</a>
+                    </td>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(isAVPN == true && vlanWrapperList.size > 1 && ipFlexInformation == false,true,false)}">
+                    <td>{!$Label.Jump_to}
+                        <a href="#portInformationId">Port Information </a>
+                        <span style="color:solid black">|</span>
+                        <a href="#VLANInformationId"> VLAN Information</a>
+                    </td>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(isAVPN == true && vlanWrapperList.size < 2 && ipFlexInformation == true,true,false)}">
+                    <td>{!$Label.Jump_to}
+                        <a href="#portInformationId">Port Information </a>
+                        <span style="color:solid black">|</span>
+                        <a href="#ipV4V6PortInformation">IP Information</a>
+                        <span style="color:solid black">|</span>
+                        <a href="#ipFlexInformationId"> IP Flexible Reach Information </a>
+
+                    </td>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(isAVPN == true && vlanWrapperList.size < 2 && ipFlexInformation == false,true,false) }">
+                    <td>{!$Label.Jump_to}
+                        <a href="#portInformationId">Port Information </a>
+                        <span style="color:solid black">|</span>
+                        <a href="#ipV4V6PortInformation">IP Information</a>
+                    </td>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(isMIS == true && managedRouterShippingInformation == true && ipFlexInformation == true,true,false)}">
+                    <td>{!$Label.Jump_to}
+                        <a href="#portInformationId">Port Information </a>
+                        <span style="color:solid black">|</span>
+                        <a href="#ipV4V6PortInformation"> IP Information</a>
+                        <span style="color:solid black">|</span>
+                        <a href="#managedRouterId" > Managed Router Shipping Information</a>
+                        <span style="color:solid black">|</span>
+                        <a href="#ipFlexInformationId"> IP Flexible Reach Information</a>
+                    </td>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(isMIS == true && managedRouterShippingInformation == true && ipFlexInformation == false,true,false)}">
+                    <td>{!$Label.Jump_to}
+                        <a href="#portInformationId">Port Information </a>
+                        <span style="color:solid black">|</span>
+                        <a href="#ipV4V6PortInformation"> IP Information</a>
+                        <span style="color:solid black">|</span>
+                        <a href="#managedRouterId" > Managed Router Shipping Information</a>
+                    </td>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(isMIS == true && managedRouterShippingInformation == false && ipFlexInformation == true,true,false)}">
+                    <td>{!$Label.Jump_to}
+                        <a href="#portInformationId">Port Information </a>
+                        <span style="color:solid black">|</span>
+                        <a href="#ipV4V6PortInformation"> IP Information</a>
+                        <span style="color:solid black">|</span>
+                        <a href="#ipFlexInformationId"> IP Flexible Reach Information</a>
+                    </td>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!IF(isMIS == true && managedRouterShippingInformation == false && ipFlexInformation == false,true,false)}">
+                    <td>{!$Label.Jump_to} 
+                        <a href="#portInformationId">Port Information </a>
+                        <span style="color:solid black">|</span>
+                        <a href="#ipV4V6PortInformation"> IP Information</a>
+                    </td>
+                </apex:outputPanel>
+            </div>
+            
+            <!-- Main Container -->
+            <div id="main-container" class="container row col-xs-12 m0 p0">
+                <apex:outputPanel id="siteContactPanel">
+                    <div id="siteContactId" class="rdsSubSection">
+                        <div class="col-xs-6">
+                            <h3 class="title">Site Contact</h3>
+                            <table class="SiteContactTable">
+                                <tr>
+                                    <td colspan="6">
+                                        <tr><td><span> &nbsp; </span></td></tr>
+                                        <tr><td><label>{!$Label.Primary_Contact}</label></td></tr>
+                                        <tr><td><span> &nbsp; </span></td></tr>
+                                        <apex:outputPanel rendered="{!IF(primaryContactFullName == null || primaryContactFullName  == '', false, true)}">
+                                            <tr><td><label>{!$Label.Name_First_Last}</label><span>{!primaryContactFullName}</span></td></tr> 
+                                        </apex:outputPanel>
+                                         <apex:outputPanel rendered="{!IF(primaryContactEmail == null || primaryContactEmail  == '', false, true)}">
+                                            <tr><td><label>{!$Label.Email_Address}</label><span>{!primaryContactEmail}</span></td></tr>
+                                        </apex:outputPanel>
+                                         <apex:outputPanel rendered="{!IF(primaryContactBusinessPhone == null || primaryContactBusinessPhone  == '', false, true)}">
+                                            <tr><td><label>{!$Label.Business_Phone_Number}</label><span>{!primaryContactBusinessPhone}</span></td></tr>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(primaryContactMobilePhone == null || primaryContactMobilePhone  == '', false, true)}">
+                                            <tr><td><label>{!$Label.Mobile_Phone_Number}</label><span>{!primaryContactMobilePhone}</span></td></tr>
+                                        </apex:outputPanel>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>
+                        <div class="col-xs-6">
+                            <h3 class="title">&nbsp;</h3>
+                            <table class="SiteContactTable">
+                                <tr>
+                                    <td colspan="6">
+                                        <tr><td><span> &nbsp; </span></td></tr>
+                                        <tr><td><label>{!$Label.Alternate_Contact}</label></td></tr>
+                                        <tr><td>&nbsp;</td></tr>
+                                        <apex:outputPanel rendered="{!IF(alternateContactFullName == null || alternateContactFullName  == '', false, true)}">
+                                            <tr><td><label>{!$Label.Name_First_Last}</label><span>{!alternateContactFullName}</span></td></tr>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(alternateContactEmail == null || alternateContactEmail  == '', false, true)}">
+                                            <tr><td><label>{!$Label.Email_Address}</label><span>{!alternateContactEmail}</span></td></tr>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(alternateContactBusinessPhone == null || alternateContactBusinessPhone  == '', false, true)}">
+                                            <tr><td><label>{!$Label.Business_Phone_Number}</label><span>{!alternateContactBusinessPhone}</span></td></tr>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(alternateContactMobilePhone == null || alternateContactMobilePhone  == '', false, true)}">
+                                            <tr><td><label>{!$Label.Mobile_Phone_Number}</label><span>{!alternateContactMobilePhone}</span></td></tr>
+                                        </apex:outputPanel>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 m0 p0 botalign"><hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"/></div>
+                </apex:outputPanel>
+
+                <!-- Port Information Section -->
+                <apex:outputPanel id="portInformationPanel">
+                    <div id="" class="rdsSubSection">
+                        <div id="portInformationId" class="col-xs-6">
+                            <h3 class="title">Port Information</h3>
+                            <table class="SiteContactTable">
+                                <tr>
+                                    <td colspan="6">
+                                        <tr><td><span> &nbsp; </span></td></tr>
+                                        <apex:outputPanel rendered="{!IF(portType == null || portType  == '', false, true)}">
+                                            <tr><td><label>{!$Label.Port_Type}</label><span>{!portType}</span></td></tr>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(portSpeed == null || portSpeed  == '', false, true)}">
+                                            <tr><td><label>{!$Label.Port_Speed}</label><span>{!portSpeed}</span></td></tr>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!isAVPN}"> <!-- True Only for AVPN-->
+                                            <apex:outputPanel rendered="{!IF(vpnStatus == null || vpnStatus  == '', false, true)}">
+                                                <tr><td><label>{!$Label.VPN_status}</label><span>{!vpnStatus}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(billingType == null || billingType == '', false, true)}">
+                                                <tr><td><label>{!$Label.Billing_type}</label><span>{!billingType}</span></td></tr>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(mbc == null || mbc  == '', false, true)}">
+                                            <tr><td><label>{!$Label.Minimum_Bandwidth_Commitment_MBC}</label><span>{!mbc}</span></td></tr>
+                                        </apex:outputPanel>
+                                        <tr><td><label>{!$Label.Class_of_Service}{!$Label.Colon}</label><span>{!cos}</span></td></tr>                                        
+                                        <apex:outputPanel rendered="{!IF(cosRealTimePercent != '' && cos == 'Yes' && vlanWrapperList.size < 2, true, false)}">
+                                            <tr><td><label>{!$Label.Real_Time_Percentage}</label><span>{!cosRealTimePercent}</span></td></tr>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(profileId != '' && cos == 'Yes' && vlanWrapperList.size < 2, true, false)}">
+                                            <tr><td><label>{!$Label.Profile_ID}</label><span>{!profileId}</span></td></tr>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!isMIS}">
+                                            <apex:outputPanel rendered="{!IF(existingPots == null || existingPots  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Existing_POTS_for_testing_router}</label><span>{!existingPots}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(sitesPots == null || sitesPots  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Sites_POTS_Phone_Number}</label><span>{!sitesPots}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(attHostDns == null || attHostDns  == '', false, true)}">
+                                                <tr><td><label>{!$Label.AT_T_to_host_your_DNS}</label><span>{!attHostDns}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(domainUrl == null || domainUrl  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Domain_URL}</label><span>{!domainUrl}</span></td></tr>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(interfaceType == null || interfaceType  == '' || interfaceType == 'None', false, true)}">
+                                            <tr><td><label>{!$Label.Interface_Type}</label><span>{!interfaceType}</span></td></tr>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(jackType == null || jackType  == '', false, true)}">
+                                            <tr><td><label>{!$Label.Jack_Type}</label><span>{!jackType}</span></td></tr>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!isMIS}"> <!-- True Only for MIS-->
+                                            <apex:outputPanel rendered="{!IF(ipType == null || ipType  == '', false, true)}">
+                                                <tr><td><label>{!$Label.IP_Type}</label><span>{!ipType}</span></td></tr>
+                                            </apex:outputPanel> 
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!isAVPN}"> <!-- True Only for AVPN-->
+                                            <apex:outputPanel rendered="{!IF(vlanTagControl == null || vlanTagControl  == '', false, true)}">
+                                                <tr><td><label>{!$Label.VLAN_Tag_Control}</label><span>{!vlanTagControl}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <!-- iptype fix -->
+                                            <apex:outputPanel rendered="{!IF(ipType == null || ipType  == '' || vlanWrapperList.size  > 1, false, true)}">
+                                                <tr><td><label>{!$Label.IP_Type}</label><span>{!ipType}</span></td></tr>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </div>        
+                    </div>
+                    <div class="col-xs-12 m0 p0 botalign"><hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"/></div>
+                </apex:outputPanel>
+
+                <!-- Access Information Section -->
+                <apex:outputPanel id="accessInformationPanel">  
+                    <div id="accessInformationId" class="rdsSubSection">
+                        <div class="col-xs-6">
+                            <h3 class="title">Access Information</h3>
+                            <table class="SiteContactTable">
+                                <tr>
+                                    <td colspan="6">
+                                    <tr><td><span> &nbsp; </span></td></tr>
+                                    <apex:outputPanel rendered="{!IF(accessType == null || accessType  == '', false, true)}">
+                                        <tr><td><label>{!$Label.Type}</label><span>{!accessType}</span></td></tr>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(accessSpeed == null || accessSpeed  == '', false, true)}">
+                                        <tr><td><label>{!$Label.Speed}</label><span>{!accessSpeed}</span></td></tr>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(provisioningAccessArrangement == null || provisioningAccessArrangement  == '', false, true)}">
+                                        <tr><td><label>{!$Label.Provisioning_Access_Arrangement}</label><span>{!provisioningAccessArrangement}</span></td></tr>
+                                    </apex:outputPanel>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 m0 p0 botalign" ><hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"/></div>
+                </apex:outputPanel>
+                
+                <!-- ipV4V6PortInformationPanel for MIS -->
+                <apex:outputPanel id="ipV4V6PortInformationPanel" rendered="{!isMIS == true}">
+                    <div class="rdsSubSection">
+                        <div id="ipV4V6PortInformation" class="col-xs-12">
+                            <h3 class="title">IP Information</h3>                                    
+                        </div>
+                        <apex:outputPanel rendered="{!IF(ipType == 'Dual Stack', true, false)}">
+                            <div id="ipV4V6PortInformatioV4Block " class="col-xs-6">
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <tr><td><label>{!$Label.IPv4_Information}</label></td></tr>
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <apex:outputPanel rendered="{!IF(lanAddrTypeV4 == null || lanAddrTypeV4  == '', false, true)}">
+                                                <tr><td><label>{!$Label.LAN_Address_Type}</label><span>{!lanAddrTypeV4}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(publicIpAddrV4 == null || publicIpAddrV4  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Public_IP_Address}</label><span>{!publicIpAddrV4}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(lanIpLenV4 == null || lanIpLenV4  == '', false, true)}">
+                                                <tr><td><label>{!$Label.LAN_IP_Length}</label><span>{!lanIpLenV4}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(routingProtocolV4 == null || routingProtocolV4  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Routing_Protocol}</label><span>{!routingProtocolV4}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(asnProviderV4 == null || asnProviderV4  == '', false, true)}">
+                                                <tr><td><label>{!$Label.ASN_Provider}</label><span>{!asnProviderV4}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(autonomousSystemNoV4 == null || autonomousSystemNoV4  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Autonomous_System_Number}</label><span>{!autonomousSystemNoV4}</span></td></tr>
+                                            </apex:outputPanel>
+                                             <apex:outputPanel rendered="{!IF(defaultRouteV4 == null || defaultRouteV4  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Default_Route}</label><span>{!defaultRouteV4}</span></td></tr>
+                                             </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(prferredRouteOptionV4 == null || prferredRouteOptionV4  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Preferred_Route_Option}</label><span>{!prferredRouteOptionV4}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(md5AuthenticationV4 == null || md5AuthenticationV4  == '', false, true)}">
+                                                <tr><td><label>{!$Label.MD5_Authentication}</label><span>{!md5AuthenticationV4}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(rdsCriteriaV4 == null || rdsCriteriaV4  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Criteria_for_RDS}</label><span>{!rdsCriteriaV4}</span></td></tr>
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(ipType == 'Dual Stack' || ipType == 'IPv6', true, false)}">
+                            <div class="col-xs-6">
+                                <apex:outputPanel rendered="{!IF(lanAddrTypeV6 == null || lanAddrTypeV6  == '', false, true)}">
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <tr><td><label>{!$Label.IPv6_Information}</label></td></tr>
+                                            <tr><td>&nbsp;</td></tr>
+                                            <apex:outputPanel rendered="{!IF(lanAddrTypeV6 == null || lanAddrTypeV6  == '', false, true)}">
+                                                <tr><td><label>{!$Label.LAN_Address_Type}</label><span>{!lanAddrTypeV6}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(publicIpAddrV6 == null || publicIpAddrV6  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Public_IP_Address}</label><span>{!publicIpAddrV6}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(lanIpLenV6 == null || lanIpLenV6  == '', false, true)}">
+                                                <tr><td><label>{!$Label.LAN_IP_Length}</label><span>{!lanIpLenV6}</span></td></tr>
+                                            </apex:outputPanel> 
+                                            <apex:outputPanel rendered="{!IF(routingProtocolV6 == null || routingProtocolV6  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Routing_Protocol}</label><span>{!routingProtocolV6}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(asnProviderV6 == null || asnProviderV6  == '', false, true)}">
+                                                <tr><td><label>{!$Label.ASN_Provider}</label><span>{!asnProviderV6}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(autonomousSystemNoV6 == null || autonomousSystemNoV6  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Autonomous_System_Number}</label><span>{!autonomousSystemNoV6}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(defaultRouteV6 == null || defaultRouteV6  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Default_Route}</label><span>{!defaultRouteV6}</span></td></tr>
+                                             </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(prferredRouteOptionV6 == null || prferredRouteOptionV6  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Preferred_Route_Option}</label><span>{!prferredRouteOptionV6}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(md5AuthenticationV6 == null || md5AuthenticationV6  == '', false, true)}">
+                                                <tr><td><label>{!$Label.MD5_Authentication}</label><span>{!md5AuthenticationV6}</span></td></tr>
+                                             </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                </table>
+                                </apex:outputPanel>
+                            </div> 
+                        </apex:outputPanel>
+                    </div>
+                    <apex:outputPanel rendered="{!IF(notes == null || notes  == '', true, false)&& managedRouterShippingInformation == false}">
+                        <div class="col-xs-12 m0 p0 addmargin">
+                        </div>
+                    </apex:outputPanel>
+                    <div class="col-xs-12 m0 p0 botalign">
+                        <span>
+                            <apex:outputPanel rendered="{!IF(notes == null || notes  == '', false, true)|| managedRouterShippingInformation == true}">
+                                <hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"></hr>
+                            </apex:outputPanel>
+                        </span>
+                    </div>
+                
+                </apex:outputPanel>
+                
+                <!-- IPV4V6PortInformationPanel for AVPN without VLAN-->
+                <apex:outputPanel id="ipV4V6PortInformationPanel1" rendered="{!IF(isAVPN == true && vlanWrapperList.size < 1 ,true,false)}">
+                    <div class="rdsSubSection">
+                        <div id="ipV4V6PortInformation" class="col-xs-12">
+                            <h3 class="title">IP Information</h3>                                  
+                        </div>
+                        <apex:outputPanel rendered="{!IF(ipType != null && ipType == 'Dual Stack', true, false)}">
+                            <div id="ipV4V6PortInformation" class="col-xs-6">
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <tr><td><label>{!$Label.IPv4_Information}</label></td></tr>
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                                <apex:outputPanel rendered="{!IF(routingProtocolV4 == null || routingProtocolV4 == '' , false, true)}">
+                                                    <tr><td><label>{!$Label.Routing_Protocol}</label><span>{!routingProtocolV4}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(autonomousSystemNoV4 == null || autonomousSystemNoV4 == '' || routingProtocolV4 = 'Static', false, true)}">
+                                                    <tr><td><label>{!$Label.Autonomous_System_Number}</label><span>{!autonomousSystemNoV4}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(asnOverideV4 == null || asnOverideV4 == '' || routingProtocolV4 == 'Static', false, true)}">
+                                                    <tr><td><label>{!$Label.Autonomous_System_Number_Override}</label><span>{!asnOverideV4}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(restrictiveRoutingV4 == null || restrictiveRoutingV4 == '' || routingProtocolV4 = 'Static', false, true)}">
+                                                    <tr><td><label>{!$Label.Restrictive_Routing}</label><span>{!restrictiveRoutingV4}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(md5AuthenticationV4 == null || md5AuthenticationV4 == '' || routingProtocolV4 = 'Static', false, true)}">
+                                                    <tr><td><label>{!$Label.MD5_Authentication}</label><span>{!md5AuthenticationV4}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(customerEdgeIPAddress == null || customerEdgeIPAddress == '' || routingProtocolV4 = 'Static', false, true)}">
+                                                    <tr><td><label>{!$Label.Customer_Edge_IP_Address_CER}</label><span>{!customerEdgeIPAddress}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(attEdgeIPAddress == null || attEdgeIPAddress == '' || routingProtocolV4 = 'Static', false, true)}">
+                                                    <tr><td><label>{!$Label.AT_T_Edge_IP_Address_PER}</label><span>{!attEdgeIPAddress}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(subnetMask == null || subnetMask == '' || routingProtocolV4 = 'Static', false, true)}">
+                                                    <tr><td><label>{!$Label.Subnet_Mask}</label><span>{!subnetMask}</span></td></tr>
+                                                </apex:outputPanel>   
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(ipType != null && (ipType == 'Dual Stack' || ipType == 'IPv6'), true, false)}">
+                            <div class="col-xs-6">
+                                <apex:outputPanel rendered="{!IF(routingProtocolV6 == null || routingProtocolV6 == '', false, true)}">
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <tr><td><label>{!$Label.IPv6_Information}</label></td></tr>
+                                            <tr><td>&nbsp;</td></tr>
+                                                <apex:outputPanel rendered="{!IF(routingProtocolV6 == null || routingProtocolV6 == '', false, true)}">
+                                                    <tr><td><label>{!$Label.Routing_Protocol}</label><span>{!routingProtocolV6}</span></td></tr>
+                                                </apex:outputPanel> 
+                                                <apex:outputPanel rendered="{!IF(autonomousSystemNoV6 == null || autonomousSystemNoV6 == '', false, true)}">
+                                                    <tr><td><label>{!$Label.Autonomous_System_Number}</label><span>{!autonomousSystemNoV6}</span></td></tr>
+                                                </apex:outputPanel> 
+                                                <apex:outputPanel rendered="{!IF(asnOverideV6 == null || asnOverideV6 == '', false, true)}">
+                                                    <tr><td><label>{!$Label.Autonomous_System_Number_Override}</label><span>{!asnOverideV6}</span></td></tr>
+                                                </apex:outputPanel> 
+                                                <apex:outputPanel rendered="{!IF(restrictiveRoutingV6 == null || restrictiveRoutingV6 == '', false, true)}">
+                                                    <tr><td><label>{!$Label.Restrictive_Routing}</label><span>{!restrictiveRoutingV6}</span></td></tr>
+                                                </apex:outputPanel> 
+                                                <apex:outputPanel rendered="{!IF(md5AuthenticationV6 == null || md5AuthenticationV6 == '', false, true)}">
+                                                    <tr><td><label>{!$Label.MD5_Authentication}</label><span>{!md5AuthenticationV6}</span></td></tr>
+                                                </apex:outputPanel>  
+                                        </td>
+                                    </tr>
+                                </table>
+                                </apex:outputPanel>
+                            </div> 
+                        </apex:outputPanel>
+                    </div>
+                    <apex:outputPanel rendered="{!IF(notes == null || notes  == '', true, false)&& managedRouterShippingInformation == false && ipFlexInformation == false}">
+                        <div class="col-xs-12 m0 p0 addmargin">
+                        </div>
+                    </apex:outputPanel>
+                    <div class="col-xs-12 m0 p0 botalign">
+                        <span>
+                            <apex:outputPanel rendered="{!IF(notes == null || notes  == '', false, true)|| managedRouterShippingInformation == true || ipFlexInformation == true}">
+                                <hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"></hr>
+                            </apex:outputPanel>
+                        </span>
+                    </div>                
+                </apex:outputPanel>
+                
+                <!--IPV4V6PortInformationPanel for AVPN with 1 VLAN-->
+                <apex:outputPanel id="ipV4V6PortInformationPanel2" rendered="{!IF(isAVPN == true && vlanWrapperList.size == 1,true,false)}">
+                    <div class="rdsSubSection">
+                        <div id="ipV4V6PortInformation" class="col-xs-12">
+                            <h3 class="title">IP Information</h3>                                  
+                        </div>
+                        <apex:outputPanel rendered="{!IF(ipType != null && ipType == 'Dual Stack', true, false)}">
+                            <div id="ipV4V6PortInformationV4" class="col-xs-6">
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">       
+                                            <tr><td><span> &nbsp; </span></td></tr>       
+                                            <tr><td><label>{!$Label.IPv4_Information}</label></td></tr>
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].routingProtocolV4 == 'None' , false, true)}">
+                                                    <tr><td><label>{!$Label.Routing_Protocol}</label><span>{!vlanWrapperList[0].routingProtocolV4}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].asnV4 == 'None' || vlanWrapperList[0].routingProtocolV4 == 'Static' , false, true)}">
+                                                    <tr><td><label>{!$Label.Autonomous_System_Number}</label><span>{!vlanWrapperList[0].asnV4}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].asnOverrideV4 == 'None' || vlanWrapperList[0].routingProtocolV4 == 'Static', false, true)}">
+                                                    <tr><td><label>{!$Label.Autonomous_System_Number_Override}</label><span>{!vlanWrapperList[0].asnOverrideV4}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].restrictiveRoutingV4 == 'None' || vlanWrapperList[0].routingProtocolV4 == 'Static', false, true)}">
+                                                    <tr><td><label>{!$Label.Restrictive_Routing}</label><span>{!vlanWrapperList[0].restrictiveRoutingV4}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].md5AuthV4 == 'None' || vlanWrapperList[0].routingProtocolV4 == 'Static', false, true)}">
+                                                    <tr><td><label>{!$Label.MD5_Authentication}</label><span>{!vlanWrapperList[0].md5AuthV4}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].custEdgeIPAddress == 'None' || vlanWrapperList[0].routingProtocolV4 == 'Static'  , false, true)}">
+                                                    <tr><td><label>{!$Label.Customer_Edge_IP_Address_CER}</label><span>{!vlanWrapperList[0].custEdgeIPAddress}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].attEdgeIPAddress == 'None' || vlanWrapperList[0].routingProtocolV4 == 'Static', false, true)}">
+                                                    <tr><td><label>{!$Label.AT_T_Edge_IP_Address_PER}</label><span>{!vlanWrapperList[0].attEdgeIPAddress}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].subnetMask== 'None' || vlanWrapperList[0].routingProtocolV4 == 'Static', false, true)}">
+                                                    <tr><td><label>{!$Label.Subnet_Mask}</label><span>{!vlanWrapperList[0].subnetMask}</span></td></tr>
+                                                </apex:outputPanel>
+                                           
+                                                
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(ipType != null && (ipType == 'Dual Stack' || ipType == 'IPv6'), true, false)}">
+                            <div class="col-xs-6" style="{!IF(ipType != null && ipType == 'IPv6', 'margin-top:20px;','')}">
+                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].routingProtocolV6 == 'None' || vlanWrapperList[0].routingProtocolV6 == '', false, true)}">
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <tr><td><label>{!$Label.IPv6_Information}</label></td></tr>
+                                            <tr><td>&nbsp;</td></tr>
+                                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].routingProtocolV6 == 'None', false, true)}">
+                                                    <tr><td><label>{!$Label.Routing_Protocol}</label><span>{!vlanWrapperList[0].routingProtocolV6}</span></td></tr>
+                                                </apex:outputPanel> 
+                                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].asnV6 == 'None', false, true)}">
+                                                    <tr><td><label>{!$Label.Autonomous_System_Number}</label><span>{!vlanWrapperList[0].asnV6}</span></td></tr>
+                                                </apex:outputPanel> 
+                                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].asnOverrideV6 == 'None', false, true)}">
+                                                    <tr><td><label>{!$Label.Autonomous_System_Number_Override}</label><span>{!vlanWrapperList[0].asnOverrideV6}</span></td></tr>
+                                                </apex:outputPanel> 
+                                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].restrictiveRoutingV6 == 'None', false, true)}">
+                                                    <tr><td><label>{!$Label.Restrictive_Routing}</label><span>{!vlanWrapperList[0].restrictiveRoutingV6}</span></td></tr>
+                                                </apex:outputPanel> 
+                                                <apex:outputPanel rendered="{!IF(vlanWrapperList[0].md5AuthV6 == 'None', false, true)}">
+                                                    <tr><td><label>{!$Label.MD5_Authentication}</label><span>{!vlanWrapperList[0].md5AuthV6}</span></td></tr>
+                                                </apex:outputPanel>  
+                                        </td>
+                                    </tr>
+                                </table>
+                                </apex:outputPanel>
+                            </div> 
+                        </apex:outputPanel>
+                    </div>
+                    <apex:outputPanel rendered="{!IF(notes == null || notes  == '', false, true)&& managedRouterShippingInformation == true && ipFlexInformation == true}">
+                        <div class="col-xs-12 m0 p0 addmargin">
+                        </div>
+                    </apex:outputPanel>
+                    <div class="col-xs-12 m0 p0 botalign">
+                        <span>
+                            <apex:outputPanel rendered="{!IF(notes == null || notes  == '', false, true)|| managedRouterShippingInformation == true || ipFlexInformation == true}">
+                                <hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"></hr>
+                            </apex:outputPanel>
+                        </span>
+                    </div>
+                
+                </apex:outputPanel>
+                
+                <!-- Additional Information Section -->
+                <apex:outputPanel id="additionalInformationPanel" rendered="{!IF(notes == null || notes  == '', false, true)}">
+                
+                    <div id="additionalInformationId" class="rdsSubSection">
+                    <div class="col-xs-12">
+                        <h3 class="title">Additional Information</h3>
+                        <table class="SiteContactTable">
+                            <tr>
+                                <td colspan="6">
+                                    <tr><td><span> &nbsp; </span></td></tr>
+                                    <tr><td><label>{!$Label.Notes}</label><span>{!notes}</span></td></tr>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <apex:outputPanel rendered="{!IF(managedRouterShippingInformation == true || ipFlexInformation == true || vlanWrapperList.size>1,false,true)}">
+                        <div class="col-xs-12 m0 p0 addmargin">
+                        </div>
+                    </apex:outputPanel>
+                    </div>
+                    <apex:outputPanel rendered="{!IF(managedRouterShippingInformation == true || ipFlexInformation == true || vlanWrapperList.size>1,true,false)}">
+                        <div class="col-xs-12 m0 p0 botalign"><hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"/></div>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+
+                <!--If the poduct is AVPN with VLAN-->
+               <apex:outputPanel id="LogicalChannelInfoPanel" rendered="{!IF(isAVPN == true && vlanWrapperList.size > 1  && vlanWrapperList.size>1,true,false)}">
+                    <div id="VLANInformationId" class="col-xs-12 rdsSubSection" style="margin:1px 22px !important;">
+                        <div id="">
+                            <h3 class="title">VLAN Logical Channel Information</h3>
+                        </div>
+                        <apex:variable var="counter" value="{!0}"/>  
+                        <div id="vlanMultiBlock">
+                            <apex:repeat value="{!vlanWrapperList}" var="vlanInfo" id="string">
+                                <apex:variable var="counter" value="{!counter + 1}"/>
+                                <div id="{!vlanInfo}"></div>                       
+                                <table id="vlanPieTableId{!vlanInfo}{!vlanCount}"  class="vlanPieTable" style="height:auto;display:none;margin-left: 35px;">
+                                </table>
+                                <div class="panel-group" id="accordion{!counter}" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading" role="tab" id="heading{!counter}">
+                                            <h4 class="panel-title">
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse{!counter}" aria-expanded="true" aria-controls="collapse{!counter}">
+                                                    <label style="float:left;">VLAN {!counter} -VPN Name: </label><span style="">{!vpnName}</span>
+                                                    <label style="float:right; color: #067ab4;">VLAN Speed: <span style="color: #067ab4;">{!vlanInfo.vlanSpeed}</span></label>
+                                                </a>
+                                            </h4>
+                                        </div>
+                                        <div id="collapse{!counter}" class="panel-collapse collapse " role="tabpanel" aria-labelledby="heading{!counter}">
+                                            <div class="panel-body">
+                                                <div class="col-xs-4"><label style="float:left;">IP Type: </label><span style="font-weight: normal;font-family: omnes_light;">{!vlanInfo.ipType}</span></div>
+                                                <apex:outputPanel rendered="{!IF(cos == 'No', false, true)}">
+                                                    <div class="col-xs-4"><label style="float:left;">COS Real-Time Percentage: </label><span style="font-weight: normal;font-family: omnes_light;">{!vlanInfo.cosRealTimePercent}</span></div>
+                                                    <div class="col-xs-4"><label style="float:right;">COS Profile ID: <span style="font-weight: normal;font-family: omnes_light;">{!vlanInfo.cosProfileId}</span></label></div>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(cos != 'No', false, true)}">
+                                                    <div class="col-xs-4"><label >&nbsp;</label></div>
+                                                    <div class="col-xs-4"><label >&nbsp;</label></div>
+                                                </apex:outputPanel>
+                                                
+                                                    <apex:outputPanel rendered="{!IF(vlanInfo.routingProtocolV4 == null || vlanInfo.routingProtocolV4  == ''  || vlanInfo.routingProtocolV4 == 'None', false, true)}">
+                                                        <div class="col-xs-6">
+                                                        <div class=""><label style="float:left;line-height: 80px;">{!$Label.IPv4_Information} </label></div>
+                                                            <table class="SiteContactTable">
+                                                                <tr>
+                                                                    <td colspan="6">
+                                                                        <apex:outputPanel rendered="{!IF(vlanInfo.routingProtocolV4 == null || vlanInfo.routingProtocolV4  == '' || vlanInfo.routingProtocolV4  == 'None' , false, true)}">
+                                                                            <tr><td><label>{!$Label.Routing_Protocol}</label><span>{!vlanInfo.routingProtocolV4}</span></td></tr>
+                                                                        </apex:outputPanel>
+                                                                        <apex:outputPanel rendered="{!IF(vlanInfo.asnV4 == null || vlanInfo.asnV4  == '' || vlanInfo.asnV4  == 'None' || vlanInfo.routingProtocolV4  ='Static', false, true)}">
+                                                                            <tr><td><label>{!$Label.Autonomous_System_Number}</label><span>{!vlanInfo.asnV4}</span></td></tr>
+                                                                        </apex:outputPanel>
+                                                                        <apex:outputPanel rendered="{!IF(vlanInfo.asnOverrideV4 == null || vlanInfo.asnOverrideV4  == '' || vlanInfo.asnOverrideV4  == 'None' || vlanInfo.routingProtocolV4  == 'Static', false, true)}">
+                                                                            <tr><td><label>{!$Label.Autonomous_System_Number_Override}</label><span>{!vlanInfo.asnOverrideV4}</span></td></tr>
+                                                                        </apex:outputPanel>
+                                                                        <apex:outputPanel rendered="{!IF(vlanInfo.restrictiveRoutingV4 == null || vlanInfo.restrictiveRoutingV4  == '' || vlanInfo.restrictiveRoutingV4  == 'None' || vlanInfo.restrictiveRoutingV4 == 'Static', false, true)}">
+                                                                            <tr><td><label>{!$Label.Restrictive_Routing}</label><span>{!vlanInfo.restrictiveRoutingV4}</span></td></tr>
+                                                                        </apex:outputPanel>
+                                                                        <apex:outputPanel rendered="{!IF(vlanInfo.md5AuthV4 == null || vlanInfo.md5AuthV4  == '' || vlanInfo.md5AuthV4  == 'None' || vlanInfo.routingProtocolV4  == 'Static', false, true)}">
+                                                                            <tr><td><label>{!$Label.MD5_Authentication}</label><span>{!vlanInfo.md5AuthV4}</span></td></tr>
+                                                                         </apex:outputPanel>
+                                                                        <apex:outputPanel rendered="{!IF(vlanInfo.custEdgeIPAddress == null || vlanInfo.custEdgeIPAddress == '' || vlanInfo.custEdgeIPAddress == 'None' || vlanInfo.routingProtocolV4  == 'Static', false, true)}">
+                                                                            <tr><td><label>{!$Label.Customer_Edge_IP_Address_CER}</label><span>{!vlanInfo.custEdgeIPAddress}</span></td></tr>
+                                                                        </apex:outputPanel>
+                                                                        <apex:outputPanel rendered="{!IF(vlanInfo.attEdgeIPAddress == null  || vlanInfo.attEdgeIPAddress == ''  || vlanInfo.attEdgeIPAddress == 'None' || vlanInfo.routingProtocolV4  == 'Static', false, true)}">
+                                                                            <tr><td><label>{!$Label.AT_T_Edge_IP_Address_PER}</label><span>{!vlanInfo.attEdgeIPAddress}</span></td></tr>
+                                                                        </apex:outputPanel>
+                                                                        <apex:outputPanel rendered="{!IF(vlanInfo.subnetMask == null || vlanInfo.subnetMask == '' || vlanInfo.subnetMask == 'None' || vlanInfo.routingProtocolV4  == 'Static', false, true)}">
+                                                                            <tr><td><label>{!$Label.Subnet_Mask}</label><span>{!vlanInfo.subnetMask}</span></td></tr>
+                                                                        </apex:outputPanel>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                            </div>
+                                                    </apex:outputPanel>
+                                                
+                                                
+                                                    <apex:outputPanel rendered="{!IF(vlanInfo.routingProtocolV6 == null || vlanInfo.routingProtocolV6  == '' || vlanInfo.routingProtocolV6  == 'None', false, true)}">
+                                                        <div class="col-xs-6">
+                                                        <div><label style="float:left;line-height: 80px;">{!$Label.IPv6_Information}</label></div>
+                                                    <table class="SiteContactTable">
+                                                        <tr>
+                                                            <td colspan="6">                 
+                                                              <apex:outputPanel rendered="{!IF(vlanInfo.routingProtocolV6 == null || vlanInfo.routingProtocolV6  == '' || vlanInfo.routingProtocolV6  == 'None', false, true)}">
+                                                                    <tr><td><label>{!$Label.Routing_Protocol}</label><span>{!vlanInfo.routingProtocolV6}</span></td></tr>
+                                                                </apex:outputPanel>
+                                                                <apex:outputPanel rendered="{!IF(vlanInfo.asnV6 == null || vlanInfo.asnV6 == '' || vlanInfo.asnV6 == 'None', false, true)}">
+                                                                    <tr><td><label>{!$Label.Autonomous_System_Number}</label><span>{!vlanInfo.asnV6}</span></td></tr>
+                                                                </apex:outputPanel>
+                                                                <apex:outputPanel rendered="{!IF(vlanInfo.asnOverrideV6 == null || vlanInfo.asnOverrideV6  == '' || vlanInfo.asnOverrideV6  == 'None', false, true)}">
+                                                                    <tr><td><label>{!$Label.Autonomous_System_Number_Override}</label><span>{!vlanInfo.asnOverrideV6}</span></td></tr>
+                                                                </apex:outputPanel>
+                                                                <apex:outputPanel rendered="{!IF(vlanInfo.restrictiveRoutingV6 == null || vlanInfo.restrictiveRoutingV6 == '' || vlanInfo.restrictiveRoutingV6 == 'None', false, true)}">
+                                                                    <tr><td><label>{!$Label.Restrictive_Routing}</label><span>{!vlanInfo.restrictiveRoutingV6}</span></td></tr>
+                                                                </apex:outputPanel>
+                                                                <apex:outputPanel rendered="{!IF(vlanInfo.md5AuthV6 == null || vlanInfo.md5AuthV6  == '' || vlanInfo.md5AuthV6  == 'None', false, true)}">
+                                                                    <tr><td><label>{!$Label.MD5_Authentication}</label><span>{!vlanInfo.md5AuthV6}</span></td></tr>
+                                                                </apex:outputPanel>                                         
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                    </div>
+                                                    </apex:outputPanel>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                                                        
+                            </apex:repeat>
+                        </div>
+                    </div>
+                    <apex:outputPanel rendered="{!ipFlexInformation == false}">
+                        <div class="col-xs-12 m0 p0 addmargin">
+                        </div>
+                    </apex:outputPanel> 
+                    <apex:outputPanel rendered="{!ipFlexInformation}"><div class="col-xs-12 m0 p0 botalign" ><hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"></hr></div></apex:outputPanel>
+                </apex:outputPanel>
+
+                <!-- Managed Router Section -->
+                <apex:outputPanel rendered="{!IF(isMIS == true && managedRouterShippingInformation == true,true,false)}">
+                    <!-- True Only for MIS-->
+                        <div class="rdsSubSection" >
+                            <div id="managedRouterId" class="col-xs-6">
+                                <h3 class="title">{!$Label.AT_T_Managed_Router_Shipping_Information}</h3>
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td>&nbsp;</td></tr>
+                                            <apex:outputPanel rendered="{!IF(nameShipInformation == null || nameShipInformation  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Name_First_Last}</label><span>{!nameShipInformation}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(phoneNoShipInformation == null || phoneNoShipInformation  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Phone_Number_RDS}</label><span>{!phoneNoShipInformation}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(addr1ShipInformation == null || addr1ShipInformation  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Address_1}</label><span>{!addr1ShipInformation}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(floorNoShipInformation == null || floorNoShipInformation  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Floor_Number}</label><span>{!floorNoShipInformation}</span></td></tr>
+                                            </apex:outputPanel> 
+                                            <apex:outputPanel rendered="{!IF(roomNoShipInformation == null || roomNoShipInformation  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Room_Number}</label><span>{!roomNoShipInformation}</span></td></tr>
+                                            </apex:outputPanel>
+                                              
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>         
+                        </div>
+                        <apex:outputPanel rendered="{!ipFlexInformation == false}">
+                            <div class="col-xs-12 m0 p0 addmargin">
+                            </div>
+                        </apex:outputPanel>
+                <div class="col-xs-12 m0 p0 botalign" >
+                    <apex:outputPanel rendered="{!ipFlexInformation}">
+                        <hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"/>
+                    </apex:outputPanel>
+                </div>
+                </apex:outputPanel>
+
+                <!-- IPFLEX Section-->
+                <apex:outputPanel rendered="{!ipFlexInformation}"><!-- for IPFLEX-->
+                    <apex:outputPanel id="ipFlexInformationPanel">
+                        <div id="" class="rdsSubSection">
+                            <div class="col-xs-6" id="ipFlexInformationId">
+                                <h3 class="title">IP Flexible Reach Information</h3>
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <apex:outputPanel rendered="{!IF(ipflexCallingPlan == null || ipflexCallingPlan  == '', false, true)}">
+                                                <tr><td><label>{!$Label.IP_Flexible_Reach_Calling_Plan}</label><span>{!ipflexCallingPlan}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(ipflexPrivateDialPlan == null || ipflexPrivateDialPlan  == '', false, true)}">
+                                                <tr><td><label>{!$Label.IP_Flexible_Reach_Private_Dial_Plan}</label><span>{!ipflexPrivateDialPlan}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(numberOfConcurrentCalls == null || numberOfConcurrentCalls  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Number_of_Concurrent_Calls}</label><span>{!numberOfConcurrentCalls}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(rateCenter == null || rateCenter  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Rate_Center}</label><span>{!rateCenter}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!isMIS}"> <!-- True Only for MIS-->
+                                                <apex:outputPanel rendered="{!IF(ipflexReachTrafficType == null || ipflexReachTrafficType  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.IP_Flexible_Reach_Traffic_Type}</label><span>{!ipflexReachTrafficType}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(noOfStaticIpAddr == null, false, true)}">
+                                                    <tr><td><label>{!$Label.Number_of_Static_IP_Addresses}</label><span>{!noOfStaticIpAddr}</span></td></tr>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>              
+                        </div>
+                        <div class="col-xs-12 m0 p0 botalign"><hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"/></div>
+                    </apex:outputPanel>
+                    
+                    <!-- Equipement Section -->
+                    <apex:outputPanel id="equipmentPanel">
+                        <div id="equipmentId" class="rdsSubSection">
+                            <div class="col-xs-6">
+                                <h3 class="title">Equipment</h3>
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <apex:outputPanel rendered="{!isAVPN}"><!-- only for AVPN-->
+                                                <apex:outputPanel rendered="{!IF(vqmType == null || vqmType  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.VQM_Type}</label><span>{!vqmType}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(codec == null || codec  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.CODEC}</label><span>{!codec}</span></td></tr>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(pbxType == null || pbxType  == '', false, true)}">
+                                                <tr><td><label>{!$Label.PBX_Type}</label><span>{!pbxType}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(cpeCertificationStatus == null || cpeCertificationStatus  == '', false, true)}">
+                                                <tr><td><label>{!$Label.CPE_Certification_Status}</label><span>{!cpeCertificationStatus}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(pbxInterfaceType == null || pbxInterfaceType  == '', false, true)}">
+                                                <tr><td><label>{!$Label.PBX_Interface_Type}</label><span>{!pbxInterfaceType}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(pbxVendorOrManufacturer == null || pbxVendorOrManufacturer  == '', false, true)}">
+                                                <tr><td><label>{!$Label.PBX_Vendor_or_Manufacturer}</label><span>{!pbxVendorOrManufacturer}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!isMIS}"><!-- only for MIS-->
+                                                <apex:outputPanel rendered="{!IF(pbxModel == null || pbxModel  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.PBX_Model}</label><span>{!pbxModel}</span></td></tr>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!isAVPN}"><!-- only for AVPN-->
+                                                <apex:outputPanel rendered="{!IF(pbxModelAndSessionManager == null || pbxModelAndSessionManager  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.PBX_Model_and_Session_Manager}</label><span>{!pbxModelAndSessionManager}</span></td></tr>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(pbxSoftwareVersion == null || pbxSoftwareVersion  == '', false, true)}">
+                                                <tr><td><label>{!$Label.PBX_Software_Version}</label><span>{!pbxSoftwareVersion}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!isAVPN}"><!--AVPN-->
+                                                <apex:outputPanel rendered="{!IF(existingPots == null || existingPots  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.Existing_POTS_for_testing_router}</label><span>{!existingPots}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(sitesPots == null || sitesPots  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.Sites_POTS_Phone_Number}</label><span>{!sitesPots}</span></td></tr>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-xs-6">
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <apex:outputPanel rendered="{!isMIS}"><!--Only for MIS-->
+                                                <tr><td><label>PBX/Voice CPE Point of Contact</label></td></tr>
+                                                <tr><td><span> &nbsp; </span></td></tr>
+                                                <apex:outputPanel rendered="{!IF(namePBX == null || namePBX  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.Name_First_Last}</label><span>{!namePBX}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(emailPBX == null || emailPBX  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.Email_Address}</label><span>{!emailPBX}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(phoneNumberPBX == null || phoneNumberPBX  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.Phone_Number_RDS}</label><span>{!phoneNumberPBX}</span></td></tr>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!isAVPN}"><!--Only for AVPN-->
+                                                <apex:outputPanel rendered="{!IF(ceVendorOrManufacturer == null || ceVendorOrManufacturer  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.CE_Vendor_or_Manufacturer}</label><span>{!ceVendorOrManufacturer}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(ceRouterModel == null || ceRouterModel  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.CE_Router_Model}</label><span>{!ceRouterModel}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(ceRouterVersion == null || ceRouterVersion  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.CE_Router_Version}</label><span>{!ceRouterVersion}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(numberOfSBCs == null, false, true)}">
+                                                    <tr><td><label>{!$Label.Number_of_SBC_s_for_the_site}</label><span>{!numberOfSBCs}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(sbcCascadedOrIntegrated == null || sbcCascadedOrIntegrated  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.SBC_cascaded_or_integrated_with_the_CE_Router}</label><span>{!sbcCascadedOrIntegrated}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(sbcVendor == null || sbcVendor  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.SBC_Vendor}</label><span>{!sbcVendor}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(sbcName == null || sbcName  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.SBC_Name}</label><span>{!sbcName}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(sbcSoftwareVersion == null || sbcSoftwareVersion  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.SBC_Software_Version}</label><span>{!sbcSoftwareVersion}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(ivrVendorName == null || ivrVendorName  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.IVR_Vendor_Model_Name_Release_Version}</label><span>{!ivrVendorName}</span></td></tr>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!IF(ivrPbx == null || ivrPbx  == '', false, true)}">
+                                                    <tr><td><label>{!$Label.IVR_behind_the_PBX_or_Standalone}</label><span>{!ivrPbx}</span></td></tr>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>          
+                        </div>
+                        <div class="col-xs-12 m0 p0 botalign"><hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"/></div>
+                    </apex:outputPanel>
+
+                    <apex:outputPanel id="enhancedFeaturePanel">
+                        <div id="enhancedFeatureId" class="rdsSubSection">
+                            <div class="col-xs-6">
+                                <h3 class="title">Enhanced Features Information</h3>
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <apex:outputPanel rendered="{!IF(enhancedServices == null || enhancedServices  == '', false, true)}">
+                                                <tr><td><label>Enhanced Features Services:</label><span>{!enhancedServices}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <apex:outputPanel rendered="{!IF(enhancedServices == 'No' , false, true)}">
+                                                <tr><td><span><label>Portal Administrator</label></span></td></tr>
+                                            </apex:outputPanel>
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <apex:outputPanel rendered="{!IF(portalAdminName == null || portalAdminName  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Name_First_Last}</label><span>{!portalAdminName}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(portalAdminEmail == null || portalAdminEmail  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Email_Address}</label><span>{!portalAdminEmail}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(portalAdminPhoneNumber == null || portalAdminPhoneNumber  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Phone_Number_RDS}</label><span>{!portalAdminPhoneNumber}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(testPhoneNumber1 == null || testPhoneNumber1  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Test_Call_Phone_Number1}</label><span>{!testPhoneNumber1}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(testPhoneNumber2 == null || testPhoneNumber2  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Test_Call_Phone_Number2}</label><span>{!testPhoneNumber2}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(callForwardingSelected == null || callForwardingSelected  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Call_Forwarding_Selected}</label><span>{!callForwardingSelected}</span></td></tr>
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-xs-6">
+                                <h3 class="title">Call Routing Information</h3>
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td>&nbsp;</td></tr>
+                                            <apex:outputPanel rendered="{!IF(trunkCallFwdMngReq == null || trunkCallFwdMngReq  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Trunk_Call_Routing_Management_Required}</label><span>{!trunkCallFwdMngReq}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(inbAltRoutingAvailSetUp == null || inbAltRoutingAvailSetUp  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Inbound_Alternate_Routing_availability_set_up}</label><span>{!inbAltRoutingAvailSetUp}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(bgpR == null || bgpR  == '', false, true)}">
+                                                <tr><td><label>{!$Label.BGP_R1}</label><span>{!bgpR}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(backdoorLinks == null || backdoorLinks  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Backdoor_links_between_CERs}</label><span>{!backdoorLinks}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(callPreservationRequired == null || callPreservationRequired  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Call_Preservation_Required}</label><span>{!callPreservationRequired}</span></td></tr>
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>              
+                        </div>
+                        <div class="col-xs-12 m0 p0 botalign"><hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"/></div>
+                    </apex:outputPanel>
+
+                    <apex:outputPanel id="portableNumberPanel">
+                        <div id="portableNumber" class="rdsSubSection">
+                            <div class="col-xs-6">
+                                <h3 class="title">Portable Numbers</h3>
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <apex:outputPanel rendered="{!IF(portingNumbers == null || portingNumbers  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Porting_numbers}</label><span>{!portingNumbers}</span></td></tr>
+                                             </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!tnFilesAvailable}">
+                                                <tr>
+                                                    <td>
+                                                        <label>{!$Label.Uploaded_Porting_TN_Spreadsheet}</label>
+                                                        <span>
+                                                            <ul>
+                                                                <apex:repeat id="loadTNPortingFiles" value="{!TNGuideUploadedFileNameURLMap}" var="key">    
+                                                                    <li class="uploadedFileLink" style="">
+                                                                        <a title="{!key}" id="{!TNGuideUploadedFileNameURLMap[key]}" href="/servlet/servlet.FileDownload?file={!TNGuideUploadedFileNameURLMap[key]}" download="{!key}">{!key}</a>
+                                                                    </li>
+                                                                </apex:repeat>
+                                                            </ul>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(portTypePortableNo == null || portTypePortableNo  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Port_Type}</label><span>{!portTypePortableNo}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(billingPhNum == null || billingPhNum  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Billing_Phone_Number}</label><span>{!billingPhNum}</span></td></tr>
+                                             </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(newBillingPhNum == null || newBillingPhNum  == '', false, true)}">
+                                                <tr><td><label>{!$Label.New_Billing_Phone_Number}</label><span>{!newBillingPhNum}</span></td></tr>
+                                             </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-xs-6">
+                                <h3 class="title">&nbsp;</h3>
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <tr><td><label>Ported Numbers</label></td></tr>
+                                            <tr><td>&nbsp;</td></tr>
+                                            <apex:outputPanel rendered="{!IF(faxNoIncluded == null || faxNoIncluded  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Fax_number_included}</label><span>{!faxNoIncluded}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!csrFilesAvailable}">
+                                                <tr>
+                                                    <td>
+                                                        <label>{!$Label.Uploaded_CSR}</label>
+                                                        <span>
+                                                            <ul>
+                                                                <apex:repeat id="loadCSRFiles" value="{!csrUploadedFileNameURLMap}" var="key">    
+                                                                    <li class="uploadedFileLink" style="">
+                                                                        <a id="{!csrUploadedFileNameURLMap[key]}" title="{!key}" href="/servlet/servlet.FileDownload?file={!csrUploadedFileNameURLMap[key]}" download="{!key}">{!key}</a>
+                                                                    </li>
+                                                                </apex:repeat>
+                                                            </ul>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>          
+                        </div>
+                        <div class="col-xs-12 m0 p0 botalign"><hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"/></div>
+                    </apex:outputPanel>
+
+                    <apex:outputPanel id="telephoneNumberPanel">
+                        <div id="telephoneNumberId" class="rdsSubSection">
+                            <div class="col-xs-6">
+                                <h3 class="title">New Telephone Numbers</h3>
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <apex:outputPanel rendered="{!IF(numOfLocalPhNum == null || numOfLocalPhNum  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Number_of_Local_Phone_Numbers}</label><span>{!numOfLocalPhNum}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(primaryNpaNxx == null || primaryNpaNxx  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Local_Phone_Number_Primary_NPA_NXX}</label><span>{!primaryNpaNxx}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(secondaryNpaNxx == null || secondaryNpaNxx  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Local_Phone_Number_Secondary_NPA_NXX}</label><span>{!secondaryNpaNxx}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(numOfVirtualPhNum == null || numOfVirtualPhNum  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Number_of_Virtual_Phone_Numbers}</label><span>{!numOfVirtualPhNum}</span></td></tr>
+                                            </apex:outputPanel>               
+                                            <apex:outputPanel rendered="{!IF(virtualPrimaryNpaNxx == null || virtualPrimaryNpaNxx  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Virtual_Phone_Number_Primary_NPA_NXX}</label><span>{!virtualPrimaryNpaNxx}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(virtualSecondaryNpaNxx == null || virtualSecondaryNpaNxx  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Virtual_Phone_Number_Secondary_NPA_NXX}</label><span>{!virtualSecondaryNpaNxx}</span></td></tr>
+                                            </apex:outputPanel>
+ 
+ 
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-xs-6">
+                                <h3 class="title">&nbsp;</h3>
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <tr><td class= "PBXRestriction">PBX Restrictions</td></tr>
+                                            <apex:outputPanel rendered="{!IF(collectCalling == null || collectCalling  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Collect_Calling_and_3rd_Party_Billing}</label><span>{!collectCalling}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(notesTelNum == null || notesTelNum  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Notes}</label><span>{!notesTelNum}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(cnamDisplay == null || cnamDisplay  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Calling_Name_CNAM_Display}</label><span>{!cnamDisplay}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(cnam == null || cnam  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Customer_Specified_CNAM}</label><span>{!cnam}</span></td></tr>
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>              
+                        </div>
+                        <div class="col-xs-12 m0 p0 botalign"><hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"/></div>
+                    </apex:outputPanel>
+
+                    <apex:outputPanel id="directoryListingPanel">
+                        <div id="directoryListingId" class="rdsSubSection">
+                            <div class="col-xs-6">
+                                <h3 class="title">Directory Listing</h3>
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6" >
+                                            <tr><td><span> &nbsp; </span></td></tr>
+                                            <apex:outputPanel rendered="{!IF(directoryListing == null || directoryListing  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Directory_Listing}</label><span>{!directoryListing}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(listingCategory == null || listingCategory  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Listing_Category}</label><span>{!listingCategory}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(listingNumber == null || listingNumber  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Listed_Number}</label><span>{!listingNumber}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(listingName == null || listingName  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Listed_Name}</label><span>{!listingName}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(listingAddress == null || listingAddress  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Listed_Address_in_the_Directory_Listing_Directory_Assistance}</label></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(listingAddress == null || listingAddress  == '', false, true)}">
+                                                <tr><td><label>{!$Label.Directory_Assistance}</label><span>{!listingAddress}</span></td></tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!IF(listingOptions == null || listingOptions  == '', false, true)}">
+                                                <tr><td style="white-space: nowrap"><label>{!$Label.Listing_Options}</label><span>{!listingOptions}</span></td></tr>
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>                                      
+                        </div>
+                        <div class="col-xs-12 m0 p0 botalign"><hr class="BlackHr lineAdjust" style="border-color:#C8C8C8;"/></div>
+                    </apex:outputPanel>
+
+                    <apex:outputPanel id="movendQuestionnariePanel">    
+                        <div id="movendQuestionnarieId" class="rdsSubSection">
+                            <div class="col-xs-6 moveRequirementsSection">
+                                <h3 class="title">Move Requirements</h3>
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr>
+                                                <td><span> &nbsp; </span></td>
+                                            </tr>
+                                            <apex:outputPanel rendered="{!IF(moveExistingIPFlex == null || moveExistingIPFlex  == '', false, true)}">
+                                                <tr>
+                                                    <td>
+                                                        <label>{!$Label.Moving_existing_IP_Flex_service_to_this_site}</label><span>{!moveExistingIPFlex}</span>
+                                                    </td>
+                                                </tr>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!moveFilesAvailable}">
+                                                <tr>
+                                                    <td>
+                                                        <label>{!$Label.Uploaded_Move_Requirements_File}</label>
+                                                        <span>
+                                                            <ul>
+                                                                <apex:repeat id="loadMoveReqFiles" value="{!moveSectionUploadedFileNameURLMap}" var="key">    
+                                                                    <li class="uploadedFileLink" style="">
+                                                                        <a id="{!moveSectionUploadedFileNameURLMap[key]}" title="{!key}" href="/servlet/servlet.FileDownload?file={!moveSectionUploadedFileNameURLMap[key]}" download="{!key}">{!key}</a>
+                                                                    </li>
+                                                                </apex:repeat>
+                                                            </ul>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        <apex:outputPanel rendered="{!techQFilesAvailable}">
+                            <div class="col-xs-6 questionnaireSection">
+                                <h3 class="title">Technical Questionnaire</h3>
+                                <table class="SiteContactTable">
+                                    <tr>
+                                        <td colspan="6">
+                                            <tr><td>&nbsp;</td></tr>
+                                                <tr>
+                                                    <td><label>{!$Label.Uploaded_TechnicalQuestionnaries_Requirements_File}</label>
+                                                        <span>
+                                                            <ul>
+                                                                <apex:repeat id="loadTechQFiles" value="{!techQUploadedFileNameURLMap}" var="key">    
+                                                                    <li class="uploadedFileLink" style="">
+                                                                    <a id="{!techQUploadedFileNameURLMap[key]}" title="{!key}" href="/servlet/servlet.FileDownload?file={!techQUploadedFileNameURLMap[key]}" download="{!key}">{!key}</a>
+                                                                    </li>
+                                                                </apex:repeat>
+                                                            </ul>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </apex:outputPanel>
+                            <div><span>&nbsp;</span></div>
+                        </div>      
+                    </apex:outputPanel>
+                </apex:outputPanel> 
+                </div>  
+        </apex:form>
+    </div>     
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+</apex:page>

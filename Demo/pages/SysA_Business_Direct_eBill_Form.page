@@ -1,0 +1,154 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="ContactPrototypeController">
+    <style type="text/css">
+        .wireline-container,
+        .Voice-container,
+        .Data-container,
+        .Messaging-container,
+        .Voicemail-container,
+        .disp-table-container,
+        .intrusive-test-container,
+        .mobility-container { display: none; }
+        .order-num-container { display: block !important; }
+        .disp-table { border: 1px solid silver !important; }
+        .opportunity-id-container { display: block !important; }
+        h1.reg { margin-bottom: 0px !important;  }
+        h4.reg { margin-top: 10px !important;  }
+        h1.separator  {
+            padding-top: 20px; 
+            border-top: 1px solid #333;
+            margin-top: 40px !important; 
+        }
+        .noDispBackendResolve {
+        display: none;
+        }
+        .created-ticket {
+            position: relative;
+            height: 20px !important;
+            margin-right: 5px !important;
+            width: 20px !important;
+        }
+        .otherEbillSystemAccess, .otherEbillSystemAccessCheck, .OrderStatusManager, .eBillSystemAccessIssue, .eMaintenanceSystemAccessIssue, .issueSysAccess, .eMaintenanceOther, .eMaintenanceOtherPassword {
+            display: none;
+        }
+        .padLeftPer {
+            padding-left: 6%;
+        }
+    </style>
+    <apex:form styleClass="escalations-form" html-action="">
+        <apex:inputText value="{!Topic}" styleClass="topic-field internal hidden" />
+        <apex:inputText value="{!Category}" styleClass="category-field internal hidden" />    
+        <apex:inputText value="{!Subject}" styleClass="subject-field internal hidden"/>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-back-link">Back</div>
+                <div class="row">
+                    <div class="col-md-12 additional-links">
+                        <h1>Helpful Links</h1>
+                        <ol>
+                            <li>Resources coming soon</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>  
+            <div class="col-md-8">
+                <div class="form-body">
+                    <div class="">
+                        <div class="wireline-form-elements">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Application</label>
+                                    <apex:selectList styleClass="product-felement systemAccessIssueBusinessDirect required" size="1" value="{!subCategory}">
+                                        <apex:selectoption itemValue="none" itemLabel="Select"></apex:selectoption>
+                                        <apex:selectoption itemValue="Order Status Manager" itemLabel="Order Status Manager"></apex:selectoption>
+                                        <apex:selectoption itemValue="eBill" itemLabel="eBill"></apex:selectoption>
+                                        <apex:selectoption itemValue="eMaintenance" itemLabel="eMaintenance"></apex:selectoption>
+                                    </apex:selectList>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 issueSysAccess">
+                                     <label>Issue</label>
+                                     <apex:selectList value="{!Issue_Type}" size="1" styleClass="OrderStatusManager required">
+                                        <apex:selectoption itemLabel="Select" itemValue="none"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Login/Access failed" itemValue="Login/Access failed"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Order not found" itemValue="Order not found"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Other" itemValue="Other"></apex:selectoption>
+                                    </apex:selectList>
+                                    <apex:selectList value="{!Issue_Type1}" size="1" styleClass="eBillSystemAccessIssue required">
+                                        <apex:selectoption itemLabel="Select" itemValue="none"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Forgot password" itemValue="Forgot password"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Account(s) not found" itemValue="Account(s) not found"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Other" itemValue="Other"></apex:selectoption>
+                                    </apex:selectList>
+                                    <apex:selectList value="{!Issue_Type2}" size="1" styleClass="eMaintenanceSystemAccessIssue required">
+                                        <apex:selectoption itemLabel="Select" itemValue="none"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Request access" itemValue="Request access"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Forgot username" itemValue="Forgot username"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Forgot password" itemValue="Forgot password"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Other" itemValue="Other"></apex:selectoption>
+                                    </apex:selectList>
+                                  </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row otherEbillSystemAccess">
+                                <div class="col-md-6">
+                                    <label>Have you tried the following?</label>
+                                    <ul class="padLeftPer">
+                                        <li type="square">Clear your browser's cache.</li>
+                                        <li type="square">Use the latest version of Firefox or Chrome.</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row otherEbillSystemAccess">
+                                <div class="col-md-6">
+                                    <input type="checkbox" class="checkbox_Ebill_check required checkForCheckBoxCheck" />Yes, I have already performed the above steps.<br />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row otherEbillSystemAccessCheck">
+                                <div class="col-md-6">
+                                    <label>What Username are you using?</label>
+                                    <apex:inputText styleClass="required userNameEbill" value="{!Reported_Username}" /> 
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row otherEbillSystemAccessCheck">
+                                <div class="col-md-6">
+                                    <label>Description of Issue/Error message</label>
+                                    <apex:inputTextarea styleClass="required" value="{!Description}" style="width: 260px; border-radius: 4px; height: 100px; padding: 0px; padding:10px; border: 1px solid #939393;"/>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row eMaintenanceOther">
+                                <div class="col-md-6">
+                                    <label>Please visit <a href="https://www.businessdirect.att.com/portal/exclude/aerequestuserlogin.jsp" target="_blank">Business Direct</a> or call the Business Direct Support Line at 800 221-0000.</label>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row eMaintenanceOtherPassword">
+                                <div class="col-md-6">
+                                    <label>Please visit <a href="https://www.businessdirect.att.com/portal/forgot_password.jsp" target="_blank">Business Direct</a> or call the Business Direct Support Line at 800 221-0000.</label>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-buttons">
+                        <div class="btn btn-default">Cancel</div>
+                        <input type="hidden"  id="external" name="external" value="1" />
+                        <div class="btn btn-primary submitToConfirm-button">Confirm</div>
+                        <apex:commandButton action="{!onSubmit}" styleClass="btn btn-primary submit-button" value="Quick Submit" reRender="true" />
+                    </div>
+                </div>          
+            </div>  
+        </div>
+    </apex:form>
+    <script type="text/javascript">
+        $(document).ready( function () {
+        });
+    </script>
+</apex:page>

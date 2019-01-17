@@ -1,0 +1,367 @@
+<apex:page controller="EventandSponsorships" sidebar="false" showHeader="false" applyBodyTag="false" cache="true" tabStyle="Case" standardStyleSheets="true" >   
+<script src="{!$Label.DTMHeader}"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<style>
+    .inpuTypeField{
+            background-image: url({!($Resource.Search_bar_middle_img)});"    
+            background-repeat:repeat; 
+            border:none; 
+            height:18px;
+    }            
+    .inputTextArea{
+            width: 237px; padding: 5px; height:18px; margin-left:-4px; border-radius:3px 0 0 3px; border-left:1px solid #CACAC4;
+    }
+</style>
+<style type="text/css">
+    .highlightWord { background-color: #ff2; }
+</style>
+<script type="text/javascript">
+    jQuery.fn.highlight = function (str, className) {
+        var regex = new RegExp(str, "gi");
+        return this.each(function () {
+            $(this).contents().filter(function() {
+                return this.nodeType == 3;
+            }).replaceWith(function() {
+                return (this.nodeValue || "").replace(regex, function(match) {
+                    return "<span class=\"" + className + "\">" + match + "</span>";
+                });
+            });
+        });
+    };
+    $j = jQuery.noConflict();
+    $j(document).ready(function() {
+        $j("#body *").highlight("{!strValue}", "highlightWord");
+        $j('#hl').click(function(e) {
+            e.preventDefault();
+            $j("#body *").highlight("{!strValue}", "highlightWord");
+        });
+
+       $j('#unhl').click(function(e) {
+            e.preventDefault();
+            $j(".highlightWord").replaceWith(function() { return $j(this).contents(); });
+        }); 
+    }); 
+</script>
+<script type='text/javascript'>
+    function noenter(ev) {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+            doSearchAF();
+            return false;
+         } else {
+              return true;
+         }
+     }
+</script>
+<title> Events and Sponsorships </title>
+<style>
+    div#si_primaryMenu ul, div#si_primaryMenu ul li {margin:0; padding:0; list-style-type: none}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}}') no-repeat scroll 5px -40px; width: 982px; height: 40px;}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}') no-repeat scroll -5px -150px transparent; width: 982px; height: 92px;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+     div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem:hover,
+    li#programOverviewTab.programOverviewTabActive,
+    li#Connect.programOverviewTabActive,
+    li#productsTab.productsTabActive,
+    li#newsTab.newsTabActive
+    {
+        background-image: url('{!$Resource.NavConnect}'); 
+        background-repeat:no-repeat;
+        background-attachment:scroll;
+        background-color:transparent;
+        height:63px;
+        position:relative; 
+        top:0px; 
+        left:-70px;
+    }
+    
+    </style>
+<html>
+<apex:form >
+     <apex:stylesheet value="{!$Resource.EventsandSponsorship}"/>
+    <apex:stylesheet value="{!$Resource.newsroomStyleSheet}"/>
+    <apex:stylesheet value="{!$Resource.ProviderDirectory}"/>
+    <apex:stylesheet value="{!$Resource.eventarrowlink}"/>
+    <apex:stylesheet value="{!$Resource.Newsroom_hover}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-1.9.1.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.masonry, 'masonry-site/jquery.masonry.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js')}"  />
+    <script>
+       $j = jQuery.noConflict();
+       $j(window).load(function() {
+               $j('#wrapper').masonry({
+              itemSelector: '.pin'
+            });           
+        $j("#videoArticlePopUp").dialog({ 
+            autoOpen: false,
+            width: 506,
+            modal:true            
+        })            
+        });                
+    </script>     
+    <script type="text/javascript" src="/resource/jQuery"></script>
+<script type="text/javascript">     
+
+ $j = jQuery.noConflict();
+   $j(window).ready(function() {
+   
+        $j("#news >a ").addClass("linkInActive");
+        $j("#events >a ").addClass("linkActive");
+         $j("#provider>a ").addClass("linkInActive"); 
+               
+        $j('.blogs_hover').hover(
+             function () {
+              $j('#blogsContainer').show()
+              $j('.blogs_hover').css('background-color','white');
+               $j('.blogs_hover').css('border-radius','2px;'); 
+             }, 
+             function () {
+              $j('#blogsContainer').hide();
+              $j('.blogs_hover').css('border-radius','2px;'); 
+             $j('.blogs_hover').css('background-color','#EDF5F8');
+             }  
+         );
+        $j('#blogsContainer').hover(
+             function () {
+               $j('.blogs_hover').css('border-radius','2px;');
+              $j('.blogs_hover').css('background-color','white');
+               
+             }, 
+             function () {
+              $j('.blogs_hover').css('border-radius','2px;'); 
+             $j('.blogs_hover').css('background-color','#EDF5F8');
+              
+             
+             }  
+         );
+        
+    });    
+</script> 
+<style>
+    .linkActive
+     {
+        color:#369;
+        text-decoration:underline;
+        font-size: 13px ;
+    }   
+    .linkInActive
+     {
+        text-decoration:none;
+        font-size: 13px ;
+    }
+    .CityState{
+        font-weight:Arial;
+        font-size:14px;
+        color:#333;
+        line-height:17px;      
+    }
+    .Dates{
+        font-weight:Arial;
+        font-size:14px;
+        color:#333;
+        line-height:17px;      
+    } 
+    .newsroomHeadlineDiv {
+    padding-left: 20px;
+    padding-top: 27px;
+} 
+</style> 
+    <!-- START PAGE -->
+    <div class="mainDiv">
+     <c:LoggedInUser ></c:LoggedInUser>
+    <!--
+            <div  class="pName">
+                <apex:outPutText value="{!hi}"/>
+                <apex:outPutText value=" "/>
+                <apex:outPutText value="{!lastName}"/>
+            </div>
+     -->
+        <div id="menuContainer" style="padding-top:11px;">
+        <c:navconnectheaderwithlinks ></c:navconnectheaderwithlinks>
+    </div> 
+     <div style="margin:22px 20px 0 20px;">
+        <apex:outputLink value="/apex/Connect/Connect?bidID={!bidID}"  target="_self" style="text-decoration:none;">
+            <apex:outputLabel value="Connect" styleClass="breadcomActive"/>
+        </apex:outputLink>       
+        <apex:outputPanel >            
+             <apex:outputLabel value="/" styleClass="deActive"/>
+             <apex:outputLabel value="Events and Sponsorships" styleClass="deActive"/>
+        </apex:outputPanel> 
+        
+        <!-- ------------Search button div----------------------------------- -->
+        <apex:outputPanel style="float:right;">
+            <apex:inputText value="{!strValue}" styleClass="inpuTypeField inputTextArea" onkeypress="return noenter(event);" id="pgblcktbl"/>
+            <apex:actionFunction name="doSearchAF" action="{!searchFound}"/> 
+            <apex:commandLink action="{!searchFound}" id="h1">
+                <apex:image value="{!URLFOR($Resource.searchButton)}" style="margin-bottom:-9.3px; margin-left: -4px;"/>
+            </apex:commandLink>
+        </apex:outputPanel>
+        
+<!-- ----------End--Search button div----------------------------------- -->        
+    </div>  
+    <div style="margin-left: 663px;"> <apex:pageMessages id="pagemessage"/> </div>
+    
+    <c:EventsComponents ></c:EventsComponents>
+    
+    <apex:outputPanel rendered="{!banners}">
+        <div>
+        <apex:repeat value="{!banner}" var="a">
+            <apex:image value="{!a.Banner_Link__c}" styleClass="BannerImage"/>   
+          </apex:repeat>       
+        </div>
+          
+    </apex:outputPanel>
+   
+    <div title="PrimaryDiv">
+    <apex:outputPanel rendered="{!Events}">
+        <div>
+        <div Title = "Event Header" class="EventSponsorshipHeader">
+        Events
+        </div>
+        
+            <apex:repeat value="{!eventss}" var="status">
+            
+                <div Title="Event List Div" class="EventListDiv">
+                    <div Title="Main Event Pic Div" class="MainEventPicDiv">
+                        <div title="second Main Event Pic Div" class="secondMainEventPicDiv">
+                                <div title="Event Gray Header" 
+                                class="EventGrayHeader"
+                                style="background-image:url('{!$Resource.GrayGradient}'); ">
+                                
+                                    <apex:outputPanel rendered="{!IF((status.Start_Date__c !=status.End_Date__c), true, false)}" >                                                  
+                                          <apex:OutputText value="{0, date, MMM. d}" styleClass="Eventdate">
+                                             <apex:param value="{!status.Start_Date__c}" />
+                                          </apex:outputText> 
+                                          <apex:OutputText value=" - " styleClass="font-family:arial;font-weight:bold;vertical-align:top;"/>                                         
+                                          <apex:OutputText value="{0, date, MMM. d}" styleClass="Eventdate">
+                                              <apex:param value="{!status.End_Date__c}"  />
+                                          </apex:outputText>   
+                                     </apex:outputPanel>  
+                                     <apex:outputPanel rendered="{!IF((status.Start_Date__c ==status.End_Date__c), true, false)}">                                                  
+                                          <apex:OutputText value="{0, date, MMM. d}" styleClass="Eventdate">
+                                             <apex:param value="{!status.Start_Date__c}" />
+                                          </apex:outputText> 
+                                    </apex:outputPanel>  
+                                </div>                               
+                                <div title="Pic Event Div" class="PicEventDiv">
+                                    <apex:outputPanel rendered="{!Contains($CurrentPage.URL,'attpartnerexchange')}">
+                                        <div Title="Inserted Event Pic" class="insertPicEvent" style="background-image:url('/Connect/{!status.Event_Image_Link__c}');" id="topImageDiv"/>
+                                    </apex:outputPanel>  
+                                    <apex:outputPanel rendered="{!NOT(Contains($CurrentPage.URL,'attpartnerexchange'))}">
+                                        <div Title="Inserted Event Pic" class="insertPicEvent" style="background-image:url('{!status.Event_Image_Link__c}');" id="topImageDiv"/>  
+                                    </apex:outputPanel>
+                                </div>
+                         </div>
+                    </div>                
+                    <div title="EventInformation" style="display: table-cell;">
+                        <div title="EventName" class="EventName">
+                            <apex:outPutText value="{!status.Name}" />
+                        </div>
+                        
+                        <div title="When information" >
+                            <apex:outputText value="When: " styleClass="eventsdate"/>  
+                            
+                            <apex:outputPanel styleClass="Dates" rendered="{!IF((status.Start_Date__c !=status.End_Date__c), true, false)}" >                                         
+                                
+                                <apex:OutputText value="{0,date,M'/'d}">
+                                    
+                                    <apex:param value="{!status.Start_Date__c}"/>
+                                    
+                                </apex:outputText>                                                                                   
+                               
+                                <apex:OutputText value="-" styleClass="font-weight:bold;"/>                                         
+                                
+                                <apex:OutputText value="{0,date,M'/'d}" >
+                                    <apex:param value="{!status.End_Date__c}"  />
+                                </apex:outputText> 
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel styleClass="Dates" rendered="{!IF((status.Start_Date__c ==status.End_Date__c), true, false)}" >                                         
+                                <apex:OutputText value="{0,date,M'/'d}">
+                                   
+                                        <apex:param value="{!status.Start_Date__c}"/>
+                                   
+                                </apex:outputText>
+                            </apex:outputPanel>
+                            
+                        </div>
+                        
+                        <div title="Where Information">
+                            <apex:outputText value="Where: " styleClass="eventsdate"/>
+                            <apex:outPutText value="{!status.City__c}" styleClass="CityState"/>
+                            <apex:outputText value=", "/>
+                            <apex:outPutText value="{!status.State__c}" styleClass="CityState"/> 
+                        </div>
+                        
+                        <div title="Description Information" style="padding-top:20px;" Class="eventDescription">
+                            <apex:outputField value="{!status.Description__c}"/>
+                        </div>
+                          
+                        <div title="Website Information" class="WebsiteInformation">
+                        
+                         <apex:outputText rendered="{!status.Website_Friendly_Name__c == NULL}">
+                             <apex:outputLink value="{!status.Website__c}">
+                                <div style="display:table-cell; vertical-align:top;font-family:Arial;color:#067ab4;"> 
+                                      {!status.Name} Website
+                                </div>
+                                <div style="display:table-cell; padding-left:10px;">
+                                    <img src="{!URLFOR($Resource.eventarrowlink)}" alt="arrow" id="arrow" />
+                                </div>
+                            </apex:outputLink>
+                         </apex:outputText>
+                        
+                        
+                         <apex:outputText rendered="{!status.Website_Friendly_Name__c != NULL}">
+                            <apex:outputLink value="{!status.Website__c}">
+                                <div style="display:table-cell; vertical-align:top;font-family:Arial;color:#067ab4;"> 
+                                  {!status.Website_Friendly_Name__c} 
+                                </div>
+                                <div style="display:table-cell; padding-left:10px;">
+                                    <img src="{!URLFOR($Resource.eventarrowlink)}" alt="arrow" id="arrow" />
+                                </div>
+                            </apex:outputLink>
+                         </apex:outputText>
+                        </div>
+                    </div>
+                </div>
+            
+            </apex:repeat>        
+        </div>
+    </apex:outputPanel>
+        <!--  END OF EVENT LIST -->         
+        <apex:outputPanel rendered="{!Spons}">
+            
+            <div title="Sponsorship Main Div Section">
+              
+                <div title="Sponsorship Header" class="EventSponsorshipHeader"> 
+                    Sponsorships        
+                </div>                   
+                <apex:repeat value="{!Sponss}" var="engage">
+                    <div title="Sponsorship List" class="SponsorshipList">
+                        <div title="Sponsorship Website Information" class="SponsorshipWebsiteInfo">
+                            <apex:outputLink value="{!engage.Website__c}" target="_blank" style="color:#067ab4;text-decoration: none;">
+                                <div style="display:table-cell; vertical-align:top;font-family:Arial;color:#067ab4;"> 
+                                    {!engage.Name} 
+                                </div>
+                            </apex:outputLink>
+                        </div>
+                        <div title="Sponsorship Description" class="SponsorshipDescription">
+                            <apex:outputField value="{!engage.Description__c}" />
+                        </div>
+                    </div>
+                </apex:repeat>
+            </div>
+        </apex:outputPanel>       
+    </div>           
+    <!--- START OF Footer--->
+        <c:newsroomFooter ></c:newsroomFooter>
+    <!--- END OF Footer--->   
+    <!--- CLOSE OF MAIN DIV -->
+    </div>
+    <script type="text/javascript">{!$Label.DTMFooter}</script>
+    </apex:form>
+</html>
+
+</apex:page>

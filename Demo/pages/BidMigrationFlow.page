@@ -1,0 +1,30 @@
+<apex:page controller="BidMigrationFlowController" cache="false" >
+<!--
+<style>
+      .activeTab {background-color: ##00FFFF; color:black; 
+         background-image:none}
+      .inactiveTab { background-color:#99CCFF; color:white; 
+         background-image:none}
+      td{
+          font-size : 100%;
+
+      }
+      .btn{
+          font-size : 100%;
+
+      }
+      td,.btn{
+          font-size : 100%;
+
+      }
+</style> -->
+<apex:tabPanel switchType="server" id="theTabPanel" value="{!tabOpt}" >
+    <apex:tab label="Bulk Migration" id="tabOne" ><apex:form ><apex:commandButton value="Switch to Search and Migrate" action="{!switchToSecondTab}" /></apex:form> 
+        <apex:pageBlock ><div style="height: 200px;"><apex:include pageName="OpportunityToQuote" /></div></apex:pageBlock>
+    </apex:tab>
+    <apex:tab label="Search and Migrate" id="tabTwo" >
+        <apex:form ><apex:commandButton value="Switch to Bulk Migration" action="{!switchToFirstTab}" /> </apex:form>
+        <apex:include pageName="MigrateSingleOpportunity" />
+    </apex:tab>
+</apex:tabPanel>
+</apex:page>

@@ -1,0 +1,56 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="ContactPrototypeController">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8" />
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />
+    <apex:stylesheet value="{!$Resource.icon_framework_CSS}"/>
+    <apex:stylesheet value="{!$Resource.main_stylesheet_CSS}"/>
+    <style type="text/css">
+        .confirmed-ticket-container {
+            display: block;
+        }
+        li form {
+            display: inline-block;
+        }
+    </style>
+
+    <!-- <div class="header">
+        <div class="logo"> 
+            <a href="/apex/PortalDashboard_UI"><apex:image url="{!URLFOR($Resource.portalDesignImg,'/logo_retina.png')}" width="222" height="32" alt="AT&T Partner Exchange"/></a>
+        </div>
+        <div class="header-nav visible-md visible-lg">
+            <ul>
+                <li><a href="/apex/PortalDashboard_UI">My Dashboard</a></li>
+            </ul>
+        </div>
+    </div> -->
+    <div class="container confirmed-ticket-container">
+        <div class="row confirmed-ticket-content">
+            <div class="col-sm-12 ty-content">
+                <h2>Thank you <apex:outputText > {!userName}</apex:outputText>, we have created your case.</h2>
+                <h1>Case Number: {!$CurrentPage.Parameters.caseId}</h1>
+                <p class="whats-next"> What happens next: </p>
+                <ul class="has_bullets">
+                    <li>We'll send you an email confirming your case creation.</li>
+                    <li>A representative from AT&amp;T will contact you to address your request.</li>                    
+                    
+                    <apex:outputPanel rendered="{!EmailCommentNotify==true}">
+                    <li>You will be notified each time a comment is added to the case.<apex:form ><apex:commandLink action="{!emailNotifyOn_TY}" value="Click " id="theCommandLink"/></apex:form> to disable</li>
+                    </apex:outputPanel>
+                  
+                    <apex:outputPanel rendered="{!EmailCommentNotify==false}">
+                    <li>You will be no longer be notified each time a comment is added to the case.<apex:form ><apex:commandLink action="{!emailNotifyOn_TY}" value="Click " id="theCommandLink"/></apex:form> to enable</li>
+                    </apex:outputPanel>
+                    
+                </ul>
+                <div class="row">
+                    <div class="button-container">
+                        <a href="{!$Page.PortalDashboard_UI}"><button class="btn btn-primary">Back to Dashboard</button></a>
+                        <a href="/apex/Support_Center"><button class="btn btn-primary">Create Another Case</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>  
+    </div>
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+    <apex:includeScript value="{!$Resource.main_controller_JS}"/>
+</apex:page>

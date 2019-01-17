@@ -1,0 +1,1275 @@
+<apex:page controller="MACD_CosChangePanelController" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" title="Cos Change" cache="false" >
+    
+
+    <apex:includeScript value="{!URLFOR($Resource.bootstrapMin, 'js/bootstrap.min.js')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+
+    <apex:includeScript value="{!URLFOR($Resource.jQueryForPopup, 'jQuery/jquery-1.8.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jQueryForPopup, 'jQuery/ui/jquery-ui-1.9.1.custom.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jQueryForPopup, 'jQuery/postmessage/jquery.ba-postmessage.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jQueryForPopup, 'jQuery/bbq/jquery.ba-bbq.min.js')}"/>
+
+    <apex:includeScript value="{!$Resource.Char_js}"/>
+    
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCss}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCSSDetails}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalExchangeCSS}" />
+    <apex:stylesheet value="{!$Resource.sitedetailsCos_StyleSheet}"/>
+
+    <!--<apex:includeScript value="{!$Resource.jQueryMin}" />
+    <apex:includeScript value="{!$Resource.atombootstrapminjs}" />-->
+    <!-- JavaScript
+    ================================================== -->
+    <!-- PRODUCTION -->
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'vendors/modernizr.js')}" />
+    <apex:includeScript value="{!$Resource.atomjqueryjs}" />
+   
+    
+    <apex:stylesheet value="{!$Resource.PortalDesignCSS}" />
+
+    <apex:stylesheet value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.js')}" />
+
+    <apex:stylesheet value="{!$Resource.App_CSS}" />
+    <apex:stylesheet value="{!$Resource.TextStylesCSS}"/>
+    
+      <style>
+      
+      
+      #manage_content h3
+      {
+      font-size:15px !important;
+      
+      }
+
+        .greenText {
+            color: green !important;
+            padding: 10px 15px 0 15px;
+        }
+        #contentWrapper {
+            min-width: 1024px !important;
+        }
+        button.close {
+            font-size: 200%;
+        }
+        .active > a,
+        .active_tab > a {
+            color: #fff;
+        }
+        .active > a,
+        .active_tab > a, .tabbed_menu .mainnav li.active::after {
+            cursor: default; /* Added to ensure the cursor is default for the active tab */
+        }
+        .tabbed_menu .active {
+            background: #056FAB !important;
+        }
+        .tabbed_menu li{
+            padding: 0;
+            width: 33.33%;
+             font-size: 18px !important;
+        }
+        
+        .tabbed_menu li a {
+            padding: 20px;
+            display: block;
+            text-align: center;
+        }
+
+        .dataTables_length {
+            display: none;
+        }
+        .dataTables_info {
+            bottom: 22px;
+            position: absolute;
+            right: 180px;
+        }
+        .manage_user_name {
+            width: 17% !important;
+        }
+        .manage_user_contact_name {
+            width: 10% !important;
+        }
+        .manage_user_address {
+            width: 10% !important;
+        }
+        .manage_user_city {
+            width: 10% !important;
+        }
+        .manage_user_state {
+            width: 10% !important;
+        }
+        .manage_user_zip {
+            width: 10% !important;
+        }
+        #manage_content .pagination > a {
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #33;
+            margin-left: 5px;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+            cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+            cursor: no-drop;
+        }
+
+        .circlenum {color:#056FAB ; border:1px solid #056FAB ;}
+        .active .circlenum{font-size: 18px;font-weight: bold}
+        .m-b-5{margin-bottom: 5px;}
+        .btn {
+            padding: 10px 20px !important;
+        }
+        .btn:hover {
+            background: #fff !important;
+            color: #056FAB !important;
+        }
+        h1 {
+            font-family: omnesatt_iiregular;
+            margin: 40px 0 20px 0;
+        }
+      
+
+        .mainnav a:hover { color: #428bca !important; }
+        .mainnav .active a { color: #fff !important;cursor: default !important;font-size: 18px; }
+        
+        .tabbed_menu .mainnav li#liconfigSites.active::after {
+            content: " ";
+            display: inline;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            position: absolute;
+            border-top: 14px solid #056FAB  !important;
+            bottom: -14px;
+            /* left: 9%; */
+            margin-left: -16.6%;
+            z-index: 99999;
+        }
+        
+         .tabbed_menu .mainnav li#lireviewQuote.active::after {
+            content: " ";
+            display: inline;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            position: absolute;
+            border-top: 14px solid #056FAB  !important;
+            bottom: -14px;
+            /* left: 9%; */
+            margin-left: -23.5%;
+            z-index: 99999;
+        }
+        
+         .tabbed_menu .mainnav li#liconfirmation.active::after {
+            content: " ";
+            display: inline;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            position: absolute;
+            border-top: 14px solid #056FAB  !important;
+            bottom: -14px;
+            /* left: 9%; */
+            margin-left: -39.5%;
+            z-index: 99999;
+        }
+        .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+            background-size: 900px 900px !important;
+        }
+        .tabbed_menu li {
+            float: left !important;
+        }
+        .manage_content-header {
+            font-family: omnes_light;
+        }
+        ul.mainnav li.disabled a, ul.mainnav li.disabled a:hover
+        {
+            cursor: default !important;
+        }
+        li.ng-isolate-scope.active::after
+        {
+            cursor: default;
+        }
+
+        
+     
+
+    </style>
+    <style>
+        .ui-widget-header {
+            background: #4ca90c !important;
+        }
+        
+        .ui-slider {
+            height: 1.6em;
+        }
+        
+        .ui-slider .ui-slider-handle {
+                 height: 2.3em;
+                 width: 10px;
+                 margin-left: -3px;
+                 margin-bottom: -7px;
+           
+        }
+        
+        .ui-slider-range {
+            background: #99C800;
+        }
+        
+        .sliderLabelsProgress {
+            position: absolute;
+            top: 50px;
+            left: 40px;
+            z-index: 999999;
+            color: White;
+        }
+        
+        .sliderLabelsMax {
+            position: absolute;
+            top: 50px;
+            right: 40px;
+            z-index: 999999;
+            color: grey;
+        }
+        
+        div.progress {
+            height: 50px;
+        }
+        
+        span#portSpeed,
+        span#xsSpeed {
+            font-size: 1.3em;
+            line-height: 50px;
+        }
+        
+        .portSpeedLbl {
+            vertical-align: middle !important;
+        }
+        
+        .progress-bar-success {
+            background: #0171BB !important;
+        }
+        
+        h3.f-s-larger {
+            padding: 10px 0 !important;
+        }
+        
+        h3.f-s-large {
+            padding: 10px 0 !important;
+            font-size: 1.3em !important;
+        }
+        
+        h3 span {
+            font-size: 12px !important;
+        }
+        
+        hr.dashedHr {
+            width: 100% !important;
+            clear: both !important;
+        }
+        
+        .breather {
+            padding: 10px 0 !important;
+        }
+        
+        .errorText {
+            color: #a94442;
+            font-size: 18px;
+        }
+
+        .gray_hr{
+            border-top:0px !important;
+            height: 1px;
+            background: none repeat scroll 0% 0% #C8C8C8;
+            width: 1200px !important; 
+            margin-left: -20px !important;
+            margin-bottom: 40px;
+            margin-top: 40px;
+            margin-right: 0px !important;
+            }
+
+        .mainnav li{
+            
+            pointer-events: none !important;
+            color:#056FAB;
+            font-size:18px;
+        }
+
+        a{
+        
+            color:#056FAB;
+        
+        }
+        
+         #legend label{
+        
+                margin-top: 12px !important;
+        
+        }
+
+        div.legendItem {
+                margin-top: 5px;
+                    }
+                      
+        #macdcoschangemain ul li{
+                
+                    margin-left: 0em; 
+        }
+        IPInformation {
+            font-family: omnes_att_iimedium;color: #000000; margin-left: 50px; margin-top: 24px; font-weight: bold; text-align: left;line-height: 0.96em;font-size: 1.13em;effect: none; width: 500px;margin-left: 50px;
+        }
+        .removeBold {
+            font-weight: normal;
+            
+        }
+        .FL180{
+            float:right;
+            margin-right:180px;
+        }
+        .cosSliderLabelsProgress {
+            position: absolute;
+            top: 7px;
+            left: 40px;
+            z-index: 999999;
+            color: Black;
+            font-family: omnes_light;
+        }
+        
+        .cosSliderLabelsMax {
+            position: absolute;
+            top: 6px;
+            right: 45px;
+            z-index: 999999;
+            color: #4ca90c;
+            font-family: omnes_light;
+        } 
+        /* Radhika 27 Nov 2015, 64647 fix */
+        .circlenum_gray {
+                float: left;
+                margin: -4px 5px 0px;
+                width: 25px;
+                height: 25px;
+                border-radius: 15px;
+                font-size: 18px;
+                color: #666 !important;
+                line-height: 25px;
+                text-align: center;
+                border: 1px solid #666 !important;
+                font-weight: bold;
+                
+                
+            }
+            
+        .btn:hover{background:#056FAB !important; color:#fff !important;}
+            
+        ul.mainnav li.disabled, ul.mainnav li.disabled a:hover
+        {
+            cursor: default !important;
+            color: #666 !important;
+            border: 1px solid #a3a3a3 !important;
+        }
+   .styled-select-small{background-size: 42px;}
+    </style>
+
+   <div class="content_container subpage_main-container">      
+   <div id="manage_content" style="padding: 0; margin-right:0; background-color: #F0F0F0;" class="page ng-scope" ng-controller="QuoteController as beginQuote">
+      <apex:form id="parentForm"> 
+      <apex:outputPanel id="configload" >  
+        
+       </apex:outputPanel>  
+        <div class="row"  style="margin-top: 15px;">
+            <div class="col-xs-12 col-md-12" style="margin-top:20px;margin-left:20px;">
+                    <h3 styel="font-size: 15px !important; color: #010101; margin-top:20px !important;margin-left:20px !important;"> Order Number:{!orderNumberData}</h3>            
+            </div>
+        </div>
+        <div class="container" style="width: 1100px !important; margin-top: 0 !important; padding: 0 !important;">
+           
+           <div class="col-xs-12 col-md-12" style="margin-bottom: -10px;margin-top: -20px;">
+                <div id="macdcoschangemain" class="row tabbed_menu">                 
+                  <ul class="mainnav" role="tablist">
+                            <li class="active" id="liconfigSites">
+                                <a href="#configSites" data-name="configSites" data-tabName="{!$Label.Configure_Sites}" role="tab" data-toggle="tab" style="font-size: 18px !important;"><div class="circlenum" style="margin-left: 138px">1</div> Configure </a>
+                            </li>
+                            <li id = "lireviewQuote">
+                                <a href="#reviewQuote" data-name="reviewQuote" data-tabName="{!$Label.Review_Quote}" role="tab" data-toggle="tab" style="font-size: 18px !important;"><div class="circlenum_gray" style="margin-left: 125px">2</div> Review Request </a>
+                            </li>
+                            <li id = "liconfirmation">
+                                <a href="#confirmation" data-name="confirmation" data-tabName="View Confirmation Information" role="tab" data-toggle="tab" style="font-size: 18px !important;"
+                                ><div class="circlenum_gray" style="margin-left: 80px">3</div> View Confirmation Information </a>
+                            </li>
+                        </ul>
+                    </div>
+              
+                </div>
+        </div>
+       
+      
+      <apex:actionFunction action="{!retrieveOrderNumber}" name="ajaxFetchOrderNumber" reRender="parentForm,configload" status="loading" oncomplete="tabmenuRedline();"/>
+      <div class="tab-content">
+          
+          
+        <!----- Config tab content startss here-------- -->
+        <div class="tab-pane fade in active" id="configSites" style="height: 480px; margin-left:30px;">
+                     
+              <apex:outputPanel id="CoSBlock">
+
+                    <div class="" style="margin-bottom: -8px;">
+                        <h1 style="font-family: omnes_light; font-size: 32px; padding-top: 2px; color: #000000 !important; font-weight: bolder !important"> Change Class of Service Profile ID</h1>
+                       
+                    </div>
+
+
+                    <div class="row">
+
+                                <div>
+                                           
+                                </div>
+                    </div>
+
+                    <div>
+
+                    <p style="font-family: omnes_light; font-size: 18px; margin-right: 25px;">
+                        Change your Class of Service (CoS) Profile ID by moving the Real-Time Percentage slider bar. Then change the value in the Profile ID dropdown menu. Click <b>Apply &amp; Continue</b>. Click <b>Cancel Request</b> if you want to stop the proposed change.
+                    </p>
+                    
+                        
+                    </div>
+
+                             
+                  
+                                            <div class="col-xs-7 col-md-7" style="margin-left: 85px; margin-top: 5px;">
+
+                                                <div class="m-t-20">
+                                                <p style="margin-bottom: 10px; font-family: omnes_att_iimedium; font-size: 16px; color: #000000 !important;"> Step1: Real-Time Percentage:</p> 
+                                                </div>
+                                                <div class="col-xs-12 col-md-12" id="cosSlider" style="height:32px;width:800px;">
+                                                    <div class="cosSliderLabelsProgress">
+                                                        <span id="cosSliderPrgs" style="right: 10px;font-family:omnes_att_iimedium"><apex:outputLabel rendered="true"/>0 %</span>
+                                                    </div>
+                                                    <div class="cosSliderLabelsMax">
+                                                        <span id="cosSliderMax" style="font-family:omnes_att_iimedium">100 %</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="width:825px; font-size: 18px !important; font-family:omnes_att_iimedium !important;">
+                                                    <span class="col-xs-1">|</span>
+                                                    <span class="col-xs-10" style="text-align:center; ">|</span>
+                                                    <span class="col-xs-1" style="padding-left:52px;">|</span>
+                                                </div>
+                                                <div class="row" style="width:825px; font-size: 18px !important; font-family:omnes_att_iimedium !important;">
+                                                    <span class="col-xs-1">0</span>
+                                                    <span class="col-xs-10" style="text-align:center;">50</span>
+                                                    <span class="col-xs-1" style="padding-left: 42px;">100</span>
+                                                </div>
+                                            </div>
+
+                                             
+
+                                             <div class="col-xs-7 col-md-7" style="margin-bottom:40px; margin-left: 65px;  margin-top: 5px;">
+                                                <div class="m-t-20">
+                                                    <p style="margin-bottom:4px;font-family: omnes_att_iimedium; font-size: 16px; color: #000000 !important;">Step2: Profile ID:</p>
+                                               </div>
+                                                <div>
+                                                    <apex:outputPanel id="misprofileSelect">
+                                                        <apex:selectList id="profileSelect1" styleclass="form-control requiredSelectField styled-select-small" value="{!selectedprofile}"   multiselect="false" size="1" style="-moz-appearance: none;-webkit-appearance: none;font-size:16px;width:845px;font-family:omnes_att_iimedium">
+                                                            <apex:selectOptions value="{!profileoptions}" />
+                                                            <apex:actionSupport event="onchange" action="{!get_page2_coschartvalues}" reRender="updatecoschart,cosConfigContinueBtn" oncomplete="enableApply(this.value);validatePage3Submit();" />
+                                                        </apex:selectList>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </div>
+
+
+                                            <apex:actionFunction name="getmisprofiles" action="{!fetchmisprofiles}" reRender="profileSelect1,cosConfigContinueBtn" status="loading" oncomplete="enableApplyButton('{!disableApply}');">
+                                         <apex:param name="slidervalue" value="" assignTo="{!SelectedSliderValue}" />
+                                          </apex:actionFunction>
+                                   <!-- <apex:outputPanel id="updatecoschart">
+                                                                
+                                                                <div class="m-t-20">
+                                                                
+                                                                
+                                                                <div class="col-xs-7 col-md-7">
+                                                            
+
+                                                                
+                                                                    <div id="canvas-holder" class="col-xs-6">
+                                                                        <canvas id="chart" width="250" height="250" />
+                                                                    </div>
+                                                                    
+                                                                     <div class="m-t-20"  style="margin-top: 60px ! important;">
+
+                                                                    <div id="legend" class="col-xs-5 p0 m-t-20">
+                                                                        <div class="legendItemHolder">
+                                                                            <div class="legendItem cos1"></div>
+                                                                            <label class="legendLabel">Real Time : {!cos_Real_Time}%</label>
+                                                                        </div>
+                                                                        <div class="legendItemHolder">
+                                                                            <div class="legendItem cos2"></div>
+                                                                            <label class="legendLabel">Bursty High : {!cos_BurstyHigh}%</label>
+                                                                        </div>
+                                                                        <div class="legendItemHolder">
+                                                                            <div class="legendItem cos3"></div>
+                                                                            <label class="legendLabel">Bursty Low : {!cos_BurstyLow}%</label>
+                                                                        </div>
+                                                                        <div class="legendItemHolder">
+                                                                            <div class="legendItem cos4"></div>
+                                                                            <label class="legendLabel">Best Effort : {!cos_BestEffort}%</label>
+                                                                        </div>
+                                                                    </div>
+
+                                                                    </div>
+                                                                </div>
+
+                                                                </div>
+
+                                                        
+                                                        
+
+
+                                                            <div class="row">
+                                                               <div class="col-xs-12">
+                                                                <hr class="gray_hr" />
+                                                                </div>
+                                                            </div>
+ 
+                                                                
+                                                            rendered="{!NOT(showExisting)}"
+                                                        
+                                                       
+                                                                <script type="text/javascript">
+                                                                   var cos_Real_Time = {!cos_Real_Time},cos_BurstyHigh = {!cos_BurstyHigh}, 
+                                                                    cos_BurstyLow = {!cos_BurstyLow},cos_BestEffort = {!cos_BestEffort};
+                                                                    function updateChart() {
+                                                                        var pieData = [
+                                                                            {
+                                                                                value: cos_Real_Time,
+                                                                                color: "#066EAD",
+                                                                                highlight: "#4584af",
+                                                                                label: "Real Time"
+                                                                                    },
+                                                                            {
+                                                                                value: cos_BurstyHigh,
+                                                                                color: "#019BDB",
+                                                                                highlight: "#18a2e2",
+                                                                                label: "Bursty High"
+                                                                                    },
+                                                                            {
+                                                                                value: cos_BurstyLow,
+                                                                                color: "#48C8EF",
+                                                                                highlight: "#65cfef",
+                                                                                label: "Bursty Low"
+                                                                                    },
+                                                                            {
+                                                                                value: cos_BestEffort,
+                                                                                color: "#ADEAFC",
+                                                                                highlight: "#65cfef",
+                                                                                label: "Best Effort"
+                                                                                    }
+                                                                                ];
+                                                                        var ctx1 = $("#chart").get(0).getContext("2d");
+                                                                        var myNewChart1 = new Chart(ctx1).Pie(pieData);
+                                                                    }
+                                                                    updateChart();
+                                                           
+                                                             </script>
+
+                                                      </apex:outputPanel> -->
+
+                                                           <script type="text/javascript">
+                                                                function updateSliderAVPN() {
+                                                                    //$("#cosSliderPrgs").text(ui.value + ' %');
+                                                                    $("#cosSlider").slider({
+                                                                        value: 0,
+                                                                        range: "min",
+                                                                        animate: false,
+                                                                        step: 5,
+                                                                        change: function (event, ui) { 
+                                                                            getmisprofiles(ui.value);  
+                                                                           $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                       if(ui.value == 55){
+                                                                           ui.value = ui.value -5;
+                                                                            
+                                                                            getmisprofiles(ui.value);  
+                                                                            $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                        $("#cosSlider").slider({
+                                                                        value: 50
+                                                                         });        
+                                                                      } 
+                                                                     else if(ui.value == 65){
+                                                                      ui.value = ui.value -5;
+                                                                     getmisprofiles(ui.value); 
+                                                                     $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                      $("#cosSlider").slider({
+                                                                      value: 60
+                                                                         });        
+                                                                       }
+                                                                    else if(ui.value == 75){
+                                           
+                                                                     ui.value = ui.value -5;
+                                                                     
+                                              
+                                                                     getmisprofiles(ui.value); 
+                                                                    $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                     $("#cosSlider").slider({
+                                                                       value: 70
+                                                                       });        
+                                            
+                                                                      }
+                                                                   
+                                                                   else if(ui.value ==85){
+                                          
+                                                                    ui.value = ui.value -5;
+                                            
+                                                                     getmisprofiles(ui.value); 
+                                                                   $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                       $("#cosSlider").slider({
+                                                                       value: 80
+                                                                      });        
+                                            
+                                                                      }
+                                                                      else if(ui.value ==95){
+                                          
+                                                                      ui.value = ui.value -5;
+                                            
+                                                                      getmisprofiles(ui.value); 
+                                                                      $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                      $("#cosSlider").slider({
+                                                                        value: 90
+                                                                      });        
+                                            
+                                                                      }
+                                                                      else if(ui.value ==100){
+                                          
+                                                                      ui.value = ui.value -10;
+                                            
+                                                                      getmisprofiles(ui.value);  
+                                                                      $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                      $("#cosSlider").slider({
+                                                                        value: 90
+                                                                      });
+                                                                       
+                                                                       }      
+                                                                      
+                                                                    
+                                                                        
+                                                                        }
+                                                                    });
+                                                                }
+                                                                
+                                                                function updateSliderMIS() {
+                                                              
+                                                                    $("#cosSlider").slider({
+                                                                        value: 0,
+                                                                        range: "min",
+                                                                        animate: false,
+                                                                        step: 10,
+                                                                        change: function (event, ui) { 
+                                                                       
+                                                                       getmisprofiles(ui.value);  
+                                                                       $("#cosSliderPrgs").text(ui.value + ' %'); 
+                                                                       if(ui.value == 30){
+                                                                       ui.value = ui.value -10;
+                                                                        
+                                                                        getmisprofiles(ui.value); 
+                                                                        $("#cosSliderPrgs").text(ui.value + ' %');  
+                                                                        $("#cosSlider").slider({
+                                                                        value: 20
+                                                                         });        
+                                                                      } 
+                                                                     else if(ui.value == 70){
+                                                                      ui.value = ui.value -10;
+                                                                     getmisprofiles(ui.value); 
+                                                                     $("#cosSliderPrgs").text(ui.value + ' %');  
+                                                                      $("#cosSlider").slider({
+                                                                      value: 60
+                                                                         });        
+                                                                       }
+                                                                   
+                                                                      else if(ui.value ==100){
+                                          
+                                                                      ui.value = ui.value -10;
+                                            
+                                                                      getmisprofiles(ui.value);
+                                                                      $("#cosSliderPrgs").text(ui.value + ' %');   
+                                                                      $("#cosSlider").slider({
+                                                                        value: 90
+                                                                      });
+                                                                       
+                                                                       }      
+                                                                      
+                                                                        
+                                                                        }
+                                                                    });
+                                                                }
+                                                                 var productTypeVal= '{!PremiseServiceType}';
+                                                               if(productTypeVal == 'AVPN'){
+                                                                updateSliderAVPN();
+                                                                }else
+                                                                {
+                                                                updateSliderMIS();
+                                                                }
+                                                                
+                                                                function execUpdateSlider(){
+                                                                
+                                                                   var productTypeVal= '{!PremiseServiceType}';
+                                                                   if(productTypeVal == 'AVPN'){
+                                                                   
+                                                                       updateSliderAVPN();
+                                                                   }else{
+                                                                   
+                                                                       updateSliderMIS();
+                                                                   }
+                                                                }
+                                                            </script> 
+                                                        <div class="row">
+                                                               <div class="col-xs-12 m-b-20">
+                                                                <hr class="" style="width: 1100px; margin-left:-30px;margin-top: 0px;" />
+                                                                </div>
+                                                                
+                                                            </div> 
+                                                            <div class="row">
+                                                                
+                                                                <div class="col-md-6">
+                                                                </div>
+                                                                <div class="col-md-6 text-right">
+                                                                     <!--<apex:commandLink value="Cancel Request" action="{!Cancelrequest}" status="loading" style="font-size: 16px; float:left;font-family: omnes_light !important;padding-top:10px;margin-right:40px"/>-->
+                                                                     <apex:commandLink value="Cancel Request" action="{!Cancelrequest}" status="loading" style="font-size: 16px; float:left;font-family: omnes_light !important;padding-top:10px;padding-right:10px"/>
+                                                                     <apex:commandButton value="Reset" action="{!resetPortCoSChange}" status="loading" style="font-size: 16px; padding: 0px 10px !important; width:175px !important; height:35px !important; background-color: #FFF; color: #000000;border: 1px solid #A2A2A2 !important;font-family: omnes_light !important;" disabled="false" oncomplete="execUpdateSlider();" reRender="profileSelect1"/>
+                                                                     <apex:commandButton id="cosConfigContinueBtn" status="loading" value="Apply & Continue" action="{!InitReviewPanel}"  rerender="CosChangeReviewPanel" oncomplete="gotoReviwRequest();" styleClass="btn disabled" style="font-size: 16px; padding: 0px 10px !important; width:175px !important; height:35px !important;font-family: omnes_light !important;" disabled="{!disableApply}"/>  
+                                                                </div>
+                                                            
+                                                                <!--
+                                                                <div class="col-xs-2" style="position: absolute;margin-left: 40%; margin-top: 19px;font-family: omnes_light !important;">
+                                                                
+                                                                 <apex:commandLink value="Cancel Request" action="{!Cancelrequest}" status="loading" />
+                                                                  
+                                                                 </div>
+                                                                 
+                                                               <div class="col-xs-4" style="margin-bottom:40px !important;margin-top: 10px;margin-left: 0px">
+                                                                   
+                                                               
+                                                                 <apex:commandButton value="Reset" action="{!resetPortCoSChange}" status="loading" style="font-size: 16px; margin-left: 672px !important; padding: 0px 10px !important; width:175px !important; height:35px !important; background-color: #FFF; color: #000000;border: 1px solid #A2A2A2 !important;font-family: omnes_light !important;" disabled="false" oncomplete="execUpdateSlider();" reRender="profileSelect1"/>
+                                                                  
+                                                               </div>  
+    
+                                                                 <div class="pull-right text-right" style="margin-top: 10px;margin-right: 20px">
+    
+                                                                    <apex:commandButton id="cosConfigContinueBtn" status="loading" value="Apply & Continue" action="{!InitReviewPanel}"  rerender="CosChangeReviewPanel" oncomplete="gotoReviwRequest();" styleClass="btn disabled" style="font-size: 16px; margin-left: 113px !important; padding: 0px 10px !important; width:175px !important; height:35px !important;font-family: omnes_light !important;" disabled="{!disableApply}"/>  
+                                                          
+                                                                </div>
+                                                                -->
+                                                            </div>
+                                                            
+
+                                                          
+
+                                                             <apex:actionFunction name="initCosConfigController" action="{!InitConfigController}" reRender="coschangepanel"/>
+                         
+              </apex:outputPanel>
+              
+              
+             
+              
+              
+          </div>
+         <!----- Config tab content ends here-------- -->
+          
+          <!----  Review Request tab content starts here ----->
+       <div class="tab-pane fade" id="reviewQuote">
+            <apex:outputPanel id="CosChangeReviewPanel">
+            
+           <apex:actionstatus id="loadingCos">
+        <apex:facet name="start">
+            <div class="waitingSearchDiv" id="loadingCos" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;z-index:999999">
+                <div class="waitingHolder" style="top: 200px; left:700px; width: 91px; position: fixed;">
+                    <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionstatus>
+                                    <div class="" style="margin-left:40px;">
+                                                    
+                                                    <h1 style="color:#000000;margin-bottom:25px;font-family: omnes_light; font-weight: bold;">Review Request</h1>
+                                               
+                                                </div>
+                                                
+                                                <div class="row">
+
+                                                    <div class="col-xs-12">
+                                                        
+                                                    </div>
+                                                </div>
+                                                                            
+                                                 <div class="row" style="margin-left:0px;">
+
+                                                 <div class="col-xs-12" style="margin-left:16px;margin-top: -16px;">
+
+                                                            
+                                                        <div class="m-t-20">
+
+
+                                                           <div class="col-xs-6">
+                                                               <!-- Radhika 27th Nov 2015, Divider line -->
+                                                               <apex:outputPanel rendered="{!currentFlag}">
+                                                                   <div class="" style="border-left: 2px solid #C8C8C8; height: 100%; position: absolute; margin-left: 528px;"></div>
+                                                               </apex:outputPanel>
+                                                                <div>
+                                                                
+                                                                 <div style="width:620px;margin-left: -30px;">
+                                                                 <b style="margin-left:28px;color:#000000;font-family:omnes_att_iimedium;font-size:22px;font-weight: normal">Current</b>
+                                                                 </div>
+
+                                                                </div>
+                                                                
+                                                                 <div>
+                                                                
+                                                               <h4 class="col-xs-10 p0" style=" font-family: omnes_light;color: #000000; margin-top: 24px; text-align: left;line-height: 0.96em;font-size:18px;effect: none;margin-bottom: 5px;"><span class="col-xs-10 p0" >Class of Service Profile ID:</span><span class="col-xs-2 text-right p0" >{!Current_CosProfileid}</span></h4>
+                                                               <apex:outputPanel rendered="{!PremiseServiceType == 'AVPN' && CoSValuesSeparatedCurrent}" style=" font-family: omnes_light;color: #000000; text-align: left;line-height: 0.96em;font-size:18px;effect: none;" styleClass="col-xs-10 p0">
+                                                                  
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Real-Time:</span><span class="col-xs-2 text-right p0">{!current_cos_Real_Time}%</span></td></tr><br/>                                                                  
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Bursty High:</span><span class="col-xs-2 text-right p0">{!current_cos_BurstyHigh}%</span></td></tr><br/>
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Bursty Low:</span><span class="col-xs-2 text-right p0">{!current_cos_BurstyLow}%</span></td></tr><br/>
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Best Effort:</span><span class="col-xs-2 text-right p0">{!current_cos_BestEffort}%</span></td></tr><br/>
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Scavenger:</span><span class="col-xs-2 text-right p0">{!current_Scavenger}%</span></td></tr><br/>
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Video:</span><span class="col-xs-2 text-right p0">{!current_Video }%</span></td></tr><br/>
+                                                                  
+                                                                </apex:outputPanel>
+                                                                
+                                                                <apex:outputPanel rendered="{!PremiseServiceType == 'AVPN' && !CoSValuesSeparatedCurrent}" style=" font-family: omnes_light;color: #000000; text-align: left;line-height: 0.96em;font-size:18px;effect: none; " styleClass="col-xs-10 p0">
+                                                                  
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Real-Time:</span><span class="col-xs-2 text-right p0">{!current_cos_Real_Time}%</span></td></tr><br/>                                                                  
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Bursty High:</span><span class="col-xs-2 text-right p0">{!current_cos_BurstyHigh}%</span></td></tr><br/>
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Bursty Low:</span><span class="col-xs-2 text-right p0">{!current_cos_BurstyLow}%</span></td></tr><br/>
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Best Effort:</span><span class="col-xs-2 text-right p0">{!current_cos_BestEffort}%</span></td></tr><br/>                                                                  
+                                                                  
+                                                                </apex:outputPanel>
+
+                                                                <apex:outputPanel rendered="{!PremiseServiceType == 'MIS'}" style=" font-family: omnes_light;color: #000000;   text-align: left;line-height: 0.96em;font-size:18px;effect: none; " styleClass="col-xs-10 p0">
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Real-Time:</span><span class="col-xs-2 text-right p0">{!current_cos_Real_Time}%</span></td></tr><br/>
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Bursty High:</span><span class="col-xs-2 text-right p0">{!current_cos_BurstyHigh}%</span></td></tr><br/>
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Bursty Low:</span><span class="col-xs-2 text-right p0">{!current_cos_BurstyLow}%</span></td></tr><br/>
+                                                                  <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Best Effort:</span><span class="col-xs-2 text-right p0">{!current_cos_BestEffort}%</span></td></tr><br/>                                                     
+                                                                </apex:outputPanel> 
+                                                                  </div>
+
+
+                                                        </div>
+                                                        
+                                                        <div class="vertical_divider"></div>
+
+                                                        <div class="col-xs-6">
+                                                             <apex:outputPanel rendered="{!proposedFlag}">
+                                                                    <div class="" style="border-left: 2px solid #C8C8C8; height: 98%; position: absolute; margin-left: -49px;"></div> 
+                                                            </apex:outputPanel>
+                                                                 <div>
+                                                                
+                                                                 <div style="width:612px;">
+                                                                 <b style="margin-left:0px;color:#000000;font-family:omnes_att_iimedium;font-size:22px;font-weight: normal">Proposed</b>
+                                                                 </div>
+
+                                                                </div>
+                                                                
+                                                                 <div>                                                                
+                                                                 
+                                                                 <h4 class="col-xs-10 p0" style="font-family: omnes_light;color: #000000; text-align: left;line-height: 0.96em;font-size:18px;effect: none; margin-top: 24px;margin-bottom: 5px;"><span class="col-xs-10 p0" >Class of Service Profile ID:</span><span class="col-xs-2 text-right p0" >{!Selectedprofile}</span></h4>
+                                                                 <apex:outputPanel rendered="{!PremiseServiceType == 'AVPN' && CoSValuesSeparated}" style="font-family: omnes_light;color: #000000; margin-top: 0px;text-align: left;line-height: 0.96em;font-size:18px;effect: none;" styleClass="col-xs-10 p0">
+                                                                  
+                                                                      <tr><td ><span class="col-xs-10 m-b-5 p0" >Real-Time:</span><span class="col-xs-2 text-right p0">{!cos_Real_Time}%</span></td></tr><br/>                                                                      
+                                                                      <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Bursty High:</span><span class="col-xs-2 text-right p0">{!cos_BurstyHigh}%</span></td></tr><br/>
+                                                                      <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Bursty Low:</span><span class="col-xs-2 text-right p0">{!cos_BurstyLow}%</span></td></tr><br/>
+                                                                      <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Best Effort:</span><span class="col-xs-2 text-right p0">{!cos_BestEffort}%</span></td></tr><br/>
+                                                                      <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Scavenger:</span><span class="col-xs-2 text-right p0">{!Scavenger}%</span></td></tr><br/>
+                                                                      <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Video:</span><span class="col-xs-2 text-right p0">{!Video }%</span></td></tr><br/>
+                                                                </apex:outputPanel>
+                                                                
+                                                                <apex:outputPanel rendered="{!PremiseServiceType == 'AVPN' && !CoSValuesSeparated}" style="font-family: omnes_light;color: #000000; text-align: left;line-height: 0.96em;font-size:18px;effect: none;" styleClass="col-xs-10 p0">
+                                                                  
+                                                                      <tr><td ><span class="col-xs-10 m-b-5 p0" >Real-Time</span><span class="col-xs-2 text-right p0">{!cos_Real_Time}%</span></td></tr><br/>                                                                      
+                                                                      <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Bursty High:</span><span class="col-xs-2 text-right p0">{!cos_BurstyHigh}%</span></td></tr><br/>
+                                                                      <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Bursty Low:</span><span class="col-xs-2 text-right p0">{!cos_BurstyLow}%</span></td></tr><br/>
+                                                                      <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Best Effort:</span><span class="col-xs-2 text-right p0">{!cos_BestEffort}%</span></td></tr><br/>
+                                                                      
+                                                                </apex:outputPanel>
+
+                                                                <apex:outputPanel rendered="{!PremiseServiceType == 'MIS'}" style="font-family: omnes_light;color: #000000; text-align: left;line-height: 0.96em;font-size:18px;effect: none;" styleClass="col-xs-10 p0">
+                                                                      <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Real-Time:</span><span class="col-xs-2 text-right p0">{!Cos_Real_Time}%</span></td></tr><br/>
+                                                                      <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Bursty High:</span><span class="col-xs-2 text-right p0">{!cos_BurstyHigh}%</span></td></tr><br/>
+                                                                      <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Bursty Low:</span><span class="col-xs-2 text-right p0">{!cos_BurstyLow}%</span></td></tr><br/>
+                                                                      <tr><td class="IPInformation"><span class="col-xs-10 m-b-5 p0" >Best Effort:</span><span class="col-xs-2 text-right p0">{!cos_BestEffort}%</span></td></tr><br/>                                                     
+                                                                </apex:outputPanel> 
+                                                                </div>
+
+                                                            </div>
+
+                                                         </div>     
+
+                                                    </div>
+
+                                                    </div>
+
+
+                            <div class="row">
+
+                                <div class="col-xs-12 m-t-20 m-b-20">
+                                    <hr class="" style="width:1100px; margin-left:0px;margin-bottom: 21px;"></hr>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                            <div class="col-xs-2 p0" style="margin-left: 40%;margin-top: 10px;margin-bottom: 40px">
+                                                                 <apex:commandLink style="float: right;color: #0077b4 !important;font-family: omnes_light;" value="Cancel Request" action="{!Cancelrequest}" status="loadingCos"/>
+                                                                   <!-- <apex:actionFunction action="{!Cancelrequest}"/>-->
+                                                        </div>
+
+                                                    <div class="pull-right text-right">
+                                                                    <input type="button" onclick="gotoConfigureSites();" status="loadingCos"  class="btn secondary pull-left addCustTrigger" style="font-size: 16px; margin-left: 10px !important; padding: 0px 10px !important;  !important; width:175px !important; height:35px !important; margin-right: 15px !important;background-color: #FFF; color: #000000 !important;border: 1px solid #C2C2C2 !important;font-family: omnes_light !important;" value="Reconfigure CoS" />
+
+
+                                                                    <apex:commandButton value="Submit" oncomplete="gotoConfirmation();" action="{!SubmitValidationRecord}" status="loadingCos" id="configureButton" rerender="Msgs" styleClass="btn secondary pull-right" style="font-size: 16px; margin-left: 10px !important; padding: 0px 10px !important;  !important; width:175px !important; height:35px !important; margin-right: 50px !important;font-family: omnes_light !important;"/>
+
+                                                                   
+                                                                </div>
+                                                                </div>
+                                                           
+                                                        
+                                                                <script type="text/javascript">
+                                                                    var cos_Real_Time = {!current_Cos_Real_Time},cos_BurstyHigh = {!current_Cos_BurstyHigh},
+                                                                    cos_BurstyLow = {!current_Cos_BurstyLow},cos_BestEffort = {!current_Cos_BestEffort};
+
+                                                                    function updateChart1() {
+                                                                        var pieData = [
+                                                                            {
+                                                                                value: cos_Real_Time,
+                                                                                color: "#066EAD",
+                                                                                highlight: "#4584af",
+                                                                                label: "Real Time"
+                                                                                    },
+                                                                            {
+                                                                                value: cos_BurstyHigh,
+                                                                                color: "#019BDB",
+                                                                                highlight: "#18a2e2",
+                                                                                label: "Bursty High"
+                                                                                    },
+                                                                            {
+                                                                                value: cos_BurstyLow,
+                                                                                color: "#48C8EF",
+                                                                                highlight: "#65cfef",
+                                                                                label: "Bursty Low"
+                                                                                    },
+                                                                            {
+                                                                                value: cos_BestEffort,
+                                                                                color: "#ADEAFC",
+                                                                                highlight: "#65cfef",
+                                                                                label: "Best Effort"
+                                                                                    }
+                                                                                ];
+                                                                        var ctx = $("#chart1").get(0).getContext("2d");
+                                                                        var myNewChart = new Chart(ctx).Pie(pieData);
+                                                                    }
+                                                                    updateChart1();
+
+
+                                                                     var cos_Real = {!cos_Real_Time}, cos_Bursty = {!cos_BurstyHigh}, cos_Bursty1 = {!cos_BurstyLow},
+                                                                     cos_Best = {!cos_BestEffort};
+
+                                                                    function updateChart2() {
+                                                                        var pieData = [
+                                                                            {
+                                                                                value: cos_Real,
+                                                                                color: "#066EAD",
+                                                                                highlight: "#4584af",
+                                                                                label: "Real Time"
+                                                                                    },
+                                                                            {
+                                                                                value: cos_Bursty,
+                                                                                color: "#019BDB",
+                                                                                highlight: "#18a2e2",
+                                                                                label: "Bursty High"
+                                                                                    },
+                                                                            {
+                                                                                value: cos_Bursty1,
+                                                                                color: "#48C8EF",
+                                                                                highlight: "#65cfef",
+                                                                                label: "Bursty Low"
+                                                                                    },
+                                                                            {
+                                                                                value: cos_Best,
+                                                                                color: "#ADEAFC",
+                                                                                highlight: "#65cfef",
+                                                                                label: "Best Effort"
+                                                                                    }
+                                                                                ];
+                                                                        var ctx = $("#chart2").get(0).getContext("2d");
+                                                                        var myNewChart = new Chart(ctx).Pie(pieData);
+                                                                    }
+                                                                    updateChart2();
+                                                                </script>
+                
+                                
+                <!--<apex:actionFunction name="reviewContinue" action="{!reviewContinue}" oncomplete="toggleToReviewPricingPanel();" /> -->
+                
+           </apex:outputPanel>
+       </div>
+       
+       
+          <!----  Review Request tab content ends here ----->
+        <div class="tab-pane fade" id="confirmation"> 
+        <apex:outputPanel > 
+               <apex:actionstatus id="loadingCosnow">
+        <apex:facet name="start">
+            <div class="waitingSearchDiv" id="loadingCosnow" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;z-index:999999">
+                <div class="waitingHolder" style="top: 200px; left:700px; width: 91px; position: fixed;">
+                    <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionstatus>
+
+                                      <div class="">
+
+                                                     
+                                                            <h1 style="color:#47D510;margin-left:50px;">Thank You!</h1>
+                                                    
+                                                           
+                                             </div>
+                                        <hr class="hrMTB"  />
+
+                                                           
+                                              
+
+                                        <div class="param1_positionRC">
+                                            We have received your Order Number:{!orderNumberData} . You will receive a confirmation by email.
+                                        </div>
+                                        
+                                        <div class="param1_positionRC">
+                                            
+                                                To view the status of your order, go to My Dashboard and check Manage quotes &amp; Orders.
+                                            
+                                          
+                                        </div>
+                                        
+                                       <hr class="hrMTB"  /> 
+
+                                                                       <div class="row">
+                                                                        <div class="col-xs-2 p0" style="margin-left:50px;margin-bottom:40px;">
+                                                                
+                                                                                <a class="blueText btnAsLink" href="/apex/PortalDashboard_UI">Go to My Dashboard</a>
+                                                                            </div>
+                                                                  
+
+                                                                             <div class="pull-right text-right" style="margin-right:40px;margin-bottom:40px;">
+                                                                                
+                                                                                <apex:commandButton value="Close" action="{!close}" id="closeButton" rerender="Msgs" status="loadingCosnow" styleClass="btn btn-primary m-l-10 customerContinue" style="font-size: 16px; margin-left: 10px !important; padding: 0px 10px !important;  width:150px !important; height:35px !important;" />
+                                                                                <apex:actionStatus id="customerInfoStatusId" startText="Processin...!!"></apex:actionStatus>
+                                                                            </div>
+                                                                            </div>
+
+
+
+
+
+          
+       </apex:outputPanel>     
+        </div>  
+       </div>
+    </apex:form>   
+       
+       </div></div>
+    
+    <script>        
+    //$('.disabled a').removeAttr('data-toggle href');
+   // activeTabIcon();
+    </script>
+    
+    <script>
+    //Global Variables: RK
+    customerId = '';
+    generatedQuoteId = '';
+    function GetURLParameter(sParam) {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) {
+                return sParameterName[1];
+            }
+        }
+    }
+    
+   
+  
+    
+    
+   function gotoReviwRequest(){
+
+                $("a[data-name='reviewQuote']").trigger("click");
+                $("a[data-name='configSites']").parent('li').find('.circlenum').text('').append('<span class="glyphicon glyphicon-ok"></span>');
+                $("a[data-name='configSites'], a[data-name='confirmation']").parent('li').addClass("disabled");
+                $('.disabled a').removeAttr('data-toggle href');
+                $("a[data-name='reviewQuote']").parent('li').removeClass("disabled");
+                $("a[data-name='configSites']").parent('li').removeClass("active");
+               // $('.tabbed_menu .mainnav li.active::after').css('margin-left','-23.5%');
+                $("a[data-name='reviewQuote']").parent('li').addClass("active");
+                
+                $("#lireviewQuote").removeAttr("style");
+                $("#lireviewQuote").find("div").removeClass("circlenum_gray") ;
+                $("#lireviewQuote").find("div").addClass("circlenum");
+                    
+                $("#configSites").removeClass("tab-pane fade in active");
+                $("#configSites").addClass("tab-pane fade");
+                $("#reviewQuote").removeClass("tab-pane fade");
+                $("#reviewQuote").addClass("tab-pane fade in active");
+      }
+
+
+      function gotoConfirmation(){
+
+                $("a[data-name='confirmation']").trigger("click");
+                $("a[data-name='reviewQuote']").parent('li').find('.circlenum').text('').append('<span class="glyphicon glyphicon-ok"></span>'); 
+                $("a[data-name='configSites'], a[data-name='reviewQuote']").parent('li').addClass("disabled");
+                $('.disabled a').removeAttr('data-toggle href');
+                $("a[data-name='confirmation']").parent('li').removeClass("disabled");
+                $("a[data-name='reviewQuote']").parent('li').removeClass("active");
+                $("a[data-name='confirmation']").parent('li').addClass("active");
+                
+                $("#liconfirmation").removeAttr("style");
+                $("#liconfirmation").find("div").removeClass("circlenum_gray") ;
+                $("#liconfirmation").find("div").addClass("circlenum");              
+                
+                $("#reviewQuote").removeClass("tab-pane fade in active");
+                $("#reviewQuote").addClass("tab-pane fade");
+                $("#confirmation").removeClass("tab-pane fade");
+                $("#confirmation").addClass("tab-pane fade in active");
+      }
+
+
+       function gotoConfigureSites(){
+       
+                $("#lireviewQuote").css("background","#e1e1e1");
+                $("#lireviewQuote").find("div").removeClass("circlenum") ;
+                $("#lireviewQuote").find("div").addClass("circlenum_gray");
+
+                $("a[data-name='configSites']").trigger("click");
+                $("a[data-name='confirmation'], a[data-name='reviewQuote']").parent('li').addClass("disabled");
+                $('.disabled a').removeAttr('data-toggle href');
+                $("a[data-name='configSites']").parent('li').removeClass("disabled");
+                $("a[data-name='reviewQuote']").parent('li').removeClass("active");
+                $("a[data-name='configSites']").parent('li').addClass("active");
+                $("#reviewQuote").removeClass("tab-pane fade in active");
+                $("#reviewQuote").addClass("tab-pane fade");
+                $("#configSites").removeClass("tab-pane fade");
+                $("#configSites").addClass("tab-pane fade in active");
+      }
+                   
+     function enableApply(value){
+
+         //alert("value: "+value);
+
+         //console.log("value: "+value);
+
+         //console.log("value: "+value.length);
+
+        if(value.length==0){
+
+            jQuery('[id$=cosConfigContinueBtn]').addClass('disabled').attr('disabled', true);
+        
+        }
+        
+        else{
+
+            jQuery('[id$=cosConfigContinueBtn]').removeClass('disabled').attr('disabled',false); 
+
+        }
+                                                          
+        }
+        
+        /*Radhika UAT defect Fix 38883*/
+        function enableApplyButton(value){
+            if( typeof $('[id$=profileSelect1] option:selected') != 'undefined' ){
+                console.log($('[id$=profileSelect1] option:selected').val());
+                 var profileId = $('[id$=profileSelect1] option:selected').val();
+                 if(profileId != ''){
+                
+                     jQuery('[id$=cosConfigContinueBtn]').removeClass('disabled').attr('disabled',false);
+                 }
+                 
+             }
+                                                  
+        }
+        
+           function tabmenuRedline(){
+                        
+                     $("a[data-name='reviewQuote'], a[data-name='confirmation']").parent('li').addClass("disabled");
+                     $("a[data-name='reviewQuote'],a[data-name='confirmation']").parent('li').css("background","#e1e1e1");
+                     $('.disabled a').removeAttr('data-toggle href');
+                
+                }
+                
+    
+    
+    //CoS Change
+    function funcall(){
+        //alert("kughcgh");
+    }
+  
+    function activeTabIcon() {
+        //var tabName = $('.tabbed_menu li.active a').attr('data-tabname');            
+        //$('.manage_content-header').text(tabName);
+        var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+        $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);            
+        //preventEnter();
+    }
+    
+  /*  $(document).ready(function(){  
+        //alert(document.getElementById("j_id0:productInfoId:j_id134:j_id194:applyContinueID"));
+        document.getElementById("j_id0:productInfoId:j_id134:j_id194:applyContinueID").disabled = false;
+        $('j_id0:productInfoId:j_id134:j_id194:applyContinueID').removeAttr('disabled');      
+        
+        //var pricingSchDocSrc = document.getElementById("j_id0:j_id84:j_id85:configpanelform:pricingId:j_id255:pricingSchDocId").src;   
+        alert("src" +pricingSchDocSrc );         
+        if( pricingSchDocSrc != null ) {
+            scrolltomacd();
+        }
+        
+    }); */
+    
+
+    </script>    
+    <script>
+        $(document).ready(function(){
+            
+            //document.getElementById ("submitrerender").disabled = true;
+            var mode = "";
+           // $("a[data-name='selectCust']").trigger("click");
+           // $("a[data-name='reviewQuote'], a[data-name='confirmation']").parent('li').addClass("disabled");
+           //$('.disabled a').removeAttr('data-toggle href');
+            //$(".caretIconConfig").show();
+            //$(".caretIconReview").show(); 
+            //$("a[data-name='reviewQuote'],a[data-name='confirmation']").parent('li').css("background","#e1e1e1");     
+        });
+        //document.getElementById ("submitrerender").addEventListener ("click", doContinue, false);
+        //$(document).ready(function(){
+        //    alert('dfsds');
+            
+        //});
+        function jsGetOrderNumber(){
+            //alert('fdfd');
+            ajaxFetchOrderNumber();
+        }
+        function doContinue(){
+            
+            doContinueAJAX();        
+        }  
+        setTimeout(function(){ jsGetOrderNumber(); }, 500);            
+    </script>
+    
+    
+</apex:page>

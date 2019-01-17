@@ -1,0 +1,363 @@
+<apex:page controller="ASE_BuyFlowController" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" title="BuyFlow">
+    <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" />
+
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCss}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCSSDetails}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalExchangeCSS}" />
+  <!--  <apex:includeScript value="{!$Resource.jQueryMin}" /> 
+    <apex:includeScript value="{!$Resource.atombootstrapminjs}" -->
+    <!--JavaScript
+    ================================================== 
+    <!-- PRODUCTION -->
+
+   <!-- <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/libs/jquery.dataTables.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/modernizr.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/bootstrap.min.js')}" /> -->
+
+    <style>
+        #contentWrapper {
+            min-width: 1024px !important;
+        }
+        button.close {
+            font-size: 200%;
+        }
+        .active > a,
+        .active_tab > a {
+            color: #fff;
+        }
+        .tabbed_menu .active {
+            background: #056fab;
+        }
+        .tabbed_menu li {
+            padding: 0;
+            width: 20%;
+        }
+        .tabbed_menu li a {
+            padding: 20px;
+            display: block;
+            text-align: center;
+        }
+        .dataTables_length {
+            display: none;
+        }
+        .dataTables_info {
+            bottom: 22px;
+            position: absolute;
+            right: 180px;
+        }
+        .manage_user_name {
+            width: 17% !important;
+        }
+        .manage_user_contact_name {
+            width: 10% !important;
+        }
+        .manage_user_address {
+            width: 10% !important;
+        }
+        .manage_user_city {
+            width: 10% !important;
+        }
+        .manage_user_state {
+            width: 10% !important;
+        }
+        .manage_user_zip {
+            width: 10% !important;
+        }
+        #manage_content .pagination > a {
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #056fab;
+            margin-left: 5px;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+            cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+            cursor: no-drop;
+        }
+        .btn {
+            padding: 10px 20px !important;
+        }
+        .btn:hover {
+            background: #fff !important;
+            color: #333;
+        }
+        h1 {
+            font-family: omnesatt_iiregular;
+            margin: 40px 0 20px 0;
+        }
+        .tabbed_menu .mainnav li.active::after {
+            content: ' ';
+            display: inline;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            position: absolute;
+            border-top: 14px solid #056fab;
+            bottom: -12px;
+            /* left: 9%; */
+            margin-left: 8%;
+            z-index: 99999;
+        }
+        .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+            background-size: 900px 900px !important;
+        }
+    </style>
+    <apex:actionstatus id="loading">
+        <apex:facet name="start">
+            <div class="waitingSearchDiv" id="loading" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;z-index:999999">
+                <div class="waitingHolder" style="top: 200px; left:700px; width: 91px; position: fixed;">
+                    <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionstatus>
+    <div class="content_container">
+
+        <div id="hero_banner" class="hero_manage jumbotronContainer ng-scope">
+            <div class="row">
+                <div class="col-sm-12"></div>
+            </div>
+        </div>
+        <div id="manage_content" style="padding-top: 0;" class="page ng-scope" ng-controller="QuoteController as beginQuote">
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <h1 class="manage_content-header">Select Customer</h1>
+                </div>
+            </div>
+            <div class="container" style="width: 100% !important; margin-top: 0 !important; padding: 0 !important;">
+                <div id="main" class="row tabbed_menu">
+                    <div class="col-xs-12 col-md-12">
+
+                        <!-- <ul class="mainnav" role="tablist">
+                      <li class="active_tab"><a href="#selectCust" role="tab" data-toggle="tab"><div class="circlenum">1</div>Select Customer</a></li>
+                      <li><a href="#selProd" role="tab" data-toggle="tab"><div class="circlenum">2</div>Select Product</a></li>
+                      <li><a href="#selAdd" role="tab" data-toggle="tab"><div class="circlenum">3</div>Enter Addresses</a></li>
+                      <li><a href="#selSites" role="tab" data-toggle="tab"><div class="circlenum">4</div>Configure Sites</a></li>
+                      <li><a href="#selQuotes" role="tab" data-toggle="tab"><div class="circlenum">5</div>Review Quotes</a></li>
+                    </ul> -->
+
+                        <ul class="mainnav" role="tablist">
+                            <li class="disabled">
+                                <a href="#selectCust" data-name="selectCust" role="tab" data-toggle="tab"><div class="circlenum">1</div> {!$Label.Select_Customer} </a>
+                            </li>
+                            <li class="disabled">
+                                <a href="#selectProd" data-name="selectProd" data-tabName="{!$Label.Select_Product}" role="tab" data-toggle="tab"><div class="circlenum">2</div> {!$Label.Select_Product} </a>
+                            </li>
+                            <li class="disabled">
+                                <a href="#enterAddress" data-name="enterAddress" data-tabName="{!$Label.Enter_Addresses}" role="tab" data-toggle="tab"><div class="circlenum">3</div> {!$Label.Enter_Addresses} </a>
+                            </li>
+                            <li class="active">
+                                <a href="#configProduct" data-name="configProduct" data-tabName="{!$Label.Configure_Product}" role="tab" data-toggle="tab"><div class="circlenum">4</div> {!$Label.Configure_Sites} </a>
+                            </li>
+                            <li class="disabled">
+                                <a href="#reviewQuote" data-name="reviewQuote" data-tabName="{!$Label.Review_Quote}" role="tab" data-toggle="tab"><div class="circlenum">5</div> {!$Label.Review_Quote} </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <!--<apex:actionstatus id="loading">
+                    <apex:facet name="start">
+                        <div class="waitingSearchDiv" id="loading" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;z-index:999999"> 
+                                <div class="waitingHolder" style="top: 200px; left:700px; width: 91px; position: fixed;"> 
+                                
+                               </div> 
+                        </div>
+                    </apex:facet> 
+                </apex:actionstatus> -->
+
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="selectCust">
+                            <!--<apex:include pageName="ManageCustomers" id="manageCustomerPageId" />-->
+                            <apex:include pageName="CustomerInformation" id="manageCustomerPageId" />
+                        </div>
+                        <div class="tab-pane fade" id="selectProd">
+                            <apex:include pageName="ProductInformation" id="productInfoId" />
+                        </div>
+                        <div class="tab-pane fade" id="enterAddress">
+                            <apex:include pageName="SiteAddressInformation" />
+                        </div>
+                        <div class="tab-pane fade in active" id="configProduct">
+                            <apex:include pageName="ConfigureSitesASEClone" />
+                        </div>
+                        <div class="tab-pane fade" id="reviewQuote">
+                            <apex:include pageName="ReviewQuote" />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        //Global Variables: RK
+        customerId = '';
+        generatedQuoteId = '';
+
+        /*$('input[name=group1]:radio').change(function () {
+        customerId = $('input[type=radio][name=group1]:checked').attr('id');
+        console.log(customerId);
+    });*/
+        
+        $('#main ul li a').on('click', function () {
+            var tabName = $(this).attr('data-name'),
+                sTabName = $(this).attr('data-tabName'),
+                sParentClassName = $(this).parent().attr("class");
+            console.log(tabName);
+            // Update the header only if the tab clicked is the active tab
+            // We check the parent class name to determine if this is true
+            if (sTabName && "" !== sTabName && ("active" === sParentClassName || "" === sParentClassName)) {
+                // Check if the header exists and update the same
+                if ($(".manage_content-header")[0]) {
+                    $(".manage_content-header").text(sTabName);
+                }
+            }
+            collapseMe();
+            toggleFunc();
+            $('#addaddressTrigger, .addaddressConfig> div > a > strong').on('click', function () {
+                $('.addaddressConfig').toggleClass('hide');
+            });
+            isCustomerSelected();
+        });
+        /*$("input[name='group1']").click(function(){
+        isCustomerSelected(); 
+    });*/
+        $('input[name="productSelectId"]').on('click', function () {
+            isProductSelectedChk();
+        });
+
+        isProductSelectedChk();
+        
+        function isProductSelectedChk() {
+            if (!$("input[name='productSelectId']:checked").val()) {
+                $('input[value="Next"]').addClass('disabled');
+            } else {
+                $('input[value="Next"]').removeClass('disabled');
+            }
+        }
+        
+        function activeTabIcon() {
+            var tabName = $('.tabbed_menu li.active a').attr('data-tabname');            
+            $('.manage_content-header').text(tabName);
+            var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+            $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);
+        }
+        
+        /* function isCustomerSelected(){
+                if (!$("input[name='group1']:checked").val()) {
+                  $('input[value="Create Quote"]').addClass('disabled');
+                } else {
+                   $('input[value="Create Quote"]').removeClass('disabled');
+                }
+                recheckIsCustomerSel();
+            }
+            
+            function recheckIsCustomerSel(){
+            $('input[name=group1]:radio').change(function () {
+                customerId = $('input[type=radio][name=group1]:checked').attr('id');
+                console.log(customerId);
+                $('#addCustTrigger').on('click', function(){
+                    $('#addCustomerModal').modal('show');
+                });
+            });
+                $("input[name='group1']").on('click',function(){
+                    if (!$("input[name='group1']:checked").val()) {
+                      $('input[value="Create Quote"]').addClass('disabled');
+                    } else {
+                       $('input[value="Create Quote"]').removeClass('disabled');
+                    }
+                  
+                    
+                });
+            }
+     $(document).ready(function(){            
+        isCustomerSelected();
+    });*/
+
+        function GetURLParameter(sParam) {
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++) {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam) {
+                    return sParameterName[1];
+                }
+            }
+        }
+        
+        mode = GetURLParameter('mode');
+        UrlQuoteId = GetURLParameter('quoteid');
+        UrlCustomerId = GetURLParameter('customerid');
+        UrlProductId = GetURLParameter('productid');
+        if (!UrlQuoteId) {
+            $("a[data-name='selectProd'], a[data-name='enterAddress'], a[data-name='configProduct'], a[data-name='reviewQuote']").parent('li').addClass("disabled");
+            $('.disabled a').removeAttr('data-toggle href');
+            activeTabIcon(); //Function for adding tick mark in active tab
+        }
+        if (UrlQuoteId) {
+            generatedQuoteId = UrlQuoteId;
+            reInitializeMain();
+            if (mode == "productinfo") {            
+                handleProductInfoPage(generatedQuoteId);
+                $("a[data-name='selectProd']").trigger("click");
+                $("a[data-name='selectCust'], a[data-name='enterAddress'], a[data-name='configProduct'], a[data-name='reviewQuote']").parent('li').addClass("disabled");
+                
+            } else if (mode == "siteinfo") {
+                //handleProductInfoPage(generatedQuoteId);
+                handleSiteAddressPage(generatedQuoteId);
+                $("a[data-name='enterAddress']").trigger("click");
+                $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='configProduct'], a[data-name='reviewQuote']").parent('li').addClass("disabled");
+            } else if (mode == "configProduct") {
+                //handleProductInfoPage(generatedQuoteId);
+                //handleSiteAddressPage(generatedQuoteId);
+                reInitSiteAddressMain();
+                handleConfigureSitePage(generatedQuoteId);
+                $("a[data-name='configProduct']").trigger("click");
+                $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='enterAddress'], a[data-name='reviewQuote']").parent('li').addClass("disabled");
+            } else if (mode == "reviewquote") {
+                //handleProductInfoPage(generatedQuoteId);
+                //handleSiteAddressPage(generatedQuoteId);
+                handleConfigureSitePage(generatedQuoteId);
+                $("a[data-name='reviewQuote']").trigger("click");
+                $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='enterAddress'], a[data-name='configProduct']").parent('li').addClass("disabled");
+            }
+            
+            $('.disabled a').removeAttr('data-toggle href');
+            activeTabIcon(); //Function for adding tick mark in active tab
+        }
+
+        function collapseMe() {
+            //console.log(callVal+' call');
+            $('.collapseMe').on('click', function () {
+                triggerId = $(this).attr('data-cust');
+                $('#' + triggerId + ' .panel-body').slideToggle('fast');
+                $(this).children('i').toggleClass('glyphicon-plus glyphicon-minus');
+
+            });
+        }
+
+        function toggleFunc() {
+            $('.accordion-toggle-config').on('click', function () {
+                $('#configBlock').slideToggle();
+            });
+        }
+        
+        collapseMe('BuyFLow');
+        toggleFunc();
+    </script>
+    <script>
+        $(document).ready(function () {
+            $(".tooltipTrigger").tooltip();
+            initializeFieldValidations();
+        });
+    </script>
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+</apex:page>

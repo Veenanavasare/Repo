@@ -1,0 +1,164 @@
+<apex:page controller="SIHeatMapControllerV2" tabStyle="Account">
+<style type="text/css">
+table.gridtable {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 100px;
+    border-color: #666666;
+    border-collapse: collapse;
+    border-radius: 3px 3px 3px 3px    
+}
+table.gridtable th {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: black;
+    background-color: #dedede;
+    border-radius: 3px 3px 3px 3px
+}
+table.gridtable td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 3px 3px 3px 3px;
+    text-align: left
+}
+</style>
+<script>
+function showHelpText(comboVal) {
+    var msgToDisplay = 'Help Text: ';
+    if(comboVal == 'account') {
+        msgToDisplay += 'Please input \'SP Account\' field.';
+    } else {
+        msgToDisplay += 'Please input \'End Customer\' field.';
+    }
+    document.getElementById("helpText").innerHTML = msgToDisplay;
+}
+
+function renderMap(sfdcObjectId, endCustViewFlag) {
+    generateHeatMapDialog(sfdcObjectId, endCustViewFlag);
+}
+</script>
+<apex:form >
+    <apex:pageBlock > 
+        <b><apex:pageMessages id="pagemessage" /></b>
+        <div id="helpText" class="message infoM3" style="visibility:visible;color:blue;font-weight:bold;">
+            Help Text: Please input '{!IF(searchCriteria.endCustViewFlag,'End Customer','SP Account')}' field.
+        </div>
+        <apex:pageBlockSection title="Heat Map Search" columns="1" collapsible="true" id="pageBlckSecSearch">
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Heat Map View" for="chooseSearch"/>
+                <apex:outputPanel >
+                    <apex:selectList id="chooseSearch" value="{!searchCriteria.searchMode}" size="1"
+                        onchange="showHelpText(this.value)">
+                        <apex:selectOption itemValue="account" itemLabel="SP Account" />
+                        <apex:selectOption itemValue="endCustomer" itemLabel="End Customer"/>
+                    </apex:selectList>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="SP Account" for="accountSerId"/>
+                <apex:inputText value="{!searchCriteria.spAccountName}" id="accountSerId"/>                        
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="End Customer" for="endCustomerSerId" />
+                <apex:inputText value="{!searchCriteria.endCustomerName}" id="endCustomerSerId"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel value="Select Products"/>
+                <apex:outputPanel >
+                    <apex:repeat value="{!searchCriteria.productList}" var="prodObj">
+                        &nbsp;&nbsp;<apex:inputCheckBox value="{!prodObj.selected}"/>
+                        <apex:outputLabel value="{!prodObj.productName}" styleClass="labelCol"/>                    
+                    </apex:repeat>
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText value=""/>
+                <apex:outputPanel >
+                    <apex:commandButton value="Search" action="{!doSearchByCustAcct}"/>&nbsp;&nbsp;
+                    <apex:commandButton value="Clear" action="{!doResetHeatMap}"/>
+                </apex:outputPanel> 
+            </apex:pageBlockSectionItem>                                                                    
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    
+    <apex:pageBlock rendered="{!searchResFlag}">
+        <apex:pageBlockSection title="Heat Map Search Results">
+            <apex:pageBlockTable value="{!searchResList}" var="resObj">
+                <apex:column headerValue="{!IF(searchCriteria.endCustViewFlag,'End Customer Name','SP Account Name')}">
+                    <apex:outputLink value="/{!resObj.objectSfdcId}">{!resObj.objectName}</apex:outputLink>
+                    <sup style="color:blue;weight:bold;">
+                        {!IF(resObj.namedAccount, 'Named Account','')}
+                    </sup>
+                </apex:column>
+                <apex:column headerValue="Generate">
+                    <input type="button" value="Get Heat Map" class="btn" 
+                        onClick="generateHeatMap('{!resObj.objectSfdcId}','{!searchCriteria.endCustViewFlag}')"/>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+
+    <apex:outputPanel id="heatMapGrid" rendered="true">
+        <apex:actionStatus startText="Generating Heat Map please wait..." startStyle="color:red;font-weight:bold;"
+          stoptext="" stopStyle="color:green;font-weight:bold;" id="heatMapStatus"/><br/><br/>  
+            
+            <apex:pageBlock rendered="{!NOT(heatMapProductsStatus)}">
+                <apex:variable value="{!displayHeaderId}" var="sfdcId"/>
+                <apex:variable value="{!displayProductName}" var="prodName"/>
+                <apex:pageBlockSection title="Heat Map Grid">
+                    <apex:outputPanel >
+                        <table class="gridtable" boder="0">
+                            <!--  Table Header - to display the various products -->
+                            <tr>
+                                 <th nowrap="nowrap">{!IF(endCustView,'SP Accounts','End Customers')}</th>
+                                 <apex:repeat value="{!heatMapProducts[sfdcId]}" var="prod">
+                                     <th>{!heatMapProducts[sfdcId][prod].productFamilyName}</th>
+                                 </apex:repeat>
+                            </tr>
+                            <!-- To display the contents - Body of the heatmap-->                          
+                            <apex:repeat value="{!heatMapProducts}" var="itemVal">
+                                <tr>
+                                    <th nowrap="nowrap">
+                                    <a 
+                href="/{!IF(endCustView,heatMapProducts[itemVal][prodName].accountId,heatMapProducts[itemVal][prodName].endCustId)}">
+                                            {!IF(endCustView,
+                                                heatMapProducts[itemVal][prodName].accountName,
+                                                heatMapProducts[itemVal][prodName].endCustName
+                                            )}
+                                    </a>
+                                    </th>
+                                    <apex:repeat value="{!heatMapProducts[itemVal]}" var="prod">
+                                         <td bgcolor="{!heatMapProducts[itemVal][prod].colorNameOrCode}" nowrap="nowrap">
+                                             <!-- <font color="#848484">
+                                                  {!heatMapProducts[itemVal][prod].systemNotation}                                             
+                                             </font>  -->
+                                         </td>
+                                    </apex:repeat>
+                               </tr>      
+                           </apex:repeat>
+                           <tr>
+                                <th nowrap="nowrap" colspan="{!searchCriteria.productList.size + 1}" align="center">
+                                    {!IF(endCustView,
+                                        'End Customer View: '+heatMapProducts[sfdcId][prodName].endCustName,                            
+                                        'SP Accounts View: '+heatMapProducts[sfdcId][prodName].accountName
+                                    )}
+                                </th>
+                           </tr>                          
+                        </table>
+                    </apex:outputPanel>
+               </apex:pageBlockSection>          
+            </apex:pageBlock>       
+    </apex:outputPanel>
+    
+    <apex:actionFunction action="{!doHeatMapRendering}" name="generateHeatMap" rerender="heatMapGrid" status="heatMapStatus">
+        <apex:param name="objectSfdcId" value="" assignTo="{!paramId}"/>
+        <apex:param name="endCustViewFlag" value="" assignTo="{!endCustView}"/>
+    </apex:actionFunction>
+
+</apex:form>
+<c:SIHeatMapLegend />
+</apex:page>

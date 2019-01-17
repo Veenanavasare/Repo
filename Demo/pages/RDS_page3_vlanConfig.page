@@ -1,0 +1,1940 @@
+<apex:page controller="RDSAVPNController" name="RDS Order Provisioning" cache="true" sidebar="false" showChat="false" showHeader="false" standardStylesheets="false" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false">
+ 
+    <apex:includeScript value="{!URLFOR($Resource.RDS_AVPN_Page2JS)}" />
+    <apex:includeScript value="{!URLFOR($Resource.RDS_CustomValidationJS)}" />
+    <apex:includeScript value="{!URLFOR($Resource.RDS_FieldValidationJS)}" />
+    <apex:includeScript value="{!URLFOR($Resource.RDS_ErrorMsgDisplayJS)}" />
+    <style>
+    
+    .pwdMatchStyle {
+            color: #000;
+            font-size: 16px;
+            width: 260px;
+            font-weight:bold;
+            font-family:omnes_light;
+        } 
+        
+     div.cosSliderDiv div.ui-slider-range{
+         background: #4ca90c !important;
+       border: none !important;
+     }
+     .cosSliderDiv .ui-state-hover,.cosSliderDiv .ui-state-focus{
+        border: 1px solid #ccc !important;
+        background: #f6f6f6 url(images/ui-bg_glass_100_f6f6f6_1x400.png) 50% 50% repeat-x !important;
+        color: #1c94c4 !important;
+     }
+    .blackHrLine {
+        border: none;
+        border-bottom: solid 1px #C0C0C0;
+        margin: 40px 0px;
+        clear: both !important;
+    }
+    .progress-bar-remaining{font-size: 1em;line-height: 30px;text-align: center;color: white}
+   
+    .ui-accordion-content{background:#fff;padding: 35px 2.2em 0em 15px !important;height: auto;}
+    .ui-accordion .ui-accordion-icons{padding-left:0px}
+    .ui-state-hover{background:#f7f7f7 ;border: 1px solid #ccc;}
+    .ui-state-active{ border: 1px solid #ccc;}
+    .ui-state-focus{background:#f7f7f7 ;border: 1px solid #ccc;}
+  
+ 
+    .ui-accordion .ui-accordion-header .ui-icon {display:inline-block; position: relative;width: 10px;height: 10px;border-left: 3px solid #0074B3;border-bottom: 3px solid #0074B3;transform: rotate(135deg);top:2px;margin-left: 5px;}
+   .tickImage{background-image: url("{!$Resource.GreenCheck}");padding: 0 10px 25px 15px;margin:0px 10px 0px 10px; background-repeat: no-repeat;}
+    .closeImage{background-image: url("{!$Resource.RedCheck}");padding: 0 10px 25px 15px;margin:0px 10px 0px 10px;background-repeat: no-repeat;}
+    .dividerHr {
+    page-break-after: always;
+    height: 3px;
+    background-color: #1B81AD;
+    width: 110%;
+    border: 0px none;
+    margin: 0px -10px 40px;
+    margin-top: 0px;
+     }
+    
+        .ui-widget-header {          
+                
+            border: 1px solid cornflowerblue !important;
+            background: cornflowerblue !important;
+            color: Black;
+            font-weight: bold;     
+        }
+        .ui-slider {
+            height: 1.6em;
+        }
+       
+        .ui-slider .ui-slider-handle {
+            height: 2.2em;
+            width: 0.75em;
+        }
+       
+        .ui-slider-range {
+           background: #e78f08 !important;
+            border: 1px solid #e78f08 !important ;
+        }
+       
+        .sliderLabelsProgress {
+            position: absolute;
+            top: 34px;
+            left: 40px;
+            z-index: 1;
+            color: Black;
+        }
+       
+        .sliderLabelsMax {
+            position: absolute;
+            top: 34px;
+            right: 40px;
+            z-index: 1;
+            color: #e78f08;
+            font-weight:bold;
+        }
+        .cosSliderLabelsProgress {
+            position: absolute;
+            top: 8px;
+            left: 40px;
+            z-index: 1;
+            color: Black;
+            font-family: omnes_att_iimedium;
+            font-weight: 500;
+            font-size: 15px;
+            line-height: 21px;
+        }
+        .xsSpeedError{
+           white-space: nowrap;
+        }
+        .cosSliderLabelsMax {
+            position: absolute;
+            top: 8px;
+            right: 33px;
+            //z-index: 999999;
+            color: #4ca90c;
+            font-weight:500;
+            font-family: omnes_att_iimedium;
+            font-size: 15px;
+            line-height: 21px;
+        }
+               
+        div.progress {
+            height: 30px;
+            background-color: #808080;
+        }
+       
+        span#portSpeed,
+        span#xsSpeed {
+            font-size: 1.3em;
+            line-height: 30px;
+        }
+       
+        .portSpeedLbl {
+            vertical-align: middle !important;
+        }
+       
+        .progress-bar-success {
+            background: #0171BB !important;
+        }
+       
+        h3.f-s-larger {
+            padding: 10px 0 !important;
+           font-family: omnes_light;
+        }
+       
+        h3.f-s-large {
+            padding: 10px 0 !important;
+            font-size: 1.3em !important;
+        }
+       
+        h3 span {
+            font-size: 12px !important;
+        }
+       
+        hr.dashedHr {
+            width: 100% !important;
+            clear: both !important;
+        }
+       
+        .sectionBlackHr{
+            border: none;
+            border-bottom: solid 1px #C0C0C0;
+            margin: 10px 0px 0px 0px;
+            clear: both !important;
+        }
+        .breather {
+            padding: 10px 0 !important;
+        }
+       
+        .errorStyle, .errorText {
+            color: #a94442;
+            font-size: 16px;
+            width: 220px;
+            font-weight:bold;
+            font-family: omnes_light;
+        }
+       
+          #legend label{
+       
+                margin-top: 8px !important;
+       
+        }
+ 
+        div.legendItem {
+                margin-top: 5px;
+        }
+        .RealLabel{
+        margin-bottom: 10px;
+        font-size: 0.89em;
+        font-weight: 500;
+      } 
+      .row {
+        margin-right: -34px;
+        margin-left: -15px;
+     }
+     .ui-slider .ui-slider-handle {
+            height: 2.5em;
+            margin-left: -3px;
+            width: 10px;
+     } 
+    .custEdgeIPAddr-1_error, .attEdgeIPAddr-1_error{margin: 0px;} 
+    .accordionHeader{color:#000;padding: 20px 0px 20px 0px !important;font-family: omnesatt_iiregular;font-size: 16px !important;margin-top: 0px !important;}
+    .ui-icon-triangle-1-s {background-position: 0px 0px;}
+    .glyphicon-chevron-down {background-position: -64px 1px;transform: rotate(-45deg)!important;top:-2px!important;} 
+     .radioAlign{line-height:16px !important;}  
+     .vlanVpnClass{
+         text-transform: uppercase;
+     }
+     .axisPlacementStyle{
+        font-weight: 500;
+        font-family: omnes_att_iimedium;
+        line-height:21px; 
+        color: #000000;
+        font-size: 15px;
+     }
+     
+    </style>
+    <script type="text/javascript">
+    var icons = {
+         header: "glyphicon glyphicon-chevron-down",   
+         headerActive: "glyphicon glyphicon-chevron-up"
+     };
+    var lastPanel = parseInt('{!panelNumber}');
+    var prevAccord = lastPanel - 1;
+    function accordianView(){
+    console.log('prevAccord '+prevAccord +'lastPanel '+lastPanel);
+    if(lastPanel == '0')
+     prevAccord = false;
+        $(".accordion").accordion({
+            collapsible: true,
+            active: prevAccord,
+            heightStyle: "content",
+            icons: icons
+        }); 
+        if(isNaN(lastPanel)){
+            lastPanel = parseInt('{!panelNumber}');
+         }
+         onFiledChangeValidationVLAN("-"+lastPanel);
+        reInitiateToolTip();
+                           
+    }   
+     //var lastPanel = '{!currentVlanPanel}'.replace('Panel','');
+     function toggleVLanAccordions(event,accordId,status){
+        
+         onFiledChangeValidationVLAN("-"+accordId);
+         secondLoadValidation(status,accordId);    
+         if(isNaN(lastPanel)){
+            lastPanel = parseInt('{!panelNumber}');
+         }       
+         var iscurrentPanelFiled = isRequiredElementsFilled("requiredField-"+lastPanel,"errorText-"+lastPanel);
+        
+        
+         
+         lastPanel = accordId;
+         var vpnNameStr = '';
+            if($('.vpnName') && $('.vpnName').val() != null){
+                vpnNameStr = $('.vpnName').val();
+            }
+         saveVLANBlockDataAction('Panel'+accordId,iscurrentPanelFiled,vpnNameStr.toString());                         
+     }
+             
+     function reInitializeOnReconfigureVlan(){
+        var activePanel = $( ".accordion" ).accordion( "option", "active" );
+        if(activePanel != false || activePanel>=0){
+            var accordId = activePanel+1;
+            onFiledChangeValidationVLAN("-"+accordId);
+        }
+        
+     }
+     
+     function disableSubmitOnSliderChange(){
+        if('{!SubmitButtonLabel}'=='Submit') {
+            $('.rdsSubmit').addClass('disabled');
+        }
+     }
+     
+     function updateLastPanel(){
+        lastPanelStr = $('[id$=page2PanelNumber]').val();
+        
+        lastPanel = parseInt(lastPanelStr);
+        prevAccord = 0;
+        accordianView();
+     }
+     var onLoadIP = true;
+     function reintailaizeRequiredFieldOnToggle(){
+     var opened = $('.accordion').find('.ui-state-active').length
+     if(opened>0){
+        page2AccordActive = true;
+     }
+     else{
+        page2AccordActive = false;
+     }
+     setTimeout(function() {
+        var activePanel = $( ".accordion" ).accordion( "option", "active" );       
+        if(activePanel != false || activePanel>=0){
+            var vlanStatus = $('#vlanStatus-'+(activePanel+1)).val();
+            
+            if(vlanStatus != null && typeof vlanStatus != 'undefined' && vlanStatus=='Incomplete'){
+                
+                var accordId = activePanel+1;
+                $('.requiredField-'+accordId).each(function () {
+                var hasClass = $(this).hasClass('custEdgeIPAddr-'+accordId);
+                var hasAttEdgeClass = $(this).hasClass('attEdgeIPAddr-'+accordId);
+                var classes = $(this).prop('class');
+                
+                if(hasClass == true){// || ($(this).hasClass('attEdgeIPAddr-'+accordId))){
+                    
+                    $('.asnNumberV4-'+accordId).trigger('blur');
+                    $('.asnNumberV6-'+accordId).trigger('blur');
+                    var md5v4Selected = $('.MD5V4Cls-'+accordId+' input:checked').val();
+                    var md5v6Selected = $('.MD5V6Cls-'+accordId+' input:checked').val();                    
+                    if(md5v4Selected == 'true'){
+                        $('.ipv4MD5Pass-'+accordId).val('');
+                        $('.ipv4MD5RePass-'+accordId).val('');
+                        $('.ipv4MD5RePass-'+accordId).removeClass('errorStyle');
+                        $('.ipv4MD5Pass-'+accordId).trigger('blur');
+                    }
+                    if(md5v6Selected == 'true'){
+                        $('.ipv6MD5Pass-'+accordId).val('');
+                        $('.ipv6MD5RePass-'+accordId).val('');
+                        $('.ipv6MD5RePass-'+accordId).removeClass('errorStyle');
+                        $('.ipv6MD5Pass-'+accordId).trigger('blur');
+                    }
+                   
+                    var cosSelectedvalue = $('.cosclass-'+accordId).val();                     
+                    if(cosSelectedvalue == 'undefined' || cosSelectedvalue == ''){                        
+                        $('.cosclass-'+accordId).trigger('blur');
+                    }               
+                    $('.custEdgeIPAddr-'+accordId).trigger('blur');
+                    $('.attEdgeIPAddr-'+accordId).trigger('blur');
+                }   
+                else if(hasAttEdgeClass == false && hasClass == false){
+                    $('.'+classes).trigger('blur');
+                }
+                
+                
+                });
+            }    
+            setTimeout(function(){reintailaizeRequiredFieldOnToggleAttEdge();},1000);
+            
+                
+        }
+        },100);
+        
+     }
+     
+     function reintailaizeRequiredFieldOnToggleAttEdge(){     
+        var activePanel = $( ".accordion" ).accordion( "option", "active" );        
+        if(activePanel != false || activePanel>=0){
+            var vlanStatus = $('#vlanStatus-'+(activePanel+1)).val();            
+            if(vlanStatus != null && typeof vlanStatus != 'undefined' && vlanStatus=='Incomplete'){
+                
+                var accordId = activePanel+1;
+                
+                $('.attEdgeIPAddr-'+accordId).trigger('blur');
+            }    
+                
+        }
+        return true;
+        
+     }
+     
+     function secondLoadValidation(status,accordId){
+         console.log('status :'+status+' accordId :'+accordId);
+         if(status == 'Incomplete'){
+            $('.requiredField-'+accordId).trigger('blur');
+         }
+     }
+     function noCollapseOnMD5Error(){
+         if($('.vpnName').val() != '' && $('.vpnName').val() != null){
+                          $('.vlanVpnClass').val($('.vpnName').val().toUpperCase());        
+         }
+         if($('.messageCell').text().length>0){
+             accordianView();
+         }
+         if(page2completed == 'true')
+             secondLoadValidation('Incomplete',lastPanel);
+         $('input[type="password"]').val('');
+     }
+     function onFiledChangeValidationVLAN(clsSuffix){
+        $(".asnNumberV4"+clsSuffix).on({
+            "keyup blur change": function () {
+                var asnNumberV4JSON={
+                    VALIDATION_RULE_1:{CONDITION:$('.asnNumberV4'+clsSuffix).val().length == 0,ERROR_MSG:'Please select a value for Autonomous System Number'},
+                    VALIDATION_RULE_2:{CONDITION:$('.asnNumberV4'+clsSuffix).val() !== $('.asnNumberV4'+clsSuffix).val().trimLeft(),ERROR_MSG:'Autonomous System Number cannot begin with a space'},
+                    VALIDATION_RULE_3:{CONDITION:!onlyNumRegex.test($('.asnNumberV4'+clsSuffix).val()),ERROR_MSG:'Invalid Entry'},
+                    VALIDATION_RULE_4:{CONDITION:!((parseInt($('.asnNumberV4'+clsSuffix).val(), 10)>=64512 && parseInt($('.asnNumberV4'+clsSuffix).val(), 10)<65000) || (parseInt($('.asnNumberV4'+clsSuffix).val(), 10)>65004 && parseInt($('.asnNumberV4'+clsSuffix).val(), 10)<=65534) ),ERROR_MSG:'Invalid Entry'}
+                };
+                displayErrorMessage('asnNumberV4'+clsSuffix, asnNumberV4JSON,'errorText'+clsSuffix);
+            }
+        });
+       
+        $(".asnNumberV6"+clsSuffix).on({
+            "keyup blur change": function () {
+                var asnNumberV6JSON={
+                    VALIDATION_RULE_1:{CONDITION:$('.asnNumberV6'+clsSuffix).val().length == 0,ERROR_MSG:'Please select a value for Autonomous System Number'},
+                    VALIDATION_RULE_2:{CONDITION:$('.asnNumberV6'+clsSuffix).val() !== $('.asnNumberV6'+clsSuffix).val().trimLeft(),ERROR_MSG:'Autonomous System Number cannot begin with a space'},
+                    VALIDATION_RULE_3:{CONDITION:!onlyNumRegex.test($('.asnNumberV6'+clsSuffix).val()),ERROR_MSG:'Invalid Entry'},
+                    VALIDATION_RULE_4:{CONDITION:!((parseInt($('.asnNumberV6'+clsSuffix).val(), 10)>=64512 && parseInt($('.asnNumberV6'+clsSuffix).val(), 10)<65000) || (parseInt($('.asnNumberV6'+clsSuffix).val(), 10)>65004 && parseInt($('.asnNumberV6'+clsSuffix).val(), 10)<=65534) ),ERROR_MSG:'Invalid Entry'}
+                };
+                displayErrorMessage('asnNumberV6'+clsSuffix, asnNumberV6JSON,'errorText'+clsSuffix);
+            }
+        });
+        $(".custEdgeIPAddr"+clsSuffix).on({
+            "keyup blur change": function (event) {
+            console.log('event cust '+event.type+' clsSuffix '+clsSuffix);
+                updateIPs();
+                var lastOctetErrorMsg = validateEdgeIPAddressVLAN('custEdgeIPAddr'+clsSuffix,'errorText'+clsSuffix,clsSuffix);
+                var custIPRegexJSON={
+                    VALIDATION_RULE_1:{CONDITION:$('.custEdgeIPAddr'+clsSuffix).val().length == 0,ERROR_MSG:'IP range cannot be blank'},
+                    VALIDATION_RULE_2:{CONDITION:$('.custEdgeIPAddr'+clsSuffix).val() !== $('.custEdgeIPAddr'+clsSuffix).val().trimLeft(),ERROR_MSG:'IP range should not begin with a space'},
+                    VALIDATION_RULE_3:{CONDITION:!ipRegex.test($('.custEdgeIPAddr'+clsSuffix).val()),ERROR_MSG:'Invalid IP range'},
+                    VALIDATION_RULE_4:{CONDITION:lastOctetErrorMsg.length != 0,ERROR_MSG:lastOctetErrorMsg}
+                };
+                displayErrorMessage('custEdgeIPAddr'+clsSuffix, custIPRegexJSON,'errorText'+clsSuffix);
+            }
+        });
+        $(".attEdgeIPAddr"+clsSuffix).on({
+            "keyup blur change": function (event) {
+               console.log('event att :: '+event.type+' clsSuffix '+clsSuffix);
+                var lastOctetErrorMsg = validateEdgeIPAddressVLAN('attEdgeIPAddr'+clsSuffix,'errorText'+clsSuffix,clsSuffix);
+                var attIPRegexJSON={
+                    VALIDATION_RULE_1:{CONDITION:$('.attEdgeIPAddr'+clsSuffix).val().length == 0,ERROR_MSG:'IP range cannot be blank'},
+                    VALIDATION_RULE_2:{CONDITION:$('.attEdgeIPAddr'+clsSuffix).val() !== $('.attEdgeIPAddr'+clsSuffix).val().trimLeft(),ERROR_MSG:'IP range should not begin with a space'},
+                    VALIDATION_RULE_3:{CONDITION:!ipRegex.test($('.attEdgeIPAddr'+clsSuffix).val()),ERROR_MSG:'Invalid IP range'},
+                    VALIDATION_RULE_4:{CONDITION:lastOctetErrorMsg.length != 0,ERROR_MSG:lastOctetErrorMsg}
+                };             
+                displayErrorMessage('attEdgeIPAddr'+clsSuffix, attIPRegexJSON,'errorText'+clsSuffix);
+            }
+        });
+            $(".ipv4MD5Pass"+clsSuffix).on({
+            "keyup blur change": function () {
+                var isValidV4Password = $('.ipv4MD5Pass'+clsSuffix).val().length < 8 || $('.ipv4MD5Pass'+clsSuffix).val().search(/[A-Z]/) < 0 || $('.ipv4MD5Pass'+clsSuffix).val().search(/[0-9]/) < 0;
+                var ipv4MD5PassJSON={
+                    VALIDATION_RULE_1:{CONDITION:$('.ipv4MD5Pass'+clsSuffix).val().length == 0,ERROR_MSG:'Password cannot be blank'},
+                    VALIDATION_RULE_2:{CONDITION:isValidV4Password,ERROR_MSG:'Password must be at least 8 characters, no more than 16 characters and contain at least 1 number and 1 uppercase letter.'}
+                };
+                var isV4PassMatch = $('.ipv4MD5Pass'+clsSuffix).val().length >0 && $('.ipv4MD5Pass'+clsSuffix).val() === $('.ipv4MD5RePass'+clsSuffix).val();
+                
+                $('.ipv4MD5RePass'+clsSuffix).val() ? !isValidV4Password && isV4PassMatch ? $('#v4ConfirmSign'+clsSuffix).addClass('tickImage').removeClass('closeImage'):$('#v4ConfirmSign'+clsSuffix).addClass('closeImage').removeClass('tickImage'):$('#v4ConfirmSign'+clsSuffix).removeClass('closeImage').removeClass('tickImage');
+                isValidV4Password ? $('.ipv4MD5RePass'+clsSuffix).attr('disabled','disabled'):$('.ipv4MD5RePass'+clsSuffix).removeAttr('disabled');
+                if($('.ipv4MD5RePass'+clsSuffix).is('[disabled]')){
+                    $('#v4ConfirmSign'+clsSuffix).removeClass('closeImage');
+                    $('.ipv4MD5RePass-'+clsSuffix).val('');
+                    $('.ipv4MD5RePass'+clsSuffix+'_error').remove();
+                    var oParent = $(".ipv4MD5RePass"+clsSuffix).parent();
+                    oParent.removeClass("has-error");
+                    $( ".ipv4MD5RePass"+clsSuffix).css( "border-color", "#ccc");
+                }
+
+                displayErrorMessage('ipv4MD5Pass'+clsSuffix, ipv4MD5PassJSON,'errorText'+clsSuffix);
+                
+                var classList = $('#v4ConfirmSign'+clsSuffix)[0].classList;            
+                var reenterPwdErrObj = $('.ipv4MD5RePass'+clsSuffix+'_error');
+                if(($.inArray("tickImage", classList))==0){
+                    
+                    var JSONMSG={
+                    VALIDATION_RULE_3:{CONDITION:true,ERROR_MSG:'Passwords match.'}
+                    };                                          
+                    if(reenterPwdErrObj){
+                        reenterPwdErrObj.text('Passwords match.');
+                        reenterPwdErrObj.addClass('pwdMatchStyle').removeClass('errorStyle').removeClass('errorText'+clsSuffix);
+                        var oParent = $(".ipv4MD5RePass"+clsSuffix).parent();
+                        oParent.removeClass("has-error");
+                        $( ".ipv4MD5RePass"+clsSuffix).css( "border-color", "" );
+                    }
+                }
+                else if(($.inArray( "closeImage", classList)) == 0){                                       
+                    var JSONMSGERR={
+                    VALIDATION_RULE_4:{CONDITION:true,ERROR_MSG:'Passwords don\'t match. Try again.'}
+                    };                      
+                    //displayErrorMessage('ipv4MD5RePass', JSONMSGERR);
+                    if(reenterPwdErrObj){
+                        reenterPwdErrObj.text('Passwords don\'t match. Try again.');
+                        reenterPwdErrObj.removeClass('pwdMatchStyle').addClass('errorStyle').addClass('errorText'+clsSuffix);
+                        var oParent = $(".ipv4MD5RePass"+clsSuffix).parent();
+                        oParent.addClass("has-error");
+                        $( ".ipv4MD5RePass"+clsSuffix).css( "border-color", "#a94442");
+                    }
+                }
+                
+            }
+        });
+        $(".ipv4MD5RePass"+clsSuffix).on({
+            "keyup blur change input paste": function () {
+                var isValidV4RePassword = $('.ipv4MD5RePass'+clsSuffix).val().length < 8 || $('.ipv4MD5RePass'+clsSuffix).val().search(/[A-Z]/) < 0 || $('.ipv4MD5RePass'+clsSuffix).val().search(/[0-9]/) < 0;
+                var ipv4MD5RePassJSON={
+                    VALIDATION_RULE_1:{CONDITION:$('.ipv4MD5RePass'+clsSuffix).val().length == 0,ERROR_MSG:'Password cannot be blank'},
+                    VALIDATION_RULE_2:{CONDITION:isValidV4RePassword,ERROR_MSG:'Passwords don\'t match. Try again.'}
+                };
+                var isV6RePassMatch = $('.ipv4MD5Pass'+clsSuffix).val() === $('.ipv4MD5RePass'+clsSuffix).val();
+                $('.ipv4MD5RePass'+clsSuffix).val() ? !isValidV4RePassword && isV6RePassMatch ? $('#v4ConfirmSign'+clsSuffix).addClass('tickImage').removeClass('closeImage'):$('#v4ConfirmSign'+clsSuffix).addClass('closeImage').removeClass('tickImage'):$('#v4ConfirmSign'+clsSuffix).removeClass('closeImage').removeClass('tickImage');
+                //displayErrorMessage('ipv4MD5RePass'+clsSuffix, ipv4MD5RePassJSON,'errorText'+clsSuffix);
+                
+            var reenterIPV4PwdErrObj = $('.ipv4MD5RePass'+clsSuffix+'_error');
+            var reneterIPV4MainObj = $('.ipv4MD5RePass'+clsSuffix);
+            if(reneterIPV4MainObj.val().length == 0 && reenterIPV4PwdErrObj){
+                $(".errorStyle.ipv4MD5RePass"+clsSuffix+"_error").remove();
+                $(".pwdMatchStyle.ipv4MD5RePass"+clsSuffix+"_error").remove();
+            }
+            var parseJsonData = $.parseJSON(JSON.stringify(ipv4MD5RePassJSON));
+            var checkIfMsgRequired = true;
+            $.each(parseJsonData, function(idx, obj) {
+                if(obj.CONDITION && checkIfMsgRequired){
+                    checkIfMsgRequired = false;
+                    $(".errorStyle.ipv4MD5RePass"+clsSuffix+"_error").remove();
+                    $(".pwdMatchStyle.ipv4MD5RePass"+clsSuffix+"_error").remove();
+                }
+            });
+            var classList = $('#v4ConfirmSign'+clsSuffix)[0].classList; 
+            if(($.inArray( "closeImage", classList)) == 0){ 
+                setTimeout(function(){ $('.ipv4MD5RePass'+clsSuffix+'_error').css('color','#333 !important');},5);
+            }
+            if(checkIfMsgRequired){
+                if(($.inArray("tickImage", classList))==0){                    
+                    var JSONMSG={
+                    VALIDATION_RULE_3:{CONDITION:true,ERROR_MSG:'Passwords match.'}
+                    };  
+                    if(reenterIPV4PwdErrObj){
+                        reenterIPV4PwdErrObj.text('Passwords match.');
+                    }
+                    else{
+                        displayErrorMessage('ipv4MD5RePass'+clsSuffix, JSONMSG);
+                    }
+                    
+                    if(reenterIPV4PwdErrObj){
+                        var oParent = $(".ipv4MD5RePass"+clsSuffix).parent();
+                        oParent.removeClass("has-error");
+                        reenterIPV4PwdErrObj.addClass('pwdMatchStyle').removeClass('errorStyle').removeClass('errorText'+clsSuffix);
+                        reneterIPV4MainObj.css( "border-color", "" );
+                        
+                        
+                    }
+                }
+                else if(($.inArray( "closeImage", classList)) == 0){                                       
+                    var JSONMSGERR={
+                        VALIDATION_RULE_4:{CONDITION:true,ERROR_MSG:'Passwords don\'t match. Try again.'}
+                    };  
+                    if(reenterIPV4PwdErrObj){
+                        reenterIPV4PwdErrObj.text('Passwords don\'t match. Try again.');
+                        var oParent = reneterIPV4MainObj.parent();
+                        oParent.addClass("has-error");
+                        reneterIPV4MainObj.css( "border-color", "#a94442");
+                    }else{
+                        displayErrorMessage('ipv4MD5RePass'+clsSuffix, JSONMSGERR,'errorText'+clsSuffix);
+                    }
+                    reenterIPV4PwdErrObj.removeClass('pwdMatchStyle').addClass('errorStyle').addClass('errorText'+clsSuffix);
+                    
+                }               
+            }
+            else{
+                displayErrorMessage('ipv4MD5RePass'+clsSuffix, ipv4MD5RePassJSON,'errorText'+clsSuffix);
+            }
+            
+            }
+            
+        });
+        $(".ipv6MD5Pass"+clsSuffix).on({
+            "keyup blur change input paste": function () {
+                var isValidV6Password = $('.ipv6MD5Pass'+clsSuffix).val().length < 8 || $('.ipv6MD5Pass'+clsSuffix).val().search(/[A-Z]/) < 0 || $('.ipv6MD5Pass'+clsSuffix).val().search(/[0-9]/) < 0;
+                var ipv6MD5PassJSON={
+                    VALIDATION_RULE_1:{CONDITION:$('.ipv6MD5Pass'+clsSuffix).val().length == 0,ERROR_MSG:'Password cannot be blank'},
+                    VALIDATION_RULE_2:{CONDITION:isValidV6Password,ERROR_MSG:'Password must be at least 8 characters, no more than 16 characters and contain at least 1 number and 1 uppercase letter.'}
+                };
+                var isV6PassMatch = $('.ipv6MD5Pass'+clsSuffix).val().length >0 && $('.ipv6MD5Pass'+clsSuffix).val() === $('.ipv6MD5RePass'+clsSuffix).val();
+                $('.ipv6MD5RePass'+clsSuffix).val() ? !isValidV6Password && isV6PassMatch ? $('#v6ConfirmSign'+clsSuffix).addClass('tickImage').removeClass('closeImage'):$('#v6ConfirmSign'+clsSuffix).addClass('closeImage').removeClass('tickImage'):$('#v6ConfirmSign'+clsSuffix).removeClass('closeImage').removeClass('tickImage');
+                isValidV6Password ? $('.ipv6MD5RePass'+clsSuffix).attr('disabled','disabled'):$('.ipv6MD5RePass'+clsSuffix).removeAttr('disabled');
+                displayErrorMessage('ipv6MD5Pass'+clsSuffix, ipv6MD5PassJSON,'errorText'+clsSuffix);
+                if($('.ipv6MD5RePass'+clsSuffix).is('[disabled]')){
+                    $('.ipv6MD5RePass-'+clsSuffix).val('');
+                    $('#v6ConfirmSign'+clsSuffix).removeClass('closeImage');
+                    $('.ipv6MD5RePass'+clsSuffix+'_error').remove();
+                    var oParent = $(".ipv6MD5RePass"+clsSuffix).parent();
+                    oParent.removeClass("has-error");
+                    $( ".ipv6MD5RePass"+clsSuffix).css( "border-color", "#ccc");
+                }
+                var classList = $('#v6ConfirmSign'+clsSuffix)[0].classList;    
+                
+                var ipv6MD5RePassErrObj  = $('.ipv6MD5RePass'+clsSuffix+'_error');
+                var ipv6MD5RePassMainObj  =  $( ".ipv6MD5RePass"+clsSuffix );
+                if(($.inArray("tickImage", classList))==0){
+                    
+                    var JSONMSG={
+                    VALIDATION_RULE_3:{CONDITION:true,ERROR_MSG:'Passwords match.'}
+                    };                                          
+                    if(ipv6MD5RePassErrObj){
+                        ipv6MD5RePassErrObj.text('Passwords match.');
+                        ipv6MD5RePassErrObj.addClass('pwdMatchStyle').removeClass('errorStyle').removeClass('errorText'+clsSuffix);
+                        var oParent = ipv6MD5RePassMainObj.parent();
+                        oParent.removeClass("has-error");
+                        ipv6MD5RePassMainObj.css( "border-color", "" );
+                    }
+                }
+                else if(($.inArray( "closeImage", classList)) == 0){                                       
+                    var JSONMSGERR={
+                    VALIDATION_RULE_4:{CONDITION:true,ERROR_MSG:'Passwords don\'t match. Try again.'}
+                    };                      
+                    
+                    if(ipv6MD5RePassErrObj){
+                        ipv6MD5RePassErrObj.text('Passwords don\'t match. Try again.');
+                        ipv6MD5RePassErrObj.removeClass('pwdMatchStyle').addClass('errorStyle').addClass('errorText'+clsSuffix);
+                        var oParent = ipv6MD5RePassMainObj.parent();
+                        oParent.addClass("has-error");
+                        ipv6MD5RePassMainObj.css( "border-color", "#a94442");
+                    }
+                }
+                
+            }
+        });
+        $(".ipv6MD5RePass"+clsSuffix).on({
+            "keyup blur change input paste": function () {
+                var isValidV6RePassword = $('.ipv6MD5RePass'+clsSuffix).val().length < 8 || $('.ipv6MD5RePass'+clsSuffix).val().search(/[A-Z]/) < 0 || $('.ipv6MD5RePass'+clsSuffix).val().search(/[0-9]/) < 0;
+                var ipv6MD5RePassJSON={
+                    VALIDATION_RULE_1:{CONDITION:$('.ipv6MD5RePass'+clsSuffix).val().length == 0,ERROR_MSG:'Password cannot be blank'},
+                    VALIDATION_RULE_2:{CONDITION:isValidV6RePassword,ERROR_MSG:'Passwords don\'t match. Try again.'}
+                };
+                var isV6RePassMatch = $('.ipv6MD5Pass'+clsSuffix).val() === $('.ipv6MD5RePass'+clsSuffix).val();
+                $('.ipv6MD5RePass'+clsSuffix).val() ? !isValidV6RePassword && isV6RePassMatch ? $('#v6ConfirmSign'+clsSuffix).addClass('tickImage').removeClass('closeImage'):$('#v6ConfirmSign'+clsSuffix).addClass('closeImage').removeClass('tickImage'):$('#v6ConfirmSign').removeClass('closeImage').removeClass('tickImage');
+                //displayErrorMessage('ipv6MD5RePass'+clsSuffix, ipv6MD5RePassJSON,'errorText'+clsSuffix);
+                
+                var ipv6MD5RePassErrObj  = $('.ipv6MD5RePass'+clsSuffix+'_error');
+                var ipv6MD5RePassMainObj  =  $( ".ipv6MD5RePass"+clsSuffix );
+                
+                if(ipv6MD5RePassMainObj.val().length == 0 && ipv6MD5RePassErrObj){
+                    $(".errorStyle.ipv6MD5RePass"+clsSuffix+"_error").remove();
+                    $(".pwdMatchStyle.ipv6MD5RePass"+clsSuffix+"_error").remove();
+                }
+            
+            var parseJsonData = $.parseJSON(JSON.stringify(ipv6MD5RePassJSON));
+            var checkIfMsgRequired = true;
+            $.each(parseJsonData, function(idx, obj) {
+                if(obj.CONDITION && checkIfMsgRequired){
+                    checkIfMsgRequired = false;
+                    $(".errorStyle.ipv6MD5RePass"+clsSuffix+"_error").remove();
+                    $(".pwdMatchStyle.ipv6MD5RePass"+clsSuffix+"_error").remove();
+                }
+            });
+            var classList = $('#v6ConfirmSign'+clsSuffix)[0].classList;   
+            if(($.inArray( "closeImage", classList)) == 0){ 
+                    setTimeout(function(){ $('.ipv6MD5RePass'+clsSuffix+'_error').css('color','#333 !important');},5);
+                    }           
+            if(checkIfMsgRequired){
+                if(($.inArray("tickImage", classList))==0){                    
+                    var JSONMSG={
+                    VALIDATION_RULE_3:{CONDITION:true,ERROR_MSG:'Passwords match.'}
+                    };  
+                    if(ipv6MD5RePassErrObj){
+                        ipv6MD5RePassErrObj.text('Passwords match.');
+                    }
+                    else{
+                        displayErrorMessage('ipv6MD5RePass'+clsSuffix, JSONMSG);
+                    }
+                    
+                    if(ipv6MD5RePassErrObj){
+                        var oParent = ipv6MD5RePassMainObj.parent();
+                        oParent.removeClass("has-error");
+                        ipv6MD5RePassErrObj.addClass('pwdMatchStyle').removeClass('errorStyle').removeClass('errorText'+clsSuffix);
+                        ipv6MD5RePassMainObj.css( "border-color", "" );
+                    }
+                    
+                }
+                else if(($.inArray( "closeImage", classList)) == 0){                                       
+                    var JSONMSGERR={
+                    VALIDATION_RULE_4:{CONDITION:true,ERROR_MSG:'Passwords don\'t match. Try again.'}
+                    };  
+                    if(ipv6MD5RePassErrObj){
+                        ipv6MD5RePassErrObj.text('Passwords don\'t match. Try again.');
+                        var oParent = $(".ipv6MD5RePass").parent();
+                        oParent.addClass("has-error");
+                        ipv6MD5RePassMainObj.css( "border-color", "#a94442");
+                    }else{
+                        displayErrorMessage('ipv6MD5RePass'+clsSuffix, JSONMSGERR,'errorText'+clsSuffix);
+                    }
+                    ipv6MD5RePassErrObj.removeClass('pwdMatchStyle').addClass('errorStyle').addClass('errorText'+clsSuffix);
+                    
+                    
+                }               
+            }
+            else{
+                displayErrorMessage('ipv6MD5RePass'+clsSuffix, ipv6MD5RePassJSON,'errorText'+clsSuffix);
+            }
+            
+                
+            }
+        });
+    }
+    
+    /*Custom function to support IE11, TDP245868*/
+    function CustomObjectKeysFn(obj){
+        var ret = [];
+        for (var prop in obj) if (obj.hasOwnProperty(prop)) ret.push(prop)
+        return ret;    
+    } 
+        
+    function validateEdgeIPAddressVLAN(sClassName,errorClassName,suffix) {
+   
+        if(typeof errorClassName === "undefined"){
+            errorClassName = '';
+        }
+            var sValue = "",
+                oField = $("." + sClassName),
+                oParent = oField.parent(),
+                isValid, messageValue='';
+            if (oParent[0] && !oParent.hasClass("has-error")) {
+                sValue = oField.val();
+                var isValidIPFlag = ipRegex.test(sValue);
+                if (isValidIPFlag){
+                   
+                    var lastOctet = sValue.split('.')[3];
+                    if (sClassName === 'attEdgeIPAddr'+suffix || sClassName.match('ipATT') != null)
+                        lastOctet = lastOctet - 1;
+                    else if (sClassName === 'custEdgeIPAddr'+suffix || sClassName.match('ipCust') != null)
+                        lastOctet = lastOctet - 2;
+                    if ((lastOctet % 4) === 0) {
+                       
+                        var classList = oField[0].classList;
+                        var uniqueClassName = classList[classList.length - 1]+'_'+"{!siteselected}";
+                        var existingData='';
+                        uniqueIPVals = $('.ipVlauesSelector').text().split('[')[1].split(']')[0].replace(/[ ]+/g,"").split(',');
+                        jsonData = $('.ipVlauesSelectorStr').text().trim().replace(/[ ]+/g,"").replace(/=+/g,"\":\"").replace(/,+/g,"\",\"").replace(/{+/g,"{\"").replace(/}+/g,"\"}");
+                        
+                        if(CustomObjectKeysFn(jsonData).length>4){
+                            jsonParseData = jQuery.parseJSON(jsonData);
+                            existingData = jsonParseData[uniqueClassName];
+                        }
+                        if (uniqueIPVals.indexOf(sValue) == -1 || (sValue == existingData  )) {                          
+                            isValid = true;
+                            prevSClassName = uniqueClassName;
+                            prevSValue = sValue;
+                           
+                        } else if(uniqueIPVals.indexOf(sValue) > -1){
+                             messageValue = 'Invalid! LAN in use'
+                             
+                        }else {
+                            isValid = true;
+                            prevSClassName = '';
+                            prevSValue = '';
+                           
+                        }
+                    } else {
+                        messageValue = 'Invalid Input! IP Range invalid';
+                        
+                    }
+                } else {
+                    isValid = true;
+                }
+                return messageValue;
+                if (isValid) {
+                  
+                    if (oParent[0]) {
+                        oParent.removeClass("has-error");
+                        $(".errorStyle."+sClassName).remove();
+                    }
+                } else {
+                    if (oParent[0]) {
+                        $(".errorStyle."+sClassName).remove();
+                        $("<p class='errorStyle "+sClassName+" "+errorClassName+"'>"+errorMessage+"</p>").appendTo(oParent);
+                    }
+                }
+            }
+        }
+   
+     function isRequiredElementsFilled(requiredField,errorTextClassName) {
+       
+        var isCompletelyFilled = true;
+        $("."+requiredField).each(function () {
+            oRequiredField = $(this);
+            if (oRequiredField[0]) {
+                if (0 === oRequiredField.val().length) {
+                    isCompletelyFilled = false;
+                    return false;
+                }
+            }
+        });
+        if(!isCompletelyFilled) return false;
+       
+        if (0 < $("."+errorTextClassName).length) {
+            return false;
+        }
+        return true;
+    }
+    
+     function restrictSpaceBar(e){
+            if((e ? e.which : window.e.keyCode)== 32) return false;
+        }
+      onload = function () {
+   
+          if(typeof page2Visited != 'undefined' && page2Visited == "true") {
+               requiredFieldValidation();
+               validateVPN('inputVPNName');
+               validateTextFieldsPage2("VLAN_channels", "Selection required", "Selection required", true);
+          }
+      }
+ 
+        //var selectedhubspokeVal = '{!selectedVPNConnectionPolicy}';
+        var selectedhubspokeVal = $('.VPNConnectionPolicySelector').val();
+       
+        var isHubRequired = false;
+       
+        function initializeVPNValidationFor(sClassName) {
+            var comp = $("." + sClassName);
+            comp.on({
+                "keyup": function () {
+                    validateVPN(sClassName);
+                },
+                "blur": function () {
+                    validateVPN(sClassName);
+                }
+            });
+        }
+ 
+        function initializeCustomIPValidationFor(sClassName) {
+            var comp = $("." + sClassName);
+            comp.on({
+                "focus": function () {
+                    setValidValues(sClassName);
+                },
+                "keyup": function () {
+                    validateCustomIP(sClassName, 'IP range should not begin with a space', 'IP range cannot be blank', true);
+                    validatePage3Submit();
+                },
+                "blur": function () {
+                    validateCustomIP(sClassName, 'IP range should not begin with a space', 'IP range cannot be blank', true);
+                    validatePage3Submit();
+                }
+            });
+        }
+       
+        function requiredFieldValidation() {
+            var requiredFileds = $(".requiredInputField");
+            var enabledBtn=true;
+            requiredFileds.each(function () {
+                if($(this).val().length){
+                    enabledBtn=true; 
+                    return false;
+                 }  
+            });
+            if(enabledBtn){
+                requiredFileds.each(function () {
+                   $(this).keyup();
+                    validateTextFieldsPage2("VLAN_channels", "Selection required", "Selection required", true);
+                });
+            }
+        }
+       
+        function disableButton(sClassName, disable) {
+            sClassName = '.' + sClassName;
+            if (disable) {
+                $(sClassName).addClass('disabled');
+                $(sClassName).prop('disabled', true);
+                rdsFlag='false';
+            } else {
+                $(sClassName).removeClass('disabled');
+                $(sClassName).removeAttr('disabled');
+                rdsFlag='true';
+                isSubmitEnable("Page2");
+            }
+        }
+ 
+        function validatePage3Submit() {
+        
+            /*var arrRequiredFields = $(".requiredInputField"),
+                boolIsNumberValid = true,
+                boolIsProfilesValid = true,
+                boolIsHubSelected = true,
+                boolIsValid = true;
+            if(arrRequiredFields.length > 1){
+                arrRequiredFields.each(function () {
+                    var oRequiredField = $(this);
+                    if (oRequiredField[0]) {
+                        if (0 == oRequiredField.val().length) {
+                            boolIsValid = false;
+                            return false;
+                        }
+                    }
+                });
+                arrRequiredFields = $('.requiredSelectField');
+                arrRequiredFields.each(function () {
+                    var oRequiredField = $(this);
+                    if ('' == oRequiredField.val() ||  oRequiredField.val() == undefined) {
+                        boolIsProfilesValid = false;
+                        return false;
+                    }
+                });
+               
+                if(isHubRequired){
+                    $('.hubSpokeRadioDivSelector :checked').each(function(){
+                        if(this.value == 'Yes'){
+                            boolIsHubSelected = true;
+                            return false;
+                        }else{
+                            boolIsHubSelected = false;
+                        }
+                    })
+                }
+              
+                // If there is any error message present, do not enable the button
+                if (0 < $(".has-error").length) {
+                    boolIsNumberValid = false;
+                }
+                disableButton('rdsSubmit',!(boolIsValid && boolIsNumberValid && boolIsProfilesValid && boolIsHubSelected));
+            }
+            else{
+                disableButton('rdsSubmit',true);
+            }
+            //disableButton('portSpeedApplyBtnSelector', !(boolIsValid && boolIsNumberValid));
+            */
+        }
+      $(function(){
+      $('input[name^="id"]').change(function() {
+           var $current = $(this);
+      $('input[name^="id"]').each(function() {
+        if ($(this).val() == $current.val() && $(this).attr('id') != $current.attr('id'))
+        {
+            //alert('duplicate found!');
+        }
+    });
+  });
+});
+    </script>
+    <apex:form >
+ 
+        <apex:message ></apex:message>
+ 
+       
+    <!--<apex:inputHidden value="{!ciMD5Error}" id="ciError"/>-->
+        <apex:outputPanel id="pagemessages">
+            <apex:pageMessages escape="true"></apex:pageMessages>
+        </apex:outputPanel>
+        <section>
+            <apex:outputLabel styleClass="f-s-larger" value="Site Name: {!SiteNameSelected}" />
+            <br/>
+            <apex:outputLabel value="{!SelectedSiteAddress}" styleClass="omesregular"/>
+        </section>
+        <hr class="sectionBlackHr" style="margin-top:40px;" />
+        <div>
+            <h3 class="f-s-larger">Configure VLANs</h3>
+        </div>
+        <div>
+                <label>Port Speed : {!portSpeed} Mbps</label>
+            </div>
+       
+      <div class="col-xs-12 m-t-10 p0">
+            <div class="col-xs-12 p0">
+                <div class="progress">
+                    <div id="pbarActual" class="progress-bar progress-bar-success">
+                        <span id="portSpeed"></span>
+                    </div>
+                    <div id="pbarXs" class="progress-bar progress-bar-danger">
+                        <span id="xsSpeed"></span>
+                    </div>
+                    <div id="pbarRemaining" class="m-r-10 pull-right progress-bar-remaining">
+                     <span id="remainingSpeed"></span>
+                     </div>
+                </div>
+            </div>
+           <!-- <div class="speedLabelsDiv">
+                <div class="row">
+                <div class="col-xs-12">
+                    <label class="col-xs-4" style="width:33%;">0</label>
+                    <label class="col-xs-4 sliderMed" style="text-align:center;width:33%;"></label>
+                    <label class="col-xs-4 sliderMax" style="text-align:right;padding-right: 0px;width:33%;"></label>
+                </div>
+                </div>
+            </div>-->
+           
+            <div style="height: 20px;">
+                <span class="xsSpeedError m-b-10" style="display:none;">{!$Label.RDS_Configure_VLAN_Speed_Error_Text}</span>
+            </div>
+        </div>
+       
+        <div>
+            <label>Number of VLANs</label>
+        </div>
+        <section>
+            <div class="row">
+                <!--<apex:outputLabel value="VLAN Channels" />-->
+                <script>
+                initialize_AVPN_page2();
+                </script>
+                <div class="col-xs-12 col-md-12 m-t-10 p0">
+                    <div class="col-xs-4 col-md-4">
+                        <apex:selectList id="vlanChSelect" value="{!selectedVLAN}" styleclass="form-control VLAN_channels requiredInputField  vlanChSelectClass styled-select" style="-moz-appearance: none;-webkit-appearance: none;width: 100%;" multiselect="false" size="1">
+                            <apex:selectOptions value="{!Vlan}" />
+                            <apex:actionSupport event="onchange" action="{!VLANchannelCount}" reRender="LogicalChannelInfoPanel" onsubmit="document.body.style.cursor = 'wait'" oncomplete="vLANCountChange();sumUpSpeed();document.body.style.cursor = 'auto';isSubmitEnable('Page2')" status="loading" />
+                        </apex:selectList>
+                    </div>
+                </div>
+            </div>    
+             <hr class="blackHrLine" />           
+            <apex:outputPanel id="LogicalChannelInfoPanel">
+                <section class="vlansSectionSelector">
+                    <apex:repeat value="{!vlanwrapper}" var="vlan1" id="theRepeat">
+                        <apex:outputPanel rendered="{!selectedVLAN>= 1}" id="ch1Div" styleClass="form-group p0 col-xs-12">
+                            <div >
+                                <label>VLAN {!vlan1.counter}</label>
+                            </div>
+                            <div>
+                                <div id="slider{!vlan1.counter}" class="vlanSliderSelector">
+                                </div>
+                                <div class="sliderLabelsProgress">
+                                    <span id="slider{!vlan1.counter}Prgs"><apex:outputLabel value="{!vlan1.portspeed} Mbps" rendered="{!IF(AND(NOT(ISNULL(vlan1.portspeed)),(VALUE(vlan1.portspeed) > 0)), true,false)}"/></span>
+                                </div>
+                                <div class="sliderLabelsMax">
+                                    <span id="slider{!vlan1.counter}Max">{!maxportspeed} Mbps</span>
+                                </div>
+                                <script type="text/javascript">
+                                    $(document).ready(function () {
+                                        function fetchValue() {
+                                            var value = '{!vlan1.portspeed}';
+                                            return value ? value : 0;
+                                        }
+                                       
+                                        function nearestValue(i, j) {
+                                             nearestVal = (Math.round(i / j)* j);
+                                             return nearestVal;
+                                        }
+                                       
+                                        function sliderChangeUpdation(idStr, val) {
+                                                if (val < 10) {
+                                                    $(idStr).slider("option", "step", 1);
+                                                } else if (val >= 10 && val < 100) {
+                                                    val = nearestValue(val, 10);
+                                                    $(idStr).slider("option", "step", 10);
+                                                } else if (val >= 100 && val < 500) {
+                                                    val = nearestValue(val, 50);
+                                                    $(idStr).slider("option", "step", 50);
+                                                } else if (val >= 500 && val < 1000) {
+                                                    val = nearestValue(val, 100);
+                                                    $(idStr).slider("option", "step", 100);
+                                                }
+                                                $("span#slider{!vlan1.counter}Prgs").text(val + ' Mbps');
+                                            }
+                                            //min:1,
+                                            //value: {!portSpeed}/{!selectedVLAN},
+                                        $("div#slider{!vlan1.counter}").slider({
+                                            value: {!vlan1.portspeed},
+                                            range: "min",
+                                            step: 1,
+                                            max: {!maxportspeed},
+                                            animate: false,
+                                            slide: function (event, ui) {
+                                                //$( "#slider{!vlan1.counter}Prgs").text(ui.value + ' Mbps' );
+                                                sliderChangeUpdation("div#slider{!vlan1.counter}", ui.value);
+                                            },
+                                            change: function (event, ui) {
+                                                sumUpSpeed();                                                                          
+                                                ApplyAction({!vlan1.counter}, ui.value);
+                                                //alert($('#slider{!vlan1.counter}Prgs').text());
+                                                $('#errorText_ID').remove();
+                                                var count=1;
+                                                var flag=false;
+                                                $('.sliderLabelsProgress').each(function(){
+                                                var id='slider'+count+'Prgs';
+                                                //alert($('span#' + id1));
+                                                var value = $('span#' + id).text();
+                                              
+                                                value=value.trim();
+                                              
+                                                if((value==null || value == '' || value.indexOf('0 Mbps')==0 || value == '0' || (totalPortSpeed > portSpeedMbps)) && flag==false )
+                                                {
+                                                    flag=true;
+                                                }
+                                                count++;
+                                                });   
+                                                    disableButton('portSpeedApplyBtnSelector', flag);      
+                                             }   
+                                           
+                                        });
+                                        //$( "#slider{!vlan1.counter}Prgs").text({!portSpeed} / {!selectedVLAN} + ' Mbps');
+                                    });
+                                </script>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:repeat>
+                    <div class="col-xs-12 p0 m-t-20 m-b-20">
+                        <apex:commandButton styleClass="btn btn-primary pull-right m0 portSpeedApplyBtnSelector" style="width:175px !important;" value="Apply" onclick="disableButton('portSpeedApplyBtnSelector',true);ApplyDoNothing();isSubmitEnable('Page2');incrementApplyCounter(); return false;" reRender="" />
+                    </div>
+                    <apex:actionFunction name="ApplyDoNothing" action="{!doNothing}" rerender="accordRepeater,pagemessages,CheckValidIPAddressIdStr,CheckValidIPAddressId,page2PanelNumber" status="loading" oncomplete="vLANCountChange();reInitializeOnReconfigureVlan();updateLastPanel();" />
+                    <apex:actionFunction name="ApplyAction" action="{!setvlanslidervalues}" rerender="accordRepeater,pagemessages,portspeedmaster" status="loading" oncomplete="reInitializeOnReconfigureVlan();disableSubmitOnSliderChange();">
+                        <!--oncomplete="updatePortSpeedBar();"-->
+                        <apex:param name="vlancounter" value="" assignTo="{!vlancounter}" />
+                        <apex:param name="selectedvlanslider" value="" assignTo="{!selectedvlanslider}" />
+                    </apex:actionFunction>
+                   
+                    <apex:actionFunction name="saveVLANBlockDataAction" action="{!saveVLANBlockData}" rerender="vlanStatusBlock,portSpeedAcc,pagemessages,portspeedmaster,CheckValidIPAddressIdStr,CheckValidIPAddressId" status="loading" oncomplete="checkLastPage();reintailaizeRequiredFieldOnToggle();isSubmitEnable('PageChanged');noCollapseOnMD5Error();return false;">
+                        <!--oncomplete="updatePortSpeedBar();"-->
+                        <apex:param name="panelId" value="panelId" />   
+                        <apex:param name="vlanFlag" value="vlanFlag" /> 
+                        <apex:param name="vpnname" value="vpnname" assignTo="{!vpnname}"/>                      
+                    </apex:actionFunction>
+                </section>
+          <hr class="blackHrLine" />
+         
+          <apex:outputPanel id="accordRepeater">
+          <div class="accordion" >
+            <apex:repeat value="{!vlanwrapper}" var="vlan2"  rendered="{!showVlan}">
+                <div class="accordionHeader" id="acco-id-{!Vlan2.counter}" onclick="toggleVLanAccordions(event,'{!Vlan2.counter}','{!vlan2.Status}')" >
+                    <div class="col-xs-8">VLAN {!Vlan2.counter}</div>
+                    <div class="col-xs-3 p0" style="text-align:right;margin-left:25px;">
+                        <span>{!vlan2.portspeed} Mbps</span>
+                        <apex:outputPanel id="portSpeedAcc">
+                            <apex:outputPanel styleClass="col-xs-6 pull-right" rendered="{!IF(vlan2.Status=='',false,true)}">
+                                <apex:outputLabel style="{!IF(vlan2.Status=='Complete','color:green;','color:red;')} font-size:17.6px">{!vlan2.Status}<span id="arrowToggle"></span></apex:outputLabel>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </div>
+                </div>
+                <div>
+                <div class="form-group col-xs-12 p0" style="font-size: 16px;" >
+                    <div><label>VPN Connection Policy: Any-To-Any</label>
+                        <apex:outputPanel id="vlanStatusBlock">
+                            <input type="hidden" value="{!vlan2.Status}" id="vlanStatus-{!Vlan2.counter}"/>
+                          </apex:outputPanel>
+                    </div>   
+                    <div class="row">
+            <div class="form-group col-md-4">
+                        <label>VPN Name</label>
+            <span class="tooltipTrigger glyphicon glyphicon-question-sign m-l-10" data-toggle="tooltip" data-placement="right" title="The VPN name must be in ALL CAPS, alphanumeric, maximum of 26 characters and the only special character allowed is an _ (underscore)."></span>
+                       <!-- <apex:inputText id="vlanportname" value="{!vlan2.vpnname1}" styleClass="form-control" disabled="true"/>-->
+                      
+                       <apex:inputText id="vlanportname" value="{!vpnname}" styleClass="vlanVpnClass form-control" disabled="true"/>
+                        </div>
+                    </div>
+         <div class="row">
+                    <div class="col-xs-12 form-group">
+                        <label>IP Type </label> <span class="tooltipTrigger glyphicon glyphicon-question-sign m-l-10" data-toggle="tooltip" data-placement="right" title="Dual Stack supports both IPv4 and IPv6."></span>
+                        <apex:selectRadio value="{!vlan2.selectedIpType}" styleClass="col-xs-6 radioAlign">
+                           <apex:selectOptions value="{!vlan2.IpTypeOptions}" />
+                            <apex:actionSupport event="onchange" action="{!renderVlanipv6blocks}" reRender="iptypeID,ipv4block,ipv6block" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';onFiledChangeValidationVLAN('-'+{!Vlan2.counter});reinitializeIPTypeFields('-'+{!Vlan2.counter});reInitiateToolTip();" />
+                        </apex:selectRadio>
+          </div>
+                    </div>                              
+                    <apex:outputPanel id="ipv4block">
+                        <apex:outputPanel rendered="{!vlan2.showipv4block}">  
+                            <hr class="sectionBlackHr" />
+                            <div class="col-xs-12 row">
+                                <h3 class="f-s-larger">IPv4 Information</h3>
+                            </div>
+                          
+                                <div class="col-md-12 p0">
+                                    <apex:outputLabel value="Routing Protocol: BGP" />
+                                </div>
+                          
+                            <div class="row">
+                                <apex:outputPanel id="BGPdisplayV4">
+                                    <div class="form-group col-md-4">
+                                        <!-- <apex:outputPanel rendered="{!!StaticDisplayBoolean}"> -->
+                                        <apex:outputPanel >
+                                            <apex:outputLabel value="Autonomous System Number" /><br />
+                                            <apex:inputText value="{!vlan2.AutonomousSystemNumberV4}" styleClass="form-control requiredField-{!Vlan2.counter} asnNumberV4-{!Vlan2.counter} "/>
+                                            <span class="noteData"><br/>{!$Label.ASN_Range}</span>
+                                        </apex:outputPanel>
+                                     </div>
+                                     <div class="col-md-6">
+                                        <!--apex:outputPanel rendered="{!!StaticDisplayBoolean}"> -->
+                                        <apex:outputPanel >
+                                            <apex:outputLabel value="Autonomous System Number Override" />
+                                            <apex:selectRadio styleClass="col-xs-6 radioAlign ASNCls4-{!Vlan2.counter}" value="{!vlan2.AS_Override_IndicatorV4}">
+                                                <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                            </apex:selectRadio>  
+                                        </apex:outputPanel>
+                                      </div>
+                                  </apex:outputPanel>
+                               </div>
+                               <apex:outputPanel id="Staticdisplay">
+                                   <!-- <apex:outputPanel rendered="{!!StaticDisplayBoolean}"> -->
+                                  <apex:outputPanel >
+                                    <div class="row">
+                                        <div class="col-md-7">
+                                            <apex:outputLabel value="Restrictive Routing" />
+                                            <apex:selectRadio styleClass="col-xs-12 radioAlign resRoute4-{!Vlan2.counter}" value="{!vlan2.restrictive_routingV4}">
+                                                <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                <apex:selectOption itemLabel="No (Recommended)" itemValue="false"></apex:selectOption>
+                                            </apex:selectRadio>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <apex:outputLabel value="MD5 Authentication" />
+                                            <span class="tooltipTrigger glyphicon glyphicon-question-sign calendarToolTip" data-toggle="tooltip" data-placement="right"  title="If your routers use MD5 Authentication, denote here. If you are unsure, check with your technical team."></span><br />
+                                            <apex:selectRadio styleClass="col-xs-8 radioAlign MD5V4Cls-{!Vlan2.counter}" value="{!vlan2.IP4_MD5_FlagV4}">
+                                                <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                                <apex:actionSupport event="onchange" action="{!togglePwd}" reRender="ipv4MD5PwdPanel,ipv4MD5RePwdPanel" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';onFiledChangeValidationVLAN('-'+{!Vlan2.counter});reInitiateToolTip();" />
+                                            </apex:selectRadio>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <apex:outputPanel id="ipv4MD5PwdPanel" >
+                                               <apex:outputPanel rendered="{!vlan2.IP4_MD5_FlagV4}">
+                                                    <apex:outputLabel >MD5 Password <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-placement="right" data-toggle="tooltip" title="" data-original-title="Passwords must be at least 8 characters, no more than 16 characters and contain at least 1 number and 1 uppercase letter."></span></apex:outputLabel>                                                                                                                                          
+                                                      <apex:inputSecret value="{!vlan2.MD5Authenticationpasswordv4}" html-placeholder="Password" styleClass="form-control requiredField-{!Vlan2.counter} ipv4MD5Pass-{!Vlan2.counter}" onkeypress="return restrictSpaceBar(event)" maxlength="16" />
+                                                    </apex:outputPanel>
+                                                </apex:outputPanel>
+                                        </div>           
+                                            <div class="form-group col-md-4">
+                                                <apex:outputPanel id="ipv4MD5RePwdPanel">  
+                                                     <apex:outputPanel rendered="{!vlan2.IP4_MD5_FlagV4}">
+                                                         <div class="col-xs-11 p0">
+                                                             <apex:outputLabel >Re-enter MD5 Password</apex:outputLabel>
+                                                              <span id="v4ConfirmSign-{!Vlan2.counter}"></span>
+                                                          </div>   
+                                                          <apex:inputSecret html-placeholder="Re-enter Password" disabled="true" styleClass="form-control requiredField-{!Vlan2.counter} ipv4MD5RePass-{!Vlan2.counter}" onkeypress="return restrictSpaceBar(event)" maxlength="16" />
+                                                           </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </div>
+                                            <div class="row m-b-20">
+                                                <div class="form-group col-md-4">
+                                                    <apex:outputLabel value="Customer Edge IP Address (CER)" style="white-space: nowrap;" />
+                                                    <apex:inputText value="{!vlan2.customeredgeipaddress}" styleClass="form-control requiredField-{!Vlan2.counter} custEdgeIPAddr-{!Vlan2.counter}"/>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <apex:outputLabel value="AT&T Edge IP Address (PER)" />
+                                                    <apex:inputText value="{!vlan2.attedgeipaddress}" styleClass="form-control requiredField-{!Vlan2.counter} attEdgeIPAddr-{!Vlan2.counter}"/>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <apex:outputLabel value="Subnet Mask" />
+                                                    <apex:inputText styleClass="form-control" disabled="true" html-placeholder="255.255.255.252" />
+                                                </div>
+                                            </div>
+                                         </apex:outputPanel>
+                                     </apex:outputPanel>                    
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            <hr class="sectionBlackHr" />    
+                            <apex:outputPanel id="ipv6block">
+                                <apex:outputPanel rendered="{!vlan2.showipv6block}">                                    
+                                    <div class="col-xs-12 row">
+                                        <h3 class="f-s-larger">IPv6 Information</h3>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4"> 
+                                            <apex:outputLabel value="Routing Protocol: BGP" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <apex:outputPanel id="BGPdisplayV6">
+                                            <div class="form-group col-md-4">
+                                                <!-- <apex:outputPanel rendered="{!!StaticDisplayBoolean1}"> -->
+                                                <apex:outputPanel >
+                                                    <apex:outputLabel value="Autonomous System Number" /><br />
+                                                    <apex:inputText value="{!vlan2.AutonomousSystemNumberV6}" styleClass="form-control requiredField-{!Vlan2.counter} asnNumberV6-{!Vlan2.counter}"/>
+                                                    <span class="noteData"><br/>{!$Label.ASN_Range}</span>
+                                                </apex:outputPanel>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <!-- <apex:outputPanel rendered="{!!StaticDisplayBoolean1}"> -->
+                                                <apex:outputPanel >
+                                                    <apex:outputLabel value="Autonomous System Number Override" />
+                                                    <apex:selectRadio styleClass="col-xs-6 radioAlign ASNCls6-{!Vlan2.counter}" value="{!vlan2.AS_Override_IndicatorV6}">
+                                                        <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                        <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                                    </apex:selectRadio>
+                                                </apex:outputPanel>
+                                            </div>
+                                        </apex:outputPanel>
+                                    </div>
+                                    <apex:outputPanel id="StaticdisplayV6">
+                                        <!-- <apex:outputPanel rendered="{!!StaticDisplayBoolean1}"> -->
+                                        <apex:outputPanel >
+                                            <div class="row">
+                                                <div class="col-md-7">
+                                                    <apex:outputLabel value="Restrictive Routing" />
+                                                    <apex:selectRadio styleClass="col-xs-12 radioAlign resRoute6-{!Vlan2.counter}" value="{!vlan2.restrictive_routingV6}">
+                                                        <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                        <apex:selectOption itemLabel="No (Recommended)" itemValue="false"></apex:selectOption>
+                                                    </apex:selectRadio>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 form-group">
+                                                    <apex:outputLabel value="MD5 Authentication" />
+                                                    <span class="tooltipTrigger glyphicon glyphicon-question-sign calendarToolTip" data-toggle="tooltip" data-placement="right"  title="If your routers use MD5 Authentication, denote here. If you are unsure, check with your technical team."></span><br />
+                                                    <apex:selectRadio styleClass="col-xs-8 radioAlign MD5V6Cls-{!Vlan2.counter}" value="{!vlan2.IP6_MD5_FlagV6}">
+                                                        <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                        <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                                        <apex:actionSupport event="onchange" action="{!togglePwd}" reRender="ipv6MD5PwdPanel,ipv6MD5RePwdPanel" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';onFiledChangeValidationVLAN('-'+{!Vlan2.counter});reInitiateToolTip();" />
+                                                    </apex:selectRadio>
+                                                </div>
+                                                <div class="form-group col-md-4">              
+                                                    <apex:outputPanel id="ipv6MD5PwdPanel">
+                                                        <apex:outputPanel rendered="{!vlan2.IP6_MD5_FlagV6}">
+                                                            <apex:outputLabel >MD5 Password <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-placement="right" data-toggle="tooltip" title="" data-original-title="Passwords must be at least 8 characters, no more than 16 characters and contain at least 1 number and 1 uppercase letter."></span></apex:outputLabel>
+                                                            <apex:inputSecret value="{!vlan2.MD5Authenticationpasswordv6}" html-placeholder="Password" styleClass="form-control requiredField-{!Vlan2.counter} ipv6MD5Pass-{!Vlan2.counter}" onkeypress="return restrictSpaceBar(event)" maxlength="16" />
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <apex:outputPanel id="ipv6MD5RePwdPanel">
+                                                        <apex:outputPanel rendered="{!vlan2.IP6_MD5_FlagV6}">
+                                                            <div class="col-xs-12 p0">
+                                                                <apex:outputLabel >Re-enter MD5 Password</apex:outputLabel>
+                                                                    <span id="v6ConfirmSign-{!Vlan2.counter}"></span>
+                                                                <apex:inputSecret html-placeholder="Re-enter Password" disabled="true" styleClass="form-control requiredField-{!Vlan2.counter} ipv6MD5RePass-{!Vlan2.counter}" onkeypress="return restrictSpaceBar(event)" maxlength="16" />
+                                                            </div>
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                </div>  
+                                            </div>
+                                         </apex:outputPanel>                    
+                                     </apex:outputPanel>
+                                 </apex:outputPanel>
+                             </apex:outputPanel>
+                         <!-- <apex:outputPanel rendered="{!classofserviceflag}"> -->
+                         <apex:outputPanel rendered="{!classofserviceflag}">
+                             <hr class="sectionBlackHr" />
+                                <div class="col-xs-12">
+                                    <div class="row">
+                                        <h4 style="font-weight:bold;font-family: omnes_light; margin-top: 22px;" class="f-s-large">Class of Service</h4>
+                                    </div>
+                                    <div class="row">
+                                        <!--<p style="margin-top: 4px;margin-left: -15px;font-size: 1.03em;margin-bottom: 35px;">Class of Service allows the network to prioritize different types of internet traffic. Select a percentage for each Class of Service (CoS).</p>-->
+                                       <h4 class="f-s-large" style="font-family: omnes_light;"> Class of Service allows the network to prioritize different types of internet traffic. Select a percentage for each Class of Service (CoS).</h4>
+                                    </div>
+                                     <div class="row"><label><b>Step 1: </b>Select Real-Time Percentage</label>
+                                            </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 p0 cosSliderDiv">
+                                            <div class="col-xs-12 col-md-12" id="cosSlider{!vlan2.counter}" style="height:32px;">
+                                               
+                                            </div>
+                                            <div class="cosSliderLabelsProgress">
+                                                <span id="cosSlider{!vlan2.counter}Prgs"><apex:outputLabel rendered="true"/>{!vlan2.SelectedSliderValue}%</span>
+                                            </div>
+                                            <div class="cosSliderLabelsMax">
+                                                <span id="cosSlider{!vlan2.counter}Max">100%</span>
+                                            </div>
+                                            <div class="col-xs-12 row">
+                                                <span class="col-xs-2 row axisPlacementStyle" style="text-align: left;">|</span>
+                                                <span class="col-xs-10 axisPlacementStyle"  style="text-align: center;">|</span>
+                                                <span class="row pull-right p0 axisPlacementStyle" style="text-align: right; ">|</span>
+                                            </div>
+                                            <div class="row col-xs-12">
+                                                <span class="col-xs-2 row axisPlacementStyle" style="text-align: left; ">0</span>
+                                                <span class="col-xs-10 axisPlacementStyle" style="text-align: center; ">50</span>
+                                                <span class="row pull-right p0 axisPlacementStyle" style="text-align: right;">100</span>
+                                            </div>
+                                        </div>
+                                         <div class="col-xs-12 col-md-12 p0" ><label><b>Step 2: </b>Select Profile ID</label>
+                                            </div>
+                                        <div class="col-xs-12 col-md-12 p0" >
+                                            <apex:selectList id="profileSelect1" styleclass="form-control requiredField-{!Vlan2.counter} requiredSelectField styled-select-small cosclass-{!Vlan2.counter}" onblur="fieldValidation(event,this,'dropDownSelection');" onchange="fieldValidation(event,this,'dropDownSelection');" value="{!vlan2.selectedprofile}" multiselect="false" size="1" style="-moz-appearance: none;-webkit-appearance: none;font-size:15px;width: 100%;;background-size: 30px 35px !important;height: 30px !important;padding-top: 0px;">
+                                                <apex:selectOptions value="{!vlan2.avpn_profileoptions}" />
+                                                <apex:actionSupport event="onchange" action="{!getcoschartvalues}" reRender="updatecoschart" oncomplete="validatePage3Submit();" />
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                    <script type="text/javascript">
+                                        function updateSlider() {
+                                        $('#errorText_ID').remove();
+                                            $("#cosSlider{!vlan2.counter}").slider({
+                                                value: {!vlan2.SelectedSliderValue},
+                                                range: "min",
+                                                animate: false,
+                                                step: 5,
+                                                change: function (event, ui) {
+                                                  $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                                    getmisprofiles({!vlan2.counter}, ui.value);
+                                                     if(ui.value == 55){
+                                      
+                                                    ui.value = ui.value -5;
+                                                    setTimeout(function(){
+                                                     $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                                    getmisprofiles({!vlan2.counter}, ui.value) ; },100);
+                                              
+                                                   $("#cosSlider{!vlan2.counter}").slider({
+                                                   value : 50,
+                                              });       
+                                          }
+                                          else if(ui.value == 95){
+                                               ui.value = ui.value -5;
+                                               setTimeout(function(){
+                                                $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                               getmisprofiles({!vlan2.counter}, ui.value) ; },100);
+                                                $("#cosSlider{!vlan2.counter}").slider({
+                                                 value :  90,
+                                               });       
+                                               }
+                                               else if(ui.value == 100){
+                                              
+                                              ui.value = ui.value -10;
+                                            
+                                              setTimeout(function(){
+                                               $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                              getmisprofiles({!vlan2.counter}, ui.value) ; },100);
+                                            $("#cosSlider{!vlan2.counter}").slider({
+                                             value   : 90,
+                                           });       
+                                            
+                                      }
+                                           else if(ui.value == 65){
+                                          
+                                           ui.value = ui.value -5;
+                                           
+                                           setTimeout(function(){
+                                            $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                           getmisprofiles({!vlan2.counter}, ui.value) ; },100);
+                                           $("#cosSlider{!vlan2.counter}").slider ({
+                                              value  : 60,
+                                           });       
+                                           
+                                           }
+                                          else if(ui.value ==75){
+                                          
+                                           ui.value = ui.value -5;
+                                           
+                                           setTimeout(function(){
+                                            $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                           getmisprofiles({!vlan2.counter}, ui.value) ; },100);
+                                            $("#cosSlider{!vlan2.counter}").slider({
+                                               value : 70,
+                                           });       
+                                            
+                                           }
+                                          else if(ui.value ==85){
+                                          
+                                           ui.value = ui.value -5;
+                                           
+                                           setTimeout(function(){
+                                            $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                           getmisprofiles({!vlan2.counter}, ui.value) ; },100);
+                                           $("#cosSlider{!vlan2.counter}").slider ({
+                                               value : 80
+                                           });       
+                                            
+                                           }
+                                      else{
+                                                                  }
+                                                }
+                                            });
+                                        }
+                                        updateSlider();
+                                    </script>
+                                </div>
+                            </apex:outputPanel>
+                     </div>   
+                </div>
+              </apex:repeat>
+          </div>
+          <script>accordianView();</script>
+          </apex:outputPanel>
+          </apex:outputPanel>
+            <div class="accordion2">
+                <section>
+                    <apex:outputPanel id="LogicalChannelInfoPanel21">
+                        <apex:repeat value="{!vlanwrapper}" var="vlan2" id="theRepeat21" rendered="false">
+                            <div>VLAN {!Vlan2.counter}</div>
+ 
+                           <section class="form row" role="form">
+                               <div class="form-group col-xs-12">
+                                    <div>
+                                        <label>VLAN Speed Selected</label>
+                                    </div>
+                                    <div class="breather col-xs-4">
+                                        <apex:inputText id="vlanportSpeed" value="{!vlan2.portspeed}" styleClass="form-control vlanportSpeed{!Vlan2.counter}" disabled="true"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    <div>
+                                        <label>VPN Name</label>
+                                    </div>
+                                    <div class="breather col-xs-4">
+                                        <apex:inputText id="vlanportname" value="{!vlan2.vpnname1}" styleClass="form-control" disabled="true"/>
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    <div>
+                                        <label>Customer Edge IP Address</label>
+                                    </div>
+                                    <div class="breather col-xs-4">
+                                        <apex:inputText id="vlancustomeredgeipaddress" value="{!Vlan2.customeredgeipaddress}" styleClass="form-control requiredInputField ipCust{!Vlan2.counter} {!SiteNumber}-{!Vlan2.counter}-CER" label="Customer Edge IP Address" />
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    <div>
+                                        <label>AT&amp;T Edge IP Address</label>
+                                    </div>
+                                    <div class="breather col-xs-4">
+                                        <apex:inputText id="vlanattedgeipaddress" value="{!Vlan2.attedgeipaddress}" styleClass="form-control requiredInputField ipATT{!Vlan2.counter} {!SiteNumber}-{!Vlan2.counter}-PER" label="AT&amp;T Edge IP Address" />
+                                    </div>
+                                </div>
+                                <div class="form-group col-xs-12">
+                                    <div>
+                                        <label>Subnet Mask</label>
+                                    </div>
+                                    <div class="breather col-xs-4">
+                                        <apex:inputText id="vlansubnetmask" value="{!Vlan2.subnetmask}" styleClass="form-control" disabled="true" label="Subnet Mask" />
+                                    </div>
+                                </div>
+                                <script type="text/javascript">
+                                    initializeVPNValidationFor('vpn{!Vlan2.counter}Name');
+                                    initializeCustomIPValidationFor('ipCust{!Vlan2.counter}');
+                                    initializeCustomIPValidationFor('ipATT{!Vlan2.counter}');
+                                </script>
+                            </section>
+                            <apex:outputPanel rendered="{!classofserviceflag}">
+                                <hr class="dashedHr" />
+                                <div class="col-xs-12">
+                                    <div class="row">
+                                        <h4 style="font-weight:bold;font-family: omnes_light; margin-top: 22px;" class="f-s-large">Class of Service - VLAN {!Vlan2.counter}</h4>
+                                    </div>
+                                    <div class="m-t-10">
+                                        <p style="margin-top: 4px;margin-left: -15px;font-size: 1.03em;margin-bottom: 35px;">Class of Service allows the network to prioritize different types of internet traffic. Select a percentage for each Class of Service (CoS).</p>
+                                    </div>
+                                     <div class="col-xs-12 col-md-12 RealLabel" style="margin-bottom:4px;margin-left: -31px !important;"><label>Real-Time Percentage:</label>
+                                            </div>
+                                    <div class="m-t-20 row">
+                                        <div class="col-xs-12 p0">
+                                            <div class="col-xs-12 col-md-12" id="cosSlider{!vlan2.counter}" style="height:32px;width:800px;">
+                                                
+                                            </div>
+                                            <div class="cosSliderLabelsProgress">
+                                                <span id="cosSlider{!vlan2.counter}Prgs"><apex:outputLabel rendered="true"/>{!vlan2.SelectedSliderValue}%</span>
+                                            </div>
+                                            <div class="cosSliderLabelsMax">
+                                                <span id="cosSlider{!vlan2.counter}Max">100%</span>
+                                            </div>
+                                            <div class="row">
+                                                <span class="col-xs-1">|</span>
+                                                <span class="col-xs-10" style="text-align:center; padding-left: 20px; ">|</span>
+                                                <span class="col-xs-1" >|</span>
+                                            </div>
+                                            <div class="row">
+                                                <span class="col-xs-1" style="padding-left: 12px;">0</span>
+                                                <span class="col-xs-10" style="text-align:center; padding-left: 20px; ">50</span>
+                                                <span class="col-xs-1" style="padding-left:0;font-weight:bold;">100</span>
+                                            </div>
+                                        </div>
+                                         <div class="col-xs-12 col-md-12 RealLabel" style="margin-top: 35px !important;margin-left: -15px !important;margin-bottom: 2px !important;"><label>Profile ID:</label>
+                                            </div>
+                                        <div class="col-xs-12 col-md-12 m-t-20" style="margin-bottom:40px;margin-left:-14px;margin-top: 1px;">
+                                            <apex:selectList id="profileSelect1" styleclass="form-control requiredInputField requiredSelectField styled-select-small" onblur="fieldValidation(event,this,'dropDownSelection');" onchange="fieldValidation(event,this,'dropDownSelection');" value="{!vlan2.selectedprofile}" multiselect="false" size="1" style="-moz-appearance: none;-webkit-appearance: none;font-size:16px;background-size: 30px 35px !important;height: 30px !important;padding-top: 0px;">
+                                                <apex:selectOptions value="{!vlan2.avpn_profileoptions}" />
+                                                <apex:actionSupport event="onchange" action="{!getcoschartvalues}" reRender="updatecoschart" oncomplete="validatePage3Submit();" />
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                   
+                                    <script type="text/javascript">
+                                        function updateSlider() {
+                                            $("#cosSlider{!vlan2.counter}").slider({
+                                                value: {!vlan2.SelectedSliderValue},
+                                                range: "min",
+                                                animate: false,
+                                                step: 5,
+                                                change: function (event, ui) {
+                                                  $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                                    getmisprofiles({!vlan2.counter}, ui.value);
+                                                     if(ui.value == 55){
+                                     
+                                                    ui.value = ui.value -5;
+                                                    setTimeout(function(){
+                                                     $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                                    getmisprofiles({!vlan2.counter}, ui.value) ; },100);
+                                              
+                                                   $("#cosSlider{!vlan2.counter}").slider({
+                                                   value : 50,
+                                              });       
+                                          }
+                                          else if(ui.value == 95){
+                                               ui.value = ui.value -5;
+                                               setTimeout(function(){
+                                                $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                               getmisprofiles({!vlan2.counter}, ui.value) ; },100);
+                                                $("#cosSlider{!vlan2.counter}").slider({
+                                                 value :  90,
+                                               });       
+                                               }
+                                               else if(ui.value == 100){
+                                              
+                                              ui.value = ui.value -10;
+                                             
+                                              setTimeout(function(){
+                                               $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                              getmisprofiles({!vlan2.counter}, ui.value) ; },100);
+                                            $("#cosSlider{!vlan2.counter}").slider({
+                                             value   : 90,
+                                           });       
+                                            
+                                      }
+                                           else if(ui.value == 65){
+                                         
+                                           ui.value = ui.value -5;
+                                            
+                                           setTimeout(function(){
+                                            $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                           getmisprofiles({!vlan2.counter}, ui.value) ; },100);
+                                           $("#cosSlider{!vlan2.counter}").slider ({
+                                              value  : 60,
+                                           });       
+                                           
+                                           }
+                                          else if(ui.value ==75){
+                                         
+                                           ui.value = ui.value -5;
+                                            
+                                           setTimeout(function(){
+                                            $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                           getmisprofiles({!vlan2.counter}, ui.value) ; },100);
+                                            $("#cosSlider{!vlan2.counter}").slider({
+                                               value : 70,
+                                           });       
+                                            
+                                           }
+                                          else if(ui.value ==85){
+                                         
+                                           ui.value = ui.value -5;
+                                           
+                                           setTimeout(function(){
+                                            $("span#cosSlider{!vlan2.counter}Prgs").text(ui.value + '%');
+                                           getmisprofiles({!vlan2.counter}, ui.value) ; },100);
+                                           $("#cosSlider{!vlan2.counter}").slider ({
+                                               value : 80
+                                           });        
+                                            
+                                           }
+                                      else{
+                                                                  }
+                                                }
+                                            });
+                                        }
+                                        updateSlider();
+                                  
+                                    </script>
+                                </div>
+                            </apex:outputPanel>
+                           
+ 
+                       
+                    
+                    </apex:repeat>
+ 
+                        <apex:actionFunction name="getmisprofiles" action="{!getmisprofiles}" reRender="profileSelect1" status="loading" oncomplete="validatePage3Submit();">
+                            <apex:param name="selectedcounter" value="" assignTo="{!SelectedCounterValue}" />
+                            <apex:param name="slidervalue" value="" assignTo="{!SelectedSliderValue}" />
+                        </apex:actionFunction>
+ 
+                       
+                        <apex:outputPanel id="submitpanel">
+                            <div class="col-xs-12">
+                                <div id="panelFooter" class="col-xs-12"></div>
+                              
+                                <script>
+                                    var multipleVlanSet = '{!multipleVLANNameSet}';
+                                    var currentSite = GetURLParameterReconfig('siteid');
+                                    var selectedSiteInd;
+                                    if ( currentSite != null )
+                                        selectedSiteInd = multipleVlanSet.indexOf(currentSite);
+                                    var noofsites = multipleVlanSet.split(',').length-1;
+                                 
+                                </script>
+                              
+                                <apex:outputPanel rendered="{!onlyOneSiteToSubmitFlag == true}">
+                                    <script>
+                                       function checkMultipleVlan()
+                                       {
+                                          // var multipleVlanSet = new Array();
+                                          
+                                           if ( typeof selectedhub != 'undefined' && selectedhub != null)         
+                                           {                         
+                                               if(document.getElementById(selectedhub) != null)
+                                               {
+                                                   var selectedSiteIndex = multipleVlanSet.indexOf(document.getElementById(selectedhub).options[document.getElementById(selectedhub).selectedIndex].value);
+                                                   if (selectedSiteIndex != -1){
+                                                       return true;
+                                                    }
+                                                    else{
+                                                        return false;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    return false;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                return false;
+                                            }
+                                        }
+                                      function displaycrddoverlay(){
+                                      
+                                        if ( "{!CRDDPopUp}" == 'true')
+                                         document.getElementById(crddoverlaycontainerid).style.display = 'block';       
+                                     }
+                                        function displayoverlay(){
+                                 
+                                            document.getElementById(multiplevpnoverlaypage3id).style.display = 'block';
+                                        }
+                                    </script>
+                              
+                        </apex:outputPanel>
+                               
+                            </div>
+                        
+                            <apex:actionFunction name="gotopage2" action="{!BackToTwo}" reRender="pagecontainer" status="loading" />
+                           
+                            <apex:actionFunction name="passSite" action="{!saveOnToggleSite}" reRender="leftPanelContainerForm"  status="loading" oncomplete="addLeftPanelScroll();validatePage3Submit();leftPanelFloat();">
+                                <apex:param name="goToSiteId" value="" />
+                                <apex:param name="rdsFlag" value="" />
+                                <apex:param name="vpnname" value="vpnname" assignTo="{!vpnname}"/>
+                            </apex:actionFunction>
+                            <apex:actionFunction name="loadOverlayValues" action="{!loadOverlayValues}" reRender="multiplevpnoverlaypage3" oncomplete="displayoverlay();document.body.style.cursor = 'auto';" status="loading" />
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </section>
+              </div>
+ 
+        </section>
+    <apex:actionFunction name="saveRdsAvpnData" action="{!saveRdsData}" oncomplete="pageNavigation(this,'Page2',true);rerenderPanel();" reRender="pageNo,BottomSectionAVPNRDS,vpnBlock" status="loading" >
+                                 <apex:param name="rdsFlag" value="" />
+                                 <apex:param name="vpnname" value="vpnname" assignTo="{!vpnname}"/>
+                            </apex:actionFunction>
+    <apex:actionFunction name="SubmitRDS" action="{!submitRdsSite}" reRender="pagecontainer,ciError,crddoverlaycontainer" oncomplete="checkCIError();displaycrddoverlay();" status="loading" >                       
+            <apex:param name="rdsFlag" value="" />
+            <apex:param name="vpnname" value="vpnname" assignTo="{!vpnname}"/>
+                  </apex:actionFunction>
+                   
+    <apex:actionFunction name="saveandclose" action="{!SaveAndClose}" reRender="">                     
+         <apex:param name="vpnname" value="vpnname" assignTo="{!vpnname}"/>
+    </apex:actionFunction>
+    
+    </apex:form>
+ 
+    <apex:outputPanel id="portspeedmaster"></apex:outputPanel>
+    <script type="text/javascript">
+        var $ = jQuery.noConflict();
+        var totalPortSpeed, portSpeedMbps = {!portSpeed};
+        //var totalPortSpeed, portSpeedMbps;
+               
+ 
+        /*var masterProgressBar = $('#masterProgressBar');
+        masterProgressBar.progressbar({
+            value: {!portSpeed},
+            max: 1000,
+            disabled: true
+        });*/
+        function applyvlanSc(input) {
+ 
+        }
+        page2AccordActive = false;
+        $(document).ready(function () {
+        page2AccordActive = false;
+            init();
+            sumUpSpeed();
+            setTimeout(function(){
+                var arrRequiredFields = $(".requiredInputField");
+                arrRequiredFields.each(function () {
+                var oRequiredField = $(this);
+                if(arrRequiredFields.length > 1){
+                        arrRequiredFields.each(function () {
+                            var oRequiredField = $(this);
+                            if (oRequiredField[0]) {
+                                if(typeof page2Visited != 'undefined' && page2Visited== "true"){
+                                    oRequiredField.keyup();
+                                    validateVPN('inputVPNName');
+                                }
+                            }
+                        });
+                }
+                           
+                });
+            },100);
+            accordianView();
+            secondLoadValidation($('#acco-id-'+lastPanel+' label').text().trim(),lastPanel);
+            checkLastPage();
+            isSubmitEnable("Page2");
+             setTimeout(function(){reintailaizeRequiredFieldOnToggle();},2000);
+        });
+ 
+        function init() {
+            $("label.sliderMax").text(portSpeedMbps);
+            $("label.sliderMed").text(portSpeedMbps * 0.5);
+            $("span.xsSpeedError").hide();
+            $("span.xsSpeedError").removeClass('errorText');
+        }
+ 
+        function sumUpSpeed() {
+            totalPortSpeed = 0;
+            var arr = $("section.vlansSectionSelector").find("div.vlanSliderSelector").each(function (index) {
+                totalPortSpeed += parseInt($(this).slider("value"));
+            });
+            updatePortSpeedBar(totalPortSpeed);
+        }
+ 
+        function updatePortSpeedBar(totalSpeed) {
+            var widthActualBar,widthErrorBar;
+            portSpeedMbps = parseInt(portSpeedMbps);
+            $("span.xsSpeedError").hide();
+            $("span.xsSpeedError").removeClass('errorText'); 
+            
+            if (totalSpeed > portSpeedMbps) {
+                $("#portSpeed").text(portSpeedMbps);
+                $("#xsSpeed").text(totalSpeed - portSpeedMbps);
+                $("#remainingSpeed").text('');
+                widthActualBar = (portSpeedMbps / totalSpeed) * 100;
+                widthActualBar = Math.round(widthActualBar);
+                widthErrorBar = 100 - widthActualBar;
+                $("#pbarActual").width(widthActualBar + '%');
+                $("#pbarXs").width(widthErrorBar + '%');
+                $("span.xsSpeedError").show();
+                $("span.xsSpeedError").addClass('errorText');
+            } else {
+                $("#portSpeed").text(totalSpeed);
+                $("#xsSpeed").text('');
+                $("#remainingSpeed").text(portSpeedMbps - totalSpeed);
+                widthActualBar = (totalSpeed / portSpeedMbps) * 100;
+                widthActualBar = Math.round(widthActualBar);
+                widthErrorBar = 0;
+                $("#pbarActual").width(widthActualBar + '%');
+                $("#pbarXs").width(widthErrorBar + '%');
+            }           
+        }
+       
+                 //updatePortSpeedBar({!portSpeed});
+        $("label.tick").width(100 + '%');
+ 
+        function vLANCountChange() {
+            disableButton('portSpeedApplyBtnSelector', true);
+            //disableButton('submitBtn-Pg3-selector', true);
+            validatePage3Submit();
+        }
+       
+        /*function updateVPNConnectionPolicyPg3() {
+            //selectedhubspokeVal = '{!selectedVPNConnectionPolicy}';
+            selectedhubspokeVal = $('.VPNConnectionPolicySelector').val();
+            //alert(selectedhubspokeVal);
+            //setDefaults
+            isHubRequired = false;
+            $('.vlanhublockPanel').show();
+            $('.hubSpokeRadioDivSelector :radio').each(function () {
+                this.disabled = false;
+            })
+         
+            //Manipulate according to Condition
+            if (selectedhubspokeVal == 'Any-To-Any') {
+                $('.hubSpokeRadioDivSelector :radio').each(function () {
+                    this.disabled = true;
+                });
+            } else if (selectedhubspokeVal == '') {
+                $('.vlanhublockPanel').hide();
+            } else if (selectedhubspokeVal == 'Hub and Spoke') {
+                var currentSiteId = GetURLParameterReconfig('siteid');
+                currentSiteId = currentSiteId ? currentSiteId : $('#finalSites a:eq(0)').attr('data-site-id');
+                var selectedHubSiteId = $('.hubNspokeSelector').val();
+              
+                if(currentSiteId ==  selectedHubSiteId){
+                    isHubRequired = true;
+                }else{
+                    $('.hubSpokeRadioDivSelector :radio').each(function () {
+                        this.disabled = true;
+                    })
+                }
+            }
+        }
+        updateVPNConnectionPolicyPg3();*/
+        //to disable by default
+        vLANCountChange();
+        setTimeout(function(){ validatePage3Submit(); }, 500);
+       // disableButton('rdsSubmit',true);
+        var count=0;
+        function incrementApplyCounter(){
+            count++;
+            if(count >0){
+                setTimeout(function(){ validatePage3Submit(); }, 500);               
+                //disableButton('rdsSubmit',false);
+            
+            }
+        }
+       
+        function displaycrddoverlay(){
+            //alert("{!CRDDPopUp}");
+            //alert("{!conflit}");
+            if ( "{!CRDDPopUp}" == 'true')
+             document.getElementById(crddoverlaycontainerid).style.display = 'block';       
+         }
+       
+        function checkCIError(){
+            //alert('inside checkCIError');
+            var errorMsgCI = jQuery('[id$=ciError]').val();
+            var ciErrMsg = document.getElementById("dispCIMsgId");
+            if(errorMsgCI != ''){   
+                //alert("Error in CI: "+errorMsgCI);
+                ciErrMsg.innerHTML = '<h style="color:red;font-weight:bold;">'+errorMsgCI+'</h>';
+                
+                 $('html, body').animate({
+                     scrollTop: $('#customerDetailsTable').offset().top
+                 },1000);
+               
+            }else{
+                //alert("No Error in CI: "+errorMsgCI);
+                ciErrMsg.innerHTML="";
+            }
+           
+        }
+      //MD5 password changes End
+     
+      $(document).ready(function () {
+                var vpnBlockObj = $('#vpnBlock');
+                if(vpnBlockObj != null ){vpnBlockObj.show();}
+                var avpnCompletionBarBlockObj = $('#avpnCompletionBarBlock');
+                if(avpnCompletionBarBlockObj != null ){avpnCompletionBarBlockObj.show();}
+                if($('.inputVPNName') != null ){$('.inputVPNName').addClass('requiredInputField');$('.inputVPNName').keyup();};
+       });
+      
+       
+       function fieldValidation(event,currentField,typeOfField){
+            if(event.keyCode != 9){           
+            
+                var enteredValue = currentField.value;
+                var elementName = currentField.name;                
+                var currentElement = $('select[name="' + elementName + '"]');
+                var parentElement = currentElement.parent();                
+                var errorMsg = "<p id='errorText_ID' class='errorText'>Selection required</p>";                
+                currentElement.removeClass('errorFieldBorderColor');
+                $('#errorText_ID').remove();
+                if(typeOfField == 'dropDownSelection'){
+                                        
+                      $('#errorText_ID').remove();
+                    currentElement.removeClass('errorFieldBorderColor');
+                    if((enteredValue == 'Select') || (enteredValue == '')){
+                        parentElement.append(errorMsg);                         
+                        currentElement.addClass('errorFieldBorderColor');
+                    }else{                    
+                        $('#errorText_ID').remove();
+                        currentElement.removeClass('errorFieldBorderColor');
+                    }
+                }
+            }
+       } 
+  
+    function reinitializeIPTypeFields(clsSuffix){ 
+        $(".custEdgeIPAddr"+clsSuffix).val(''); 
+        $(".attEdgeIPAddr"+clsSuffix).val(''); 
+        $(".asnNumberV4"+clsSuffix).val(''); 
+        $(".asnNumberV6"+clsSuffix).val(''); 
+        $(".ASNCls4"+clsSuffix+" input:radio").val([false]);   
+        $(".ASNCls6"+clsSuffix+" input:radio").val([false]);  
+        $(".resRoute4"+clsSuffix+" input:radio").val([false]);  
+        $(".resRoute6"+clsSuffix+" input:radio").val([false]);   
+     }      
+   </script>
+</apex:page>

@@ -1,0 +1,20 @@
+<apex:page controller="ExportPromotionsInExcelController" showHeader="false" sidebar="false" standardStylesheets="false" contentType="application/vnd.ms-excel" >
+    
+    <style type="text/css">
+        .empty-column-content {
+             display: none;
+             border :none;
+        }        
+    </style>
+    
+    <apex:dataTable value="{!rows}" var="row" border="1" width="100%" style="text-align:center;" >
+        <apex:repeat var="cell" value="{!row.cells}">
+            <apex:column headerValue="Promotions" > 
+                <apex:outputText value="{!cell}" style="text-align:center;"/> 
+            </apex:column>
+        </apex:repeat>
+        <apex:repeat var="header" value="{!headers}" >
+            <apex:column headerValue="{!header}" styleClass="empty-column-content" /> 
+        </apex:repeat>
+    </apex:dataTable> 
+</apex:page>

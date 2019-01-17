@@ -1,0 +1,49 @@
+<apex:page sidebar="false" showHeader="false" cache="true" controller="ChatterPost">
+
+
+    <apex:form >           
+      
+        <apex:pageBlock >
+        <apex:pageBlockButtons location="Bottom" >
+            <apex:commandButton value="Post" action="{!doPost}" style="margin-left:-31px" oncomplete="window.close();"/>
+            <!--<apex:actionStatus startText="(Saving...)" stopText="" onstop="javascript:self.close();window.opener.location.reload(false);" id="closer"/>-->
+            <apex:commandButton value="Cancel" action="{!Cancel}" style="margin-left:114px"/>
+        </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Link URL :" for="account__name"/>
+                        <apex:outPutText value="{!Tilte }" style="margin-left:20px"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Link Name :" for="account__name"/>
+                    <apex:outPutText value="{!linkUrl}" style="margin-left:20px"/>
+                </apex:pageBlockSectionItem>
+                
+                <apex:pageBlockSectionItem >
+                 <apex:outputLabel value="Comments:" for="account__name"/>
+                 <apex:inputText value="{!Comment}"/>
+                      
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="To Assign Chatter Group :" for="gm" />
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                            <apex:selectList value="{!groupChaterId}" size="1">
+                                <apex:selectOptions value="{!group}"/>
+                                <!--<apex:actionSupport event="onchange" action="{!check}"/>-->
+                            </apex:selectList>
+                            </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>  
+        </apex:pageBlock> 
+    </apex:form>
+    <script language="javascript">
+//At the end of the form, before
+
+if({!closeWindow}){
+   window.close();
+}
+</script>
+</apex:page>

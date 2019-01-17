@@ -1,0 +1,806 @@
+<apex:page id="RemoveCosID" controller="Macd_RemoveCosController" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" title="Remove COS At VLANLevel" cache="false" >
+<apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+<apex:includeScript value="{!$Resource.jQueryMin}" />  
+<apex:includeScript value="{!$Resource.atombootstrapminjs}"  />  
+<apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'vendors/modernizr.js')}" />
+<apex:includeScript value="{!$Resource.atomjqueryjs}" />
+<apex:stylesheet value="{!$Resource.PortalDesignCSS}" />
+<apex:stylesheet value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.css')}" />
+<apex:includeScript value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.js')}" />
+<apex:stylesheet value="{!$Resource.App_CSS}" />
+<apex:stylesheet value="{!$Resource.TextStylesCSS}"/>
+<apex:stylesheet value="{!$Resource.sitedetailsCos_StyleSheet}"/>
+
+    <style>
+        .styled-select-small {
+              background-size: 35px 38px;
+         }
+        .ui-widget-header {
+            background: #4ca90c !important;
+        }
+        
+        .ui-slider {
+            height: 1.6em;
+        }
+        
+        .ui-slider .ui-slider-handle {
+            height: 2.2em;
+            width: 0.75em;
+        }
+        
+        .ui-slider-range {
+            background: #99C800;
+        }
+        
+        .greenText {
+            color: green !important;
+            padding: 10px 15px 15px 0px;
+            font-size:0.96em;
+        }
+        #contentWrapper {
+        min-width: 1024px !important;
+        }
+        button.close {
+        font-size: 200%;
+        }
+        .active > a,
+        .active_tab > a {
+        color: #fff;
+        }
+        .active > a,
+        .active_tab > a, .tabbed_menu .mainnav li.active::after {
+        cursor: default; /* Added to ensure the cursor is default for the active tab */
+        }
+        .tabbed_menu .active {
+        background: #056fab;
+        }
+        .tabbed_menu li {
+        padding: 0;
+        min-width: 33.33%;
+        height: 90px;
+        }
+        
+        .tabbed_menu li a {
+        padding: 20px;
+        display: block;
+        text-align: center;
+        }
+        .dataTables_length {
+        display: none;
+        }
+        .dataTables_info {
+        bottom: 22px;
+        position: absolute;
+        right: 180px;
+        }
+        .manage_user_name {
+        width: 17% !important;
+        }
+        .manage_user_contact_name {
+        width: 10% !important;
+        }
+        .manage_user_address {
+        width: 10% !important;
+        }
+        .manage_user_city {
+        width: 10% !important;
+        }
+        .manage_user_state {
+        width: 10% !important;
+        }
+        .manage_user_zip {
+        width: 10% !important;
+        }
+        #manage_content .pagination > a {
+        padding: 5px 10px;
+        font-family: omnes_att_iimedium;
+        line-height: 1.125em;
+        color: #056fab;
+        margin-left: 5px;
+        background: #fff;
+        border: 1px solid #ccc;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+        cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+        cursor: no-drop;
+        }
+        .btn {
+        padding: 10px 20px !important;
+        }
+         .buckinputNew{
+        margin-top: -15px;
+        height: 29px !important;
+        margin-bottom: 20px;
+        width: 300px !important;
+        }
+        .btn:hover {
+        background: #fff !important;
+        color: #333;
+        }
+        h1 {
+        font-family: omnesatt_iiregular;
+        margin: 40px 0 20px 0;
+        }
+        .disabled{background-color:white}
+        .mainnav a:hover { color: #428bca !important; }
+        .mainnav .active a { color: #fff !important;cursor: default !important; }
+        tabbed_menu .mainnav li.active::after {
+          text-align: center;
+          content: ' ';
+          display: none;
+          width: 0;
+          height: 0;
+          border-left: 20px solid transparent;
+          border-right: 20px solid transparent;
+          position: absolute;
+          border-top: 14px solid #056fab;
+          bottom: -12px;
+          margin-left: -15% !important;
+          z-index: 99999;
+        }
+        .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+        background-size: 900px 900px !important;
+        }
+       
+        .manage_content-header {
+        font-family: omnes_light; padding:10px 0 10px 20px; font-size:18px; font-weight:bold;
+        }
+        
+        ul.mainnav li.disabled a, ul.mainnav li.disabled a:hover
+        {
+        cursor: default !important;
+        color: #356fab !important;
+        }
+        li.ng-isolate-scope.active::after
+        {
+        cursor: default;
+        }
+        
+        .nscustomer_details{
+        margin-top: 50px;
+        
+        }
+        .ConfigLabelMainHeading{margin-left: 4px ;margin-top:15px;line-height: 1.71em; font-size: 2em;font-family:omnes_att_iilight ;color:#040404 !important;}
+        .ConfigHeadingLabel{margin-left: 30px ;margin-top:5px;line-height: 1.71em; font-size: 2em;color:#000000 !important;}
+        .SitePricingStyle{margin-left: 30px ;line-height: 1.18em; font-size: 1.38em;font-family:omnes_att_iimedium !important;color:#000;}
+        .ConfigLabels{margin-left: 30px ;line-height: 1.07em; font-size: 1.13em;font-family:omnes_att_iimedium !important;color:#000;font-style:bold;}
+        .ConfigDesc{margin-left: 30px ;line-height: 1.21em; font-size: 1.07em;color:#000;}
+        .fonttxtSty{line-height: 0.36em; font-size: 1.10em;font-family:omnes_att_iimedium !important;font-weight:500 !important;color:#000000}
+        .fonttxtStyLabel{line-height: 1.71em; font-size: 1.10em;font-family:omnes_att_iimedium !important;font-weight:500 !important;color:#000000}
+        .ConfigLabelsVal{line-height: 1.3em; font-size: 1.13em;font-family:omnes_att_iimedium !important; font-weight:normal;color: #ff8d00;}
+        .ConfigData {font-family: omnesatt_iiregular !important;font-size: 17px;color:#000000;font-style:bold;text-align:left;line-height :1.71em;letter-spacing:0 em; effect:none;}
+
+        #manage_content label, .manage_content label {
+          margin-left: 0px !important;
+          margin-bottom: 10 px;
+        }
+        .nscustomer_details li{
+        display:inline;
+        }
+         hr { 
+        display: block;
+        margin-top: 26px;
+        margin-bottom: 0.5em;
+        margin-left: auto;
+        margin-right: auto;
+        border-style: inset;
+        border-width: 1px;
+        margin-top: 13px;
+        margin-bottom: 20px;
+         } 
+        .circlenumConfirm {
+        float: left;
+        margin: 4px 7px 0 0;
+        width: 25px;
+        height: 25px;
+        border-radius: 15px;
+        font-size: 10px;
+        color: #428bca;
+        line-height: 25px;
+        text-align: center;
+        border: 1px solid #428bca;
+        }
+        .currPortSpeedCss {color:#2E9AFE;}
+        .tabbed_menu li { background-color:#d7d7d7;}
+        tabbed_menu .mainnav li.Pric::after { margin-left: -40% !important; 
+        }
+        tabbed_menu .mainnav li.confId::after {margin-left: -27% !important; }
+        .ConfigTableHeaders{height:25px; width:230px; background-color: white;}
+        .ConfigLabelsHeading{line-height: 0.96em; font-size: 1.17em;font-family:omnes_att_iimedium !important;color: black !important;font-weight: bold;margin-top:10px;}
+        .ReviewLabelsHeading{line-height: 1.18em; font-size: 22px;font-family:omnes_att_iimedium !important;font-weight:bold;}
+        .ReviewLabelsText{line-height: 1.3em;font-family:omnes_att_iimedium !important;font-weight:bold;}
+         .glyphicon1 {background: url('{!$Resource.questionMarkInfo}') no-repeat scroll 5px -40px; cursor:pointer;}
+        .tabbed_menu li:hover {
+          color: #505050;
+          cursor: default;
+        }
+        ul li, ol li {
+          margin-left: 0em;
+          padding-left: 0;
+        }
+        .ml20{margin-left:20px;}
+        
+       .greentxtThankYouSty{
+        font-family: omnesatt_iiregular;
+        font-size: 2em;
+        line-height: 1.71em;
+        color: rgb(60, 171, 0);
+        margin-top: -10px !important;
+        margin-bottom: 16px !important;
+        }
+        .mainnav a:hover {
+          color: #FFF !important;
+        }
+      
+        .gray_hr_line {
+            height: 1px;
+            background: none repeat scroll 0% 0% #B0A9A9;
+        }
+      
+        .tabbed_menu .mainnav li{
+         padding: 18px 0px 0px !important;
+         height: 61px !important;
+        }
+        .reviewLabels{
+        margin-top: 10px !important;
+        font-family: omnesatt_iiregular !important;
+        font-size:17px;
+        }
+        .reviewLabelsOrange{
+        margin-top: 10px !important;
+        font-family: omnes_att_iimedium !important
+        font-size:18px;
+        color:#ef6f00;
+        }        
+                
+        .pricingHeaderClass{
+        font-family: omnesatt_iiregular !important;
+        color: #040404;
+        font-size: 2em;
+        line-height: 1.71em;
+        text-align: left;
+        }
+        
+        .pricingVerbiage{
+        font-size: 1.13em;
+        line-height: 1.07em;
+        font-family: omnes_att_iimedium !important;
+        color: #000;
+        text-align: left;
+        letter-spacing: 0em;
+        effect:none;
+        }
+        
+        .dashboardLink{
+        font-size: 1em;
+        line-height: 1.07em;
+        font-family: omnes_att_iimedium !important;
+        color: #0077B4;
+        font-style:bold;
+        line-height: 0.89em;
+        letter-spacing:0em
+        text-align: right;
+        }
+        
+        .cancelRemoveBtn{
+        font-size: 16px;
+        font-family: omnes_att_iimedium !important;
+        color: #0077B4;
+        text-align: right;
+        }
+        .orderClass{font-size: 0.94em;color: #010101;line-height: 0.36em;font-family: omnesatt_iiregular !important;letter-spacing: 0em;text-align: left;}
+    </style>
+    
+    <div class="content_container subpage_main-container" >      
+        <div id="manage_content" style="padding: 0; margin-left:0; margin-right:0; background-color: #F0F0F0;" class="page ng-scope" ng-controller="QuoteController as beginQuote">
+            <apex:outputPanel id="configload" >  
+                <div class="" style="margin-top: 30px;   background-color: #F0F0F0; height:26px">                
+                    <h4 class="manage_content-header"><p style="margin-top: 2px;margin-left: 17px;">Order Number : {!orderNumber}</p></h4>                
+                </div>
+            </apex:outputPanel>   
+            
+            <div id="main" class="row tabbed_menu" style="margin-top: 24px;">
+                <div class="col-xs-12 col-md-12">
+                    
+                    <ul class="mainnav" role="tablist">
+                       <li class="active whiteBack revReq" style="min-width:33.33%;">
+                            <a href="#selectCust" data-name="selectCust" data-tabName="Review Request" role="tab" data-toggle="tab" style="width: 366px;"><div class="circlenum" style="margin-left: 95px;">1</div> <p id="revReqLabel" style="margin-left: 16px;font-size: 1.13em;margin-top: 0px;width: 245px;line-height:0.8em ;font-family: omnesatt_iiregular;">Review Request</p> </a>
+                        </li>
+                        <li class="Pric disabled tabbed_menu_disabled" id="priceSchd" style="min-width:33.33%;">
+                            <a href="#enterAddress" data-name="enterAddress" data-tabName="Review Pricing Schedule" role="tab" data-toggle="tab" style="width: 366px;"><div class="circlenum" id="cirId" style="margin-left: 68px;">2</div><apex:image id="tabActiveIconId" value="{!$Resource.tickMarkBlueIcon}" style="display:none;float: left;   margin-top: -8px;margin-left: 63px;"/><p id="revReqPriSchd" style="width: 360px;margin-top: 0px;margin-left: -57px;font-size: 1.13em;">Review Pricing Schedule</p></a>
+                        </li>
+                        <li id="confId" class="disabled tabbed_menu_disabled" style="min-width:33.33%;border:none;">
+                            <div><a href="#configSites" data-name="configSites" data-tabName="View Confirmation Information" role="tab" data-toggle="tab" id="circlenumconfText" style="width: 367px; cursor:default; pointer-events: none;" disabled="disabled"><div class="circlenum" style="margin-left: 42px;" id="circlenumconf">3</div> <p id="confirmLabel" style="width: 384px;margin-top: 0px;margin-left: -57px;font-size: 1.13em;"> View Confirmation Information </p></a></div>
+                        </li>
+                    </ul>
+                </div>
+                <apex:image styleClass="caretIconReview" value="{!$Resource.caretIcon}" style="margin-left: 165px; height: 20px; width: 56px;   margin-top: -8px;"/>
+                <apex:image styleClass="caretIconPricing" value="{!$Resource.caretIcon}" style="display:none;margin-left: 539x; height: 20px; width: 56px;   margin-top: -8px;"/>
+                <apex:image styleClass="caretIconConfirm" value="{!$Resource.caretIcon}" style="display:none;margin-left: 898px; height: 20px; width: 56px;   margin-top: -8px;"/>
+            </div>
+
+            <apex:form id="removeCosFormId">
+            <apex:outputPanel id="addCosTabContent" rendered="{!!isDocusignFlag}" >  
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="selectCust">
+                            <apex:outputPanel id="addCosReviewPanel">
+                            <div class="ConfigLabels" style="margin-left:50px;margin-top: 5px;margin-bottom: -15px;font-size:2em !important;font-family: omnesatt_iiregular !important;font-style:bold;line-height:1.71em;color:#040404 !important">Review Request</div>
+                            <hr class="gray_hr_line" style="margin-top:65px;margin-top:40px"/>
+                            <div class="ConfigData" style="margin-left: 51px;margin-right: 25px;font-family: omnesatt_iiregular !important;margin-top: 36px;text-align: left;font-size: 18px;line-height: 1.1em;">To continue with the proposed removal of Class of Service(CoS) and see the pricing schedule addendum, click <strong style="font-family: omnesatt_iiregular !important;font-weight:bold">Continue</strong>. To exit without making any changes, click <strong style="font-family: omnesatt_iiregular !important;font-weight:bold">Cancel Remove Request</strong></div>.
+                            <div id="addOptions">
+                                <div class="row m0" style="margin-top: -7px;position: relative;">
+                                    <div style="border-left: 1px solid gray; height: 78%; position: absolute; margin-left: 535px;margin-top: 36px;width:10%;"></div>
+                                    <div class="col-xs-12 p0">
+                                        <div class="col-xs-6 col-md-6 border-right border-height" style="width:45%;margin-top:31px;margin-left:36px;">
+                                            <div class="ReviewLabelsHeading" style="margin-left:0px">Current</div>
+                                            <div class="ConfigData" style="margin-bottom: 13px;font-weight:bold;">Site Pricing Summary:</div>
+                                            <br/> 
+                    
+                                            <apex:repeat value="{!reviewReqCurrentDataList}" var="key">
+                                            <div style="{!IF(key == 'Total Before Discounts:','margin-top:18px;margin-bottom:18px; font-weight:bold;','margin-top:-5px;')}font-family: omnesatt_iiregular !important;font-size: 16px; ">
+                                                <div>
+                                                    <apex:outputText value="{!key}" />                                      
+                                                        <apex:outputText style="float: right;" value="{!reviewReqCurrentDataMap[key]}" />
+                                                </div>
+                                            </div>
+                                             <br/>
+                                            </apex:repeat>
+                                        </div>
+                                        <div class="col-xs-6 col-md-6" style="width:45%;margin-top:16px;margin-left:34px">                         
+                                            <br/>
+                                            <div class="ReviewLabelsHeading" style="margin-left:2px">Proposed</div>
+                                            <div class="ConfigData" style="margin-bottom: 13px;font-weight:bold;">Site Pricing Summary:</div>
+                                            <br/>
+                                            <div style="margin-top:-5px;font-family: omnesatt_iiregular !important;height: 16px;">
+                                            <div><span style="float: right;"></span></div>
+                                            </div>
+                                            <br/>
+                                                <apex:repeat value="{!reviewReqPropDataList}" var="key">
+                                                <div style="{!IF(key == 'Total Before Discounts:','margin-top:18px;margin-bottom:18px; font-weight:bold;','margin-top:-5px;')}font-family: omnesatt_iiregular !important;font-size: 16px; "> 
+                                                <div><apex:outputText value="{!key}"/>
+                                                
+                                                <apex:outputText style="float: right;" value="{!reviewReqPropDataMap[key]}"/></div>
+                                                
+                                                </div>
+                                                 <br/>
+                                            </apex:repeat>
+          
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 p0">
+                                        <div class="col-xs-6 col-md-6 border-right border-height" style="width:45%;margin-left:36px;">
+                                        <apex:repeat value="{!reviewReqCurrentDiscountDataList}" var="key">
+                                        <div style="{!IF(key == 'Current Site Total:' || key == 'Total Before Discounts:','margin-top:18px;margin-bottom:18px; font-weight:bold;','margin-top:-5px;color:#EF6F00;')}text-align: left;font-family: omnesatt_iiregular !important;font-size: 16px; ">
+                                            <div>
+                                                <apex:outputText value="{!key}"/>
+                                                <apex:outputText style="float: right; " value="{!reviewReqCurrentDiscountDataMap[key]}"/>
+                                            </div>
+                                        </div>
+                                         <br/>
+                                        </apex:repeat>
+                                        <apex:outputPanel rendered="{!overageMsgFlag}">
+                                                <div style="margin-top: 4px;font-size: 12px;margin-bottom: 9px;"> *Overage billing may apply.</div>                                          
+                                            </apex:outputPanel>
+                                            <div class="col-xs-12 p0">                                                       
+                                                <p class="fine-print">All prices shown are pre-tax.</p>
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="col-xs-6 col-md-6 border-right border-height" style="width:45%;margin-left:36px;">
+                                            <apex:repeat value="{!reviewReqPropDiscountList}" var="key">
+                                            <div style="{!IF(key == 'Proposed Site Total:' || key == 'Total Before Discounts:','margin-top:18px;margin-bottom:18px; font-weight:bold;','margin-top:-5px;color:#EF6F00;')}text-align: left;font-family: omnesatt_iiregular !important;font-size: 16px; ">
+                                                <div>
+                                                    <apex:outputText value="{!key}" />
+                                                    <apex:outputText style="float: right;" value="{!reviewReqPropDiscountMap[key]}" />
+                                                </div>
+                                            </div>
+                                            <br/>
+                                            </apex:repeat>
+                                            
+                                        </div>
+                                    </div>
+                                        <div style="border-left: 1px solid gray; height: 78%; position: absolute; margin-left: 535px;margin-top: 36px;width:10%;"></div>
+                                    
+                                        <div style="height: 230px; position: absolute; margin-left: 500px;"></div>                                 
+
+                                </div>
+                                
+                                 <hr class="gray_hr_line" style="margin-top:32px;margin-bottom:40px;" />
+         
+                                <div style="width:100%;height: 71px;">
+                                    <div style="width: 79%;margin-left: -38px;margin-top: 47px;" ><apex:commandlink styleClass="cancelRemoveBtn" value="Cancel Removal Request" action="{!CancelRequest}" style="padding-left: 15px; margin-left: 585px; padding: 0px 20px !important;" /></div>                                  
+                                    <div style="width:30%;margin-left: 688px;"><apex:commandButton status="loading" value="Continue" action="{!finalizeAndSubmit}" reRender="" styleClass="btn secondary pull-right" style="padding: 0px 20px !important;margin-left: 15px;width: 172px !important;height: 40px;margin-top: -25px;" oncomplete="toggleToReviewPricingVLANPanel();scrolltomacd();ToggleSubmitButton(false);" disabled="false"/></div>
+                                     <apex:actionFunction action="{!initReviewPanel}" name="initRemoveCoSVlan" status="loading" reRender="addCosReviewPanel,configload"/>
+                                </div>   
+                            </div>
+                                                           
+                            </apex:outputPanel>       
+                        </div>
+                        
+                              <!-- Review Pricing Page Content -->
+                                    <div class="tab-pane fade" id="enterAddress">
+                                       <apex:outputPanel rendered="{!pricingScheduleFlag}" >
+                                  <style>
+                                     ul.mainnav li.disabled a. {
+                                      cursor: default !important;
+                                      color: #fff !important;
+                                    }
+                                    
+                                </style>
+                                <script>
+                                      $("#revReqPriSchd").css("color","#fff");      
+                                </script>
+                                </apex:outputPanel>
+                                
+                                        <div id="mainPricingSection" class="row m0 m0" style="{!IF((isApprover == true && contractRead == true) ,'height:340px;','height:270px')}{!IF((isApprover == false) ,'height:325px;','')} ">
+                                            <div class="" id="isTermsOpen" style="margin-top:18px;">
+                                                <div class="section_headerPositionRC">
+                                                <h3 class="section_headerfont_lightVlan" id="header_3Page">{!$Label.MACD_Review_Pricing_Label}</h3>
+                                            </div>
+                                    <hr class="BlackHr lineAdjust" style="margin:0px;" />
+                                    <!-- Non-approver -->
+                                           <apex:outputPanel rendered="{!!isApprover}">
+                                               <p class="param1_position param1_font">{!$Label.MACD_Non_Approver_Param1}</p>
+                                               <div class="param2_positionRCLink" > 
+                                                <apex:commandLink value="{!$Label.Pricing_Schedule_Addendum_Label}" action="{!contractSign}" immediate="true" styleClass="attLinkBlue attLinkBlueLineHeight" style="font-size: 18px;" reRender="removeCosFormId,pricingScheduleSectionID" status="loading" oncomplete="scrolltomacd();"></apex:commandLink>
+                                                </div>
+                                           </apex:outputPanel>
+                                           <!-- Approver --> 
+                                           <apex:outputPanel rendered="{!contractSigned && !signingStatus && !contractRead && isApprover}">
+                                                <div class="errorMsg m-b-20">
+                                                     {!$Label.MACD_Flow_DocSign_ErrorMsg}
+                                                     <script>
+                                                         $('#mainPricingSection').css("height","320px"); 
+                                                     </script>
+                                                </div>
+                                           </apex:outputPanel>          
+                                           <apex:outputPanel rendered="{!!contractRead && isApprover}">
+                                               <p class="param1_position param1_font">Click on<strong> Go to Pricing Schedule Addendum </strong>link to view and electronically sign.</p>
+                                           </apex:outputPanel> 
+                                           <apex:outputPanel rendered="{!contractRead && isApprover}">
+                                                <div id="waitingDivVlan" class="param1_position param1_font" style="display:none;">Please wait while we submit your order.
+                                                </div>
+                                            </apex:outputPanel>
+                
+                                           <apex:outputPanel rendered="{!contractRead && isApprover}">
+                                               <p id='approverTermVlan1' class="param1_positionRC param1_font">To review click &nbsp; <apex:commandLink value="{!$Label.Pricing_Schedule_Addendum_Label}" action="{!contractSign}" immediate="true" styleClass="attLinkBlue_18PX"  reRender="removeCosFormId,pricingScheduleSectionID" status="loading" oncomplete="scrolltomacd();"></apex:commandLink></p>
+                                               <p id='approverTermVlan2' class="param2_positionRC param1_font">Please click <strong>Submit Order</strong> to continue.</p>
+                                           </apex:outputPanel> 
+                                           
+                                           <!-- radhika condtion changes end -->
+                                
+                                          <!-- Add cos Submit Button vlan-->
+                                        <apex:outputPanel id="SpeedChangeSubmitButtonSection">
+                                            <hr class="{!IF(contractRead ==false && isApprover,'hrMTB','hrMTBRC')}" />
+                                             <div class="row m0" style="margin:0px; {!IF((isApprover == true && contractRead == false) ,'height:60px','height:72px')}">
+                                                 <div class="col-xs-6" style="float:right;">
+                                                     <apex:outputPanel id="SubmitForApprovalButtonSection" rendered="{!!isApprover}">
+                                                         <apex:commandButton id="Submit2NonApprover" value="{!submitLabel}" action="{!redirectToThank}"  styleClass="btn secondary pull-right submitbutton_position" style="padding: 0px 20px !important;" status="loading" rerender=""/>
+                                                     </apex:outputPanel>
+                                                     <apex:outputPanel id="SubmitButtonSectionApprover" rendered="{!(contractRead && isApprover)}">
+                                                         <apex:commandButton id="Submit2" action="{!redirectToThank}" value="{!submitLabel}" styleClass="btn secondary pull-right submitbutton_position" style="padding: 0px 20px !important;" onclick="showWaitingDiv();showProcessingLabel(this);" rerender="loading" status="loading" immediate="true"/>
+                                                         <!--<apex:commandButton id="Submit2"  value="{!submitLabel}" styleClass="btn secondary pull-right submitbutton_position" style="padding: 0px 20px !important;" onclick="showWaitingDiv();showProcessingLabel(this);" rerender="" status="loading" immediate="true"/>-->
+                                                     </apex:outputPanel>
+                                                     <apex:outputPanel rendered="{!!contractRead && isApprover}">
+                                                            <apex:commandLink id="pricingschedule" value="{!$Label.Go_To_Pricing_Schedule_Addendum_Label}" rendered="{!!contractRead && isApprover}" action="{!contractSign}" status="loading" reRender="removeCosFormId,pricingScheduleSectionID" oncomplete="scrolltomacd();" immediate="true" styleClass="attLinkBlue attLinkBlueLineHeight pull-right pslink_position"></apex:commandLink>
+                                                     </apex:outputPanel>
+                                                    <apex:commandLink value="Cancel Request" Styleclass="{!IF(isApprover == true && contractRead == false,'pull-left cancelLink_AppPS','pull-right cancelLink_nonApp')} attLinkBlueLineHeight"  action="{!Cancelrequest}"/>
+                                                  </div>
+                                             </div>
+                                        </apex:outputPanel>     
+                               <!--    </apex:pageBlock>  -->
+                                </div>
+                            </div>     
+                        </div>
+                        <!-- TAB 4 -->
+                        <div class="tab-pane fade" id="configSites" style="width: 1100px;{!IF((showDenialReason == false && isApprover == true) ,'height:364px;','')}  {!IF((showDenialReason == true && isApprover == true) ,'height:338px;','')} {!IF((isApprover == false) ,'height:338px;','')}">
+                            
+                            <div class="row m0">
+                                <apex:outputPanel rendered="{!!showDenialReason}" >
+                                    <div class="thankyoulabelFont thankyoulabelPositionRC" >Thank you!</div>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!showDenialReason}" >
+                                                <div class="thankyoulabelFont thankyoulabelPositionRC">Submission received.</div>
+                                </apex:outputPanel>  
+                            </div>  
+                            
+                           <hr class="hrColor lineAdjust m0" />
+                            <!------------------ Thank you panel ---------------------------- -->                                
+                            
+                            
+                            <div style="margin: 37px 0px 40px 50px;">   
+                                <apex:outputPanel rendered="{!isApprover && !showDenialReason}">                 
+                                    <div>
+                                        <p class="param1_font m0" style="padding-bottom:5px;">{!$Label.MACD_PS_Thank_Param1}&nbsp;{!orderNumber}.</p>
+                                        <p class="param1_font m0">{!$Label.MACD_PS_Thank_Param2}</p>
+                                    </div>
+                                </apex:outputPanel> 
+                                <apex:outputPanel rendered="{!!isApprover && !showDenialReason}">                    
+                                     <div>
+                                        <p class="param1_font m0">{!$Label.Non_Approver_Confirmation}</p>
+                                     </div>
+                                 </apex:outputPanel>
+                                 <apex:outputPanel rendered="{!showDenialReason}">                    
+                                       <div>
+                                           <p class="param1_font m0">We received your denial decision of the Pricing Schedule Addendum for Order Number {!orderNumber}.</p>
+                                        </div>
+                                 </apex:outputPanel>
+                                <div class="param1_font m0" style="margin-top:40px !important;">To view the status of your order, check <strong>Manage Quotes &amp; Orders</strong> on <strong>My Dashboard.</strong></div>   
+                                                   
+                            </div>
+                             <hr class="{!IF((showDenialReason == true && isApprover == true) ,'hrMTBRC','')} {!IF((showDenialReason == false && isApprover == true) ,'hrMTBRCApp','')} {!IF((isApprover == false) ,'hrMTB hrMTBRCNAppMT','')}" />
+                             <div class="col-xs-6 p0" style="float:right;">                        
+                            <div style="float:left;margin-left:23%;padding-top:5px;">
+                                <a href="/apex/PortalDashboard_UI" class="attLinkBlue attLinkBlueLineHeight">{!$Label.Dashboard}</a>
+                            </div>
+                            <div style="float:right;margin-right:50px;">                                                            
+                                    <apex:commandButton action="{!closeRemoveCoSPanel}" value="Close" id="closeBtn" styleClass="btn secondary pull-right" style="padding: 0px 70px !important;margin:0px;" />
+                            </div>
+                        </div>  
+                            </div>  
+                        <!------------------End Thank you panel ------------------------------>  
+                    </div>
+                </apex:outputPanel>
+            
+            </apex:form> 
+            <apex:outputPanel id="pricingScheduleSectionID">
+                <apex:include pageName="MACD_RemoveCosPrcngSchedleLnch" rendered="{!ESignFlag}" />
+            </apex:outputPanel>
+        </div>
+    </div>
+    <script>     
+       var isConfirmation= GetURLParameter('mode');
+    if(typeof isConfirmation!= 'undefined' && isConfirmation != 'conf' && isConfirmation != 'TNC' ){
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon();
+    }
+    </script>
+    
+    <script>
+    function ToggleSubmitButton(boolVal){
+    
+    
+    document.getElementById('{!$Component.removeCosFormId.Submit2}').disabled = (boolVal);
+}    
+</script>    
+    
+<!--<script>        
+    $('.disabled a').removeAttr('data-toggle href');
+    activeTabIcon();
+    </script>
+  -->  
+    <script>
+   
+    customerId = '';
+    generatedQuoteId = '';
+    function GetURLParameter(sParam) {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) {
+                return sParameterName[1];
+            }
+        }
+    }
+    
+    mode = GetURLParameter('mode');
+    if(mode=="contract" || mode=="TNC" )
+    {
+       $("a[data-name='selectCust']").parent('li').removeClass("active"); 
+        $("a[data-name='configSites']").parent('li').addClass("disabled");
+        $("a[data-name='selectCust'], a[data-name='configSites']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='enterAddress']").parent('li').removeClass("disabled tabbed_menu_disabled");
+        $("a[data-name='enterAddress']").parent('li').addClass("active");
+        $("a[data-name='enterAddress']").removeAttr("href","#selectCust");
+        $("a[data-name='enterAddress']").attr("href","#enterAddress");
+        $("a[data-name='enterAddress']").attr("data-tabname", "Review Pricing Schedule");
+        $("a[data-name='enterAddress']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        //$(".mainnav").addClass("disabled");
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#selectCust").removeClass("tab-pane fade in active");
+        $("#selectCust").addClass("tab-pane fade");
+        $("#enterAddress").removeClass("tab-pane fade");
+       
+        $(".whiteBack ").css("background","#fff");
+        $(".revReq").css("background","#fff");
+        
+        $(".caretIconPricing").show();
+        $(".caretIconPricing").css('margin-left','535px');
+        $(".revReqPriSchd").css('margin-left','-67px'); 
+        $("#cirId").css('margin-left','72px'); 
+        $("#circlenumconfText").css("color","#505050");
+        $(".caretIconReview").hide();
+         $("#revReqLabel").css("color","#666666");
+         $("#confirmLabel").css("color","#666666");
+        //scrolltomacd();
+        ToggleSubmitButton(false);
+       var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+        $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);   
+         document.getElementById("confId").disabled = true;
+         $(".Pric").removeClass("disabled"); 
+        document.getElementById("portInfoSection").style.display="none";
+    }
+    else if (mode == 'conf'){
+        $("a[data-name='selectCust'], a[data-name='selectProd'],a[data-name='enterAddress']").parent('li').removeClass("active tabbed_menu_disabled");  
+        $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='enterAddress']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='configSites']").parent('li').removeClass("disabled tabbed_menu_disabled");
+        $("#confId").addClass("active");
+        $("#confId").removeClass("disabled tabbed_menu_disabled");
+        $("a[data-name='configSites']").removeAttr("href","#selectProd");
+        $("a[data-name='configSites']").attr("href","#configSites");
+        $("a[data-name='configSites']").attr("data-tabname", "View Pricing Confirmation");
+        $("a[data-name='configSites']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#selectCust").removeClass("tab-pane fade in active");
+        $("#selectCust").addClass("tab-pane fade");
+        $("#configSites").removeClass("tab-pane fade");
+        $(".whiteBack ").css("background","#fff");
+        $(".revReq").css("background","#fff");
+        $("#revReqRem").css("background","#fff");
+        $(".Pric").css("background","#fff");
+        $(".caretIconConfirm").show();
+        $(".caretIconPricing").hide(); 
+        $(".caretIconConfig").hide();
+        $("#circlenumconfText").css("color","#505050");
+        $(".caretIconReview").hide();
+        $("#confId").css("background-color","#056fab").css("color","#fff");
+        //scrolltomacd();
+        var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+        $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);
+        $("#").show();  
+        document.getElementById("j_id0:j_id101:j_id102:tabActiveIconRemId").style.display="block"; 
+    }
+   
+    if(mode!="contract") 
+        $("a[data-name='selectCust']").trigger("click");
+  
+    
+    function toggleToReviewPricingVLANPanel(){
+        
+        $("a[data-name='selectCust']").parent('li').removeClass("active");  
+        $("a[data-name='selectCust'], a[data-name='configSites']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='enterAddress']").parent('li').removeClass("disabled tabbed_menu_disabled");
+        $("a[data-name='enterAddress']").parent('li').addClass("active");
+        $("a[data-name='enterAddress']").removeAttr("href","#selectCust");
+        $("a[data-name='enterAddress']").attr("href","#enterAddress");
+        $("a[data-name='enterAddress']").attr("data-tabname", "Review Request");
+        $("a[data-name='enterAddress']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='selectCust']").parent('li').find('.circlenum').text('').append('<span class="glyphicon glyphicon-ok"></span>');
+        $("#selectCust").removeClass("tab-pane fade in active");
+        $("#selectCust").addClass("tab-pane fade");
+        $("#enterAddress").removeClass("tab-pane fade");
+        $("#enterAddress").addClass("tab-pane fade in active"); 
+        $(".whiteBack ").css("background","#fff").css("color","#000"); 
+        $(".caretIconConfig").hide();
+        $(".caretIconReview").hide(); 
+        $(".caretIconPricing").show(); 
+        $("#configTxtColr ").css("color","rgb(80, 80, 80)");   
+        $(".caretIconPricing").css("margin-left","535px");
+        $("#circlenumconfText").css("color","#505050");
+        $("#revReqLabel").css("color","#666666");
+        scrolltomacd();
+    }
+    
+    function toggleToConfirmationVLANPanel(){
+        $("a[data-name='enterAddress']").parent('li').removeClass("active");        
+        $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='enterAddress']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='configSites']").parent('li').removeClass("disabled");
+        $("a[data-name='configSites']").parent('li').addClass("active");
+        $("a[data-name='configSites']").removeAttr("href","#enterAddress");
+        $("a[data-name='configSites']").attr("href","#configSites");
+        $("a[data-name='configSites']").attr("data-tabname", "View Confirmation Information");
+        $("a[data-name='configSites']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#enterAddress").removeClass("tab-pane fade in active");
+        $("#enterAddress").addClass("tab-pane fade");
+        $("#configSites").removeClass("tab-pane fade");
+        $("#configSites").addClass("tab-pane fade in active");
+        $("#confId").css("background-color","#056fab").css("color","#fff");
+      
+        $("#circlenumconfText").css("color","#fff");
+        $("#circlenumconf").css("color","#fff").css("border" , "1px solid #fff");
+        $(".Pric").css("background","#fff");        
+        $("a[data-name='enterAddress']").parent('li').find('.circlenum').text('').append('<span class="glyphicon glyphicon-ok"></span>'); 
+        $("#PricRem").css("background","#fff");
+        $("#configSites").addClass("active");
+        $(".caretIconConfirm").show(); 
+        $(".caretIconPricing").hide(); 
+        $(".caretIconReview").hide();
+        $("#revReqPriSchd").css("color","#666666");
+        $("#revReqPriSchd").css("font-size","1.13em");
+        $("#revReqPriSchd").css("line-height"," 0.8em");
+        document.getElementById('{!$Component.RemoveCosID.tabActiveIconId}').style.display="block";
+        $('#{!$Component.RemoveCosID.tabActiveIconId}').css("margin-left","63px");
+        document.getElementById("cirId").style.display="none";
+        document.getElementById("caretConfirmi").style.display="block";
+        document.getElementById("caretIconPricingi").style.display="none";      
+        $("#confId").off("click");
+    }       
+   
+    
+    function activeTabIcon() {
+        var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+        $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);            
+
+    }
+    
+    $(document).ready(function(){
+    if(typeof pricingSchDocSrc != 'undefined' && pricingSchDocSrc != null) {
+            scrolltomacd();
+        }
+    });
+    
+
+    </script>    
+    <script>
+        $(document).ready(function(){
+            var mode = "";
+            $("a[data-name='selectCust']").trigger("click");
+            
+                   var isConfirmation= GetURLParameter('mode');
+            if(typeof isConfirmation!= 'undefined' && isConfirmation != 'conf' && isConfirmation != 'TNC' ){
+                $("a[data-name='selectProd'], a[data-name='enterAddress'], a[data-name='configSites']").parent('li').addClass("disabled");
+            }
+                $('.disabled a').removeAttr('data-toggle href');
+                $('html, body').animate({
+                scrollTop: $('#cosRemovePortdiv').offset().top-100
+            },1000);
+            
+            });
+   
+    
+    
+    function doContinue(){
+        
+        doContinueAJAX();        
+    }              
+    </script>
+    <script>
+        $(document).ready(function(){
+            $("#descriptionCloseCos").tooltip({
+                title : '{!$Label.CoSInfo}'
+            });
+            
+            $("#descriptionCloseVlan").tooltip({
+                title : '{!$Label.VLAN_info}'
+            });
+            
+        });
+    </script>
+    <apex:outputPanel >
+        
+        <script>
+        
+        $('#idmultiVlanhide').hide();
+        $('.parentdispclass').show();
+        $('#reviewconfig').hide();
+        
+        function showProcessingLabel(inpObj){
+            inpObj.value = 'Processing....'; 
+            inpObj.style.color = '#fff'; 
+        }
+        function showWaitingDiv() {
+
+           $('#waitingDivVlan').show();
+           $('#approverTermVlan1').hide(); 
+           $('#approverTermVlan2').hide();   
+           $('#mainPricingSection').css("height","288px");    
+        } 
+        
+        </script>
+    </apex:outputPanel>
+    
+</apex:page>

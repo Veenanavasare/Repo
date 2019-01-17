@@ -1,0 +1,55 @@
+<apex:page standardController="Opportunity"  extensions="TSCProcessController" >
+    <apex:outputLabel rendered="{!flag!='SAReview'}">
+            <font size="4" color="Gray"><p>Select an action in order to confirm or deny the SP request for the Colocation</p></font>
+    </apex:outputLabel>
+    <apex:outputLabel rendered="{!flag=='SAReview'}">
+            <font size="4" color="Gray"><p>Select an action in order to confirm or deny the SP request for Private Cloud </p></font>
+    </apex:outputLabel>
+    
+        <apex:form >
+            <apex:pageMessages />
+            <apex:pageBlock >
+                <apex:pageBlockSection >
+                    <apex:pageBlockSectionItem >
+                        <apex:selectRadio value="{!type}">
+                        <apex:selectOptions value="{!items}"/>
+                        <apex:actionSupport event="onclick" status="PleaseWait" reRender="typeofitem"/>
+                        </apex:selectRadio><br/>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+             </apex:pageBlock>
+        </apex:form>                
+        <apex:form id="typeofitem" >
+            <apex:pageBlock >
+                <apex:pageBlockSection title="Enter the values:" rendered="{!(type=='approve'|| type=='')}" id="SelectionBlock">
+                    <apex:inputField value="{!opty.ADOPT_Hosting_ID__c}" required="true"/>  
+                    <apex:inputField value="{!opty.Power_Level__c}" required="true" rendered="{!flag!='SAReview'}"/>                   
+                </apex:pageBlockSection>
+                <apex:pageBlockSection rendered="{!(type=='approve'|| type=='')}">
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Confirmed Data Center" />
+                        <apex:outputPanel styleClass="requiredInput" id="pnlid1" layout="block">
+                        <apex:outputPanel styleClass="requiredBlock" id="pnlid2" layout="block"/>
+                        <apex:selectList label="Confirmed Data Center" id="Picklist" value="{!picktypes}" size="1" required="true" >
+                        <apex:selectOption itemValue="none" itemLabel="- None -"/>
+                        <apex:selectOption itemValue="primary" itemLabel="Primary"/>
+                        <apex:selectOption itemValue="secondary" itemLabel="Secondary" rendered="{!pickValues=='Secondary'}"/>                  
+                        </apex:selectList>
+                        </apex:outputPanel>    
+                        </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+                    </apex:pageBlock>
+            <apex:pageBlock rendered="{!(type=='approve'|| type=='')}" >
+                <apex:outputLabel >
+                        <font size="2" color="Black"><p>Design Document Upload (PDF only)</p></font>
+                        </apex:outputLabel><br/>
+                <apex:inputFile fileName="{!fileName}" value="{!fileBody}"/><br/>
+                <apex:commandButton value="Submit" action="{!submit}" />&nbsp;&nbsp;&nbsp;&nbsp;
+                <apex:commandButton value="Cancel" action="{!cancel}" />
+            </apex:pageBlock>
+            <apex:pageBlock rendered="{!type=='deny'}">
+                 <apex:commandButton value="Submit" action="{!submit}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                 <apex:commandButton value="Cancel" action="{!cancel}"/>
+             </apex:pageBlock>
+        </apex:form>
+</apex:page>

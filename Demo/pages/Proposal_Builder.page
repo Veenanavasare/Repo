@@ -1,0 +1,91 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    
+    <!-- GLOBAL HEADER INCLUDE -->
+    <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" /> 
+    
+    <!-- ADDITIONAL INCLUDES FOR HEADER -->
+    <apex:stylesheet value="{!$Resource.products_css}"/>
+    
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="hero-grow-proposal jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                    <h1 class="hero_badge_1">{!$Label.Proposal_Builder}</h1>
+                    <h2 class="hero_badge_2">Customize sales materials for your customers.</h2>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+    
+    <script>
+        function submitFormMethod(url){
+            $( "#poster" ).remove();
+            var parts = url.split('?');
+            var url = parts[0];
+            var params = parts[1].split('&');
+            var pp, inputs = '';
+            for(var i = 0, n = params.length; i < n; i++) {
+                pp = params[i].split('=');
+                inputs += '<input type="hidden" name="' + pp[0] + '" value="' + pp[1] + '" />';
+            }
+            $("body").append('<form action="'+url+'" method="post" id="poster" target="_blank">'+inputs+'</form>');
+            $("#poster").submit();        
+        }
+    </script> 
+   
+    <!-- BODY SLICE -->
+    <div class="grow-body col-sm-12">
+        <div class="row">         
+            <div class="contentCol body-load-content" style="margin:0 6%;">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <!-- Intro -->
+                    <h2>How {!$Label.Proposal_Builder} works for&nbsp;you.</h2>
+                    <p class="mb-40">Create custom proposals for your customers with {!$Label.Proposal_Builder}. You can select from pre-loaded products, features and options. {!$Label.Proposal_Builder} also helps you create effective, co-branded proposals that include pricing and details for your individual business&nbsp;customers.</p>
+
+                    <h3>With {!$Label.Proposal_Builder}, you can:</h3>
+
+                    <ul class="has_bullets mb-40">
+                        <li>Select from a variety of pre-loaded products, features and&nbsp;options</li>
+                        <li>Quickly create custom proposals for your&nbsp;customers</li>
+                        <li>Tailor proposals for your customers' unique&nbsp;requirements</li>
+                        <li>Include custom text for solutions integrated with AT&amp;T&nbsp;products</li>
+                    </ul>
+
+                    <hr class="blue_hr mb-40" />
+                    <!-- link for button should open external site for proposal tool in new tab using SSO --> 
+                    <div class="text-center">
+                        <button onclick="submitFormMethod('{!URLForProposalBuilderNav}');" class="btn btn-primary">Get Started</button>
+                    </div>
+                    <hr class="blue_hr mt-40" />
+
+                    <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-resources.png')}" />Additional resources to help with your end-customer&nbsp;needs</h3>
+
+                    <!-- Document List: Resources -->
+                     <apex:outputPanel >   
+                         <apex:repeat value="{!DocMapProposalResources}" var="docMap"> 
+                            <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}" target="_blank" styleClass="document-file">                        
+                                <div class="document-row mb-30">
+                                    <div class="file-type file-{!docMap.type}"></div>
+                                    <div class="details">
+                                        <h4><apex:outputText value="{!docMap.Name}"/></h4>                            
+                                        <p><apex:outputText value="{!docMap.description}"/></p>
+                                    </div>
+                                </div>
+                            </apex:outputLink>         
+                        </apex:repeat>   
+                    </apex:outputPanel>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END BODY SLICE -->
+    
+    <!-- GLOBAL FOOTER INCLUDE -->
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+
+</apex:page>

@@ -1,0 +1,468 @@
+<!-------------------------------------------------------------------------------------------------------
+@Author : Smarjit Debata
+@email : smarjit.debata@accenture.com
+@Company : Accenture Services Pvt. Ltd.
+@Description : Visualforce page to manage the sorting information of the KnowledgeArticles.
+---------------------------------------------------------------------------------------------------------->
+
+<apex:page controller="NewsRoomKASortingController" >
+
+<style>
+#tbl_container{
+    table-layout: fixed;
+    width: 100%;
+}
+
+.cell_msPicklist{
+    overflow: hidden;
+    width: 100px;
+}
+</style>
+<style>
+.tertiaryPalette, .individualPalette .Custom72Block .tertiaryPalette, .layoutEdit .individualPalette .Custom72Block .tertiaryPalette {
+background-color: #1797c0;
+border-color: #1797c0;
+}
+.secondaryPalette, .individualPalette .Custom72Block .secondaryPalette {
+background-color: #1797c0;
+border-color: #1797c0;
+}
+
+fieldset {
+    font-family: sans-serif;
+    border: 3px solid #1797c0;
+    background: #FFFFFF;
+}
+
+fieldset legend {
+
+    background: #1797c0;
+    color: #FFFFFF;
+    padding: 3px 10px;
+    font-size: 19px;
+    border-radius: 5px;
+    box-shadow: 0 0 0 3px #ddd;
+    margin-left: 30px;
+}
+</style>
+
+<script>
+    
+    var listCSP = [];
+    var listPKB = [];
+    var selectCSP = [];
+    var listCSPWithText = []; 
+    var listPKBWithText = [];
+    var selectedOptions = [];
+    
+    window.onload=function(){
+        selectCSP = document.getElementById('{!$Component.pgForm.pgBlock.cspSelection}');
+        for (var i = 0; i < selectCSP.length; i++) {                
+            listCSP.push(selectCSP.options[i].value);        
+            listCSPWithText.push([selectCSP.options[i].value,selectCSP.options[i].text]);            
+        }
+
+        selectPKB = document.getElementById('{!$Component.pgForm.pgBlock.pkbSelection}');
+        for (var i = 0; i < selectPKB.length; i++) {                
+            listPKB.push(selectPKB.options[i].value);   
+            listPKBWithText.push([selectPKB.options[i].value,selectPKB.options[i].text]);         
+        }
+        changeBGColorOfTopEighteenItems();
+    };
+    
+    function changeBGColorOfTopEighteenItems(){
+        //alert('HI');
+        /*var sizeCSP;
+        var sizePKB;*/
+        var selCSP = document.getElementById('{!$Component.pgForm.pgBlock.cspSelection}');
+        var selPKB = document.getElementById('{!$Component.pgForm.pgBlock.pkbSelection}');
+        /*if( typeof selCSP != "undefined" && selCSP != null && selCSP.length >= 18 ){ sizeCSP = 18; }else{ sizeCSP = selCSP.length; }
+        if( typeof selPKB != "undefined" && selPKB != null && selPKB.length >= 18 ){ sizePKB = 18; }else{ sizePKB = selPKB.length; }*/
+        for (var i = 0; i < selCSP.length; i++) {
+            if(i < 18 ){
+                selCSP.options[i].style.backgroundColor = "#FFFFFF";
+            }else{
+                selCSP.options[i].style.backgroundColor = "#BDBDBD";
+            }
+        } 
+        
+        for (var i = 0; i < selPKB.length; i++) {
+            if(i < 18 ){
+                selPKB.options[i].style.backgroundColor = "#FFFFFF";
+            }else{
+                selPKB.options[i].style.backgroundColor = "#BDBDBD";
+            }
+        } 
+    }
+    
+    function btnRouteAndExecute(cursorPath, listType){
+        //alert(cursorPath);
+        selectedOptions = getSelectedValuefromMultiPicklist(listType);
+        reArrangeOptions(cursorPath, listType, selectedOptions);       
+    }
+    
+    function getSelectedValuefromMultiPicklist( listType ){            
+        var select;
+        if( listType == 'csp' ){
+            select = document.getElementById("{!$Component.pgForm.pgBlock.cspSelection}");
+        }else if( listType == 'pkb' ) {
+            select = document.getElementById("{!$Component.pgForm.pgBlock.pkbSelection}");
+        }  
+        var selected = [];            
+        for (var i = 0; i < select.options.length; i++) {  
+            //alert(select.options[i].innerHTML);              
+            if (select.options[i].selected) selected.push(select.options[i].value);            
+        }  
+        //alert(selected.join());       
+        return selected;        
+    } 
+    
+    function reArrangeOptions(cursorPath, listType, listSelectedOptions){
+
+        var nowIndices = [];
+        if( listType == 'csp' ){
+            
+            if( cursorPath == 'up' ){
+       
+                for( var i = 0; i < listSelectedOptions.length; i++ ){
+                    nowIndices.push(listCSP.indexOf(listSelectedOptions[i]));
+                }
+                //alert(nowIndices.length);                    
+                for( var i = 0; i < nowIndices.length; i++ ){
+                    //alert(alert(nowIndices[i]));
+                    for( var j = 0; j < listCSP.length; j++ ){
+                        if ( nowIndices[i] == j && j != 0 ){ 
+                            var temp = '';                        
+                            temp = listCSP[j];
+                            listCSP[j] = listCSP[j-1];
+                            listCSP[j-1] = temp;
+                        }
+                    }
+                }
+                //alert('LISTCSP'+listCSP.join());                
+            }else if( cursorPath == 'down' ){
+                //alert('LISTCSP'+listCSP.join());                            
+                for( var i = 0; i < listSelectedOptions.length; i++ ){
+                    nowIndices.push(listCSP.indexOf(listSelectedOptions[i]));
+                }
+                //alert(nowIndices.join());                    
+                for( var i = nowIndices.length - 1; i >= 0; i-- ){
+                    //alert('NOWWWWWW'+alert(nowIndices[i])+'------'+listCSP.length);
+                    for( var j = listCSP.length - 1; j >= 0; j-- ){
+                        if ( nowIndices[i] == j && j != listCSP.length - 1 ){ 
+                            var temp = '';                        
+                            temp = listCSP[j];
+                            listCSP[j] = listCSP[j+1];
+                            listCSP[j+1] = temp;
+                        }
+                    }
+                }    
+            }else if( cursorPath == 'top' ){
+                for( var i = 0; i < listSelectedOptions.length; i++ ){
+                    nowIndices.push(listCSP.indexOf(listSelectedOptions[i]));
+                }
+                var indexCounter = 0;    
+                for( var i = 0; i < nowIndices.length; i++ ){
+                    for( var j = 0; j < listCSP.length; j++ ){
+                        if ( nowIndices[i] == j && j != 0 ){ 
+                            //alert('IN');
+                            var temp = '';                        
+                            temp = listCSP[j];
+                            for(var k = j-1; k >= indexCounter ; k--){
+                                listCSP[k+1] = listCSP[k];    
+                            }
+                            //alert(listCSP.join());                                
+                            listCSP[indexCounter] = temp;
+                            //alert(listCSP.join());                                
+                            indexCounter++;                            
+                        }
+                    }
+                }
+            } else if( cursorPath == 'bottom' ){
+                for( var i = 0; i < listSelectedOptions.length; i++ ){
+                    nowIndices.push(listCSP.indexOf(listSelectedOptions[i]));
+                }
+                var indexCounter = listCSP.length - 1; 
+                //alert(nowIndices.length+'IN'+indexCounter);   
+                for( var i = nowIndices.length - 1; i >= 0 ; i-- ){
+                    for( var j = listCSP.length - 1; j >= 0 ; j-- ){
+                        //alert(nowIndices[i]+'ININ'+j);
+                        if ( nowIndices[i] == j && j != listCSP.length - 1 ){ 
+                            //alert('IN');
+                            var temp = '';                        
+                            temp = listCSP[j];
+                            for(var k = j+1; k <= indexCounter ; k++){
+                                listCSP[k-1] = listCSP[k];    
+                            }
+                            //alert(listCSP.join());                                
+                            listCSP[indexCounter] = temp;
+                            //alert(listCSP.join());                                
+                            indexCounter--;                            
+                        }
+                    }
+                }    
+            }
+
+        }else if( listType == 'pkb' ){
+            
+            if( cursorPath == 'up' ){
+       
+                for( var i = 0; i < listSelectedOptions.length; i++ ){
+                    nowIndices.push(listPKB.indexOf(listSelectedOptions[i]));
+                }
+                //alert(nowIndices.length);                    
+                for( var i = 0; i < nowIndices.length; i++ ){
+                    //alert(alert(nowIndices[i]));
+                    for( var j = 0; j < listPKB.length; j++ ){
+                        if ( nowIndices[i] == j && j != 0 ){ 
+                            var temp = '';                        
+                            temp = listPKB[j];
+                            listPKB[j] = listPKB[j-1];
+                            listPKB[j-1] = temp;
+                        }
+                    }
+                }
+                //alert('LISTCSP'+listPKB.join());                
+            }else if( cursorPath == 'down' ){
+                //alert('LISTCSP'+listPKB.join());                            
+                for( var i = 0; i < listSelectedOptions.length; i++ ){
+                    nowIndices.push(listPKB.indexOf(listSelectedOptions[i]));
+                }
+                //alert(nowIndices.join());                    
+                for( var i = nowIndices.length - 1; i >= 0; i-- ){
+                    //alert('NOWWWWWW'+alert(nowIndices[i])+'------'+listPKB.length);
+                    for( var j = listPKB.length - 1; j >= 0; j-- ){
+                        if ( nowIndices[i] == j && j != listPKB.length - 1 ){ 
+                            var temp = '';                        
+                            temp = listPKB[j];
+                            listPKB[j] = listPKB[j+1];
+                            listPKB[j+1] = temp;
+                        }
+                    }
+                }    
+            }else if( cursorPath == 'top' ){
+                for( var i = 0; i < listSelectedOptions.length; i++ ){
+                    nowIndices.push(listPKB.indexOf(listSelectedOptions[i]));
+                }
+                var indexCounter = 0;    
+                for( var i = 0; i < nowIndices.length; i++ ){
+                    for( var j = 0; j < listPKB.length; j++ ){
+                        if ( nowIndices[i] == j && j != 0 ){ 
+                            //alert('IN');
+                            var temp = '';                        
+                            temp = listPKB[j];
+                            for(var k = j-1; k >= indexCounter ; k--){
+                                listPKB[k+1] = listPKB[k];    
+                            }
+                            //alert(listPKB.join());                                
+                            listPKB[indexCounter] = temp;
+                            //alert(listPKB.join());                                
+                            indexCounter++;                            
+                        }
+                    }
+                }
+            } else if( cursorPath == 'bottom' ){
+                for( var i = 0; i < listSelectedOptions.length; i++ ){
+                    nowIndices.push(listPKB.indexOf(listSelectedOptions[i]));
+                }
+                var indexCounter = listPKB.length - 1; 
+                //alert(nowIndices.length+'IN'+indexCounter);   
+                for( var i = nowIndices.length - 1; i >= 0 ; i-- ){
+                    for( var j = listPKB.length - 1; j >= 0 ; j-- ){
+                        //alert(nowIndices[i]+'ININ'+j);
+                        if ( nowIndices[i] == j && j != listPKB.length - 1 ){ 
+                            //alert('IN');
+                            var temp = '';                        
+                            temp = listPKB[j];
+                            for(var k = j+1; k <= indexCounter ; k++){
+                                listPKB[k-1] = listPKB[k];    
+                            }
+                            //alert(listCSP.join());                                
+                            listPKB[indexCounter] = temp;
+                            //alert(listCSP.join());                                
+                            indexCounter--;                            
+                        }
+                    }
+                }    
+            }
+
+        }
+        reRenderMultiSelectOptions(listType);                
+    } 
+    
+    function reRenderMultiSelectOptions( listType ) {
+
+        if( listType == 'csp' ){
+            var position = 0;        
+            for( var i = 0; i < listCSP.length; i++ ){
+                for( var j = 0; j < listCSPWithText.length; j++ ){
+                    //alert( listCSPWithText[0][0]+'-----------------'+listCSPWithText[0]+'--'+listCSPWithText[0][1] );
+                    var position = 0;
+                    var temp; 
+                    if( listCSP[i] == listCSPWithText[j][0] ){
+                         position = listCSP.indexOf( listCSPWithText[j][0] );  
+                         //alert(listCSPWithText[j][1]+'--------'+position); 
+                         temp = listCSPWithText[position];
+                         listCSPWithText[position] = listCSPWithText[j];
+                         listCSPWithText[j] = temp                 
+                    }
+                }
+            }
+            //alert(listCSPWithText.join());
+            //alert(selectedOptions.join());         
+            select = document.getElementById("{!$Component.pgForm.pgBlock.cspSelection}");
+            for( var i = 0; i < listCSPWithText.length; i++ ){
+
+                select.options[i].text = listCSPWithText[i][1];
+                select.options[i].value = listCSPWithText[i][0];  
+                select.options[i].selected = false;
+            
+            }  
+            for( var i = 0; i < listCSPWithText.length; i++ ){
+ 
+                if( selectedOptions.indexOf( listCSPWithText[i][0] ) != -1 ){
+                    select.options[i].selected = true;
+                }             
+            }           
+        }else if( listType == 'pkb' ){
+        
+            var position = 0;        
+            for( var i = 0; i < listPKB.length; i++ ){
+                for( var j = 0; j < listPKBWithText.length; j++ ){
+                    var position = 0;
+                    var temp; 
+                    if( listPKB[i] == listPKBWithText[j][0] ){
+                         position = listPKB.indexOf( listPKBWithText[j][0] );   
+                         temp = listPKBWithText[position];
+                         listPKBWithText[position] = listPKBWithText[j];
+                         listPKBWithText[j] = temp                 
+                    }
+                }
+            }
+       
+            select = document.getElementById("{!$Component.pgForm.pgBlock.pkbSelection}");
+            for( var i = 0; i < listPKBWithText.length; i++ ){
+
+                select.options[i].text = listPKBWithText[i][1];
+                select.options[i].value = listPKBWithText[i][0];  
+                select.options[i].selected = false;
+            
+            }  
+            for( var i = 0; i < listPKBWithText.length; i++ ){
+ 
+                if( selectedOptions.indexOf( listPKBWithText[i][0] ) != -1 ){
+                    select.options[i].selected = true;
+                }             
+            }           
+        } 
+        changeBGColorOfTopEighteenItems();       
+    }
+    
+    function saveSortedData(){
+        //alert('hi'+listCSP.join());
+        var cspStr = listCSP.join();
+        var pkbStr = listPKB.join();
+        //alert(pkbStr);
+        saveKAVData(cspStr, pkbStr);
+    }
+    
+    function resetSelectOptions(){
+    
+          window.location.reload();
+    }
+        
+</script>
+    <fieldset>
+        <legend>Instructions</legend>
+        1. Click the Article Title(s) you wish to re-position. <br></br> 
+        2. Adjust the order by using the navigation buttons for the corresponding Channel. <br></br>
+        3. Click “Save” to update the order of Featured Articles in the Newsroom, or “Cancel” to discard your changes.
+    </fieldset>
+
+    <apex:form id="pgForm">
+        <apex:pageBlock id="pgBlock">
+            <apex:actionFunction name="saveKAVData" action="{!saveKAVDatainStaging}" status="statusLoader" reRender="" >
+                <apex:param name="cspStr" assignTo="{!strDataCSP}" value="" />
+                <apex:param name="pkbStr" assignTo="{!strDataPKB}" value="" />
+            </apex:actionFunction>
+            <apex:actionstatus id="statusLoader">
+                <apex:facet name="start">
+                    <div class="waitingSearchDiv" id="loading" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;"> 
+                            <div class="waitingHolder" style="top: 200px; left:600px; width: 91px; position: fixed;"> 
+                            <img class="waitingImage" src="{!$Resource.LoadingGif}" title="Please Wait..." />
+                            <span class="waitingDescription">Please wait...</span> 
+                           </div> 
+                    </div>
+                </apex:facet> 
+            </apex:actionstatus>
+            <apex:outputPanel id="pgoutPanel">
+                <table id="tbl_container">
+                    <tr>
+                        
+                        <th style="text-align:center;width:50px;">
+                        <h3>Channel:</h3>
+                        </th>
+                        <th style="width:200px;text-align:center;">
+                        <h3>Customer</h3>
+                        </th>
+                        <th style="width:200px;text-align:center;">
+                        <h3>Public Knowledge Base</h3>
+                        </th>
+                        <th style="text-align:center;width:50px;">
+                        </th>
+                    </tr>
+                    <tr>
+                        <td style="text-align:center;width:50px;padding-top:85px; padding-left:25px;">
+                            <div style="width:50px;padding-left:30px;">
+                                <div>Top</div>
+                                <div><img title="Top" class="doubleArrowUp" alt="Top" src="/s.gif" onclick="btnRouteAndExecute('top','csp');" /></div>                        
+                                <div>Up</div>
+                                <div><img title="Up" class="upArrowIcon" alt="Up" src="/s.gif" onclick="btnRouteAndExecute('up','csp');" /></div>
+                                <div style="height:2px;"></div>
+                                <div><img title="Down" class="downArrowIcon" alt="Down" src="/s.gif" onclick="btnRouteAndExecute('down','csp');" /></div>
+                                <div>Down</div> 
+                                <div><img title="Bottom" class="doubleArrowDwn" alt="Bottom" src="/s.gif" onclick="btnRouteAndExecute('bottom','csp');" /></div>
+                                <div>Bottom</div>                     
+                            </div>
+                        </td>
+                        <td style="width:200px;text-align:left;" class="cell_msPicklist">
+                            <apex:selectList multiselect="true" value="{!selectedOptionsCSP}" id="cspSelection" style="height:307px; width:415px;" >
+                                <apex:selectOptions value="{!listOptionsCSP}"/>
+                            </apex:selectList>
+                        </td>
+                        <td style="width:300px;text-align:right;" class="cell_msPicklist">
+                            <apex:selectList multiselect="true" value="{!selectedOptionsPKB}" id="pkbSelection" style="height:307px; width:410px;">
+                                <apex:selectOptions value="{!listOptionsPKB}"/>
+                            </apex:selectList>
+                        </td>
+                        <td style="text-align:center;width:50px;padding-top:85px;">
+                            <div style="width:50px;padding-right:30px;">
+                                <div>Top</div>
+                                <div><img title="Top" class="doubleArrowUp" alt="Top" src="/s.gif" onclick="btnRouteAndExecute('top','pkb');" /></div>                        
+                                <div>Up</div>
+                                <div><img title="Up" class="upArrowIcon" alt="Up" src="/s.gif" onclick="btnRouteAndExecute('up','pkb');" /></div>
+                                <div style="height:2px;"></div>
+                                <div><img title="Down" class="downArrowIcon" alt="Down" src="/s.gif" onclick="btnRouteAndExecute('down','pkb');" /></div>
+                                <div>Down</div> 
+                                <div><img title="Bottom" class="doubleArrowDwn" alt="Bottom" src="/s.gif" onclick="btnRouteAndExecute('bottom','pkb');" /></div>
+                                <div>Bottom</div>                     
+                            </div>
+                        </td>                
+                    </tr>                
+                </table>            
+            </apex:outputPanel>
+            <br />    
+            <apex:outputPanel rendered="{!isKnowledgeUser}">        
+                <div style="margin-left:460px;">
+                    <input type="button" id="btn_save" value="Save" onclick="saveSortedData();" />
+                    <input type="button" id="btn_cancel" value="Cancel" onclick="resetSelectOptions();" />
+                </div> 
+                <br/> 
+            </apex:outputPanel>
+            <div style="padding-left:30px;">
+                <b><i>Note: Articles highlighted in grey will not appear as Featured Articles in Newsroom.</i></b>
+            </div>
+            <br/>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

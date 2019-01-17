@@ -1,0 +1,64 @@
+<apex:page controller="CompareConfig">
+  <Apex:form id="TheForm">
+   <b> Rate Card Type </b>
+   <apex:selectRadio value="{!rateCard}" id="rateCard">
+             <apex:selectOptions value="{!Ratecards}"/>
+             <apex:actionSupport event="onchange" action="{!Dummy}" rerender="TheForm,rateCard" />
+   </apex:selectRadio>
+  <br/>
+  <b> Service Type </b>
+   <apex:selectList id="service" value="{!serviceVal}"
+         size="1" required="true">
+  <apex:selectOptions value="{!service}"/>
+  <apex:actionSupport event="onchange" action="{!Dummy}" rerender="TheForm,service" />
+  </apex:selectList>
+  <br/>
+  <b> Port Speed  </b>
+   <apex:selectList id="port" value="{!portValue}"
+         size="1" required="true">
+  <apex:selectOptions value="{!port}"/>
+  <apex:actionSupport event="onchange" action="{!Dummy}" rerender="TheForm,port" />
+  </apex:selectList>
+  &nbsp;&nbsp;
+  <b><apex:outputText >{!portPrice}</apex:outputText></b> 
+  
+  <br/>
+  <b> CIR </b>
+  <apex:selectList id="cir" value="{!values}"
+         size="1" required="true">
+  <apex:selectOptions value="{!cir}"/>
+  <apex:actionSupport event="onchange" action="{!Dummy}" rerender="TheForm,cir" />
+  </apex:selectList>
+  &nbsp;&nbsp;
+  <b><apex:outputText >{!cosPrice}</apex:outputText></b>
+  
+  <br/>
+  <b> CoS </b>
+  <apex:selectList id="cos" value="{!cosValue}"
+         size="1" required="true">
+  <apex:selectOptions value="{!cos}"/>
+  <apex:actionSupport event="onchange" action="{!Dummy}" rerender="TheForm,cos" />
+  </apex:selectList>
+  <br/>
+   <b> Term </b>
+  <apex:selectList id="term" value="{!tmvalues}"
+         size="1" required="true">
+  <apex:selectOptions value="{!term}"/>
+  <apex:actionSupport event="onchange" action="{!Dummy}" rerender="TheForm,term" />
+  </apex:selectList>
+  <br/>
+   <b> Tier </b>
+  <apex:selectList id="tier" value="{!trValues}"
+         size="1" required="true">
+  <apex:selectOptions value="{!tier}"/>
+  <apex:actionSupport event="onchange" action="{!Dummy}" rerender="TheForm,tier" />
+  </apex:selectList>
+  <br/>
+ <apex:outputText rendered="{!display}">{!diplayResult}</apex:outputText>
+  
+  <br/>
+  
+  
+  
+  </Apex:form>
+</apex:page>

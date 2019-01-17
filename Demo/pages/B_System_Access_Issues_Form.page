@@ -1,0 +1,105 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="ContactPrototypeController">
+    <style type="text/css">
+        .wireline-container,
+        .Voice-container,
+        .Data-container,
+        .Messaging-container,
+        .Voicemail-container,
+        .disp-table-container,
+        .intrusive-test-container,
+        .description-container,
+        .mobility-container { display: none; }
+        .order-num-container { display: block !important; }
+        .disp-table { border: 1px solid silver !important; }
+        .opportunity-id-container { display: block !important; }
+        h1.reg { margin-bottom: 0px !important;  }
+        h4.reg { margin-top: 10px !important;  }
+        h1.separator  {
+            padding-top: 20px; 
+            border-top: 1px solid #333;
+            margin-top: 40px !important; 
+        }
+        .created-ticket {
+            position: relative;
+            height: 20px !important;
+            margin-right: 5px !important;
+            width: 20px !important;
+        }
+    </style>
+    <apex:form styleClass="escalations-form" html-action="">
+        <apex:inputText value="{!Topic}" styleClass="topic-field internal hidden" />
+        <apex:inputText value="{!Category}" styleClass="category-field internal hidden" />    
+        <apex:inputText value="{!Subject}" styleClass="subject-field internal hidden"/>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-back-link">Back</div>
+                <div class="row">
+                    <div class="col-md-12 additional-links">
+                        <h1>Video Links</h1>
+                        <ol>
+                            <li><span></span> quick answers link #1.</li>
+                            <li><span></span> quick answers link #2.</li>
+                            <li><span></span> quick answers link #3.</li>
+                            <li><span></span> quick answers link #4.</li>
+                            <li><span></span> quick answers link #5.</li>
+                        </ol>
+                        <h1>Document Links</h1>
+                        <ol>
+                            <li><span></span> related topics link #1.</li>
+                            <li><span></span> related topics link #2.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>  
+            <div class="col-md-8">
+                <!-- <h1 class="topic-form-title"></h1> -->
+                <div class="form-body">
+                    <div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>What is the system you are using?</label>
+                                <apex:selectList styleClass="required" size="1" value="{!Resolution_Service_Line}">
+                                    <apex:selectoption itemValue="none" itemLabel="Select"></apex:selectoption>
+                                    <apex:selectoption itemValue="Business Direct eBill" itemLabel="Business Direct eBill (for wireline billing)"></apex:selectoption>
+                                    <apex:selectoption itemValue="Premier" itemLabel="Premier (for Mobility billing)"></apex:selectoption>
+                                </apex:selectList>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>    
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>What is the problem you're having</label>
+                                <apex:selectList styleClass="what-problem required" size="1" value="{!Product}">
+                                    <apex:selectoption itemValue="none" itemLabel="Select"></apex:selectoption>
+                                    <apex:selectoption itemValue="I don't have a login ID" itemLabel="I don't have a login ID"></apex:selectoption>
+                                    <apex:selectoption itemValue="I don't have/forgot password" itemLabel="I don't have/forgot password"></apex:selectoption>
+                                    <apex:selectoption itemValue="Other" itemLabel="other (describe below)"></apex:selectoption>
+                                </apex:selectList>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>     
+                        <div class="row description-container">
+                            <div class="col-md-6">
+                                <label>Description os Issue</label>
+                                <apex:inputTextarea styleClass="required" value="{!Description}" style="width: 260px; border-radius: 4px; height: 100px; padding: 0px; padding:10px; border: 1px solid #939393;"/>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-buttons">
+                        <div class="btn btn-default">Cancel</div>
+                        <input type="hidden"  id="external" name="external" value="1" />
+                        <div class="btn btn-primary submitToConfirm-button">Confirm</div>
+                        <apex:commandButton action="{!onSubmit}" styleClass="btn btn-primary submit-button" value="Quick Submit" reRender="true" />
+                    </div>
+                </div>          
+            </div>  
+        </div>
+    </apex:form>
+    <script type="text/javascript">
+        $(document).ready( function () {
+        });
+    </script>
+</apex:page>

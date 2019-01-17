@@ -1,0 +1,91 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="ContactPrototypeController">
+        <style type="text/css">
+            .order-num-container {
+                display: block !important;
+            }
+            .errorText{
+                display: inline-block;
+                color: #ce2828;
+                margin-top: 4px;
+                font-size: 15px;
+            }
+        </style>
+        <apex:form styleClass="escalations-form" html-action="">
+            <apex:inputText value="{!Topic}" styleClass="topic-field internal hidden" />
+            <apex:inputText value="{!Category}" styleClass="category-field internal hidden" />    
+            <apex:inputText value="{!Subject}" styleClass="subject-field internal hidden"/>
+             <apex:inputText value="{!Product}" styleClass="product-field internal hidden" />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-back-link">Back</div>
+                    <div class="row">
+                        <div class="col-md-12 additional-links">
+                            <h1>Helpful Links</h1>
+                            <ol>
+                                <apex:outputPanel >   
+                                <apex:repeat value="{!DocMapSDMobility}" var="docMap"> 
+                                    <li>
+                                        <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}" target="_blank" styleClass="document-file">
+                                            <apex:outputText value="{!docMap.Name}"/>
+                                        </apex:outputLink>        
+                                    </li>
+                                </apex:repeat>    
+                                </apex:outputPanel>
+                            </ol>
+                        </div>
+                    </div>
+                </div>  
+                <div class="col-md-8">
+                    <h1 class="topic-form-title"></h1>
+                      <div class="form-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Request Type</label>
+                                     <apex:selectList value="{!Issue_Type}" size="1" styleClass="issue-type mobility-felement required">
+                        <apex:selectoption itemLabel="Select" itemValue="none"></apex:selectoption>
+                        <apex:selectoption itemLabel="Activation" itemValue="Activation"></apex:selectoption> <apex:selectoption itemLabel="BAN to BAN" itemValue="BAN to BAN"></apex:selectoption>
+                        <apex:selectoption itemLabel="Caller ID Change" itemValue="Caller ID Change"></apex:selectoption>
+                        <apex:selectoption itemLabel="Cancel / Resume Line(s)" itemValue="Cancel / Resume Line(s)"></apex:selectoption>
+                        <apex:selectoption itemLabel="Device / SIM Only Order" itemValue="Device / SIM Only Order"></apex:selectoption>
+                        <apex:selectoption itemLabel="Feature Add / Remove" itemValue="Feature Add / Remove"></apex:selectoption>
+                        <apex:selectoption itemLabel="Port" itemValue="Port"></apex:selectoption>
+                        <apex:selectoption itemLabel="Rate Plan Change" itemValue="Rate Plan Change"></apex:selectoption>
+                        <apex:selectoption itemLabel="Release Line(s)" itemValue="Release Line(s)"></apex:selectoption>
+                        <apex:selectoption itemLabel="Unlock Device" itemValue="Unlock Device"></apex:selectoption>
+                        <apex:selectoption itemLabel="Other" itemValue="Other Issue"></apex:selectoption>
+                        </apex:selectList>
+                        </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                           <div class="row description-container">
+                                <div class="col-sm-7">
+                                    <label>Detailed Description of Request</label>
+                                    <apex:inputTextarea value="{!Description}" styleClass="required" style="width: 260px; border-radius: 4px; height: 100px; padding: 0px; padding:10px; border: 1px solid #939393;"/>
+                                </div>
+                            </div> 
+                            <div class="row">
+                                    <div class="col-md-6">
+                                     If needed, please reply back to your case confirmation email with a completed Offline Activation Template attached.
+                                     </div>
+                                    <div class="col-md-6"></div>
+                                </div>
+                                <div class="row">
+                        <div class="form-buttons">
+                            <div class="btn btn-default">Cancel</div>
+                            <input type="hidden"  id="external" name="external" value="1" />
+                            <div class="btn btn-primary submitToConfirm-button">Confirm</div>
+                            <apex:commandButton action="{!onSubmit}" styleClass="btn btn-primary submit-button" value="Quick Submit" reRender="true" />
+                        </div>
+                    </div>   
+                  </div>
+                </div>  
+            </div>
+        </apex:form>
+
+
+        <script type="text/javascript">
+        $(document).ready( function () {
+        });
+        </script>
+
+    </apex:page>

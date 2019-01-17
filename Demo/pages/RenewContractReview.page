@@ -1,0 +1,568 @@
+<apex:page controller="ReviewContractController" standardStylesheets="false" sidebar="false" showHeader="false">
+    <head>         
+        <apex:includeScript value="{!$Resource.jQueryMin}"/>
+        <apex:includeScript value="{!$Resource.atombootstrapminjs}"/>
+        <apex:includeScript value="{!URLFOR($Resource.bootstrapMin, 'js/bootstrap.min.js')}"/>   
+        <apex:includescript value="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js" />     
+    </head>
+    
+    <style>
+        .termLabel h1{
+            font-family: omnes_light;
+            font-size: 2.5em;
+            color:#000; 
+            margin-bottom:0px !important;
+        }
+
+        .cancelLink, .dashBoardLink {
+            font-size: 16px;
+            font-family: omnes_att_iimedium;
+            color: #0568ad !important;
+            display: inline-block;
+            font-weight: bold !important;
+        }
+        .termInfoNextBtn {
+            padding: 0px 20px !important; 
+            height: 40px;
+        }
+        .footer_copy{
+            margin-top: 40px !important;
+        }
+        .cancelLinkDiv{
+            padding-top: 10px;
+            padding-right: 50px;
+        }
+        .goBackBtn{
+            padding: 0px 20px !important; 
+            background: #fff !important; 
+            color: #595959 !important;
+            min-width: 180px; 
+            border: 1px solid #595959!important; 
+            height: 40px; font-size: 16px; 
+            font-family: omnes_att_iimedium !important;
+        }
+        .thankYouMsg h3{
+            font-family: omnes_att_iimedium !important;
+            font-size: 32px !important;
+            color: #007a3d !important;    
+            margin-top: 30px;           
+        }
+        .spclPriceAccepted {
+            font-family: omnesatt_iiregular !important;
+            font-size: 16px !important;
+            color: #007a3d !important;                
+        }
+        
+        .spclPriceDenied {
+            font-family: omnesatt_iiregular !important;
+            font-size: 16px !important;
+            color: #cf2a2a !important;                
+        }
+        
+        ::-webkit-input-placeholder {
+           text-align: left;
+        }
+
+        :-moz-placeholder { /* Firefox 18- */
+           text-align: left;  
+        }
+
+        ::-moz-placeholder {  /* Firefox 19+ */
+           text-align: left;  
+        }
+
+        :-ms-input-placeholder {  
+           text-align: left; 
+        }
+        .processingMsg h5{
+            font-family: omnesatt_iiregular;
+            font-weight: bold;
+            line-height: 22px;
+            margin:0px;
+        }
+        #thankYouSection .blue_hr{
+            margin-top: 20px;
+            margin-bottom: 34px;
+        }
+        .reviewQuoteText{
+            margin-top:20px;
+            width: 92%;
+        }
+        .searchKey{
+            margin-top:10px;
+        }
+        .totalSitesCount{
+            float: right;
+            font-size: 20px;
+            color: #007a3e !important;
+            font-family: omnes_att_iimedium;
+            margin-left: 10px;
+        } 
+        .searchSection{
+            margin-bottom: 35px;
+            display:block;
+        }
+        .exportQuoteLinkSection{
+            float:right;
+            margin-bottom:10px;
+            display:grid;
+            height: 45px;
+            margin-top: -10px;
+        }
+        .exportQuoteLinkSection a{
+            float:right;
+            font-family: omnes_att_iimedium;   
+        }
+        .exportQuoteLinkSection .tooltipTrigger{
+            float:right;
+            margin-left:5px;
+        }           
+        .sortingIcon{
+            margin-left: 0;
+            float: right;
+            top: 5px;           
+        }       
+        .tableSection thead{
+            font-size:17px;
+        }
+        .tableSection tbody{
+            font-size:16px;
+        }        
+        .tableSection table{
+            border-color: #939393 !important;
+        }        
+        .tableSection .table-bordered>thead>tr>th{
+            border-bottom: 1px dashed #939393;
+            border-left-color: #939393;
+            border-right-color: #939393;
+        }
+        .tableSection .table-bordered>tbody>tr>td{
+            border:none !important;
+        }
+        .tableSection .table>tbody>tr>td{
+            border-top: 1px dashed #939393 !important;
+            border-right: 1px solid #939393 !important;
+        }
+        tbody tr:nth-child(odd), tbody tr:nth-child(even) {
+            background: none;
+        }        
+        .tableSection tbody tr:nth-child(odd) {
+            background: #f2f2f2;
+        }
+        .tableSection tbody tr:nth-child(even) {
+            background: #fff;
+        }
+        .tableSection .table a{
+            font-family: omnes_att_iimedium;        
+        }
+        .dataTableManageCustSearchButton {
+            top: -28px;
+            z-index: 9;
+        }
+        #searchTextBox{
+            float:left;
+            display:inline-block;
+            width:260px;
+            height: 36px;
+        }
+        .searchBlock{
+            display: inline-block;
+            margin-top:28px;
+        }
+        #searchFieldDealReg {
+            width: 260px;
+            height:36px;
+        }
+        #priceSummary {
+            margin-top: 12px;
+            width: 500px;
+        }
+        .quoteSummaryLabel{
+            margin-left: 10px;
+        }
+        #pricingSmryTable td {
+            border: 0px;
+            padding: 0;
+            margin: 0;
+        }
+        table#pricingSmryTable {
+            border-spacing: 10px;
+            border-collapse: inherit;
+            margin-top: 20px;
+            margin-bottom: 6px;
+            font-size: 16px;
+        }
+        .dividerHr {
+            background-color: #1b81ad;
+            border: 0 none;
+            height: 3px;
+            page-break-after: always;
+            width: 100%;
+            margin-bottom:-20px;
+        }
+        .nextBtn {
+            border:1px solid #939393 !important;
+            border-right:none !important; 
+            margin: 0; 
+            border-top-right-radius: 0 !important; 
+            border-bottom-right-radius: 0 !important; 
+            padding: 6px 20px !important; 
+            color: #fff !important;
+            width: auto;
+            height: 40px;
+            font-size: 16px;
+        }
+        .nextActionBlock{
+            margin-bottom: 3px;
+        }
+        .nextActionBlockHR{
+            margin-bottom: 40px !important;
+        }
+        .dropdown-toggle {
+            border:1px solid #939393 !important;
+            width:40px;margin: 0;
+            border-bottom-left-radius: 0 !important;
+            border-top-left-radius: 0 !important;
+            background: #fff !important;
+            color: #000;
+            height: 40px;
+        }
+        ul.dropdown-menu>li>a {
+     
+         font-family: omnes_att_iimedium;
+            line-height: 30px;
+            text-align: center;
+        }
+        ul.dropdown-menu {
+            width: 100%;
+            margin-top:-2px;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border: 1px solid #939393;
+            box-shadow: none;
+        }
+        ul.dropdown-menu .divider{
+            border: 1px solid #939393;
+        }
+        
+        .caret {
+            border-top: 9px solid;
+            border-right: 9px solid transparent;
+            border-left: 9px solid transparent;
+            margin-left: -3px !important;
+        }
+        
+        .allPriceText {
+            margin:0;
+            font-size:11px;
+            color:black;
+            padding-top:5px;
+            margin-bottom: 20px;
+        }
+        .disableSpecialList{
+            background:none repeat scroll 0% 0% rgba(163, 163, 163, 0.54) !important;
+        }
+        a.disableLink {
+            color: #a3a3a3 !important;
+            font-size: 16px;
+            font-family: omnesatt_iiregular;
+            pointer-events: none;
+        }
+        .orangeText{
+            color: #ea7400 !important;
+            font-family: omnes_att_iimedium !important;
+        }
+         table.dataTable thead .sorting_desc {
+             background-image: url(portalDesignImg/app_icons.svg), none !important; 
+        }
+        table.dataTable thead .sorting_asc {
+             background-image: url(portalDesignImg/app_icons.svg), none !important; 
+        }
+        table.dataTable thead .sorting {
+             background-image: url(portalDesignImg/app_icons.svg), none !important; 
+        }
+        
+    </style>
+    <apex:form id="reviewContractFormId" styleClass="row m0">
+    <apex:pageMessages />      
+    <apex:outputPanel rendered="{!IF(isReviewSubmitted == false,true,false)}">
+        <div class="row m0 p0 col-xs-12 col-md-12" id="reviewContractId">
+            <div class="col-xs-12 col-md-12 p0 termLabel">
+                            <h1 class="page_content-header">{!$Label.Review_Quote}</h1>
+            </div>                              
+        </div>      
+        <div class="col-xs-12 col-md-12 p0 reviewQuoteText">
+            <apex:outputPanel rendered="{!QuoteStatusValue = 'Special Pricing Approved'}">
+                <apex:outputLabel styleClass="spclPriceAccepted m0" value="{!$Label.RENEWAL_SPCL_PRICE_APPROVED}" />
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!QuoteStatusValue = 'Special Pricing Denied'}">
+                <apex:outputLabel styleClass="spclPriceDenied m0" value="{!$Label.RENEWAL_SPCL_PRICE_DENIED}" />
+            </apex:outputPanel>
+            <h5>{!$Label.REVIEW_QUOTE_TEXT}</h5>            
+        </div>
+        <div class="col-xs-12 col-md-12 p0 reviewSiteData">         
+            <div class="col-xs-12 col-md-12 p0 searchBlock">
+                <div id="searchTextBox">
+                     <input id="searchFieldDealReg" onkeyup="searchSiteListPanelTable();" placeholder="Search by keyword" type="text"/> 
+                    <span class="dataTableManageCustSearchButton search_button"></span>
+                </div>
+                <div class="exportQuoteLinkSection">
+                    <div class="totalSitesCount">{!custSiteList.size} Site{!IF(custSiteList.size>1,'s','')} Total</div>
+                    <div><apex:commandLink value="Export Quote" onclick="window.open('/apex/quoteInexcelformat?quoteId={!quoteObj.id}'); return false;"/></div>  
+                </div>
+                 <apex:outputPanel id="sitelistPanel" styleClass="m-t-20 tableSection">
+                    <table class="tableSortingClass table table-bordered" id="tableSortingClass" style="clear:both;">
+                        <thead>
+                            <tr>
+                                <th>Site Name<div class="reorder_btn sortingIcon"></div></th>
+                                <th>Address<div class="reorder_btn sortingIcon"></div></th>
+                                <th>Monthly<div class="reorder_btn sortingIcon"></div></th>
+                                <th>One-Time<div class="reorder_btn sortingIcon"></div></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <apex:repeat value="{!custSiteList}" var="site">
+                                <tr>
+                                    <td>{!site.Site_Name__c}</td>
+                                    <td>{!site.Address_Line__c}, {!site.City__c}, {!site.State__c} {!site.Zip_Code__c}</td>
+                                    <td>
+                                        <apex:outputText value="${0, number, ###,###,##0.00}">
+                                            <apex:param value="{!mapSiteTotalPrice[site.id]}" />
+                                        </apex:outputText>
+                                    </td>
+                                    <td>
+                                        <apex:outputText value="${0, number, ###,###,##0.00}">
+                                            <apex:param value="{!mapSiteTotalOneTime[site.id]}" />
+                                        </apex:outputText>                                    
+                                    </td>                                  
+                                </tr>
+                            </apex:repeat>
+                      </tbody>
+                 </table>
+                </apex:outputPanel> 
+            </div>
+            <div id="priceSummary" class="row p0 pull-right">
+                        <div class="f-s-20 quoteSummaryLabel">{!$Label.RENEW_QUOTE_PRICING_SUMMARY}</div>
+                        <table id="pricingSmryTable" class="table">
+                            <tr>
+                                <td>Monthly Total</td>
+                                <td class="text-right">
+                                    <apex:outputText value="${0, number, ###,###,##0.00} /mo">
+                                            <apex:param value="{!monthlyInstallationCharges}" />
+                                    </apex:outputText> 
+                                </td>
+                            </tr>
+                            <tr class="orangeText">
+                                <td>        
+                                    <apex:outputPanel rendered="{!showAdditionaldiscSection=true}">     
+                                        Additional Discount     
+                                    </apex:outputPanel>     
+                                </td>       
+                                <td class="text-right">
+                                    <apex:outputPanel rendered="{!showAdditionaldiscSection=true}"> 
+                                        <span>-</span>
+                                        <apex:outputText value="${0, number, ###,###,##0.00} /mo">
+                                            <apex:param value="{!additionalSPAmount}" />
+                                        </apex:outputText> 
+                                    </apex:outputPanel>     
+                                </td>       
+                            </tr>     
+                           
+                            <tr class="orangeText">                                
+                                <td>
+                                    <!--id="AddDiscount"-->
+                                    <apex:outputPanel rendered="{!dealRegDiscount =true && DealRegistrationAmount!= null && DealRegistrationAmount> 0 && (quoteObj.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Deal_Approved || quoteObj.Apttus_Proposal__Approval_Stage__c = 'Special Pricing Denied' || quoteObj.Apttus_Proposal__Approval_Stage__c = 'Draft')}">
+                                        Deal Registration Discount
+                                    </apex:outputPanel>
+                                    <!--id="SpecialDiscount"-->
+                                    <apex:outputPanel rendered="{!specialPricingDiscount =true && specialPricingAmount!= null && specialPricingAmount> 0 && (quoteObj.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Special_Pricing_Approved || quoteObj.Apttus_Proposal__Approval_Stage__c = 'Draft')}">
+                                        Special Pricing Discount
+                                    </apex:outputPanel>
+                                </td>
+                                <td class="text-right">
+                                    <!--id="AddDiscount"-->
+                                    <apex:outputPanel rendered="{!dealRegDiscount =true && DealRegistrationAmount!= null && DealRegistrationAmount> 0 && (quoteObj.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Deal_Approved || quoteObj.Apttus_Proposal__Approval_Stage__c = 'Special Pricing Denied' || quoteObj.Apttus_Proposal__Approval_Stage__c = 'Draft')}">
+                                        <span>-</span>
+                                        <apex:outputText value="${0, number, ###,###,##0.00} /mo">
+                                            <apex:param value="{!DealRegistrationAmount}" />
+                                        </apex:outputText> 
+                                    </apex:outputPanel>
+                                    <!--id="SpecialDiscount"-->
+                                    <apex:outputPanel rendered="{!specialPricingDiscount =true && specialPricingAmount!= null && specialPricingAmount> 0 && (quoteObj.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Special_Pricing_Approved || quoteObj.Apttus_Proposal__Approval_Stage__c = 'Draft')}">
+                                        <span>-</span> 
+                                        <apex:outputText value="${0, number, ###,###,##0.00} /mo">
+                                             <apex:param value="{!specialPricingAmount}" />
+                                         </apex:outputText> 
+                                    </apex:outputPanel>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><span><strong>Monthly Total</strong></span>&nbsp;<span style="font-family: omnes_att_iimedium;">(discounts applied)</span></td>
+                                <td class="text-right" style="color:black;font-weight: bold;">
+                                    <strong>
+                                         <apex:outputText value="${0, number, ###,###,##0.00} /mo">
+                                             <apex:param value="{!total}" />
+                                         </apex:outputText>
+                                    </strong>
+                                </td>
+                            </tr>
+                            <tr style="color:black;font-weight: bold;">
+                                <td><strong>One-Time Total</strong></td>
+                                <td class="text-right">
+                                    <strong style="margin-right: 0px;">
+                                        <apex:outputText value="${0, number, ###,###,##0.00}">
+                                            <apex:param value="{!oneTimeTotal}" />
+                                        </apex:outputText>      
+                                    </strong> 
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <p class="allPriceText" >All prices shown are pre-tax.</p> 
+                                </td>
+                            </tr>
+                        </table>                        
+                    </div>
+                    
+                    <div class="col-xs-12 p0 nextActionBlock">
+                    <hr class="dividerHr m0 p0 nextActionBlockHR"/>
+                            <ul class="row m0 m-t-20 p0 pull-right">
+                                
+                                <li style="display: inline-block;margin-right:25px;">
+                                    <div style="display:inline-block;">
+                                        <div class="pull-left cancelLinkDiv">
+                                            <apex:commandLink styleClass="cancelLink" id="renewalTermCancelId2" value="{!$Label.CANCEL_REQ}" action="{!cancelRequest}" rerender="" status="loading"/> 
+                                        </div>
+                                        <div class="pull-right">
+                                            <apex:commandButton action="{!saveAndExit}" id="saveBtnId" value="{!$Label.SAVE_AND_EXIT}" styleClass="btn-primary pull-right goBackBtn m0" rerender="" status="loading"/> 
+                                        </div>
+                                    </div>
+                                </li>
+                                <li style="display: inline-block;">
+                                    <div class="btn-group pull-right" style="2px solid #d3d3d3;">
+                                        <apex:commandButton styleclass="btn btn-primary nextBtn" value="{!$Label.NEXT_TERMAND_CONDITION}" action="{!redirectToTNCPage}" />
+                                        <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" style=" font-family: Omnes_Light !important; font-size: 18px;"><span class="caret"></span></button>                                      
+                                        <ul class="dropdown-menu blueText {!IF(QuoteStatusValue == 'Special Pricing Approved','disableSpecialList','')}" role="menu">
+                                            <li>
+                                                <apex:commandLink styleClass="{!IF(QuoteStatusValue == 'Special Pricing Approved','disableLink','dashBoardLink')}" value="{!$Label.RequestSpecialPricing}" action="{!SpecialPricing}" rendered="{!requestSpclPricingFlag}" />
+                                            </li>
+                                        </ul>
+                                    </div>                        
+                                </li>                        
+                            </ul>                                    
+                    </div>
+        </div>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!IF(isReviewSubmitted == true,true,false)}">
+        <div class="row m0 p0 col-xs-12 col-md-12" id="thankYouSection">
+            <div class="col-xs-12 col-md-12 p0 thankYouMsg">
+                <h3>{!$Label.RENEWAL_TERM_THANKU}</h3>
+            </div>
+            <div class="col-xs-12 col-md-12 p0 processingMsg">
+                <h5>{!$Label.RENEWAL_TERM_PROCES_MSG1}</h5>
+                <h5><strong>{!$Label.RENEWAL_MANAGE_QUOTE}</strong>&nbsp; {!$Label.RENEWAL_TERM_PROCES_MSG2}</h5>
+            </div>
+            <div class="row m0 p0">
+                <div class="col-xs-12 p0">
+                    <hr class="blue_hr" />
+                </div>
+            </div>
+            <div class=" row col-xs-12 p0 m0">
+                <div class="pull-right cancelLinkDiv p0 m0">
+                    <a href="/apex/PortalDashboard_UI" class="dashBoardLink" id="dashBoardLinkId">{!$Label.Dashboard}</a>
+                </div>
+            </div>
+        </div>
+    </apex:outputPanel>
+    </apex:form>
+    <script>
+    
+        jQuery(document).ready(function($){
+           
+           
+           jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+            "currency-pre": function ( a ) {
+                a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
+                return parseFloat( a );
+            },
+         
+            "currency-asc": function ( a, b ) {
+                return a - b;
+            },
+         
+            "currency-desc": function ( a, b ) {
+                return b - a;
+            }
+        } ); 
+            $('#tableSortingClass').DataTable({
+                "columnDefs": [{ type: 'currency', targets: 2 }],
+                "aaSorting": [[ 2, 'asc' ]],
+                "bPaginate": false,
+                "bFilter": false,
+                "bInfo": false
+                
+            });             
+            setTimeout(function(){ makeAllSortable(); }, 2000);
+        });
+        
+        function sortTable(table, col, reverse) {
+            var tb = table.tBodies[0], // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
+                tr = Array.prototype.slice.call(tb.rows, 0), // put rows into array
+                i;
+            reverse = -((+reverse) || -1);
+            tr = tr.sort(function (a, b) { // sort rows
+                return reverse // `-1 *` if want opposite order
+                    * (a.cells[col].textContent.trim() // using `.textContent.trim()` for test
+                        .localeCompare(b.cells[col].textContent.trim())
+                       );
+            });
+            for(i = 0; i < tr.length; ++i) tb.appendChild(tr[i]); // append each row in order
+        }
+        
+        function makeAllSortable(parent) {
+            parent = parent || document.body;
+            var t = parent.getElementsByClassName('tableSortingClass');
+            makeSortable(t[0]);
+        }
+        
+        function makeSortable(table) {
+            var th = table.tHead, i;
+            th && (th = th.rows[0]) && (th = th.cells);
+            if (th) i = th.length;
+            else return; // if no `<thead>` then do nothing
+            while (--i >= 0) (function (i) {
+                var dir = 1;
+                if(i != 4){
+                    th[i].childNodes[1].addEventListener('click', function () {sortTable(table, i, (dir = 1 - dir))});
+                }
+            }(i));
+        }
+        
+        function searchSiteListPanelTable(){
+            var searchValue = $('#searchFieldDealReg').val();           
+            $(".tableSection tbody").find('tr').each(function(index, row){
+                var allCells = $(row).find('td:not(:last-child)');
+                if(allCells.length > 0){
+                    var found = false;
+                    allCells.each(function(index, td){
+                        var regExp = new RegExp(searchValue, 'i');
+                        if(regExp.test($(td).text())){
+                            found = true;
+                            return false;
+                        }
+                    });
+                    if(found == true)$(row).show();else $(row).hide();
+                    
+                    if($(".tableSection tbody").find('tr:visible').length == 0){
+                        var errorMsg = $('<tr class="noSearchDataAvailable"><td colspan="5">No data available in table</td></tr>');                                    
+                        $(".tableSection tbody").append(errorMsg);
+                        return false;
+                    }else{
+                        $(".tableSection tbody").find('.noSearchDataAvailable').remove();
+                    }                    
+                }
+            });
+        }  
+    </script>
+
+</apex:page>

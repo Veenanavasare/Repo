@@ -1,0 +1,1536 @@
+<apex:page id="pgId" controller="SI_EnablementdetailController" sidebar="false" showHeader="false" applyBodyTag="false" cache="true" tabStyle="Account" standardStylesheets="true" >   
+<script src="{!$Label.DTMHeader}"></script>
+<apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-1.9.1.js')}"/>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<style type="text/css">
+    .highlightWord { background-color: #ff2; }
+</style>
+<script type="text/javascript">
+    $j = jQuery.noConflict(); 
+    jQuery.fn.highlight = function (str, className) {
+        var regex = new RegExp(str, "gi");
+        return this.each(function () {
+            $j(this).contents().filter(function() {
+                return this.nodeType == 3;
+            }).replaceWith(function() {
+                return (this.nodeValue || "").replace(regex, function(match) {
+                    return "<span class=\"" + className + "\">" + match + "</span>";
+                });
+            });
+        });
+    };
+    /*
+    $j(document).ready(function() {
+        $j("#body *").highlight("{!strValue}", "highlightWord");
+        $j('#hl').click(function(e) {
+            e.preventDefault();
+            $j("#body *").highlight("{!strValue}", "highlightWord");
+            
+        });
+
+        $j('#unhl').click(function(e) {
+            e.preventDefault();
+            $j(".highlightWord").replaceWith(function() { return $(this).contents(); });       
+        });
+    });
+    */
+</script>
+<script type='text/javascript'>
+    function WriteAReviewClick(){
+        document.getElementById('ratingContainer').style.display = "block";        
+    }
+    function SubmitReviewMess(e){
+       var submitMess =  $j("[id$=requestMessId]").val();
+       var ratingNum =  $j("[id$=OptionID] option:selected").val();
+       var flag = true;
+        if(ratingNum == '--None--'){
+            $j("[id$=ratingErrMesgeID]").show();
+            e.preventDefault();
+            
+       }else{
+            $j("[id$=ratingErrMesgeID]").hide();
+       }
+       if(submitMess == ''){
+            $j("[id$=reviewErrMesgeID]").show();
+            e.preventDefault();
+            
+       }else{
+           $j("[id$=reviewErrMesgeID]").hide();
+       }
+       
+      
+       if(flag){
+           storeReviews();
+           $j("[id$=OptionID] option:selected").val('--None--').empty();
+           $j("[id$=requestMessId]").val('').empty();
+       } 
+    }
+   
+</script>
+<script type='text/javascript'>
+    function noenter(ev) {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+            doSearchAF();
+            return false;
+         } else {
+              return true;
+         }
+     }
+</script>
+    <apex:stylesheet value="{!$Resource.newsroomStyleSheet}"/>
+    <apex:stylesheet value="{!$Resource.Newsroom_hover}"/>
+<style>
+    div#si_primaryMenu ul, div#si_primaryMenu ul li {margin:0; padding:0; list-style-type: none}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}}') no-repeat scroll 5px -40px; width: 982px; height: 40px;}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}') no-repeat scroll -5px -150px transparent; width: 982px; height: 92px;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem:hover,
+    li#programOverviewTab.programOverviewTabActive,
+    li#Connect.programOverviewTabActive,
+    li#productsTab.productsTabActive,
+    li#newsTab.newsTabActive
+    {
+        background-image: url('{!$Resource.NavConnect}'); 
+        background-repeat:no-repeat;
+        background-attachment:scroll;
+        background-color:transparent;
+        height:63px;
+        position:relative; 
+        top:0px; 
+        left:-70px;
+    }
+    
+    
+    </style>
+    <apex:stylesheet value="{!$Resource.newsroomStyleSheet}"/>
+    <apex:stylesheet value="{!$Resource.Newsroom_hover}"/>
+    <apex:stylesheet value="{!$Resource.ProviderDirectory}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-1.9.1.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.masonry, 'masonry-site/jquery.masonry.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js')}"  />
+    
+    <script type="text/javascript">
+        function countEmail(){}
+    </script>
+    <script type="text/javascript" src="/resource/jQuery"></script>
+    <script type="text/javascript">      
+    
+    $(window).ready(function() { 
+      $("#provider >a ").addClass("linkActive");
+      $("#events >a ").addClass("linkInActive");
+      $("#news >a ").addClass("linkInActive");
+      $('.blogs_heading').click(
+         function () {
+           $('#mybox').show();
+         } 
+      );
+            
+      $('img.ProviderLogoImgTag').error(function () {
+         $(this).attr('src', '{!URLFOR($Resource.ListImage)}');
+      });
+
+      $('#DemoImage > img').error(function () {
+         $(this).attr('src', '{!URLFOR($Resource.TrayImage)}');
+      });
+    });   
+</script> 
+
+<script type="text/javascript"  src="{!URLFOR($Resource.newsroomplayer2, 'amp/amp.min.js')}?amp-defaults={!$Resource.prodVideoXML3}"></script>
+    
+<script type="text/javascript">
+    var amp;
+    function vidPlayer(Title, hlsVid,hdsVid ){   
+        var config_overrides = {
+            autoplay: true,
+            media: 
+            {
+                title: Title,
+                source:
+                [
+                   {src: hdsVid, type: "video/f4m"},
+                   {src: hlsVid, type: "application/x-mpegURL"}
+                   //{src: vid, type: "video/f4m"}
+                ] 
+            }
+        };
+        amp = new akamai.amp.AMP("akvideo", config_overrides);
+        
+        //console.log(amp);
+    }
+</script>      
+<script type="text/javascript" src="/resource/jQuery"></script>
+
+<!-- css for topics -->
+
+<!-- css for DetailsPage Style-->
+        <style>                              
+               *{
+                  margin:0; 
+                  padding:0; 
+                } 
+                .accountBlock{
+                    margin-bottom:-8px;
+                }
+                .active{
+                    color:#EF6F00;
+                } 
+                .inActive{
+                    color:#0C2577;
+                } 
+                .main{ 
+                    padding-left:35px;
+                    
+                }
+                .overviewMain { 
+                    padding-top:23px; 
+                    padding-left:35px; 
+                }
+                .contactMain{ 
+                    padding-top:35px; 
+                    padding-left:35px;                    
+                }
+                ul li{ 
+                    list-style:none; 
+                }
+                a{ 
+                    text-decoration:none;
+                }
+                .info{ 
+                    float:left; 
+                    width:445px; 
+                    margin-right:20px; 
+                    font:14px Arial, line-height:17px; 
+                    color:#333;
+                }
+                .infoDetail {
+                    color: #333333;
+                    float: left;
+                    margin-right: 20px;
+                    margin-top:25px;
+                }
+                .cont_info { 
+                    background-image: url({!($Resource.GrayGradient)});
+                    background-repeat:repeat;
+                    height: 57px;
+                    width: 120px; 
+                    display:inline-block; 
+                    width:445px; 
+                    background:#F9F9F9;
+                    border-right-radius:3px;
+                    border-left-radius:3px;
+                    border-bottom-radius:3px;
+                    border:1px solid #ccc; 
+                }
+                .overview_info{ 
+                    display:inline-block; 
+                    width:445px; 
+                    background:#F9F9F9;
+                    border-right-radius:3px;
+                    border-left-radius:3px;
+                    border-bottom-radius:3px; 
+                    border:1px solid #ccc; 
+                }
+                .spacli{ 
+                    display:inline-block; 
+                    width:445px; 
+                    background:#F9F9F9; 
+                    border-radius:3px; 
+                    border:1px solid #ccc;                     
+                    margin-top:100px;
+                    border-bottom-left-radius:0px;
+                    border-bottom-right-radius:0px; 
+                }
+                .spacli1{ 
+                    display:inline-block; 
+                    width:445px; 
+                    background:#F9F9F9; 
+                    border-radius:3px; 
+                    border:1px solid #ccc; 
+                    margin-left:465px; 
+                    float:left; 
+                    border-bottom:0px;
+                }
+                .sub_btn{ 
+                    background:#7cc6ff; 
+                    color:#fff;
+                    padding:9px 14px 7px 13px;
+                    border-radius:3px; 
+                    cursor:pointer; 
+                    box-shadow: 0px 2px 4px #7cc6ff;
+                 }
+                .MT20{ 
+                    margin-top:20px;  
+                    color: #333333; 
+                    font-family: Arial; 
+                    font-size: 20px; 
+                    line-height: 24px;                   
+                }
+                .MT201{ 
+                    margin-top:20px; 
+                    font:17px Arial; 
+                    font-weight:bold;  
+                    margin-left:465px; 
+                    float:left;
+                    margin-top:-205px
+                }
+                .add { 
+                    background:#fff;
+                    border:1px solid #ccc;
+                    display:inline-block;
+                    border-radius:3px; 
+                    width:445px; 
+                    border-top:0; 
+                    font:14px arial; 
+                    line-height:17px; 
+                    color:#333;
+                 }
+                .addDetail { 
+                    background:#fff;
+                    border:1px solid #ccc;
+                    display:inline-block;
+                    border-radius:5px; 
+                    width:445px;
+                    border-top:0; 
+                    font:14px arial; 
+                    line-height:17px; 
+                    color:#333;
+                    border-top-left-radius:0px;
+                    border-top-right-radius:0px; 
+                }
+                .addOverview { 
+                    background:#fff;
+                    border:1px solid #ccc; 
+                    width:445px; 
+                    border-top:0; 
+                    font:14px arial; 
+                    line-height:17px; 
+                    color:#333;
+                 }
+                .addContact { 
+                    background:#fff;
+                    border:1px solid #ccc;
+                    display:inline-block;
+                    border-radius:5px; 
+                    width:445px;
+                    border-top:0; 
+                    font:14px arial; 
+                    line-height:17px; 
+                    color:#333;
+                    border-top-left-radius:0px;
+                    border-top-right-radius:0px; 
+                 }
+                .spacli_link{ 
+                    background:#fff;
+                    border:1px solid #ccc;
+                    display:inline-block;
+                    border-radius:3px; 
+                    width:445px; 
+                    margin-left:465px;                  
+                 }
+                 .spacli_link_detail{ 
+                    background:#fff;
+                    border:1px solid #ccc;
+                    display:inline-block;
+                    border-radius:5px; 
+                    width:445px;  
+                    line-height:17px; 
+                    border-top:0px;                       
+                    border-top-left-radius:0px;
+                    border-top-right-radius:0px;          
+                 }
+                .spacli_link1{ 
+                    background:#fff;
+                    border:1px solid #ccc;
+                    display:inline-block;
+                    border-radius:3px;
+                    width:445px; 
+                    border-top:0; 
+                    margin-left:465px; 
+                    margin-top:-205px;
+                }
+                .links{
+                    float:left; 
+                    width:50%; 
+                    color:#067ab4;  
+                    text-decoration: none; 
+                    margin-top:20px;
+                    margin-bottom:20px;
+                }
+                
+                .links ul li a{ 
+                    color:#067ab4;  
+                    text-decoration: none;
+                    font-size:14px; 
+                }
+                .menu{ 
+                    margin-top:20px; 
+                    border-radius:3px;
+                    height:50px; 
+                }
+                . ul li{ 
+                    float:left;
+                    padding-left:20px;
+                }
+                .menu ul li:first-child{
+                    padding-left:0; 
+                }
+                .menu ul li a{ 
+                    color: #0C2577;
+                    display: block; 
+                    font-family: Arial; 
+                    font-size: 14px; 
+                    font-weight: bold; 
+                    padding: 16.5px 2.5px 10.5px 11px; 
+                }
+                .gray_background{
+                    background-image: url({!($Resource.GrayGradient)}); 
+                    background-repeat:repeat; 
+                    height: 57px; 
+                    width: 976px;
+                    margin-top:6px;
+                    border-top-left-radius:5px;
+                    border-top-right-radius:5px;
+                }    
+                .addContactEnablement {
+                    -moz-border-bottom-colors: none;
+                    -moz-border-left-colors: none;
+                    -moz-border-right-colors: none;
+                    -moz-border-top-colors: none;
+                    background: none repeat scroll 0 0 #fff;
+                    color: #333;
+                    display: inline-block;
+                    font: 14px/17px arial;
+                }           
+                .CL{ 
+                    clear:both; 
+                    }
+               .inpuTypeField{
+                        padding: 5px;   
+                        border: 1px solid #DDDDDD;
+                        margin-left:15px;
+                        /*Applying CSS3 gradient*/
+                        background: -moz-linear-gradient(center top , #FFFFFF,  #EEEEEE 1px, #FFFFFF 20px);    
+                        background: -webkit-gradient(linear, left top, left 20, from(#FFFFFF), color-stop(5%, #EEEEEE) to(#FFFFFF));
+                        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FBFBFB', endColorstr='#FFFFFF');
+                        
+                        /*Applying CSS 3radius*/   
+                        -moz-border-radius: 3px;
+                        -webkit-border-radius: 3px;
+                        border-radius: 3px;
+                        
+                        /*Applying CSS3 box shadow*/
+                        -moz-box-shadow: 0 0 2px #DDDDDD;
+                        -webkit-box-shadow: 0 0 2px #DDDDDD;
+                        box-shadow: 0 0 2px #DDDDDD;
+                    
+                    }
+                   
+               .inpuTypeFieldMess{
+                        padding: 5px;   
+                        border: 1px solid #DDDDDD;
+                        margin-left:15px;
+                        /*Applying CSS3 gradient*/
+                        background: -moz-linear-gradient(center top , #FFFFFF,  #EEEEEE 1px, #FFFFFF 48px);    
+                        background: -webkit-gradient(linear, left top, left 20, from(#FFFFFF), color-stop(5%, #EEEEEE) to(#FFFFFF));
+                        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FBFBFB', endColorstr='#FFFFFF');
+                        
+                        /*Applying CSS 3radius*/   
+                        -moz-border-radius: 3px;
+                        -webkit-border-radius: 3px;
+                        border-radius: 3px;
+                        
+                        /*Applying CSS3 box shadow*/
+                        -moz-box-shadow: 0 0 2px #DDDDDD;
+                        -webkit-box-shadow: 0 0 2px #DDDDDD;
+                        box-shadow: 0 0 2px #DDDDDD;
+                    
+                    }   
+                    .overview_info{ 
+                display:inline-block; 
+                width:445px; 
+                background:#F9F9F9;
+                border-right-radius:3px;
+                border-left-radius:3px;
+                border-bottom-radius:3px; 
+                border:1px solid #ccc; 
+            }
+            .gray_background{
+                background-image: url({!($Resource.GrayGradient)}); 
+                background-repeat:repeat; 
+                height: 57px; 
+                width: 445px;
+                margin-top:6px;
+                border-top-left-radius:5px;
+                border-top-right-radius:5px;
+            }
+            .demoStyle{
+                float:left; color: #333333; font-family: Arial; font-size: 20px; line-height: 24px; margin:20px;
+            }
+            .reviewAvgStarRate{
+                margin-left:7px;
+                color: #336699;
+                font-family: Arial;
+                font-size: 12px;
+                line-height: 17px;
+            }
+            .reviewDetails { 
+                background:#fff;
+                border:1px solid #ccc; 
+                width:910px; 
+                border-top:0; 
+                font:14px arial; 
+                line-height:17px; 
+                color:#333;
+                margin-left:35px;
+                margin-top:-3px;
+                border-radius: 0 0 5px 5px;
+             }
+             .secondaryPalette.bPageBlock {
+        background-color: #FFFFFF !important;
+        border-bottom: 0px;
+        border-left: 0px;
+        border-radius: 0px;
+        border-right: 0px;
+    }
+    .secondaryPalette {
+        background-color: #FFFFFF !important;
+        border-color: #FFFFFF !important;
+    }
+    .pbHeader > table {
+        border-bottom: 0px solid #DBDBDB !important;
+        padding: 0px 0;
+        margin-top: -50px;
+    }
+    .tertiaryPalette {
+        background-color: #FFFFFF !important;
+        border-color: #FFFFFF;
+    }
+    .pbButton {
+        float: right;
+        margin-right: 18px;
+    }
+
+    .menuStyle{
+        padding-top:11px;
+    }
+    .secNavStyle{
+        position:inherit;
+        list-style-type: none; 
+        padding-top:68px; 
+        font-family:Arial; 
+        font-size:13px; 
+        font-color:#333333; 
+        margin-left:40px;
+    }
+    .paginationStyle{
+        margin:25px 20px 20px 10px;
+    }
+    .breadcomTxt{
+        text-decoration:none;
+    }
+    .providerLogoStyle{
+        padding-top:3px; height:70px;  margin-left:20px;
+    }
+    .ProviderLogoImg{
+        float:left; margin-right:25px; margin-top:15px;
+        
+    }
+    .ProviderLogoImgTag{
+        width:45px; height:45px; margin-left: 6px; -webkit-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); -moz-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); box-shadow: 0px 0px 5px rgba(36,36,36,0.8);
+    }
+    .compDisplayName{
+        padding-left:75px; margin-top:9px; font: 26px Arial; color: #333333;
+    
+    }
+    .compDisplayTagline{
+        margin-left:75px; margin-top:5px; font:16px Arial; color: #333333;
+    }
+    .marginNavs{
+        margin-left:-17px;
+    }
+    .marginMidNavs{
+        margin-left:-31px;
+    }
+    .AttLogoProviderImg{
+        width:250px; margin-left:-6px;
+    }
+    .summaryStyle{
+        color: #ababab; font:14px Arial, line-height:17px; font-weight:bold; padding-top:17px;
+    }
+    .tierStyle{
+        margin-top:5px; color: #ababab; font:14px Arial, line-height:17px; font-weight:bold;
+    }
+    .styleHeadq{
+        margin-top:15px; margin-left:20px; color: #ababab; font:14px Arial, line-height:17px; font-weight:bold;
+    }
+    .styleHeadqOver{
+     margin-top:15px; margin-left:0px; color: #ababab; font:14px Arial, line-height:17px; font-weight:bold;
+    }
+    .regStyle{
+        color:#067ab4;
+    }
+    .demoStyle{
+        float:left; color: #333333; font-family: Arial; font-size: 20px; line-height: 24px; margin:20px;
+    }
+    .demoVideoBorderStyle{
+        width:445px; height:267px; margin-top:-3px; margin-left:465px;
+    }
+    .demoImageBorderStyle{
+        width:445px; height:267px; margin-top:-3px; margin-left:465px; border-bottom-right-radius:5px; border-bottom-left-radius:5px;
+    }
+    .demoVideoArea{
+        width:440px; height:262px;
+    }
+    .imageLinkStyle{
+        width:445px; height:268px;
+    }
+    .conInfoStyle{
+       margin:20px;color: #333333; font-family: Arial; font-size: 20px; line-height: 24px; float:left;
+    }
+    .MarEmail{
+        margin-left:125px;
+    }
+    .emailButStyle{
+        margin-top:15px;
+    }
+    .padEmail{
+        padding-left:15px;
+    }
+    .phMarStyle{
+        margin-left:20px; margin-top:20px;
+    }
+    .phSecMarStyle{
+        margin-left:20px;
+    }
+    .websiteStyle{
+        color:#067ab4; text-decoration:none; margin-left:20px;
+    }
+    .indStyleDetail{
+        color: #ababab; font-size:14px; font-weight:bold; font-family:Arial; line-height:17px;
+    }
+    .reqMoreInfoStyle{
+        font:20px Arial; margin:20px;
+    }
+    .contactName{
+        margin-top:10px; margin-bottom:10px; margin-left:30px; color:#666; font-size:14px;
+    }    
+    .inputTextStyle{
+        margin-bottom:10px; margin-left:30px; color:#666; font-size:14px;
+    }
+    .inputTextArea{
+        width:403px; margin-bottom:13px;
+    }
+    .messStyle{
+        resize:none; width:403px; margin-bottom:28px;
+    }
+    .headquLabel{
+        color: #ababab; font:14px Arial, line-height:17px; font-weight:bold; margin-top:15px; margin-left:20px;
+    }
+    .specStyle{
+        color:#333333; font-family:Arial; font-size:20px; line-height:24px; margin:20px; float:left;
+    }
+    #demoVideoStyle{
+         margin-left: 3.5px; margin-top: 4px;
+    }
+    .fontStyle{
+        font-size:14px; line-height:17px;
+    }
+    .charTxt{
+        float:right;
+        color: #666666;
+        font-size: 12px;
+        margin-top: 10px;
+        margin-right: 30px;
+    }
+     #reviewList{
+        width:100%;
+        clear:both;
+        margin-left:-20px;       
+    }
+    #reviewBlock{
+        width:868px;
+        padding-bottom: 10px;
+        margin: 0 20px 15px 20px;
+        border-bottom:1px solid #e3e3e3;
+    }
+    #reviewTitle{
+        color: #4d4d4d;
+        font-family: arial;
+        font-weight:bold;
+        font-size: 14px;
+        width: 100%;
+        margin-top:13px;
+        line-height:17px;
+        margin-bottom:12px;
+    }
+    #reviewContent{
+        margin-top:10px;
+        font-family: arial;
+        font-size: 12px;
+        color: #1a1a1a;
+        padding-right:15px;
+    }
+     .TextAreaReview{
+        resize:none;
+        border: 1px solid #cfcfcf;
+        border-radius: 5px;
+        box-shadow: 0 0 5px #cacaca inset;
+        margin-left: 25px;
+        margin-bottom:7px;
+        padding:15px;
+        width:340px;
+        height:130px;
+    }
+     .btnDisabled{
+        color: #333333 !important;
+    }
+   body button, body .x-btn, body .btn, body .btnDisabled, body .btnCancel, body .menuButton .menuButtonButton {
+        border: none;
+        color: #067ab4;
+        font-size: 12px;
+        font-weight: bold;
+        background: none;
+        padding: 1px;
+    }
+    listRelatedObject .bPageBlock .pbHeader .btn, .listRelatedObject .bPageBlock .pbBottomButtons .btn, .apexp .bPageBlock .pbHeader .btn, .apexp .bPageBlock .pbBottomButtons .btn, div.buttons .btn, div.pbBottomButtons > .btn {
+        margin-left: 1px;
+        margin-right: 0;
+    }
+    .tagNameCss{
+        font: 16px Arial; color: #333333; margin-bottom:10px;
+    }
+    .MT75{
+        margin-left:75px;
+        float:left;
+    }
+    .PagintonDivider{
+        font-size: 13px;
+        padding-left: 3px;
+        padding-right: 3px;
+    }
+    body, td, tr{
+        font-family: arial;
+        font-size: 12px !important;
+        color: #1a1a1a !important;
+    }
+    listRelatedObject .bPageBlock .pbHeader .btn, .listRelatedObject .bPageBlock .pbBottomButtons .btn, .apexp .bPageBlock .pbHeader .btn, .apexp .bPageBlock .pbBottomButtons .btn, div.buttons .btn, div.pbBottomButtons > .btn
+    {
+        -webkit-padding:0px;
+    }
+    
+    .bEditBlock .pbHeader > table > tbody > tr > td, .bPageBlock .pbHeader > table > tbody > tr > td, .bLayoutBlock .pbHeader > table > tbody > tr > td, .bEditBlock .pbBottomButtons > table > tbody > tr > td, .bPageBlock .pbBottomButtons > table > tbody > tr > td, .bLayoutBlock .pbBottomButtons > table > tbody > tr > td{
+        -webkit-padding-top: 10px;
+    }
+    #displayratings{
+        padding-bottom: 5px;
+    }
+    .pageNavBar{
+        display:inline-block;
+    }
+</style>
+<script type='text/javascript'>//<![CDATA[
+    $x = jQuery.noConflict();
+    $x(document).ready(function() {
+    $x.fn.generateStars = function() {
+        return this.each(function(i,e){$x(e).html($x('<span/>').width($x(e).text()*16));});
+    };
+     
+    // Function call to convert the rating number to stars.
+    $x('.star-prototype').generateStars();
+    });//]]>  
+
+</script>
+<script type='text/javascript'>
+    var maxLength=500;
+    function charLimit(el) {
+        if (el.value.length > maxLength) return false;
+        return true;
+    }
+    function characterCount(el) {
+        var charCount = document.getElementById('charCount');
+        if (el.value.length < maxLength){
+            document.getElementById('myDivSpace').innerHTML = "";
+            document.getElementById('myDivRem').innerHTML = 'characters remaining';
+        }    
+        if (el.value.length > maxLength) el.value = el.value.substring(0,maxLength);
+        if (charCount) charCount.innerHTML = maxLength - el.value.length;
+        return true;
+    }
+</script>
+<style>
+    span.star-prototype, span.star-prototype > * {
+    height: 16px; 
+    background: url('{!$Resource.StarRatingIcon}') 0 -16px repeat-x;
+    width: 80px;
+    display: inline-block;
+    }
+     
+    span.star-prototype > * {
+       background-position: 0 0;
+       width:80px; 
+    }
+</style>
+<!-- End of css for DetailsPage Style-->  
+<style>
+    .inputSearchTypeField{
+            background-image: url({!($Resource.Search_bar_middle_img)}); 
+            background-repeat:repeat; 
+            border:none; 
+            height:18px;
+    }            
+    .inputSearchTextArea{
+            width: 237px; padding: 5px; height:18px; margin-left:-4px; border-radius:3px 0 0 3px; border-left:1px solid #CACAC4;
+    }
+</style>
+ 
+<body>
+<title>Provider Directory</title>  
+     
+<!-- MAIN DIV -->
+<!-- START PAGE -->
+            <div class="mainDiv">
+             <c:LoggedInUser ></c:LoggedInUser>
+                      <div id="menuContainer" style="padding-top:11px;">
+                      <c:navconnectheaderwithlinks ></c:navconnectheaderwithlinks>
+                </div>
+        <!--- END OF LOGO HEADER -->
+        
+        <!-- start pagination on provider detail page -- --> 
+            <div style="margin:25px 20px 20px 10px;" id="body">
+                <apex:outputLink value="/apex/Connect/Connect"  target="_self" style="text-decoration:none;">
+                    <apex:outputLabel value="Connect" styleClass="breadcomActive"/>
+                </apex:outputLink>
+                
+               <apex:outPutPanel rendered="{!type !='Search'}">
+                    <apex:outputLabel value="/" styleClass="deActive"/>                    
+                    <apex:outputLink value="/apex/SI_HomeProviderDirectory"  target="_self" style="text-decoration:none;">
+                         <apex:outputLabel value="Provider Directory" styleClass="breadcomActive"/>
+                    </apex:outputLink>
+                </apex:outPutPanel>
+               
+                <!-- ---------------- Start Breadcom from filered page ------------------- -->
+                <!--
+                <apex:outPutPanel rendered="{!type !='Search'}">
+                    <apex:outputPanel rendered="{!type !='ALL'}">
+                    <apex:outputLabel value="/" rendered="{!type !=null}" styleClass="deActive"/>
+                    <apex:outputLink value="/apex/SI_ProviderDirectory?type={!type}&RName={!SUBSTITUTE(RName,'&','^')}&IName={!SUBSTITUTE(IName,'&','^')}&SName={!SUBSTITUTE(SName,'&','^')}"  target="_self" style="text-decoration:none;">
+                        <apex:outputLabel value="{!type}" rendered="{!type !=null}" styleClass="breadcomActive"/>
+                    </apex:outputLink>
+                    </apex:outputPanel>
+                </apex:outPutPanel>
+                -->
+                <!-- ---------------- End Breadcom from filered page ------------------- -->
+                
+                <!-- ---------------- Start Breadcom from Search page ------------------- -->
+                <apex:outputPanel rendered="{!type ='Search'}">
+                    <apex:outputLabel value="/"  styleClass="deActive"/>
+                    <apex:outputLink value="/apex/Connect/SI_SearchResultsPage?strValue={!strValue}&objType=Newsroom&type={!type}"  target="_self" style="text-decoration:none;">
+                        <apex:outputLabel value="{!type}" styleClass="breadcomActive"/>
+                    </apex:outputLink>
+                </apex:outputPanel>
+                <!-- ---------------- End Breadcom from Search page ------------------- -->
+                <apex:outputLabel value="/" styleClass="deActive" rendered="{!directory.Company_Display_Name__c !=null}"/>
+                <apex:outputLabel value="{!directory.Company_Display_Name__c}" styleClass="deActive"/>
+                
+                
+            
+         <!-- End pagination on provider detail page -- -->
+         
+         
+         <!-- -----------------------Search button div----------------------------------- -->
+         <apex:form >
+            <apex:outputPanel style="float:right; margin-top:-17px;">
+                <apex:inputText value="{!strValue}" styleClass="inputSearchTypeField inputSearchTextArea" onkeypress="return noenter(event);" id="pgblcktbl"/>
+                <apex:actionFunction name="doSearchAF" action="{!searchFound}"/> 
+                <apex:commandLink action="{!searchFound}" id="h1">
+                    <apex:image value="{!URLFOR($Resource.searchButton)}" style="margin-bottom:-8.8px; margin-left: -4px;"/>
+                </apex:commandLink>
+            </apex:outputPanel>
+         </apex:form>   
+         </div>
+         <div style="margin-left: 663px;"> <apex:pageMessages id="pagemessage" rendered="{!dispErrMsg==false}"/> </div>
+          <!-- ----------------- End of Search button div----------------------------------- -->   
+         
+         
+         <!-- Provider logo & Company Display Div -->
+         
+            <apex:outputPanel rendered="{!if(!(noProviderDetails),true,false)}">
+                <div class="provider_details">
+                    <div class="providerLogoStyle">
+                        <div class="ProviderLogoImg">
+                            <apex:image value="{!directory.Logo_Link__c}" rendered="{!directory.Logo_Link__c !=null}" styleClass="ProviderLogoImgTag" />
+                            <apex:image value="{!URLFOR($Resource.ListImage)}" rendered="{!directory.Logo_Link__c ==null}" styleClass="ProviderLogoImgTag" />
+                        </div>
+                        <apex:outputPanel rendered="{!directory.Tagline__c=null}">
+                            <div style=" margin-top:20px;"></div> 
+                        </apex:outputPanel>
+                        <div>
+                            <p class="compDisplayName">{!directory.Company_Display_Name__c}</p>
+                            <p class="tagNameCss">{!directory.Tagline__c}</p>  
+                            <apex:outputPanel rendered="{!NOT(Contains($User.LastName,'Guest'))}">  
+                                <apex:outputPanel >
+                                    <span class="star-prototype MT75">{!reviewScoreImageValue}</span>
+                                </apex:outputPanel> 
+                                <div><span style="margin-left:7px; margin-right:-5px;">| </span>
+                                    <apex:outputPanel rendered="{!if(totalReviews == 1 ,TRUE,FALSE)}" > 
+                                        <apex:outputText styleClass="reviewAvgStarRate" style="Pointer:Cursor" value=" {!totalReviews}  Review"> </apex:outputText>               
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel rendered="{!if(totalReviews == 1 ,FALSE,TRUE)}" > 
+                                        <apex:outputText styleClass="reviewAvgStarRate" value=" {!totalReviews}  Reviews"> </apex:outputText>               
+                                    </apex:outputPanel>    
+                                 </div>                  
+                            </apex:outputPanel> 
+                                
+                       </div>
+                        <apex:outputPanel rendered="{!directory.Company_Display_Name__c=null}">
+                            <div style=" margin-top:25px;"></div> 
+                        </apex:outputPanel>
+                        <p class="compDisplayTagline"></p>
+                           <!-- <div class="addContactEnablement" style="margin-right:45px; float:right;">
+                            <apex:outputPanel rendered="{!NOT(Contains($User.LastName,'Guest'))}">
+                                <p style="margin-left:20px; margin-top:-80px">{!directory.Phone_Number__c}</p>
+                                <p class="phSecMarStyle">{!directory.Phone_Number_Secondary__c}</p>
+                                <apex:outputLink value="{!$Label.EventURL}{!directory.Website__c}" target="_blank" id="theLink1" style="color:#067ab4;  text-decoration: none; margin-left:20px;">{!directory.Website__c}
+                                <br/>
+                                </apex:outputLink>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!Contains($User.LastName,'Guest')}">
+                                <p style="margin-left:20px; margin-top:-60px">{!directory.Phone_Number__c}</p>
+                                <p class="phSecMarStyle">{!directory.Phone_Number_Secondary__c}</p>
+                                <apex:outputLink value="{!$Label.EventURL}{!directory.Website__c}" target="_blank" id="theLink2" style="color:#067ab4;  text-decoration: none; margin-left:20px;">{!directory.Website__c}
+                                <br/>
+                                </apex:outputLink>
+                            </apex:outputPanel>     
+                            </div> -->
+                    </div>
+                    
+                </div>
+            </apex:outputPanel>
+            
+           <!-- End of Provider logo & Company Display Div -->
+         
+         <!-- Details Navigation Div -->  
+            <div style="padding-top:20px;"></div>
+            
+            <apex:outputPanel rendered="{!if(!(noProviderDetails),true,false)}">
+            <div class="menu" id="hovermenu" onclick="toggleMenu()">
+                <ul id="nav" style="width:935px;">
+                    <!-- Active Overview -->
+                    <apex:outputText rendered="{!if(Flag='O', true ,false)}">
+                        <li class='active'>
+                            <apex:outputLink value="/apex/SI_EnablementProviderDetailsPage?id={!Id}&Flag=O&RName={!SUBSTITUTE(RName,'&','^')}&IName={!SUBSTITUTE(IName,'&','^')}&SName={!SUBSTITUTE(SName,'&','^')}&type={!type}" target="_self" styleClass="marginNavs">
+                                Overview
+                            </apex:outputLink>
+                        </li>
+                    </apex:outputText>
+                    <!-- InActive Overview -->
+                    <apex:outputText rendered="{!if(Flag!='O', true ,false)}" >                     
+                        <li >
+                            <apex:outputLink value="/apex/SI_EnablementProviderDetailsPage?id={!Id}&Flag=O&RName={!SUBSTITUTE(RName,'&','^')}&IName={!SUBSTITUTE(IName,'&','^')}&SName={!SUBSTITUTE(SName,'&','^')}&type={!type}" target="_self" styleClass="marginNavs">
+                                Overview
+                            </apex:outputLink>
+                        </li>
+                    </apex:outputText>
+                 
+                    <!-- Active Details-->
+                 
+                     <apex:outputText rendered="{!if(Flag='D', true ,false)}" >
+                        <li class='active'>
+                            <apex:outputLink value="/apex/SI_EnablementProviderDetailsPage?id={!Id}&Flag=D&RName={!SUBSTITUTE(RName,'&','^')}&IName={!SUBSTITUTE(IName,'&','^')}&SName={!SUBSTITUTE(SName,'&','^')}&type={!type}" target="_self" styleclass="marginMidNavs">
+                                Details
+                            </apex:outputLink>
+                        </li>
+                    </apex:outputText>
+                    
+                    <!-- InActive Details-->
+                    <apex:outputText rendered="{!if(Flag!='D', true ,false)}" >
+                        <li >
+                            <apex:outputLink value="/apex/SI_EnablementProviderDetailsPage?id={!Id}&Flag=D&RName={!SUBSTITUTE(RName,'&','^')}&IName={!SUBSTITUTE(IName,'&','^')}&SName={!SUBSTITUTE(SName,'&','^')}&type={!type}" target="_self" styleclass="marginMidNavs">
+                                Details
+                            </apex:outputLink>
+                        </li>
+                    </apex:outputText>
+              
+                   <!-- Active Contact-->
+                 
+                     <apex:outputText rendered="{!if(Flag='C', true ,false)}" >
+                        <li class='active'>
+                            <apex:outputLink value="/apex/SI_EnablementProviderDetailsPage?id={!Id}&Flag=C&RName={!SUBSTITUTE(RName,'&','^')}&IName={!SUBSTITUTE(IName,'&','^')}&SName={!SUBSTITUTE(SName,'&','^')}&type={!type}" target="_self" styleclass="marginMidNavs">
+                                Contact
+                            </apex:outputLink>
+                        </li>
+                    </apex:outputText>
+                    <!-- InActive Contact -->
+                    <apex:outputText rendered="{!if(Flag!='C', true ,false)}" >
+                    <li>
+                        <apex:outPutLink value="/apex/SI_EnablementProviderDetailsPage?id={!Id}&Flag=C&RName={!SUBSTITUTE(RName,'&','^')}&IName={!SUBSTITUTE(IName,'&','^')}&SName={!SUBSTITUTE(SName,'&','^')}&type={!type}" target="_self" styleclass="marginMidNavs">
+                            Contact
+                        </apex:outPutLink>
+                    </li>
+                    </apex:outputText>
+             
+                </ul>
+                <br class="CL" />
+            </div>
+            </apex:outputPanel>
+<!-- End of Details Navigation Div --> 
+          
+<!-- Start of Overview page descriptions -->
+        <div style="">
+            <center>
+                <apex:outputLabel rendered="{!noProviderDetails}" value="Provider Directory Record no longer available." styleClass="noArticleMessage" />
+                <apex:outputPanel rendered="{!if((noProviderDetails && (Contains($User.LastName, 'Guest')||$Profile.Name =='SI Customer Community User')),true,false)}">
+                    <script>
+                        setTimeout(function()
+                        {
+                            window.location.href='/Connect/SI_HomeProviderDirectory';
+                        }, 10000);
+                    </script>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!if((noProviderDetails && (!Contains($User.LastName, 'Guest')&&($Profile.Name !='SI Customer Community User'))),true,false)}">
+                    <script>
+                        setTimeout(function()
+                        {
+                            window.location.href='/apex/Connect/SI_HomeProviderDirectory';
+                        }, 10000);
+                    </script>
+                </apex:outputPanel>
+            </center>
+        </div>
+        <apex:outputPanel rendered="{!noProviderDetails=false}">
+            <apex:outputPanel rendered="{!Flag='O'}">
+                <div class="overviewMain" id="body">
+                    <div class="info">                         
+                        <apex:outputPanel rendered="{!directory.Summary__c!=null}">
+                            <p class="summaryStyle fontStyle">Summary</p>
+                            <p class="fontStyle" style=" margin-top:15px; "><apex:outputField value="{!directory.Summary__c}"/></p>
+                            <apex:outputPanel rendered="{!if((NOT(Contains($User.LastName,'Guest'))),true,false)}">
+                                <p class="fontStyle" style=" margin-top:15px; word-wrap: break-word;">{!directory.Summary_Authenticated__c}</p>
+                            </apex:outputPanel> 
+                        </apex:outputPanel>       
+                        <apex:outputPanel rendered="{!if((directory.Summary__c==null && directory.Summary_Authenticated__c!=null && !(Contains($User.LastName,'Guest'))),true,false)}">
+                            <p class="summaryStyle fontStyle">Summary</p>
+                            <p class="fontStyle" style=" margin-top:15px; word-wrap: break-word;">{!directory.Summary_Authenticated__c}</p>
+                        </apex:outputPanel>  
+                                  
+                        <div style=" margin-bottom:14px;"></div> 
+                        <!--<apex:outputPanel rendered="{!directory.Tier__c!=null}">                        
+                            <p class="tierStyle fontStyle"> Program Level</p> 
+                            <p class="fontStyle"> {!directory.Tier__c} </p>
+                            <div style=" margin-bottom:14px;"></div>  
+                        </apex:outputPanel>-->
+                        <div style=" margin-bottom:14px;"></div>                  
+                        <div style=" margin-bottom:14px;"></div>  
+                        <apex:outputPanel rendered="{!directory.Number_of_Employees__c!=null}">                
+                            <p class="tierStyle fontStyle"> <apex:outputText value="Number of Employees"/> </p>                    
+                                <apex:outputText styleClass="fontStyle" value="{0, number, ###,##0}">
+                                    <apex:param value="{!directory.Number_of_Employees__c}"/>
+                                </apex:outputText> 
+                        </apex:outputPanel>          
+                        <div style="margin-bottom:14px;"></div>
+                        <apex:outputPanel rendered="{!Solutions!=null}">                                
+                            <p class="tierStyle fontStyle"> Solutions </p>
+                            <p class="fontStyle" style="color: #067ab4; ">
+                                <apex:variable value="{!0}" var="NumRows"/>
+                                <apex:variable value="{!Solutions.size}" var="strCount"/>                               
+                                <apex:repeat value="{!Solutions}" var="sol">
+                                <apex:variable value="{!NumRows+ 1}" var="NumRows"/>
+                                                                                                         
+                                  <apex:outputLink value="/apex/SI_HomeProviderDirectory?EName={!SUBSTITUTE(sol,'&','^')}&type=EnablementResources" style="text-decoration:none;" >
+                                      <apex:outPutText value="{!sol} " styleClass="regStyle" rendered="{!FLOOR(NumRows)==strCount}"/>
+                                      <apex:outPutText value="{!sol}, " styleClass="regStyle" rendered="{!FLOOR(NumRows)<strCount}"/>
+                                  </apex:outputLink> 
+                                </apex:repeat>
+                            </p>
+                            
+                            <div style="margin-top: 15px;">
+                                 <apex:outputPanel rendered="{!if((directory.City__c!=null || directory.State__c!=null || directory.Country__c!=null),true,false)}">    
+                                    <p class="styleHeadqOver fontStyle"> Headquarters
+                                    </p>
+                                    <p style="margin-left:-1px;" class="fontStyle">
+                                        <apex:outputLabel value="{!directory.City__c}" styleClass="regStyle" />
+                                        <apex:outputText value=", " rendered="{!if((directory.City__c!=null && directory.State__c!=null),true,false)}"/>
+                                        <apex:outputLabel value="{!directory.State__c}" styleClass="regStyle"/>
+                                        <apex:outputText value=" " rendered="{!if((directory.City__c!=null && directory.State__c!=null),true,false)}"/>
+                                        <apex:outputLabel value="{!directory.Country__c}" styleClass="regStyle" />
+                                    </p>
+                                </apex:outputPanel>
+                            </div>
+                       </apex:outputPanel>                
+                    </div>
+                    <br/>               
+                    <div class="main_container">
+                        <div class="overview_info gray_background"> 
+                            <span class="demoStyle">Demonstration</span>
+                        </div>
+                            <apex:outputPanel rendered="{!IF(directory.Demo_Video__c!=NULL,TRUE,FALSE)}">                            
+                                 <div class="addOverview demoVideoBorderStyle" >
+                                    <apex:iframe width="445" height="267" src="{!youTubeURl}"/>
+                                  </div>
+                            </apex:outputPanel>
+     
+                             <apex:outputPanel rendered="{!IF(directory.Demo_Video__c!=NULL,FALSE,TRUE)}">
+                                <div class="addOverview demoImageBorderStyle" id="DemoImage">
+                                    <apex:image value="{!directory.Image_Link__c}" rendered="{!directory.Image_Link__c !=null}" width="445" height="267" style="border-bottom-right-radius:5px; border-bottom-left-radius:5px;"/>
+                                    <apex:image value="{!URLFOR($Resource.TrayImage)}" rendered="{!directory.Image_Link__c ==null}" width="445" height="267" styleClass="imageLinkStyle" style="border-bottom-right-radius:5px; border-bottom-left-radius:5px;"/>
+                                </div>
+                            </apex:outputPanel>            
+                        </div>             
+                </div>
+            </apex:outputPanel>      
+    <!-- end of overview page --> 
+
+    <!-- start of Details page -->            
+            <apex:outputPanel rendered="{!Flag='D'}">
+                <div class="main" id="body">
+                    <div class="infoDetail fontStyle">
+                        <apex:outputPanel rendered="{!directory.Summary__c!=null}">
+                            <p class="tierStyle">Description</p>
+                            <div style="margin-bottom:15px;"></div>
+                            <p style="word-wrap: break-word;width:906px;"> 
+                                <apex:outputField value="{!directory.Summary__c}"/>
+                            </p>
+                            <apex:outputPanel rendered="{!if((NOT(Contains($User.LastName,'Guest'))),true,false)}">
+                              <apex:outputPanel rendered="{!directory.Summary_Authenticated__c!=null}">
+                                <div style="margin-bottom:15px;"></div>                    
+                                <p style="word-wrap: break-word;"> 
+                                    <apex:outputField value="{!directory.Summary_Authenticated__c}"/>
+                                </p>
+                              </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!if((directory.Summary__c==null && directory.Summary_Authenticated__c!=null && !(Contains($User.LastName,'Guest'))),true,false)}">
+                           
+                            <div style="margin-bottom:15px;"></div>                    
+                            <p style="word-wrap: break-word;"> 
+                                <apex:outputField value="{!directory.Summary_Authenticated__c}"/>
+                            </p>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel rendered="{!directory.Description__c!=null}">
+                            
+                            <div style="margin-bottom:15px;"></div>
+                            <p style="word-wrap: break-word;width:906px;"> 
+                                <apex:outputField value="{!directory.Description__c}"/>
+                            </p>
+                            <apex:outputPanel rendered="{!if((NOT(Contains($User.LastName,'Guest'))),true,false)}">
+                              <apex:outputPanel rendered="{!directory.Description_Authenticated__c!=null}">
+                                <div style="margin-bottom:15px;"></div>                    
+                                <p style="word-wrap: break-word;"> 
+                                    <apex:outputField value="{!directory.Description_Authenticated__c}"/>
+                                </p>
+                              </apex:outputPanel>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!if((directory.Description__c==null && directory.Description_Authenticated__c!=null && !(Contains($User.LastName,'Guest'))),true,false)}">
+                            
+                            <div style="margin-bottom:15px;"></div>                    
+                            <p style="word-wrap: break-word;"> 
+                                <apex:outputField value="{!directory.Description_Authenticated__c}"/>
+                            </p>
+                        </apex:outputPanel>                                         
+                    </div>
+                </div>
+            </apex:outputPanel>     
+            
+    <!--end of details page-->       
+
+    <!-- start of contact page --> 
+            <apex:form id="formId">
+            <apex:outputPanel rendered="{!Flag='C'}">   
+                <div class="contactMain" id="body">
+                 <apex:outputPanel rendered="{!directory.Request_More_Information__c == true}"> 
+                  <div class="info"> 
+                     <div class="cont_info gray_background"> 
+                           <p class="reqMoreInfoStyle"> Request More Information</p>                      
+                     </div>
+                     <div class="addContact">                                                                              
+                        <p class="contactName">Name</p>                                        
+                        <apex:inputText value="{!Name}" styleClass="inpuTypeField inputTextArea" />                                              
+                        
+                        <br />
+                        <p class="inputTextStyle">Company</p>                        
+                        <apex:inputText Value="{!Company}" styleClass="inpuTypeField inputTextArea" />                        
+                        <br /> 
+                    
+                        <p class="inputTextStyle">Email</p>
+                        <apex:inputText Value="{!Email}" styleClass="inpuTypeField inputTextArea" />                      
+                        
+                        <br />
+                        <p class="inputTextStyle">Phone</p>
+                        <apex:inputText value="{!phone}" styleClass="inpuTypeField inputTextArea"/>                                                   
+                       
+                        <br />
+                        <p class="inputTextStyle">Message</p>  
+                        <apex:inputTextarea value="{!Message}" styleClass="inpuTypeFieldMess messStyle" />                         
+                       
+                        <br/>                                                               
+                        <apex:pagemessages id="errorMsgid" />
+                        <apex:commandLink action="{!Submit}" reRender="errorMsgid" >
+                               <apex:image value="{!URLFOR($Resource.ProviderDirectorySubmit)}"  style="float:right; margin-right: 15px;  margin-bottom: 20px;"/>
+                        </apex:commandLink>
+                    </div>                                                               
+                </div>
+                 <div id="body">
+                    <div class="details_container">
+                        <div class="cont_info gray_background" id="body"> 
+                            <p class="conInfoStyle">Contact Information</p>
+                                <apex:outputPanel rendered="{!directory.Secondary_Email_Address__c !=null}" style="margin-left: 140px;">
+                                    <apex:outputLink value="mailto:{!directory.Primary_Email_Address__c}?cc={!directory.Secondary_Email_Address__c}&Subject=AT%26T%20Partner%20Exchange%20Inquiry&apex/SI_ProviderDetailsPage?id={!Id}&RName={!SUBSTITUTE(RName,'&','^')}&IName={!SUBSTITUTE(IName,'&','^')}&SName={!SUBSTITUTE(SName,'&','^')}&type={!type}" style="">
+                                        <apex:actionFunction name="countEmail" oncomplete="location.reload()"/>
+                                        <apex:image value="{!URLFOR($Resource.ProviderDirectoryEmail)}" title="Email" onclick="countEmail();" style="margin-top: 15px;"/>
+                                    </apex:outputLink>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!directory.Secondary_Email_Address__c ==null}" style="margin-left: 140px;">
+                                    <apex:outputLink value="mailto:{!directory.Primary_Email_Address__c}&Subject=AT%26T%20Partner%20Exchange%20Inquiry&apex/SI_ProviderDetailsPage?id={!Id}&RName={!SUBSTITUTE(RName,'&','^')}&IName={!SUBSTITUTE(IName,'&','^')}&SName={!SUBSTITUTE(SName,'&','^')}&type={!type}">
+                                        <apex:actionFunction name="countEmail" oncomplete="location.reload()"/>
+                                        <apex:image value="{!URLFOR($Resource.ProviderDirectoryEmail)}" title="Email" onclick="countEmail();" style="margin-top: 15px;"/>
+                                    </apex:outputLink>
+                                </apex:outputPanel>
+                                 
+                        </div>
+                        <div class="addContact ">
+                            <p class="phMarStyle">{!directory.Phone_Number__c}</p>
+                            <p class="phSecMarStyle">{!directory.Phone_Number_Secondary__c}</p>
+                            <apex:outputLink value="{!$Label.EventURL}{!directory.Website__c}" target="_blank" id="theLink" style="color:#067ab4;  text-decoration: none; margin-left:20px;">{!directory.Website__c}<br/>
+                            </apex:outputLink>                
+                            <apex:outputPanel rendered="{!if((directory.City__c!=null || directory.State__c!=null || directory.Country__c!=null),true,false)}">    
+                                <p class="styleHeadq fontStyle"> Headquarters
+                                </p>
+                                <p style="margin-left:20px;" class="fontStyle">
+                                    <apex:outputLabel value="{!directory.City__c}"/>
+                                    <apex:outputText value=", " rendered="{!if((directory.City__c!=null && directory.State__c!=null),true,false)}"/>
+                                    <apex:outputLabel value="{!directory.State__c}"/>
+                                    <apex:outputText value=" " rendered="{!if((directory.City__c!=null && directory.State__c!=null),true,false)}"/>
+                                    <apex:outputLabel value="{!directory.Country__c}"/>
+                                </p>
+                            </apex:outputPanel>
+                            <br />
+                        </div>
+                        <div class="spcBetDivs" style="margin-top:20px;"></div>
+                    </div> 
+                                
+                    <apex:outputPanel rendered="{!if((industries!=null && Solutions!=null),true,false)}">  
+                        <div class="spacli MT20 gray_background"> 
+                            <p style="padding:20px;">Specialties</p>
+                        </div>
+                        
+                        <div class="spacli_link_detail" id="body">
+                            <apex:outputPanel rendered="{!industries!=null}">
+                                <div class="links" id="body">
+                                    <ul>
+                                        <li>
+                                            <span class="indStyleDetail fontStyle">Industries</span>
+                                        </li>
+                                            <apex:repeat value="{!industries}" var="ins">
+                                            <li>
+                                            <apex:outputLink value="/apex/SI_ProviderDirectory?companyDisplayName={!directory.Company_Display_Name__c}&IName={!SUBSTITUTE(ins,'&','^')}&RName={!SUBSTITUTE(RName,'&','^')}&SName={!SUBSTITUTE(SName,'&','^')}&type=Industry" style="text-decoration:none;" >
+                                                 <apex:outputText styleClass="fontStyle" value="{!ins}"></apex:outputText>
+                                             </apex:outputLink>
+                                            </li>
+                                                </apex:repeat>        
+                                    </ul>
+                                </div>
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel rendered="{!Solutions!=null}">
+                                <div class="links PL20" id="body">
+                                    <ul>  
+                                        <li>
+                                            <span class="indStyleDetail fontStyle">Solutions</span>
+                                        </li>
+                                        <apex:repeat value="{!Solutions}" var="sol">
+                                            <li>
+                                              <apex:outputLink value="/apex/SI_ProviderDirectory?companyDisplayName={!directory.Company_Display_Name__c}&SName={!SUBSTITUTE(sol,'&','^')}&RName={!SUBSTITUTE(RName,'&','^')}&IName={!SUBSTITUTE(IName,'&','^')}&type=Solution" style="text-decoration:none;" >
+                                                <apex:outputText styleClass="fontStyle" value="{!sol}"></apex:outputText>
+                                             </apex:outputLink>
+                                            </li>
+                                        </apex:repeat>
+                                    </ul>
+                                </div>
+                            </apex:outputPanel>
+                        </div>
+                       </apex:outputPanel> 
+                       
+                     </div>  
+                    </apex:outputPanel>
+                  
+                    <apex:outputPanel rendered="{!directory.Request_More_Information__c == false}">
+                        <div>
+                            <div class="details_container">
+                                <div class="cont_info gray_background">
+                                    <p class="specStyle">Contact Information</p>
+                                    <apex:outputPanel rendered="{!directory.Secondary_Email_Address__c !=null}" styleClass="MarEmail">
+                                        <apex:outputLink value="mailto:{!directory.Primary_Email_Address__c}?cc={!directory.Secondary_Email_Address__c}&Subject=AT%26T%20Partner%20Exchange%20Inquiry&apex/SI_ProviderDetailsPage?id={!Id}&bidID={!bidID}" styleClass="padEmail">
+                                            <apex:actionFunction name="countEmail" oncomplete="location.reload()" />
+                                            <apex:image value="{!URLFOR($Resource.ProviderDirectoryEmail)}" title="Email" onclick="countEmail();" style="margin-top:15px;" />
+                                        </apex:outputLink>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!directory.Secondary_Email_Address__c ==null}" styleClass="MarEmail">
+                                        <apex:outputLink value="mailto:{!directory.Primary_Email_Address__c}&Subject=AT%26T%20Partner%20Exchange%20Inquiry&apex/SI_ProviderDetailsPage?id={!Id}&bidID={!bidID}" styleClass="padEmail">
+                                            <apex:actionFunction name="countEmail" oncomplete="location.reload()" />
+                                            <apex:image value="{!URLFOR($Resource.ProviderDirectoryEmail)}" title="Email" onclick="countEmail();" style="margin-top:15px;" />
+                                        </apex:outputLink>
+                                    </apex:outputPanel>
+
+                                </div>
+                                <div class="addContact " style="margin-right:45px;">
+                                    <p style="margin-left:20px; margin-top:20px">{!directory.Phone_Number__c}</p>
+                                    <p class="phSecMarStyle">{!directory.Phone_Number_Secondary__c}</p>
+                                    <apex:outputLink value="{!$Label.EventURL}{!directory.Website__c}" target="_blank" id="theLink1" style="color:#067ab4;  text-decoration: none; margin-left:20px;">{!directory.Website__c}
+                                        <br/>
+                                    </apex:outputLink>
+                                    <apex:outputPanel rendered="{!if((directory.City__c!=null || directory.State__c!=null || directory.Country__c!=null),true,false)}">    
+                                        <p class="styleHeadq fontStyle">Headquarters
+                                        </p>
+                                        <p style="margin-left:20px;" class="fontStyle">
+                                            <apex:outputLabel value="{!directory.City__c}"/>
+                                            <apex:outputText value=", " rendered="{!if((directory.City__c!=null && directory.State__c!=null),true,false)}"/>
+                                            <apex:outputLabel value="{!directory.State__c}"/>
+                                            <apex:outputText value=" " rendered="{!if((directory.City__c!=null && directory.State__c!=null),true,false)}"/>
+                                            <apex:outputLabel value="{!directory.Country__c}"/>
+                                        </p>
+                                    </apex:outputPanel>
+                                    <br />
+                                </div>
+                                <div class="spcBetDivs" style="margin-top:20px;">
+                                </div>
+                            </div>
+                            <apex:outputPanel rendered="{!if((industries!=null && Solutions!=null),true,false)}">
+                                <div class="cont_info gray_background">
+                                    <p class="specStyle">Specialties</p>
+                                </div>
+                                <div class="addContact " style="margin-right:45px;">
+                                    <apex:outputPanel rendered="{!industries!=null}">
+                                        <div class="links">
+                                            <ul>
+                                                <li>
+                                                    <span class="indStyleDetail">Industries</span>
+                                                </li>
+                                                <apex:repeat value="{!industries}" var="ins">
+                                                    <li>
+                                                        <apex:outputLink value="/apex/SI_ProviderDirectory?companyDisplayName={!directory.Company_Display_Name__c}&PName={!SUBSTITUTE(ins,'&','^')}&bidID={!bidID}&type=Industry" style="text-decoration:none;">
+                                                            <apex:outputText value="{!ins}"></apex:outputText>
+                                                        </apex:outputLink>
+                                                    </li>
+                                                </apex:repeat>
+                                            </ul>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel rendered="{!Solutions!=null}">
+                                        <div class="links PL20">
+                                            <ul>
+                                                <li>
+                                                    <span class="indStyleDetail">Solutions</span>
+                                                </li>
+                                                <apex:repeat value="{!Solutions}" var="sol">
+                                                    <li>
+                                                        <apex:outputLink value="/apex/SI_ProviderDirectory?companyDisplayName={!directory.Company_Display_Name__c}&PName={!SUBSTITUTE(sol,'&','^')}&bidID={!bidID}&type=Solution" style="text-decoration:none;">
+                                                            <apex:outputText value="{!sol}"></apex:outputText>
+                                                        </apex:outputLink>
+                                                    </li>
+                                                </apex:repeat>
+                                            </ul>
+                                        </div>
+                                    </apex:outputPanel>
+                                </div>
+                           </apex:outputPanel>  
+                        </div>
+                    </apex:outputPanel>
+                </div>
+            </apex:outputPanel>
+        </apex:form>
+        
+        <!-- start of Review and rating-->
+        
+        <apex:outputPanel rendered="{!NOT(Contains($User.LastName,'Guest'))}">
+            <!--<apex:outputPanel rendered="{!(ReviewsForEnablementResource!=null) && NOT(Contains($User.LastName, 'Guest'))}">-->
+            <apex:outputPanel >
+            <div class="overview_info gray_background reviewInfoBar" style="width:910px; margin-left:35px; margin-top:30px;"> 
+                <span class="demoStyle">Reviews</span>
+                
+                 <div style="margin-top:22px; padding-top:3px;float:left; margin-left:-2px;">
+                   <apex:outputPanel rendered="{!if(reviewScoreImageValue== 0 ,FALSE,TRUE)}" > 
+                        <span class="star-prototype">{!reviewScoreImageValue}</span>
+                   </apex:outputPanel> 
+                   
+                   <apex:outputPanel rendered="{!if(reviewScoreImageValue== 0 ,TRUE,FALSE)}" > 
+                        <span class="star-prototype">{!reviewScoreImageValue}</span>
+                   </apex:outputPanel>     
+                 </div>                     
+                 <div style=" margin-top:24px; float:left"><span style="margin-left:7px; margin-right:-5px;">| </span>
+                    <apex:outputPanel rendered="{!if(totalReviews == 1 ,TRUE,FALSE)}" > 
+                        <apex:outputText styleClass="reviewAvgStarRate" style="Pointer:Cursor" value=" {!totalReviews}  Review"> </apex:outputText>               
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!if(totalReviews == 1 ,FALSE,TRUE)}" > 
+                        <apex:outputText styleClass="reviewAvgStarRate" value=" {!totalReviews}  Reviews"> </apex:outputText>               
+                    </apex:outputPanel>    
+                 </div>   
+            </div>
+            <apex:form >
+        <div class="reviewDetails">
+        <apex:image style="margin-top:20px; margin-bottom:2px; margin-left:20px;" value="{!URLFOR($Resource.writeAReviewButton)}" onclick="javascript:document.getElementById('displayratings').style.display = 'block';"/>
+        <div  id="displayratings" style="display:none;" >        
+            <div style="margin-bottom:10px; margin-left:25px; margin-top:10px;">
+              <apex:outputLabel style="font-weight:bold; color:#333; margin-right:7px;">Rating</apex:outputLabel>
+               <apex:selectList style="width:75px;" value="{!ratings}" multiselect="false" size="1" id="OptionID">
+                     <apex:selectOptions value="{!items}"/>    
+                </apex:selectList>
+            </div>
+            <div style="width:383px;">
+                <apex:inputTextarea onKeyPress="return charLimit(this)" id="requestMessId" onKeyUp="return characterCount(this)"  value="{!requestorsMessage}" html-maxlength="500" styleClass="TextAreaReview" />
+                <div style="font-size:10px; color:#909090; margin-right: -10px;"> 
+                     <span id="myDivRem" style="float:right;">Characters</span>
+                     <span id="charCount" title="500" style=" padding-right: 2px; margin-bottom:4px; float:right;">500</span>
+                     <span id="myDivSpace"></span>
+                </div>
+                 <apex:image value="{!URLFOR($Resource.reviewErrMesge)}" id="reviewErrMesgeID" style="display:none; width:378px; margin-left:20px;"/>
+                 <apex:image value="{!URLFOR($Resource.ratingErrMesge)}" id="ratingErrMesgeID" style="display:none; width:378px; margin-left:20px;"/>
+                 <!-- <apex:outputText value="{!dispBlockedWordErrMsg}" rendered="{!dispErrMsg}" id="blockedWordErr"></apex:outputText> -->
+                 <!--<apex:pageMessages rendered="{!dispErrMsg==false}" />-->
+                 <div style="padding-bottom:4px; width:400px; float:left;">   
+                     <apex:image style="margin-left: 25px;" value="{!URLFOR($Resource.cancelButton)}" onclick="javascript:document.getElementById('displayratings').style.display = 'none';"/>
+                     <!--<apex:image value="{!URLFOR($Resource.submitButton)}" id="submitRate" onclick="SubmitReviewMess();" style="height:30px; float: right; margin-right:3px;"/>-->
+                     <apex:commandButton action="{!storeReviews}" image="{!URLFOR($Resource.submitButton)}" style="height:30px; float: right; margin-right:3px;"/>
+                 </div>    
+            </div> 
+        </div>
+           
+          <div>
+         
+          <apex:pageBlock >   
+          <apex:actionFunction action="{!refreshGrid}" name="queryByPage" reRender="myPanel,myButtons" >
+         <apex:param name="firstParam" assignTo="{!selectedPage}" value="" />
+         </apex:actionFunction>
+    
+        <apex:pageBlockSection collapsible="false" columns="1">       
+        <apex:outputPanel id="myPanel">   
+        <div style="max-width:855px;">  
+            <apex:pageMessages id="theMessages" rendered="{!dispErrMsg==true}"/> <br/>
+        </div>
+          <apex:repeat value="{!ReviewsForEnablementResource}" var="review" id="ReviewPagination">
+            <div id="reviewList">
+                <div id="reviewBlock">
+                    <div id="starRating">                                                                 
+                        <apex:outputText rendered="{!if(review.Score__c ==0,TRUE,FALSE)}" > 
+                           <apex:image value="{!URLFOR($Resource.FiveDisableStarIcon)}"/>
+                        </apex:outputText>
+                        <apex:outputText rendered="{!if(review.Score__c ==1,TRUE,FALSE)}" > 
+                         <div style="float:left;">
+                             <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                         </div> 
+                         <div style="float:left;">  
+                              <apex:image value="{!URLFOR($Resource.DisableStarIcon)}"/> 
+                              <apex:image value="{!URLFOR($Resource.DisableStarIcon)}"/>
+                              <apex:image value="{!URLFOR($Resource.DisableStarIcon)}"/>
+                              <apex:image value="{!URLFOR($Resource.DisableStarIcon)}"/>  
+                          </div>                   
+                        </apex:outputText>
+                        <apex:outputText rendered="{!if(review.Score__c ==2,TRUE,FALSE)}" > 
+                           <div style="float:left;">
+                               <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                               <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                            </div>    
+                           <div style="float:left;">
+                               <apex:image value="{!URLFOR($Resource.DisableStarIcon)}"/>
+                               <apex:image value="{!URLFOR($Resource.DisableStarIcon)}"/>
+                               <apex:image value="{!URLFOR($Resource.DisableStarIcon)}"/>
+                           </div>    
+                        </apex:outputText>
+                        <apex:outputText rendered="{!if(review.Score__c ==3,TRUE,FALSE)}" >
+                        <div style="float:left;"> 
+                           <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                           <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                           <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                        </div> 
+                        <div style="float:left;">  
+                           <apex:image value="{!URLFOR($Resource.DisableStarIcon)}"/>
+                           <apex:image value="{!URLFOR($Resource.DisableStarIcon)}"/>
+                        </div>   
+                        </apex:outputText>
+                        <apex:outputText rendered="{!if(review.Score__c ==4,TRUE,FALSE)}" > 
+                        <div style="float:left;">   
+                           <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                           <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                           <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                           <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                        </div>
+                        <div style="float:left;">  
+                           <apex:image value="{!URLFOR($Resource.DisableStarIcon)}"/>
+                        </div> 
+                        </apex:outputText>
+                        <apex:outputText rendered="{!if(review.Score__c ==5,TRUE,FALSE)}"> 
+                           <div style="float:left;">
+                               <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                               <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                               <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                               <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                               <apex:image value="{!URLFOR($Resource.StarIcon)}"/>
+                           </div>
+                        </apex:outputText>                        
+                    </div>
+                    <apex:outputText value="{0,date,MMMM dd, yyyy}" style="margin-left:20px;">
+                         <apex:param value="{!review.Date_Of_Review__c}" />
+                    </apex:outputText>
+                    <div id="reviewTitle">
+                          By {!review.Name_of_Reviewer__c}
+                        <apex:outputPanel rendered="{!review.Reviewer_Company__c!=null}" >
+                            <span id="sltionProvdrNme">
+                             ({!review.Reviewer_Company__c}) 
+                            </span>
+                        </apex:outputPanel>
+                    </div>
+                    <div id="reviewContent">
+                       <apex:outputField value="{!review.Requestor_Message__c}"/>
+                    </div>
+                    <div style="margin-top:5px;">
+                    <apex:outputLink value="javascript:if(window.confirm('Please click OK to confirm'))ConfrimFlag('{!review.Id}');">
+                        <apex:outputText style="font-size:10px;" value="Report Abuse"></apex:outputText> 
+                    </apex:outputLink>
+                    </div>
+                </div>
+            </div>        
+        </apex:repeat>
+                <apex:actionFunction action="{!ConfrimFlag}" reRender="" name="ConfrimFlag" oncomplete="javascript:alert('Review has been flagged successfully');">
+                    <apex:param name="reviewId" value="" assignTo="{!reviewFlagId}"/>
+                </apex:actionFunction>
+                <apex:outputText id="pgeBlock" rendered="{!totalReviews>0}">&nbsp;&nbsp;&nbsp;&nbsp; Showing {!(pageNumber * list_size)+1-list_size}-{!IF((pageNumber * list_size)>total_size, total_size ,(pageNumber * list_size))} of {!total_size} entries</apex:outputText>
+                    <apex:dataTable value="{!ReviewsForEnablementResource}" var="contact" style="float:right; margin-right:434px;" rendered="{!totalReviews>0}">                   
+                          <apex:facet name="footer">Page {!pageNumber} of {!totalPages} </apex:facet>                 
+                    </apex:dataTable>                    
+              </apex:outputPanel>                
+             </apex:pageBlockSection>      
+            </apex:pageBlock>                        
+          <apex:pageBlock id="dynaCompNav" rendered="{!totalReviews>0}">
+                <apex:dynamicComponent componentValue="{!myCommandButtons}"/> 
+          </apex:pageBlock>
+          <apex:outputPanel rendered="{!(ReviewsForEnablementResource==0||ReviewsForEnablementResource==null)&& NOT(Contains($User.LastName, 'Guest'))}" style="margin-bottom:-20px;">
+                <center>Not yet reviewed</center>
+                <div style="margin-top:15px;"></div>
+             </apex:outputPanel>              
+         </div>                                
+        </div>           
+         <apex:actionFunction action="{!storeReviews}" reRender="" name="storeReviews" oncomplete="">
+         </apex:actionFunction>
+         </apex:form>
+     </apex:outputPanel>
+    </apex:outputPanel>
+<!-- end of Review and rating -->
+    </apex:outputPanel>
+<!-- end of contact page-->            
+<!--- START OF Footer--->
+<c:providerdirectoryfooter > </c:providerdirectoryfooter>
+
+<!--- END OF Footer--->
+            
+</div>
+</body>
+<!-- END OF BODY -->
+</apex:page>

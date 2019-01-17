@@ -1,0 +1,19 @@
+<apex:page standardController="Opportunity"  extensions="EngineeringReviewController">
+     <apex:outputLabel >
+            <font size="4" color="Gray"><p>Select an action in order to approve or deny the design.</p></font>
+    </apex:outputLabel>
+        <apex:form >
+            <apex:pageMessages id="pagemessage" />
+            <apex:pageBlock >
+                <apex:pageBlockSection >
+                    <apex:pageBlockSectionItem >
+                        <apex:selectRadio value="{!type}">
+                        <apex:selectOptions value="{!items}"/>
+                        </apex:selectRadio><br/>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+            <apex:commandButton value="Submit" action="{!submit}" reRender="{!type}" status="status"/>&nbsp;&nbsp;&nbsp;&nbsp;
+            <apex:commandButton value="Cancel" action="{!cancel}"/>
+        </apex:form>
+</apex:page>

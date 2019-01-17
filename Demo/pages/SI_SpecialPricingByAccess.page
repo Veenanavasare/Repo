@@ -1,0 +1,73 @@
+<apex:page standardController="Opportunity" extensions="SI_SpDiscountByAccess"   tabStyle="SPProduct__c" id="pageId">
+<apex:sectionHeader title="Special Pricing By Access"/>
+    <apex:form rendered="{!IF((isProduct==true),false,true)}">
+        <Center><apex:outputLabel >
+        <font size="4" color="Gray"><p> No Product has been Special Pricing requested to the discount by Access.</p></font>
+        </apex:outputLabel></Center>
+        <Center><apex:commandButton value="Back" action="{!cancel}"/></Center>
+    </apex:form> 
+    <apex:form id="formId" rendered="{!IF((isProduct==true),true,false)}">
+    <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlock id="pblockId">
+           <apex:pageBlockButtons location="top"> 
+                <apex:commandButton value="Calculate" action="{!calculate}" reRender="formId"/>
+                <apex:commandButton value="Submit" action="{!discountSave}"/>
+                <apex:commandButton value="Close" action="{!Cancel}" />
+            </apex:pageBlockButtons> 
+            <apex:pageBlockTable value="{!productList}" var="q" id="pBlockTableId">
+               <apex:column >
+                    <apex:facet name="header"> 
+                        <apex:inputCheckbox >
+                           <apex:actionSupport event="onclick" action="{!GetSelected}" onsubmit="checkAll(this)" rerender="Selected_PBS"/>
+                        </apex:inputCheckbox>
+                    </apex:facet>
+                        <apex:inputCheckbox value="{!q.selected}" id="checkedone">
+                           <apex:actionSupport event="onclick" action="{!GetSelected}" rerender="Selected_PBS"/>
+                        </apex:inputCheckbox>
+                </apex:column>
+
+                <apex:column >
+                        <apex:facet name="header">Product</apex:facet>
+                            {!q.acc.Record_Type_Name__c}
+                   </apex:column>  
+                   <apex:column >
+                        <apex:facet name="header">Port Type</apex:facet>
+                            {!q.acc.Port_Speed_Name__c}
+                   </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">List Price</apex:facet> 
+                            {!q.acc.List_Price__c}
+                   </apex:column>   
+                     <apex:column >
+                        <apex:facet name="header">Discounted Price</apex:facet>
+                        <apex:outPutField value="{!q.acc.Discounted_Price__c}"/>    
+                   </apex:column>
+                   <apex:column >
+                        <apex:facet name="header">Special Pricing % </apex:facet>
+                        <apex:outPutField value="{!q.acc.Discounted_Percentage__c}"/>    
+                   </apex:column>  
+                   <apex:column >
+                        <apex:facet name="header">Current Access Price</apex:facet>
+                         <apex:outPutField value="{!q.acc.Access_Speed_List_Price__c}"/> 
+                   </apex:column>  
+                      <apex:column >
+                        <apex:facet name="header">Discounted Access Price</apex:facet> 
+                        <apex:inPutField value="{!q.acc.Discounted_Access_Price__c}"/> 
+                   </apex:column>  
+                     <apex:column >
+                        <apex:facet name="header">Final Price</apex:facet> 
+                        <apex:outPutField value="{!q.acc.Final_Price__c}"/>
+                   </apex:column> 
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+function checkAll(cb){
+    var inputElem = document.getElementsByTagName("input");
+    for(var i=0; i<inputElem.length; i++){
+        if(inputElem[i].id.indexOf("checkedone")!=-1)
+        inputElem[i].checked = cb.checked;
+    }
+}    
+</script>
+</apex:page>

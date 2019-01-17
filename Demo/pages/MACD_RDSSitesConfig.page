@@ -1,0 +1,1562 @@
+<apex:page controller="MACD_RDSAVPNController" cache="true" sidebar="false" showChat="false" showHeader="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" docType="html-5.0" id="test">
+    <!--    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:includeScript value="{!$Resource.atomjqueryjs}" />
+    <apex:includeScript value="{!URLFOR($Resource.bootstrapMin, 'js/bootstrap.min.js')}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalExchangeCSS}" />
+    <apex:stylesheet value="{!$Resource.PortalDesignLayoutCSS}" />
+    <apex:stylesheet value="{!$Resource.PortalDesignCSS}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCss}" />-->
+    <apex:includeScript value="{!URLFOR($Resource.RDSInputValidationsJS)}" />
+    <apex:includeScript value="{!URLFOR($Resource.RDS_FieldValidationJS)}"/>
+    <apex:includeScript value="{!URLFOR($Resource.RDS_ErrorMsgDisplayJS)}" />
+
+    <style>
+    .tooltip-inner{
+    max-width: 260px;    
+    }
+    .scrollToTop{
+            width:75px; 
+            height:100px;
+            padding:10px; 
+            text-align:center; 
+            font-weight: bold;
+            color: #444;
+            position:fixed;
+            display:none;
+            bottom: 55px;
+            right:40px;
+            z-index:9999;
+            background: url('{!$Resource.TopArrow}') no-repeat 0px 20px;
+    }
+    .has-error{
+        border-color: #a94442 !important;
+    }
+    .has-error .form-control {
+        border-color: #a94442 !important;
+    }
+    .tooltipTrigger {
+            cursor: pointer;
+        }
+        .tooltip > .tooltip-inner {
+            background-color: #fff;
+            color: #000;
+            text-align:left;
+            box-shadow: 0 0 5px 5px rgba(0, 0, 0, 0.2);
+        }
+    
+    .naviagtionOrangeLink p:first-child {
+        float: right;
+    }
+    #customerDetailsTable tr td {
+                border: 0px;
+            }
+            #customerDetailsTable tr td.first-cell {
+                padding: 8px 8px 8px 0;
+            }        
+            #customerDetailsTable tr td.last-cell {
+                padding: 8px 0 8px 8px;
+            }   
+    .naviagtionOrangeLink p {
+    margin-bottom: 5px;
+    }
+        .ui-widget-header {
+         /*   border: 1px solid cornflowerblue !important; */
+            background: cornflowerblue !important;
+            color: Black;
+            font-weight: bold;
+        }
+        .message.errorM3 {
+            margin-top: 0;
+            color: #cc0000;
+            margin-bottom: 20px;
+        }
+        .errorText {        
+            color: #A94442;
+            font-size: 14px;
+            width: 225px;
+            float:left;
+        }
+        #customerDetailsTable tr td {
+            border: 0px;
+        }
+        
+        .darkDiv {
+            background: #E6E6E6;
+            margin: 10px 0;
+            padding: 10px 20px;
+            font-family: omnesatt_iiregular !important;
+        }
+        
+        .darkDiv label {
+            font-family: omnesatt_iiregular !important;
+        }
+        
+        .omesregular {
+            font-family: omnesatt_iiregular !important;
+        }
+        
+        .omesmedium {
+            font-family: omnes_att_iimedium;
+        }
+        
+        #finalSites {
+            //max-height: 448px;
+            overflow-y: auto;
+            background: #fff;
+            border: 1px solid #ddd;
+            margin-top:30px;
+        }
+        
+        .dashborder {
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .requiredInput,
+        .requiredInput:focus {
+            border-left-width: medium !important;
+            border-left-color: #FF0000 !important;
+            border-left: 2px solid #ddd !important;
+        }
+        
+        #progressbar {
+            height: 20px;
+        }
+        .activeSite {
+            background-color: #f5f5f5;
+        }
+        .styled-select-small select {
+            -moz-appearance: none;
+        }
+       
+    .vpnName{
+            text-transform: uppercase;
+        }
+    </style>
+<script>
+
+    function isSubmitEnable(flag){
+            setTimeout(function() {
+                if('{!SubmitButtonLabel}'=='Submit') {
+                    
+                   j$('.rdsSubmit').addClass('disabled');
+                    validateRequiredFields1();
+                    //console.log('isLastPage '+isLastPage+' rdsFlag=='+rdsFlag+' errorflagavpn=='+errorflagavpn+j$('.errorText').length+'*****'+j$(".errorStyle").length);
+                    if(isLastPage==='true' && rdsFlag === 'true' && errorflagavpn && j$('.errorText').length===0 && j$(".errorStyle").length ===0 && page2AccordActive == false){
+                       j$('.rdsSubmit').removeClass('disabled');
+                      
+                    }  
+                } else {
+                    
+                    j$('.rdsSubmit').removeClass('disabled').prop("disabled", false); 
+                }
+                
+                //console.log('inside submit'+isLastPage+' ***** '+j$( ".accordion" ).accordion( "option", "active" ));
+                
+            }, 1000);
+        }
+    
+function reInitiateToolTip(){
+           j$("body").tooltip({ selector: '[rel=tooltip]' });
+           j$(".tooltipTrigger").tooltip();        
+         }
+         </script>
+    <div class="m-t-20">
+        <apex:form id="vpnHeaderBlock">
+            <!--<div id="customerDetailsTable" class="row" style="margin-top: 20px;">
+                <div class="col-xs-12 col-md-12">-->
+                    <!-- @Cameron 11/01/2014 Start: DE84283 fix -->
+                    <!--<h3 style="margin-bottom: 40px;">{!quoteObj[0].End_Customer__r.Name}</h3>-->
+                    <!-- @Cameron 11/01/2014 End: DE84283 fix -->
+                    <!--<div class="row m0 p0" style="margin-top: 10px;">
+                        <div class="col-xs-3 p0">
+                            <label style="margin-right: 10px !important;">Quote Name</label>{!quoteObj[0].Apttus_Proposal__Proposal_Name__c}</div>
+                        <div class="col-xs-3 p0">
+                            <label style="margin-right: 10px !important;">Quote Number</label>{!quoteObj[0].Name}</div>
+                        <div class="col-xs-4 p0">
+                            <label style="margin-right: 10px !important;">Product</label>{!quoteObj[0].Product_New_Name__c}</div>
+                        <div class="p0">
+                            <label style="margin-right: 10px !important;">Terms</label>{!quoteObj[0].Apttus_Proposal__Payment_Term__c}</div>
+                    </div>
+                </div>
+            </div>-->
+            <a href="#" class="scrollToTop"></a>
+            <apex:inputHidden value="{!ciMD5Error}" id="ciError"/>
+            <table id="customerDetailsTable" class="table" style="width:100%">
+                <tr>
+                    <td class="first-cell" colspan="4"><h3>{!quoteObj[0].End_Customer__r.Name}</h3></td>
+                </tr>
+                <tr>
+                    <td class="first-cell"><strong>Quote Name</strong> {!quoteObj[0].Apttus_Proposal__Proposal_Name__c}</td>
+                    <td><strong>Quote ID</strong> {!quoteObj[0].Name}</td>
+                    <td><strong>Product</strong> {!quoteObj[0].Product__r.name}</td>
+                    <td align="right" class="last-cell"><strong>Term</strong> {!quoteObj[0].Apttus_Proposal__Payment_Term__c}</td>
+                </tr>
+            </table>
+
+            <hr class="blue_hr" />
+       <!--     <div id="dispCIMsgId" style="position:relative;bottom:10px;color:#a94442;"></div>
+            <div class="col-xs-12 col-md-12 m-b-10" style="height:auto !important;" id="vpnBlock">
+                <div class="col-xs-3">
+                    <div>
+                        <label class="f-s-larger">VPN Name</label>
+                    </div>
+                    <div>
+                        <apex:inputText value="{!vpnname}" styleClass="form-control inputVPNName requiredInput requiredInputField" style="height: 25px; margin-top: 10px;" id="vpnname12">
+                            <apex:actionSupport event="onchange" action="{!SetVPNNameMethod}" reRender="vpnname12" oncomplete="initializeVPNValidation()" />
+                        </apex:inputText>
+                    </div>
+                </div>
+                <div class="col-xs-3">
+                    <div>
+                        <label class="f-s-larger">VPN Connection Policy</label>
+                    </div>
+                    <div class="add_state_input_div">
+                        <div class="add_site_location_adjust">
+                            <div class="styled-select-small adjust-select-small w100p">
+                                <apex:selectList value="{!selectedVPNConnectionPolicy}" styleClass="form-control VPNConnectionPolicySelector" id="VPNConnectionPolicy" size="1" multiselect="false" style="padding:2px;">
+                                    
+                                    <apex:selectOptions value="{!VPNConnectionPolicyoptions}" />
+                                    <apex:actionSupport event="onchange" action="{!getvpnhuboptions}" reRender="hubblock" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';initializeVPNValidation();validateSelectOptions('VPNConnectionPolicySelector');updateVPNConnectionPolicyAcross();"/>
+                                </apex:selectList>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <apex:outputPanel id="hubblock">
+                    <apex:outputPanel rendered="{!selectedVPNConnectionPolicy == 'Hub and Spoke'}">
+                        
+                        <div id="hubblockDiv" class="col-xs-3">
+                            <div>
+                                <label class="f-s-larger">HUB</label>
+                            </div>
+                            <div class="col-xs-12 p0">
+                                <div class="add_state_input_div">
+                                    <div class="add_site_location_adjust">
+                                        <div class="styled-select-small adjust-select-small w100p">
+                                            <apex:selectList size="1" id="HUB" multiselect="false" value="{!selectedhubspoke}" styleClass="form-control hubNspokeSelector" style="padding-top: 0px !important;" >
+                                               
+                                               
+                                                <apex:selectOptions value="{!HUBoptions}" />
+                                                <apex:actionSupport event="onchange" action="{!setSelectedHubOption}" reRender="hubblock" onsubmit="document.body.style.cursor = 'wait'; onchangeVal(this);" oncomplete="document.body.style.cursor = 'auto';updateVPNConnectionPolicyAcross();initializeVPNValidation();updateVPNConnectionPolicy();validateSelectOptions('hubNspokeSelector');" />
+                                            </apex:selectList>
+                                            <script>
+                                                var selectedhub = '{! $Component.HUB }';
+                                            </script>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </div>
+            <div class="darkDiv col-xs-12" id="avpnCompletionBarBlock">
+                <div class="f-s-larger">
+                    <div>
+                        <label class="pull-left">{!quoteObj[0].Product_New_Name__c}</label>
+                        <div class="pull-right col-md-6">
+                            <div class="row" style="margin-left: 42px;">
+                                <label class="col-xs-5">Overall Completion</label>
+                                <div class="col-xs-5">
+                                    <div id="progressbar"></div>
+                                </div>
+                                <label class="progress-label col-xs-1">{!ROUND(OverallCompletion,0)}%</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </apex:form> -->
+          <div id="dispCIMsgId" style="position:relative;bottom:10px;color:#a94442;"></div>
+         
+         
+            <div class="p0" style="height:auto !important;" id="vpnBlock">
+            <h3 class="f-s-larger">VPN Name and Connectivity</h3>
+                <div class="col-xs-6 p0">
+                    <div style="padding:0px 2px;line-height:18px;">
+                        <span>Create a name for your AT&amp;T Virtual Private Network (VPN). The VPN name must be in ALL CAPS, alphanumeric, maximum of 26 characters and the only special character allowed is an _ (underscore). Currently only Any-To-Any VPN Connectivity Policy is supported</span>
+                    </div>
+                </div>  
+                <div class="col-xs-3" style=" margin-left: 4px; width: 282px; ">
+                    <div>
+                        <label class="f-s-larger omesregular">VPN Name</label><span class="tooltipTrigger glyphicon glyphicon-question-sign m-l-10" data-toggle="tooltip" data-placement="right" title="The VPN name must be in ALL CAPS, alphanumeric, maximum of 26 characters and the only special character allowed is an _ (underscore)." style="font-size: 20px !important;"></span>
+                    </div>
+                    <div>
+                        <apex:inputText value="{!vpnname}" styleClass="form-control vpnName requiredInputField" style="height: 25px; margin-top: 10px;" id="vpnname12">
+                            <!-- <apex:actionSupport event="onchange" action="{!SetVPNNameMethod}" reRender="vpnname12" oncomplete="initializeVPNValidation()" /> -->
+                        </apex:inputText>
+                    </div>
+                </div>
+                <div class="col-xs-3" style=" padding-right: 0px;width: 278px; ">
+                    <div>
+                        <label class="f-s-larger omesregular">VPN Connection Policy</label>
+                    </div>
+                    <div class="add_state_input_div">
+                        <div class="add_site_location_adjust">
+                            <div>
+                             <apex:inputText styleClass="" html-placeholder="Any-To-Any" style="height: 25px; margin-top: 10px;" disabled="true"/>
+                             <!--  <apex:outputText value="Any-To-Any" />-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <hr class="blue_hr" />                
+            </div>
+        </apex:form>
+        
+        <br />
+        <div class="col-xs-12 col-md-12 m-t-20 p0">
+        
+            <div class="col-xs-3 pull-left row" id="leftPanelContainer" style="z-index:1">
+                <h3 style="margin-top:0px">Site List</h3>
+                <apex:form id="leftPanelContainerForm">
+                    <!-- Add filters and sites configured details -->
+                    
+                            <div id="siteCountsDiv1" style="color: orange; font-weight: bold;float:left;margin-top: 5px;" class="f-s-larger">{!noOfConfigedSites} of {!TotalSitesCount} Sites Completed</div>
+                            <div class="styled-select-small adjust-select-small" style="margin-top:16px;width:100%;">
+                                <apex:selectList id="optgrp" styleClass="form-control" style="width: 100%;margin-top:-4px;" value="{!selectedFilter}" size="1" rendered="true" onchange="handlefilterSites()">
+                                    <apex:selectOptions value="{!FilterOptions}"/>
+                                </apex:selectList>
+                            </div>
+                    <div id="finalSites" style="max-height: 552px;">
+                        <apex:repeat value="{!listCustomerSiteMaster}" var="item">
+                                <div class="panel-heading p10 omesmedium dashborder  {!IF(item.custSiteIns.Id == siteselected,'activeSite','')}">
+                                    <table>
+                                        <tr>
+                                            <td style="width:210px;">
+                                            <!-- Updated as part of sprint 15 US -->
+                                                <!--<apex:commandLink action="{!togglesites}" value="{!item.Site_Name__c}" styleClass="{!item.Id}" html-data-site-id="{!item.Id}">-->
+                                                    <!-- Start Changes for DE94017 Removing Extra Comma -- RK 12/30/2014 -->
+                                                    <!--<div style="color: #777; border-bottom: 0 !important;">{!item.Address_Line__c}, {!item.City__c}, {!item.State__c}-->
+                                                        <!--{!item.Country__c},--><!--{!item.Zip_Code__c}</div>-->
+                                                    <!-- End Changes: RK -->
+                                                    <!--<apex:param name="siteid" value="{!item.Id}" assignTo="{!siteselected}" />
+                                                </apex:commandLink>-->
+                                                <apex:commandLink value="{!item.custSiteIns.Site_Name__c}" onclick="validateRequiredFields1();getSiteId('{!item.custSiteIns.Id}');return false;">
+                                                    <div style="color: #777; border-bottom: 0 !important;">{!item.custSiteIns.Address_Line__c}, {!item.custSiteIns.City__c}, {!item.custSiteIns.State__c} {!item.custSiteIns.Zip_Code__c}</div>
+                                                </apex:commandLink>
+                                            </td>
+                                            <td style="vertical-align:middle;">
+                                               <apex:outputPanel rendered="{!IF(item.custSiteIns.RDS_Submitted__c == true && item.custSiteIns.IsStaticRDS__c == false ,true,false)}">
+                                                    <apex:image url="{!URLFOR($Resource.legendicons,'icon_circle_check.png')}" style="width: 25px; height: 25px;margin-top: 5px;margin-left:2px;" />
+                                                </apex:outputPanel>
+                                               
+                                                <apex:outputPanel rendered="{!IF(item.custSiteIns.IsStaticRDS__c == true ,true,false)}">
+                                                    <apex:image url="{!URLFOR($Resource.legendicons_blue,'staticicon.png')}" style="width: 25px; height: 25px;margin-top: 5px;margin-left:2px;" />
+                                                </apex:outputPanel>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                        </apex:repeat>
+                            <script type="text/javascript">
+                                function GetURLParameterReconfig(sParam) {
+                                    var sPageURL = window.location.search.substring(1);
+                                    var sURLVariables = sPageURL.split('&');
+                                    for (var i = 0; i < sURLVariables.length; i++) {
+                                        var sParameterName = sURLVariables[i].split('=');
+                                        if (sParameterName[0] == sParam) {
+                                            return sParameterName[1];
+                                        }
+                                    }
+                                }
+
+                                function highlightReconfiguredSite(){               
+                                    /*var pageStaus="{!Sites}".substring(1, "{!Sites}".length-1).replace(/\s+/g,'').split(',');
+                                    var sitePosition=pageStaus.indexOf("{!siteselected}");
+                                    for(var i=0; i<pageStaus.length; i++){
+                                        if(i==sitePosition)
+                                            j$('#finalSites .panel-heading:eq('+i+')').addClass('activeSite');
+                                        else
+                                            j$('#finalSites .panel-heading:eq('+i+')').removeClass('activeSite');
+                                    }    */    
+                                    var winURL=window.location.href;
+                                    if(winURL.indexOf("siteid=") < 0){
+                                        document.getElementById("rdsPagePanel").style.display="none";
+                                        
+                                        
+                                        if(winURL.indexOf("quoteid=") < 0){
+                                            winURL=winURL.replace(/&.*&/, '&')+ '?quoteid='+"{!ATTquoteid}"+ '&siteid='+"{!siteselected}";
+                                        }
+                                        else{
+                                            winURL=winURL.replace(/&.*&/, '&')+ '&siteid='+"{!siteselected}";
+                                        }
+                                        window.location.href=winURL;
+                                    }
+                                    /*var highlightSiteId = GetURLParameterReconfig('siteid');
+                                    if(highlightSiteId){
+                                        // j$('#finalSites .panel-heading').removeClass('activeSite');
+                                        j$('#finalSites .panel-heading a.'+highlightSiteId).parent('div').addClass('activeSite');                                    
+                                    } else {
+                                         j$('#finalSites .panel-heading:eq(0)').addClass('activeSite');
+                                    }*/
+                                }
+                                
+                            </script>
+                        
+                    </div>
+                    <apex:actionFunction id="filterSites" name="handlefilterSites" action="{!handlefilterSites}" reRender="leftPanelContainerForm" status="loading" oncomplete="addLeftPanelScroll();validateRequiredFields1();leftPanelFloat();">
+                            <apex:param name="quoteId" value="" />
+                        </apex:actionFunction>
+                     
+                </apex:form>
+            </div>
+            <div class="col-xs-9 ng-scope pull-right" id="rdsPagePanel" style="position:relative;padding-right:0px">
+                <apex:outputPanel id="pagecontainer">
+                    
+                    <apex:outputPanel >
+                        <div class="panel-title col-xs-12 p0">
+                            <!--<h3>Configure {!quoteObj[0].Product_New_Name__c} Site</h3>-->
+                        <apex:outputPanel id="pagecontainerIPflex" rendered="true">
+                          <h3 style="margin-top:0px"><apex:outputLabel id="PageHeaderCount" styleclass="omesregular">Site Information - page {!pageIpflex} of {!pageCounter}</apex:outputLabel></h3>
+                        </apex:outputPanel>
+                        </div>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel id="changepage">
+                    
+                    <apex:outputPanel rendered="{!IF(AVPNRDSPageNumber=='Page1',true,false)}">
+                    <apex:include pageName="MACD_RDS_page1_siteInfo" />
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!IF(AVPNRDSPageNumber=='Page2',true,false)}" >
+                    <apex:include pageName="MACD_RDS_page3_vlanConfig"/>
+                    </apex:outputPanel>
+                    
+                   
+                    
+                    </apex:outputPanel>
+                
+                </apex:outputPanel>
+                <apex:form >
+                    <apex:outputLabel id="CheckValidIPAddressId" value="{!IpaddressesList}" styleClass="ipVlauesSelector" style="display:none;" />
+                    <apex:outputLabel id="CheckValidIPAddressIdStr" value="{!IpaddressesStrBck}" styleClass="ipVlauesSelectorStr" style="display:none;" />
+                    <apex:inputHidden id="page2PanelNumber" value="{!panelNumber}"   />
+                    <apex:inputHidden id="showIPv4Vlan" value="{!showipv4block}"   />
+                    <apex:actionFunction name="CheckValidIPAddress" action="{!UpdateConfigureIpAddressList}" reRender="CheckValidIPAddressId,CheckValidIPAddressIdStr" status="loading">
+                        <apex:param name="Ip_UiKey" value="" assignTo="{!Ip_UiKey}"/>
+                        <apex:param name="ValidIpAddress" value="" assignTo="{!ValidIpAddress}"/>
+                    </apex:actionFunction>
+                    <apex:actionFunction name="removeIpAddressFromList" action="{!removeIpAddressFromList}" reRender="CheckValidIPAddressId,CheckValidIPAddressIdStr" status="loading">
+                        <apex:param name="Ip_UiKey" value="" assignTo="{!Ip_UiKey}"/>
+                       <!-- <apex:param name="ValidIpAddress" value="" assignTo="{!ValidIpAddress}"/>-->
+                    </apex:actionFunction>
+                    <!--<apex:actionFunction name="passSite" action="{!saveOnToggleSite}" reRender="leftPanelContainerForm"  status="loading" oncomplete="addLeftPanelScroll();validateRequiredFields1();leftPanelFloat();">
+                        <apex:param name="goToSiteId" value="" />
+                        <apex:param name="rdsFlag" value="" />
+                    </apex:actionFunction>-->
+                </apex:form>
+            </div>
+            
+            </div>
+        
+    </div>
+   <!-- <c:PagenationAVPN ></c:PagenationAVPN> -->
+   <style type="text/css">
+        .section-dividerHr{
+            width:100%;
+            clear:both;
+            margin:20px 0 35px 0;
+            float:left;
+            border-bottom:1px solid #d3d3d3;
+        }
+        .sectionHeader-primary{
+            font-size:22px;
+        }
+        .sectionHeader-secondary{
+            font-weight:bold;
+        }
+        .m-b-25{
+            margin-bottom:25px;
+        }
+        .m-b-10{
+            margin-bottom:10px;
+        }
+        .m-t-10{
+            margin-top:10px;
+        }
+        .m-r-3P{
+            margin-right:3%;
+        }
+        .m-b-15{
+            margin-bottom:15px;
+        }
+        .addressFields li{
+            width:31%;
+            display: inline-block;
+        }
+        .radioFields label{
+            font-family: omnesatt_iiregular;
+            margin: 0 25px 0 0;
+        }
+        .radioFields input{
+             margin: 0 10px 0 0 !important;
+        }       
+        .radioFields .errorText{
+            //margin-top: -10px !important;
+        }
+        .errorText{
+            color:#cf2a2a !important;
+            font-weight:bold;
+            float:left
+        }
+        .orangeText{
+            color: #ea7400 !important;
+            font-family: omnes_att_iimedium;
+        }
+        .naviagtionOrangeLink{
+            float:right;
+            margin-top: -20px;
+            margin-bottom: 25px;
+        }
+        .naviagtionOrangeLink p{
+            margin-bottom:5px;
+        }
+        .naviagtionOrangeLink p:first-child{
+            float:right;
+        }        
+        .linkToNavigate{
+            float: right;
+            color: #0568ae !important;
+            font-family: omnes_att_iimedium;
+            font-weight: bold; 
+        }
+        .pageNavigationBtnSection{
+            margin:40px 0 40px 0;
+            float:right;
+        }
+        .pageNavigationBtnSection li{
+            display:inline;
+            border:1px solid #939393;
+            border-right:none;
+            cursor:pointer;
+            padding: 5px 25px;
+            background-color: rgb(210,210,210);
+            color: #000; 
+            font-family: omnes_att_iimedium;
+            margin-left: -5px;
+        }
+        .pageNavigationBtnSection li:first-child{
+            
+            border-radius:6px 0 0 6px;
+            margin-right: -5px;
+        }
+        .pageNavigationBtnSection li:last-child{
+            border-right:1px solid #939393;
+            border-radius:0 6px 6px 0;
+            
+            margin-left: -5px;
+        }
+        .pageNavigationBtnSection li:last-child .inCompletePage {
+            border-color:#red;
+        }        
+        .pageNavigationBtnSection .completedPage{
+            background-color: #fff !important;
+            color: #0568ae !important;
+            padding: 5px 20px 5px 39px !important;
+            margin-right: 0px;
+        } 
+        .pageNavigationBtnSection .inCompletePage{
+            background-color: #fff !important;
+            color: red !important;
+            border-color:red !important;
+            margin-left: -5px;
+        }
+        .pageNavigationBtnSection .currentPage{
+            background-color: #0568ae !important;
+            color: #fff !important;
+            border-color: #939393 !important;
+           <!--margin-right: -5px;-->
+            margin-left: -5px;
+        }
+        .statusImgSuccess{
+            background-image: url("{!URLFOR($Resource.legendicons,'icon_circle_check.png')}");
+            background-size: 25px 25px;
+            background-repeat: no-repeat;
+            background-position: 14% 50%;
+            margin-left: -5px;   
+            margin-right: -3px;         
+        }        
+        .dividerHr{clear:both;}
+        .blue_hr{
+            width:100%;
+            float:left;
+        }
+        .scrollToTop{
+            width:75px; 
+            height:100px;
+            padding:10px; 
+            text-align:center; 
+            font-weight: bold;
+            color: #444;
+            position:fixed;
+            bottom: 55px;
+            right:40px;
+            z-index:9999;
+            background: url('{!$Resource.TopArrow}') no-repeat 0px 20px;
+        }
+        .tooltip.right .tooltip-arrow{
+            border-right-color:#fff !important;
+        }
+        .tooltip.bottom .tooltip-arrow{
+            border-bottom-color:#fff !important;
+        }
+        .errorFieldBorderColor{
+            border-color:#a94442 !important;
+            height:34px !important;
+        }
+        #BottomMainDIV{
+            margin-left:auto;
+            margin-right:auto;
+            height:auto; 
+            width:auto;
+        }
+        #inner1{
+            float:right; 
+        }
+        #inner2{
+            clear: right;
+            float:right; 
+        } 
+    </style>
+ <apex:form >
+  <div  id="pagePanel" style="padding-right: 0px;">
+            <apex:outputPanel id="BottomSectionAVPNRDS" >
+            <div id="BottomMainDIV">
+                 <div id="inner1">
+                 <ul class="pageNavigationBtnSection">   
+                <apex:repeat id="pageNo" value="{!RDSVPNPagination}" var="item" rendered="{!IF(VlanChannels==true || isIPFlexEnabled==true, true, false)}">
+                 
+                 
+                    
+                        <!--<li id="{!item.pageId}" onclick="querypagenum();saveRdsAvpnData();" >{!item.pageNo}</li>-->
+                        <li id="{!item.pageId}" onclick="triggerMandatoryFeilds();querypagenum(this);isSubmitEnable('PageChanged')" oncomplete ="checkLastPage()">{!item.pageNo}</li>
+                    
+              </apex:repeat>
+               </ul>
+              <apex:actionFunction name="pagenavigate" action="{!pageNavigate}" status="loading" rerender="pagecontainer,changepage,leftPanelContainerForm,pagePanel" oncomplete="window.scrollTo(0, 0);checkPageCompletion();">
+                   <apex:param assignTo="{!AVPNRDSPageNumber}" name="AVPNRDSPageNumber" value="" />
+              </apex:actionFunction>
+              </div>
+              
+              
+            <!-- <apex:actionFunction name="rerenderPanel" reRender="BottomSectionAVPNRDS"  status="loading" >
+                  </apex:actionFunction>  -->
+               <div id="inner2">
+               <apex:outputPanel styleClass="pull-right orangeText naviagtionOrangeLink errorTextForIncompleteFields" style="display:none;">
+                   <!--<div id="errorTextForIncompleteFields" class="pull-right" style="display:none;">-->
+                        
+                            <p>You will not be able to submit the RDS until all required fields are completed for all sites;</p> 
+                            <p>however, you can proceed now to another page and come back to complete the blank fields.</p> 
+                            <a href="javascript:void(0)" onclick="navigateOnLinkIPFlex(forceProceedObj);" class="linkToNavigate">Click here to proceed</a>
+                        
+                    <!--</div>  -->
+                </apex:outputPanel>
+        </div>
+                <hr class="blue_hr" style="margin-bottom: 40px;" id="panelFooter"/>
+                
+                    <div id="mainId" class="pull-right">                            
+                        <apex:commandButton value="Save & Exit" styleClass="btn btn-primary" style="background:#FFFFFF !important; color:#595959 !important; margin-right:10px; font-family:omnes_att_iimedium !important; padding-top:9px !important;Font-Size:16px ! important; Line-Height:16px ! important; Letter-Spacing:0.01em ! important; height:36px ! important;width: 175px !important;border:1px solid #ccc !important;" onclick="saveAndExit(); return false;"/>
+                        <!--<apex:commandButton id="saveBtnId" styleClass="btn btn-primary m-r-10 btnContinuePage2 btnContinue" style="font-family:omnes_att_iimedium !important; Font-Size:16px; ! important; padding-top:9px !important;Line-Height:20px ! important; Letter-Spacing:0.01em ! important; height: 36px ! important;" value="{!SubmitButtonLabel}" onclick="SubmitRDS();highlightCurrentSite();return false;" />-->
+                        <apex:commandButton id="saveBtnId1" styleClass="btn btn-primary m0 rdsSubmit {!IF(SubmitButtonLabel == 'Submit','disabled','')}" style="font-family:omnes_att_iimedium !important; Font-Size:16px; ! important; padding-top:9px !important;width: 175px !important;Line-Height:16px ! important; Letter-Spacing:0.01em ! important; height: 36px ! important;" value="{!SubmitButtonLabel}" onclick="SubmitRDSAVPN(); return false;" />
+                        <!-- <apex:actionFunction name="SubmitRDS" action="{!submitRdsSite}" reRender="pagecontainer,ciError,crddoverlaycontainer" oncomplete="checkCIError();displaycrddoverlay();" status="loading" /> -->
+                    </div>
+                             
+                   </div>
+            </apex:outputPanel> 
+           
+        </div>
+             
+            
+          </apex:form>
+          
+    <script type="text/javascript">
+    
+    function checkPageCompletion(){
+    
+        checkLastPage();
+        setTimeout(function(){
+        
+            isSubmitEnable('Ready');
+        }, 2000);
+        
+    }
+    function onFieldChange(flag){
+       
+        j$(".requiredField, .requiredInputField").on({
+            "keyup blur change": function () {
+            
+                isSubmitEnable("keyup");
+            }
+        });
+    }   
+    
+ 
+    //onFieldChange("Main Page Onload");
+    Visualforce.remoting.timeout = 120000;
+    var siteIdVar = '{!siteselected}';
+    var pagecount ='{!pagecounter}';
+    var currentpagenumber='';
+    var isLastPage = 'false';
+    function checkLastPage(){
+        
+    var currentPageObj = j$('.currentPage');
+    if(currentPageObj != null && currentPageObj.prop('id') != null){
+        currentpagenumber  = currentPageObj.prop('id');
+    }
+    
+       Visualforce.remoting.Manager.invokeAction(
+           '{!$RemoteAction.MACD_RDSAVPNController.querypageCompleted}',
+            quoteId,siteIdVar,pagecount,
+            function(result, event) {
+                if(result=='true'){
+                    isLastPage = 'true';
+                }    
+                /*else if(currentpagenumber == 'Page2'){
+                    isLastPage = 'true';
+                } */
+                else{
+                    isLastPage = 'false';
+                }               
+            }); 
+    }
+    
+        
+    
+    
+    function SubmitRDSAVPN (){
+        validateRequiredFields1();
+         var vpnNameStr = '';
+            if(j$('.vpnName') && j$('.vpnName').val() != null){
+                vpnNameStr = j$('.vpnName').val();
+            }
+         SubmitRDS(rdsFlag.toString(), vpnNameStr.toString());
+    
+    }
+    function showErrorBlock(){
+    var issitecomplete;
+    issitecomplete = validateRequiredFields1();
+
+    if(errorflagavpn == false){     
+        $(".errorTextForIncompleteFields").show();
+        }
+    else{   
+        $(".errorTextForIncompleteFields").hide();
+        }
+     }
+     
+     function triggerMandatoryFeilds(){
+        var requiredFileds = j$(".requiredField");
+        requiredFileds.each(function () {
+            if(j$(this).val().length ==0){
+                j$(this).trigger('keyup');
+             }   
+        });
+        requiredFileds = j$(".requiredInputField");
+        requiredFileds.each(function () {
+            if(j$(this).val().length ==0){
+                j$(this).trigger('keyup');
+             }   
+        });
+    }
+     
+        var siteId = '{!siteselected}';
+        var quoteId = '{!quoteid}';
+        
+        
+        var varResult ;
+        var forceProceed=false;
+        var forceProceedObj;
+        var navigateTo;
+    function querypagenum(e) {
+    navigateTo = e.id;
+    forceProceedObj = e;
+    errorflagavpn = true;
+    pageName = e.id;
+    var currentPage = '';
+    j$('.errorTextForIncompleteFields').hide();
+    
+    rdsFlag='false';
+    var currentPageObj = j$('.currentPage');
+    if(currentPageObj != null && currentPageObj.prop('id') != null){
+        currentPage = currentPageObj.prop('id');
+    }
+    
+       
+        validateRequiredFields1();     
+            if(!forceProceed){
+                Visualforce.remoting.Manager.invokeAction(
+               '{!$RemoteAction.MACD_RDSAVPNController.queryPageCurrentSite}',
+                siteId, quoteId, 
+                function(result, event) {
+                    varResult = result;
+                    
+                    
+                });
+            }
+            else{
+                varResult = currentPage;
+            }
+            if(varResult == null || varResult == undefined){
+                varResult = currentPage;
+            }                       
+            
+            if(forceProceedObj != null && forceProceed){
+                pageName = j$(forceProceedObj).prop('id'); 
+                
+            }
+            
+            if(rdsFlag=='true' || forceProceed){
+            pageName=forceProceedObj.id;
+            var vpnNameStr = '';
+            if(j$('.vpnName') && j$('.vpnName').val() != null){
+                vpnNameStr = j$('.vpnName').val();
+            }
+                console.log('rdsFlag.toString() page num ::: '+rdsFlag.toString());
+                saveRdsAvpnData(rdsFlag.toString(), vpnNameStr.toString());
+            }     
+            else{
+                j$('.errorTextForIncompleteFields').show();
+                forceProceedObj = e;
+            }
+        forceProceed=false;
+       
+    }   
+    function navigateOnLinkIPFlex(e){
+            forceProceed=true;
+            //saveRdsAvpnData();
+            pageName=forceProceedObj.id;
+         
+            j$(forceProceedObj).trigger('click');
+            
+           // setTimeout(function(){pageNavigation(forceProceedObj,'',false)},2000);
+            
+            
+    }
+        
+    
+ 
+    
+    function checkCIError(){
+            console.log('inside checkCIError '+j$('[id$=ciError]').val());
+            var errorMsgCI = j$('[id$=ciError]').val();         
+            var ciErrMsg = document.getElementById("dispCIMsgId");
+            if(errorMsgCI != ''){    
+                //alert("Error in CI: "+errorMsgCI);
+                ciErrMsg.innerHTML = '<h style="color:red;font-weight:bold;">'+errorMsgCI+'</h>';
+                 j$('html, body').animate({
+                     scrollTop: j$('#customerDetailsTable').offset().top
+                 },1000);
+                
+                 var md5v4 = j$('[id$=pwdv4]').val();
+                var md5v4re = j$('[id$=pwdv4conf]').val();
+                if((md5v4!='') || (md5v4!=null)){
+                    j$('[id$=pwdv4]').val('');
+                    j$('[id$=pwdv4conf]').val('');
+                }
+                
+                var md5v6 = j$('[id$=pwdv6]').val();
+                var md5v6re = j$('[id$=pwdv6conf]').val();
+                if((md5v6!='') || (md5v6!=null)){
+                    j$('[id$=pwdv4]').val('');
+                    j$('[id$=pwdv4conf]').val('');
+                }
+                
+            }else{
+                //alert("No Error in CI: "+errorMsgCI);
+                ciErrMsg.innerHTML="";
+            }
+            
+        } 
+        
+    var pageName;
+    function pageNavigation(e,pageNo,flag){
+    
+    if(e != null ){
+        
+        if(flag == null){
+            flag= false;
+        }
+            pageName = e.id;
+            if((pageName == null || pageName == '' )&& forceProceedObj !=  null)
+            {
+                pageName = forceProceedObj.id;
+            }
+            
+                checkPageFilled(varResult);
+                 
+                
+                
+                
+                var issitecomplete;
+                issitecomplete = validateRequiredFields1();
+                
+                if(pageName != null)document.getElementById(pageName).className = 'currentPage';
+                if(varResult != null && varResult != '' && forceProceed){
+                    pageName = varResult;
+                }
+                var ciErrorMsg = jQuery('[id$=ciError]').val();
+                
+                if(pageNo != null && pageNo =='Page1' && ciErrorMsg != null && ciErrorMsg.length>0){
+                    checkCIError();
+                    querypagenum(jQuery('#Page1'));
+                    checkPageFilled(varResult);
+                    rdsFlag ='false';
+                    pagenavigate('Page1');              
+                }
+                else{                   
+                     pagenavigate(pageName);                    
+                }
+                
+               
+                
+                pageName = e.id;
+                
+            
+            
+    }
+        
+            
+            forceProceed = false;
+            
+              
+           };
+           
+           function saveAndExit(){
+             validateRequiredFields1();
+             var vpnNameStr = '';
+            if(j$('.vpnName') && j$('.vpnName').val() != null){
+                vpnNameStr = j$('.vpnName').val();
+            }            
+             saveandclose(rdsFlag.toString(),vpnNameStr.toString());
+           
+           }
+        
+   </script>     
+    <script type="text/javascript">
+        var page2AccordActive = false;
+        var j$ = jQuery.noConflict();
+        //var uniqueIPVals =  {!IpaddressesList};
+        var uniqueIPVals =  [];
+        var prevSClassName = '';
+        var prevSValue = '';
+        var progressbar = j$("#progressbar"),
+            progressLabel = j$(".progress-label");
+        
+        function updateIPs(){
+          
+            var str='{!IpaddressesList}';//j$('.ipVlauesSelector').text();
+            
+        
+            str=str.replace(' ','');
+            str=str.replace(/^\s+|\s+$/gm,'')
+            str=str.replace('[','');
+            str=str.replace(']','');
+            var find = ' ';
+            var re = new RegExp(find, 'g');
+            str = str.replace(re, '');
+            uniqueIPVals = str.split(',');
+          
+        }
+    var attHolidays = {!Holidays};
+    var attHolidaysLength = attHolidays.length;    
+    function holidays(date) {
+        for (i = 0; i < attHolidaysLength; i++) {
+            if (date.getMonth() == attHolidays[i][0] - 1 && date.getDate() == attHolidays[i][1] && date.getFullYear() == attHolidays[i][2]) {
+                return [false, '', attHolidays[i][3]];
+            }
+        }
+        return [true, ''];
+    }
+    function noWeekendsOrHolidays(date) {
+        var noWeekend = j$.datepicker.noWeekends(date);
+        if (noWeekend[0]) {
+            return holidays(date);
+        } else {
+            return noWeekend;
+        }
+      
+    }
+    /*j$(".dPicker").datepicker({
+        numberOfMonths: 2,
+        beforeShowDay: noWeekendsOrHolidays,
+        minDate: "{!minDate}",
+        maxDate: "{!maxDate}",
+        onClose: function (selectedDate) {
+          
+            // Function to validate the date-picker after selecting a date
+            validateEmptyFields("inputRequestedServiceActDate", "Select a Service Activation Date", "Select a Service Activation Date", true);
+           
+            validateRequiredFields();
+        }
+    });*/
+
+        progressbar.progressbar({
+            value: {!OverallCompletion},
+            change: function () {
+                progressLabel.text(progressbar.progressbar("value") + "%");
+            }
+        });
+        // Function to initialize the VPN field validations
+        function initializeVPNValidation() {
+            j$(".inputVPNName").on({
+                "keyup": function () {
+                    validateVPN('inputVPNName');
+                },
+                "blur": function () {
+                    validateVPN('inputVPNName');
+                }
+            });
+        }
+        function initializeSelectFieldValidations() {
+            j$(".VPNConnectionPolicySelector").on({
+                "onchange": function () {
+                    validateSelectOptions('VPNConnectionPolicySelector');   
+                    validateSelectOptions1('hubNspokeSelector');
+                },
+                "blur": function () {
+                    validateSelectOptions('VPNConnectionPolicySelector');
+                    validateSelectOptions1('hubNspokeSelector');
+                }
+            });
+        }
+        
+        function addLeftPanelScroll(){
+            
+                //Get height
+                var tableHeight=0;
+                var leftPanelRowLength = j$("#finalSites tbody").children('tr').length;
+                
+                if(leftPanelRowLength != null && leftPanelRowLength>8){
+                    for(var i=0; i<8; i++){
+                    
+                        //tableHeight =  tableHeight+ j$("#finalSites tbody").children('tr').eq(i).height();
+                        tableHeight = tableHeight +j$("#finalSites").children('div.panel-heading').eq(i).outerHeight();
+                      
+                    }
+                    j$('#finalSites').css('max-height',tableHeight);   
+                
+                }
+               /* else if(leftPanelRowLength != null && leftPanelRowLength>6 && leftPanelRowLength<=8){
+                    j$('#finalSites').css('max-height',j$("#finalSites").height());
+                }*/
+            }
+            
+            function leftPanelFloat(){
+                //scroll site panel-heading
+                var leftPanelHeight=j$("#leftPanelContainer").height();
+                var headerHeight=j$('#top_nav_bar').height();
+                if($('.active_top').length>0){      
+                    var footerOffSet = $('#panelFooter').offset().top+50;       
+                }else{                                
+                    var footerOffSet = $('#panelFooter').offset().top;      
+                }
+                var panelPosition=footerOffSet-45-leftPanelHeight-leftPanelOffSet;
+                                   
+                var leftPanelBottomOffset;
+                scrollPos=j$(window).scrollTop()+headerHeight; 
+                leftPanelBottomOffset= scrollPos + leftPanelHeight;  
+                if(scrollPos >= leftPanelOffSet){
+                     
+                          j$("#leftPanelContainer").css({'position':'fixed','top':headerHeight+'px','width':leftPanelWidth-0.5});                         
+                }else{
+                      
+                          j$("#leftPanelContainer").css({"position":"relative","top":"0px"});
+                }
+                if(leftPanelBottomOffset >= footerOffSet){
+                    j$("#leftPanelContainer").css({"position":"absolute","top":panelPosition+'px'});
+                }//end of scroll
+            }
+            var goToSiteId='';
+            function getSiteId(siteId){
+                goToSiteId=siteId;
+                var vpnNameStr = '';
+                if(j$('.vpnName') && j$('.vpnName').val() != null){
+                    vpnNameStr = j$('.vpnName').val();
+                }
+                console.log('vpnNameStr++'+vpnNameStr.toString());
+                passSite(goToSiteId.toString(),rdsFlag.toString(), vpnNameStr.toString());                    
+            } 
+
+        // Initialize the field validations on document.ready
+        var leftPanelOffSet;
+        var leftPanelWidth;
+        var pageNme = "{!AVPNRDSPageNumber}";
+        var page2Visited;
+        var page3Visited;
+        
+        var submitCount=0;
+        //querypagenum();
+        j$(document).ready(function () {
+            //onFieldChange("Field Main Page Ready");
+            setTimeout(function() {
+                checkLastPage();    
+                    },2000);
+            
+            
+            if(pageCounter>1){
+                checkPageFilled('');
+                addcurrentpage();
+            }
+            initializeVPNValidation();
+            initializeSelectFieldValidations();
+            removeDashLine();           
+            addLeftPanelScroll();
+                     
+                
+                //scroll site panel-heading
+                  leftPanelOffSet=j$("#leftPanelContainer").offset().top;
+                  leftPanelWidth=j$("#leftPanelContainer").outerWidth();
+                  var leftPanelHeight;
+                  var headerHeight;
+                  var footerOffSet;
+                  var panelPosition;
+                  
+                  var leftPanelHeight;
+                  var headerHeight;
+                  var panelPosition;
+                  
+                  var leftPanelBottomOffset;
+                  j$(window).scroll(function(){
+                    leftPanelHeight=j$("#leftPanelContainer").height();
+                    headerHeight=j$('#top_nav_bar').height();
+                    footerOffSet=j$('#panelFooter').offset().top;
+                    panelPosition=footerOffSet-45-leftPanelHeight-leftPanelOffSet;
+                  
+                      scrollPos=j$(window).scrollTop()+headerHeight; 
+                      leftPanelBottomOffset= scrollPos + leftPanelHeight;                        
+                      if(scrollPos >= leftPanelOffSet){
+                     
+                          j$("#leftPanelContainer").css({'position':'fixed','top':headerHeight+'px','width':leftPanelWidth-0.5});                    
+                      }else{
+                 
+                          j$("#leftPanelContainer").css({"position":"relative","top":"0px"});
+                    }
+                      
+                      if(leftPanelBottomOffset >= footerOffSet){
+                      
+                             j$("#leftPanelContainer").css({"position":"absolute","top":panelPosition+'px'});
+                      }  
+                      
+                      if (j$(this).scrollTop() > 50) {
+                            j$('.scrollToTop').fadeIn();
+                        } else {
+                            j$('.scrollToTop').fadeOut();
+                        }
+                    });
+                    
+                    //end of scroll
+                    
+                    j$('.main_nav_link').on('click', function(){        
+                        setTimeout(function(){   
+                            leftPanelOffSet=j$("#leftPanelContainer").offset().top;    
+                            if(j$('.active_top').length>0){      
+                                footerOffSet = j$('#panelFooter').offset().top+50;       
+                            }else{                                
+                                footerOffSet = j$('#panelFooter').offset().top;      
+                            }       
+                        },500);     
+                    });  
+                                      
+                    CharLimit_Note('.noteExceptionClass', 50);
+                    j$(".noteExceptionClass").on('input propertychange', function() {
+                        CharLimit_Note(this, 50);
+                    });
+                   
+                    CharLimit('.myTextareaClass', 68);
+                    j$(".myTextareaClass").on('input propertychange', function() {
+                        CharLimit(this, 68);
+                    });
+            validateRequiredFields1();
+            setTimeout(function() {
+              isSubmitEnable("Ready");
+            }, 2000);
+            //document.getElementById(pageNme).className = 'currentPage';
+            
+            //Click event to scroll to top
+            j$('.scrollToTop').click(function(){
+                j$('html, body').animate({scrollTop : 0},300);
+                return false;
+            });  
+            
+        });
+            function CharLimit(input, maxChar) {
+           
+            var len ;
+            if(j$(input) != null && j$(input).val() != null){
+                len = j$(input).val().length;
+            }
+            
+            if (len > maxChar) {
+                j$(input).val(j$(input).val().substring(0, maxChar));
+                j$('.additionalInfoMsg').html(0 + ' characters remaining');
+             }
+            else{
+                j$('.additionalInfoMsg').html(maxChar - len + ' characters remaining');
+            }
+            if((maxChar - len)==maxChar){
+                j$('.additionalInfoMsg').css('display','block');
+            }
+            else{
+                j$('.additionalInfoMsg').css('display','block');
+            }
+               if(j$(input) != null && j$(input).val() != null) {
+              j$('.additionalInfo').trigger('keyup');
+          }
+        }
+        
+            function CharLimit_Note(input, maxChar) {
+             
+            var len ;
+            if(j$(input) != null && j$(input).val() != null){
+                len = j$(input).val().length;
+            }
+            
+            if (len > maxChar) {
+                j$(input).val(j$(input).val().substring(0, maxChar));
+                j$('.additionalInfoMsg1').html(0 + ' characters remaining');
+             }
+            else{
+                j$('.additionalInfoMsg1').html(maxChar - len + ' characters remaining');
+            }
+            if((maxChar - len)==maxChar){
+                j$('.additionalInfoMsg1').css('display','block');
+            }
+            else{
+                j$('.additionalInfoMsg1').css('display','block');
+            }
+            
+        }
+        
+        function removeDashLine(){
+        
+            //var siteAddressDiv = document.getElementById("");
+        
+            var siteAddressDiv = j$("#finalSites").find(".panel-heading:last");
+
+            siteAddressDiv.removeClass("panel-heading p10 omesmedium dashborder");
+
+            siteAddressDiv.addClass("panel-heading p10 omesmedium");
+
+            //alert("siteAddressDiv: "+siteAddressDiv);
+        }
+        
+        function addcurrentpage(){
+           //alert('{!AVPNRDSPageNumber}');
+           var currentsiteid = '{!AVPNRDSPageNumber}';
+           document.getElementById(currentsiteid).className = 'currentPage';
+           
+        }
+        
+        function updateVPNConnectionPolicyAcross(){
+          
+            updateVPNConnectionPolicyPg3();
+        }   
+        function onchangeVal(chage) {
+            var chaVal = chage.value;
+            //alert(chaVal);
+            
+                validateRequiredFields1();
+                
+                var arrRequiredFields = j$(".requiredInputField"),
+                    boolIsNumberValid = true,
+                    boolIsValid = true,
+                    oAddCustomerButton = j$('.btnSave, .btnContinue');
+                if (boolIsValid && boolIsNumberValid) {
+                // Add customer button enabled
+                if (oAddCustomerButton[0]) {
+                    oAddCustomerButton.parent().removeClass("btn-complete-parent-disabled");
+                    oAddCustomerButton.removeClass("disabled");
+                    oAddCustomerButton.removeAttr("disabled");
+                }
+            } else {
+                // Add customer button disabled
+                if (oAddCustomerButton[0]) {
+                    //alert("disabled");
+                    oAddCustomerButton.parent().addClass("btn-complete-parent-disabled");
+                    oAddCustomerButton.addClass("disabled");
+                    oAddCustomerButton.attr("disabled", "disabled");
+                }
+            }
+            
+        }  
+        
+        function validateSelectOptions1(sClassName) {
+            var boolIsValid = true,
+                oField = j$("." + sClassName),
+                sValue = "",
+                sErrorMessage,
+                oParent = oField.parent().parent();
+            if (oField[0]) {
+                sValue = oField.val();
+                if ("" === sValue) {
+                    boolIsValid = false;
+                    sErrorMessage = "Required Input!";
+                }
+                if (oParent[0]) {
+                   
+                    j$('.' + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error").remove();
+                    if (!boolIsValid) {
+                        oParent.addClass("has-error").append("<p style='margin-top:10px;' class='errorText " + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error'>" + sErrorMessage + "</p>");
+                    } else {
+                        oParent.removeClass("has-error");
+                    }
+                }
+            }
+            validateRequiredFields1();
+        }
+        var rdsFlag='false';
+        var errorflagavpn;
+        function validateRequiredFields1() {
+            errorflagavpn = true;
+           
+            j$('.btnSave, .btnContinue').addClass('disabled');
+            // Iterate through all fields and check if there are any invalid entries. If yes, then return false    
+            var arrRequiredFields = j$(".requiredInputField"),
+                boolIsNumberValid = true,
+                boolIsValid = true,
+                oAddCustomerButton = j$('.btnSave, .btnContinue');
+            arrRequiredFields.each(function () {
+                oRequiredField = j$(this);
+                if (oRequiredField[0]) {
+               // alert(oRequiredField.val()+'  oRequiredField  '+oRequiredField.val().length);
+               
+                    if (0 === oRequiredField.val().length) {
+                    
+                    //alert('oRequiredField.length');
+                        boolIsValid = false;
+                        errorflagavpn = false;
+                        return false;
+                        
+                    }
+                    
+                }
+            });
+            
+            if(boolIsValid){
+                arrRequiredFields = j$(".requiredField"),
+                boolIsNumberValid = true,
+                boolIsValid = true,
+                oAddCustomerButton = j$('.btnSave, .btnContinue');
+                arrRequiredFields.each(function () {
+                    oRequiredField = j$(this);
+                    if (oRequiredField[0]) {
+                   // alert(oRequiredField.val()+'  oRequiredField  '+oRequiredField.val().length);
+                        if (0 === oRequiredField.val().length) {
+                        //alert('oRequiredField.length');
+                            boolIsValid = false;
+                            errorflagavpn = false;
+                            return false;
+                            
+                        }
+                        
+                    }
+                });
+            }
+            
+             
+            
+            
+            // If there is any error message present, do not enable the button
+            //alert('error text'+j$(".errorText"));
+            if (0 < j$(".errorText").length || 0 < j$(".errorStyle").length) {
+            //alert('error text length true');
+                boolIsNumberValid = false;
+                //return false;
+            }
+            
+            if(boolIsNumberValid)
+            {
+                var formErrorObj = j$(".form-errors");
+                if(typeof formErrorObj != 'undefined' && formErrorObj != null && formErrorObj.text() != null && formErrorObj.text().length>0){
+                    boolIsNumberValid = false;
+                }
+            }
+            //validate page5 radio buttons
+            var currentPageObj = j$('.currentPage');
+            var currentPage = '';
+            if(currentPageObj != null && currentPageObj.prop('id') != null){
+                currentPage = currentPageObj.prop('id');
+            }                                   
+            
+            //check Vlan value
+                var isDualStackVlan = 'false';
+                var isDualStack = j$('[id$=showIPv4Vlan]').val();
+                var isVlan = '{!VlanChannels}';
+                if(('undefined' != typeof VlanChannels && 'undefined' != typeof isDualStack) && (isDualStack == 'true' && isVlan == 'true'))
+                {
+                    isDualStackVlan = true;
+                }
+                if((isDualStackVlan == 'true') && j$('.vlanChSelectClass') != undefined){
+                    var vlanCount = j$('.vlanChSelectClass').val();
+                    if(vlanCount != null && vlanCount != ''){
+                        var vlanCountInt = parseInt(vlanCount);
+                        for(var i=1; i<=vlanCountInt; i++){
+                            var oRequiredFieldCust = j$('.ipCust'+i);
+                            if (oRequiredFieldCust == undefined || oRequiredFieldCust.val() == undefined || (oRequiredFieldCust != undefined && ('' == oRequiredFieldCust.val() || 0 == oRequiredFieldCust.val().length))) {
+                                boolIsValid = false;
+                                return false;
+                            }
+                            var oRequiredFieldipATT = j$('.ipATT'+i);
+                            if (oRequiredFieldipATT == undefined || oRequiredFieldipATT.val() == undefined || (oRequiredFieldipATT != undefined && ('' == oRequiredFieldipATT.val() || 0 == oRequiredFieldipATT.val().length))) {
+                                boolIsValid = false;
+                                return false;
+                            }
+                            var oRequiredFieldipVlanportSpeed = j$('.vlanportSpeed'+i);
+                            if (oRequiredFieldipVlanportSpeed != undefined && oRequiredFieldipVlanportSpeed.val() != undefined && '' != oRequiredFieldipVlanportSpeed.val() 
+                                    && parseInt(oRequiredFieldipVlanportSpeed.val())<=0) {
+                                    boolIsValid = false;
+                                    return false;
+                            }
+                                
+                        }
+                    }
+                }
+            
+            
+            console.log('boolIsValid=  '+boolIsValid + '  boolIsNumberValid :::: '+boolIsNumberValid);
+            if (boolIsValid && boolIsNumberValid) {
+     
+                // Add customer button enabled
+                if (oAddCustomerButton[0] && '{!SubmitButtonLabel}'=='Submit') {
+                    oAddCustomerButton.parent().removeClass("btn-complete-parent-disabled");
+                    oAddCustomerButton.removeClass("disabled");
+                    oAddCustomerButton.removeAttr("disabled");
+                   
+                }
+                 rdsFlag = 'true';
+            } else {
+            //alert("validateRequiredFields1---");
+                // Add customer button disabled
+                if (oAddCustomerButton[0] && '{!SubmitButtonLabel}'=='Submit') {
+                
+                    oAddCustomerButton.parent().addClass("btn-complete-parent-disabled");
+                    oAddCustomerButton.addClass("disabled");
+                    oAddCustomerButton.attr("disabled", "disabled");
+                    
+                }
+                rdsFlag = 'false';
+                errorflagavpn = true;
+            }
+            
+          
+        }      
+    updateIPs();
+    
+
+        var pageCounter = {!pageCounter};
+        if(pageCounter == null){pageCounter = 0;}
+        
+        function updatePageButtonStatus(pageName,flag,visited){
+            if(flag =='true' && visited == 'true'){
+                document.getElementById(pageName).className = 'completedPage statusImgSuccess';
+            }
+            else{
+                if(visited == 'true'){
+                    document.getElementById(pageName).className = 'inCompletePage';
+                }
+            }
+            
+            
+        }
+       
+        function checkPageFilled(varResult) {
+        submitCount = 0;
+            
+         
+            var page1completed = '{!page1completed}';
+            var page2completed = '{!page2completed}';
+            
+            page2Visited =' false';
+            
+            var cuurentPage =navigateTo;
+            var latestFlags;
+                
+                Visualforce.remoting.Manager.invokeAction(
+               '{!$RemoteAction.MACD_RDSAVPNController.queryPageCurrentSiteAfter}',
+                siteId, quoteId, 
+                function(result, event) {
+                    latestFlags = result;
+                    if(latestFlags != null && latestFlags != ''){
+                        
+                        if(latestFlags != null){
+                            var splitMainArr= latestFlags.split('-');
+                            if(splitMainArr.length>=2){
+                                var splitCompletedArr= splitMainArr[0].split(':');
+                                
+                                if(splitCompletedArr.length>=3){
+                                     page1completed = splitCompletedArr[0];
+                                     page2completed = splitCompletedArr[1];                                     
+                                                                                                           
+                                }
+                                
+                                if(splitMainArr.length>=2){
+                                    var splitVisitedArr= splitMainArr[1].split(':');
+                                    page2Visited = splitVisitedArr[0];
+                                                                                                         
+                                }                                                              
+                            }                                                        
+                             
+                        }
+                        
+                        
+                            switch(pageCounter){
+                            case 2: updatePageButtonStatus('Page1',page1completed,'true');
+                                    updatePageButtonStatus('Page2',page2completed,page2Visited);
+                                    if(page1completed == 'true') submitCount = submitCount+1;
+                                    if(page2completed == 'true') submitCount = submitCount+1;
+                                    break;                            
+                                 
+                        }
+                        if(cuurentPage != null && cuurentPage != undefined && cuurentPage != ''){
+                            
+                            document.getElementById(cuurentPage).className = 'currentPage';
+                        }
+                        else{
+                            
+                            cuurentPage = '{!AVPNRDSPageNumber}';
+                            document.getElementById(cuurentPage).className = 'currentPage';
+                        }
+                        
+                        
+                    }
+                    
+                });
+                
+                if(forceProceedObj != null && forceProceed){
+                    
+                    pageName = j$(forceProceedObj).prop('id'); 
+                
+                }
+                 
+        }
+    </script>
+    <script>
+        highlightReconfiguredSite();
+      
+        setTimeout(function(){
+               
+                var arrRequiredFields = j$(".requiredInputField");
+                arrRequiredFields.each(function () {
+                var oRequiredField = j$(this);
+                if(arrRequiredFields.length > 1){
+                        arrRequiredFields.each(function () {
+                            var oRequiredField = j$(this);
+                            if (oRequiredField[0]) {
+                                if (0 < oRequiredField.val().length){
+                                    if(!oRequiredField.hasClass('ipv4MD5RePass') && !oRequiredField.hasClass('ipv6MD5RePass')){
+                                        oRequiredField.keyup();
+                                      }
+                                }
+                            }
+                        });
+                }
+                            
+                });
+                    
+            },100);
+         validateRequiredFields1();
+         
+    </script>
+</apex:page>

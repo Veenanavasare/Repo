@@ -1,0 +1,55 @@
+<apex:page standardController="Opportunity" extensions="SI_SpecialPricingReviewController"> 
+    <script type="text/javascript" src="/resource/jQuery"></script>
+    <script type="text/javascript">
+        var j$ = jQuery.noConflict();
+        j$(function(){
+            j$(".productTypeDropDown,.productFamilyDropDown").bind('change',function(){
+                var otherClass = j$(this).attr('class') == 'productTypeDropDown' ? '.productTypeDropDown';
+                if(j$(this).val()=='--None--'){
+                    j$(otherClass).removeAttr('disabled');
+                }
+                if(j$(this).val()!='--None--'){
+                    j$(otherClass).val('--None--').attr('disabled','disabled');
+                }
+            });
+        });
+    </script>    
+    <apex:pageMessages />
+    <apex:form id="typeofitem">
+        <apex:outputLabel rendered="{!NOT(flagValue=='TSC')}">
+            <font size="5" color="Gray"><p>Special Pricing Review</p></font>
+        </apex:outputLabel>
+        <apex:outputLabel rendered="{!(flagValue=='TSC')}">
+            <font size="5" color="Gray"><p>TSC Review</p></font>
+        </apex:outputLabel>
+        <apex:pageBlock title="Do you approve this opportunity ?">
+            <apex:pageBlockSection >
+                    <apex:pageBlockSectionItem >
+                        <apex:selectRadio value="{!type}">
+                           <apex:selectOptions value="{!items}" />
+                           <apex:actionSupport event="onclick" status="PleaseWait" reRender="typeofitem"/>  
+                        </apex:selectRadio>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem rendered="{!type=='DE'}">
+                          <apex:outputLabel >Rejection Reason</apex:outputLabel>
+                          <apex:outputPanel styleClass="requiredInput" layout="block">
+                          <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                                <apex:selectList styleClass="productTypeDropDown" value="{!TypeValue}" multiselect="false" size="1" rendered="{!NOT(flagValue=='TSC')}">
+                                    <apex:selectOptions value="{!Scoretype}" />
+                                </apex:selectList>
+                                <apex:inputField value="{!opty.Rejection_Reason__c}" rendered="{!(flagValue=='TSC')}"/> 
+                           </apex:outputPanel>
+                   </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock >
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton action="{!submit}" value="Submit" status="status"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/> 
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        </apex:form>    
+    <apex:form >
+        
+    </apex:form>
+</apex:page>

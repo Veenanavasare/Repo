@@ -1,0 +1,17 @@
+<apex:page controller="SIVAR_inlineDocuments">
+   <apex:form >
+    <apex:pageMessages id="pagemessage" />
+        <apex:pageBlock >
+           <apex:pageBlockSection title="Document Details" collapsible="false" columns="1" >
+                <apex:inputField value="{!od.Document_type__c}" />
+            </apex:pageBlockSection>
+        
+        	<div style="color:#FF0000">** - File name should not contain any special characters and not more than 124 characters.</div>
+            <apex:inputFile id="fileSize" value="{!fileBody}" filename="{!fileName}" />
+        </apex:pageBlock>
+        <div>
+        <apex:commandButton value="Attach" action="{!Attach}" disabled="{!attachDisabled}" /> 
+        <apex:commandButton value="Cancel" action="{!Cancel}" />
+        </div>
+    </apex:form>
+</apex:page>

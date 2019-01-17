@@ -1,0 +1,268 @@
+<apex:page >
+<style>
+@import url(http://fonts.googleapis.com/css?family=Roboto);
+$rgb-204: rgb(204, 204, 204);
+
+.input-container {
+  background-color: rgb(249, 249, 249);
+  border: 1px solid #d3d3d3;
+  height: 74px;
+  width: 300px;
+  font-family: Roboto,omnes_att_iimedium ;
+  display: inline-block;
+ 
+  
+  input {
+    margin-top: 28px;
+  }
+
+ }
+img {
+  width: 32px;
+  display: inline;
+  margin-left: -60px;
+}
+
+span, a {
+  color: rgb(155, 155, 155);
+}
+
+.recaptcha {
+  font-size: 12px;
+  margin-left: -55px;
+  position: relative;
+  bottom: -10px;
+}
+
+a, .dash {
+  font-size: 8px;
+  text-decoration: none;
+  display: inline;
+  position: relative;
+  top: -22px;
+  right: -232px;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.triangle {
+  width: 0px;
+  height: 0px;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid $rgb-204;
+  border-top: 7px solid transparent;
+  position: relative;
+  left: 10px;
+  top: -55px;
+}
+
+.not-human {
+  width: 340px;
+  height: 200px;
+  background-color: white;
+  border: 1px solid $rgb-204;
+  padding: 15px;
+  position: relative;
+  top: -55px;
+  left: 3px;
+  
+  .captcha-code {
+    padding: 15px 0;
+    border: none;
+    border-bottom: 1px solid $rgb-204;
+    font-size: 18px;
+    width: 90%;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    
+   :focus {
+      outline: none;
+      border-bottom: 1px solid rgb(74, 144, 226);
+    }
+  }
+  
+  img {
+    display: inline-block;
+    position: relative;
+    left: 75px;
+    top: -80px;
+    width: 300px;
+    height: 57px;
+  }
+  
+  .line {
+    width: 370px;
+    height: 1px;
+    background-color: $rgb-204;
+    margin-top: 90px;
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .img {
+    width: 24px;
+    height: 24px;
+    position: relative;
+    top: -36px;
+    margin: 0 4px 75px 4px;
+    display: inline-block;
+    cursor: pointer;
+    
+    background-size: 24px 24px;
+    opacity: 0.55;
+    
+    .replay {
+      background: url(https://www.gstatic.com/recaptcha/api2/refresh.png);
+    }
+   .audio {
+      background: url(https://www.gstatic.com/recaptcha/api2/audio.png);
+    }
+    .info {
+      background: url(https://www.gstatic.com/recaptcha/api2/info.png)
+    }
+    
+    :hover {
+      opacity: 1.0;
+    }
+  }
+  
+  .verify {
+    float: right;
+    position: relative;
+    top: -42px;
+    margin-right: 5px;
+    background-color: rgb(74, 144, 226);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+}
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+
+</style>  
+<label for="check">
+  <div class="input-container">
+    <input type="checkbox" class="checkbox" id="check"></input>
+    <span class="checkbox-text">I'm not a robot</span>
+  </div>
+</label>
+
+<img src="https://www.gstatic.com/recaptcha/api2/logo_48.png"></img>
+<span class="recaptcha">reCAPTCHA</span>
+<br/>
+<a href="#">Privacy</a>
+<span class="dash">-</span>
+<a href="#">Terms</a>
+
+<div class="triangle"></div>
+
+<!--<div class="not-human">
+  <input type="text" class="captcha-code" placeholder="Type the text"></input>
+  
+  <div class="line"></div>
+  
+  <img src="http://i.imgur.com/YvGc2Tt.png"></img>
+  
+  <div class="controls">
+    <div class="img replay"></div>
+    <div class="img audio"></div>
+    <div class="img info"></div>
+    
+    <input type="button" class="verify" value="Verify"></input>
+  </div>
+</div>-->
+
+
+<div class="not-human">
+  <input type="text" class="captcha-code" placeholder="Type the text"></input>
+  
+  <div class="line"></div>
+  
+  <img src="http://i.imgur.com/YvGc2Tt.png"> </img>
+  
+  <div class="controls">
+    <div class="img replay"></div>
+    <div class="img audio"></div>
+    <div class="img info"></div>
+    
+    <input type="button" class="verify" value="Verify"></input>
+   
+    
+  </div>
+</div>
+<script>
+$(document).ready(function() {
+  $('.not-human, .triangle').hide();
+  $('.verify').addClass('disabled');
+  
+  function human(e) {
+    if ($('.checkbox-text').hasClass('robot')) {
+      return;
+    }
+    else {
+        $('.checkbox-text').text("You're human!").css("color", "green").addClass('human');
+        $('.checkbox').addClass('disabled');
+        $('.checkbox').click(function(e) {
+        e.preventDefault();
+        });
+    }
+    
+    $('.not-human, .triangle').slideUp();
+  }
+  
+  function robot(event) {
+    if ($('.checkbox-text').hasClass('human')) {
+      return;
+    }
+    else {
+      $('.checkbox-text').text("ROBOT").css("color", "red").addClass('robot');
+      $('.checkbox').addClass('disabled');
+      $('.checkbox').click(function(event) {
+        event.preventDefault();
+      });
+    
+      $('.not-human, .triangle').slideDown();
+    }
+  }
+  
+  $('.checkbox').click(function() {
+    if ($('.checkbox').is(":checked")) {
+      $(document).mousemove(function() {
+        window.setTimeout(function() {
+          human();
+        }, 250);
+      });
+      
+      window.setTimeout(function() {
+        robot();
+      }, 1000);
+    };
+  });
+  
+  $('.captcha-code').keyup(function(event) {
+    if ($('.captcha-code').val().length <= 0) {
+      $('.verify').addClass('disabled');
+    }
+    else {
+      $('.verify').removeClass('disabled');
+    };
+  });
+  
+  $('.verify').click(function() {
+    if ($('.captcha-code').val() == "captcha code") {
+      $('.checkbox-text').removeClass('robot').addClass('human');
+      $('.not-human, .triangle').slideUp();
+    }
+  });
+});
+</script>
+</apex:page>

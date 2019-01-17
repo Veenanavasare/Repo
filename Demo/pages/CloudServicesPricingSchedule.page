@@ -1,0 +1,368 @@
+<apex:page controller="CloudServicesPricingScheduleController" showHeader="false" sidebar="false" renderAs="PDF" standardStylesheets="false" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false" showChat="false">
+
+    <head>
+        <style type="text/css" media="print">
+            @page {
+                font-family: sans-serif;
+                /*margin-top: 2.54cm;*/
+                margin-bottom: 2.54cm;
+                @top-center {
+                    content: element(header);
+                }
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+            div.header {
+                display: block;
+                margin: 50px;
+                padding: 20px;
+                margin-right: 10px;
+                text-align: right !important;
+                position: running(header);
+            }
+            div.footer {
+                display: block;
+                line-height: 3em 0;
+                padding-bottom: 20px;
+                position: running(footer);
+            }
+            span.pagenumber:before {
+                content: counter(page);
+            }
+            span.pagecount:before {
+                content: counter(pages);
+            }
+            ol li {
+                margin: 1em 0;
+            }
+            .col1 {
+                width: 50%;
+                display: table-cell;
+            }
+            .col2 {
+                width: 50%;
+                display: table-cell;
+            }
+        </style>
+    </head>
+    <!-- Display of  AT&T Header Information -->
+    <apex:outputPanel id="container" style="font-family: Arial;">
+        <apex:panelGrid columns="2" width="100%">
+            <apex:panelGroup layout="block">
+                <apex:image value="{!URLFOR($Resource.ATTLogo)}" />
+            </apex:panelGroup>
+            <apex:panelGroup layout="block">
+                <apex:outputLabel value="{!$Label.AIA_Label1} {!MRANumber}" />
+            </apex:panelGroup>
+        </apex:panelGrid>
+        <apex:outputPanel >
+            <br/>
+            <center>
+                <apex:outputlabel value="{!$Label.AIA_Label2}" />
+                <br/>
+                <apex:outputlabel value="{!$Label.STAAS_Label3}" />
+            </center>
+        </apex:outputPanel>
+        <br/>
+        <br/>
+        
+        <!-- Solution Provider Information -->
+        <apex:panelGrid columns="2" width="100%" border="1" columnClasses="col1, col2">
+            <apex:panelGroup layout="block" style="width:50%">
+                <b><apex:outputLabel value="{!$Label.AIA_Label4}"/></b>
+            </apex:panelGroup>
+            <apex:panelGroup layout="block" style="width:50%">
+                <b><apex:outputLabel value="{!$Label.AIA_Label5}"/></b>
+            </apex:panelGroup>
+            <apex:panelGroup layout="block" style="width:50%">
+                <apex:outputText value="{!SPAddress.Name}" />
+                <br/>
+                <apex:outputLabel value="{!$Label.AIA_Label6}" />
+                <apex:outputText value="{!SPAddress.Street}" />
+                <br/>
+                <apex:outputLabel value="{!$Label.AIA_Label7}" />
+                <apex:outputText value="{!SPAddress.City}" />
+                <br/>
+                <apex:outputLabel value="{!$Label.AIA_Label8}" />
+                <apex:outputText value="{!SPAddress.State}" />
+                <br/>
+                <apex:outputLabel value="{!$Label.AIA_Label9}" />
+                <apex:outputText value="{!SPAddress.Zip}" />
+                <br/>
+                <apex:outputLabel value="{!$Label.AIA_Label10}" />
+                <apex:outputText value="{!SPAddress.Country}" />
+            </apex:panelGroup>
+            
+            <!-- End User Customer Information -->
+            <apex:panelGroup layout="block" style="width:50%">
+                <apex:outputText value="{!ATTAddress.Name}" />
+                <br/>
+                <apex:outputText value="{!ATTAddress.Street}" />
+                <br/>
+                <apex:outputText value="{!ATTAddress.City}" />
+                <br/>
+                <apex:outputText value="{!ATTAddress.State}" />
+                <br/>
+                <apex:outputText value="{!ATTAddress.Zip}" />
+                <br/>
+                <apex:outputText value="{!ATTAddress.Country}" />
+            </apex:panelGroup>
+        </apex:panelGrid>
+        
+       
+        <apex:panelGrid columns="1" width="100%" border="1">
+            <apex:panelGroup layout="block" style="width:50%">
+                <b><apex:outputLabel value="{!$Label.ANIRA_Label11}"/></b>
+            </apex:panelGroup>
+            <apex:panelGroup layout="block" style="width:50%">
+                <apex:outputLabel value="{!$Label.AIA_Label12}" />
+                <apex:outputText value="{!EndCustomerAddress.Name}" />
+                <br/>
+                <apex:outputLabel value="{!$Label.AIA_Label6}" />
+                <apex:outputText value="{!EndCustomerAddress.Street}" />
+                <br/>
+                <apex:outputLabel value="{!$Label.AIA_Label7}" />
+                <apex:outputText value="{!EndCustomerAddress.City}" />
+                <br/>
+                <apex:outputLabel value="{!$Label.AIA_Label8}" />
+                <apex:outputText value="{!EndCustomerAddress.State}" />
+                <br/>
+                <apex:outputLabel value="{!$Label.AIA_Label9}" />
+                <apex:outputText value="{!EndCustomerAddress.Zip}" />
+                <br/>
+                <apex:outputLabel value="{!$Label.AIA_Label10}" />
+                <apex:outputText value="{!EndCustomerAddress.Country}" />
+            </apex:panelGroup>
+        </apex:panelGrid>
+        <br/>
+        <apex:outputLabel value="{!$Label.AIA_Label13}" />
+        <br/>
+        <br/>
+        
+         <!-- Pricing Schedule Authorization Information -->
+        <apex:panelGrid columns="2" width="100%" border="1" columnClasses="col1, col2" style="page-break-after: always;">
+                <apex:panelGroup layout="block">
+                    <b><apex:outputLabel value="Solution Provider"/></b> <br/>(by its authorized representative)
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <b><apex:outputLabel value="AT&T"/></b> <br/>(by its authorized representative)
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <br/><apex:outputLabel value="By:" /> <apex:outputLabel value="," style="font-size:0.5px;"/> <br/><br/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <br/> <apex:outputLabel value="By:" /> <apex:outputLabel value="." style="font-size:0.5px;"/> <br/><br/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Name:" /> <apex:outputLabel value="," style="font-size:0.5px;"/>
+                    <apex:outputLabel value="{!$User.FirstName} {!$User.LastName}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Name:" /> <apex:outputLabel value="." style="font-size:0.5px;"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Title:" /> <apex:outputLabel value="," style="font-size:0.5px;"/>
+                    <apex:outputLabel value="{!$UserRole.Name}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Title:" /> <apex:outputLabel value="." style="font-size:0.5px;"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Date:" /> <apex:outputLabel value="," style="font-size:0.5px;"/>
+                    <apex:outputText />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Date:" /> <apex:outputLabel value="." style="font-size:0.5px;"/>
+                    <apex:outputText />
+                </apex:panelGroup>
+            </apex:panelGrid>
+        <!--<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>-->
+        <ol>
+        <!-- Services Section -->
+            <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.AIA_Label_Services}</u></b>
+                <apex:panelGrid columns="2" width="100%" border="1" style="margin-top:7px;">
+                    <apex:panelGroup layout="block">
+                        <center><b>{!$Label.AIA_Label21}</b>
+                        </center>
+                    </apex:panelGroup>
+                    <apex:panelGroup layout="block">
+                        <center><b>{!$Label.AIA_Label22}</b>
+                        </center>
+                    </apex:panelGroup>
+                    <apex:panelGroup layout="block">
+                        <apex:outputlabel value="{!$Label.CSP_Label23}" />
+                    </apex:panelGroup>
+                    <apex:panelGroup layout="block">
+                        <a href="{!$Label.AIA_Label24}" target="_blank">{!$Label.AIA_Label24}</a>
+                    </apex:panelGroup>
+                </apex:panelGrid>
+                <br/>{!$Label.AIA_Label25}
+            </li>
+            <!-- Pricing Schedule Term Section -->
+            <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.AIA_Label27}</u></b>
+                <apex:panelGrid columns="2" width="100%" border="1" style="margin-top:7px;">
+                    <apex:panelGroup layout="block" style="width:50%">
+                        <apex:outputlabel value="{!$Label.AIA_Label28}" />
+                    </apex:panelGroup>
+                    <apex:panelGroup layout="block" style="width:50%">
+                        <apex:outputText value="{!OpptyName}"></apex:outputText>
+                    </apex:panelGroup>
+                    <apex:panelGroup layout="block" style="width:50%">
+                        <apex:outputlabel value="{!$Label.AIA_Label29}" />
+                    </apex:panelGroup>
+                    <apex:panelGroup layout="block" style="width:50%">
+                        <apex:outputText value="{!OpptyEffectiveDate}"></apex:outputText>
+                    </apex:panelGroup>
+                    <apex:panelGroup layout="block" style="width:50%">
+                        <apex:outputlabel value="{!$Label.AIA_Label30}" />
+                    </apex:panelGroup>
+                    <apex:panelGroup layout="block" style="width:50%">
+                        <apex:outputText value="{!OpptyTerm}"></apex:outputText>
+                    </apex:panelGroup>
+                </apex:panelGrid>
+            </li>
+            
+            <!-- Service Component Section -->
+            <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.AIA_Label38}</u></b>
+                <br/>{!$Label.AIA_Label39}
+            </li>
+            
+            <!-- Other Requirements Section -->
+            <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.AVPN_Label41}</u></b>
+                <br/>{!$Label.AVPN_Label40} {!QuoteExpirtaionDate}
+            </li>
+            
+            <!-- Rates and Discount Section -->
+            <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.AVPN_Label42}</u></b>
+                <br/>{!$Label.CSP_Label44}<a href="www.att.com/partnerexchange">{!$Label.AVPN_Label45}</a> {!$Label.AVPN_Label46}
+                <br/>
+                <br/>{!$Label.AVPN_Label50}
+                <br/>
+                <br/>
+                <div style="margin-bottom:15px;margin-top:4px;"><b>{!$Label.CSP_Label45}</b>
+                    <br/>
+                    <apex:panelGrid columns="2" border="1" style="margin-top:7px;table-layout:fixed;overflow: hidden;word-break:break-all;">
+                        <apex:panelGroup layout="block">
+                            <b><apex:outputlabel value="Service"/></b>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <b><apex:outputlabel value="Rates Applicable"/></b>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            AT&amp;T Synaptic Compute as a Service
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <apex:outputlabel value="Rates described in the Rate Card" />
+                        </apex:panelGroup>
+                    </apex:panelGrid>
+                </div>
+                <div style="margin-bottom:15px;margin-top:4px;"><b>AT&amp;T StaaS Service Component, Recurring Charges: </b>
+                    <br/>
+                    <!-- STaaS Component Recurring Charge Section -->
+                    <apex:panelGrid columns="2" border="1" style="margin-top:7px;table-layout:fixed;overflow: hidden;word-break:break-all;">
+                        <apex:panelGroup layout="block">
+                            <b><apex:outputlabel value="StaaS Service Description"/></b>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <b><apex:outputlabel value="AT&T StaaS Monthly Recurring Charge[$]"/></b>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">Internet Access Outbound Data Transfer</apex:panelGroup>
+                        <apex:panelGroup layout="block">{!InternetAccessOutboundDataTransfer}</apex:panelGroup>
+                        <apex:panelGroup layout="block">Direct Media Loading</apex:panelGroup>
+                        <apex:panelGroup layout="block">One Time Charge ({!DirectMediaLoading})</apex:panelGroup>
+                        <apex:panelGroup layout="block">Storage Policy 1-Tier 1: 0-10TB</apex:panelGroup>
+                        <apex:panelGroup layout="block">{!StoragePolicy1Tier1}</apex:panelGroup>
+                        <apex:panelGroup layout="block">Storage Policy 1-Tier 2: 10-50TB</apex:panelGroup>
+                        <apex:panelGroup layout="block">{!StoragePolicy1Tier2}</apex:panelGroup>
+                        <apex:panelGroup layout="block">Storage Policy 1-Tier 3: 50-100TB</apex:panelGroup>
+                        <apex:panelGroup layout="block">{!StoragePolicy1Tier3}</apex:panelGroup>
+                        <apex:panelGroup layout="block">Storage Policy 1-Tier 4: 100-500TB</apex:panelGroup>
+                        <apex:panelGroup layout="block">{!StoragePolicy1Tier4}</apex:panelGroup>
+                        <apex:panelGroup layout="block">Storage Policy 1-Tier 5: 500-1,000TB</apex:panelGroup>
+                        <apex:panelGroup layout="block">{!StoragePolicy1Tier5}</apex:panelGroup>
+                        <apex:panelGroup layout="block">Storage Policy 1-Tier 6: 1,000+TB</apex:panelGroup>
+                        <apex:panelGroup layout="block">{!StoragePolicy1Tier6}</apex:panelGroup>
+                        <apex:panelGroup layout="block">Storage Policy 2-Tier 1: 0-10TB</apex:panelGroup>
+                        <apex:panelGroup layout="block">{!StoragePolicy2Tier1}</apex:panelGroup>
+                        <apex:panelGroup layout="block">Storage Policy 2-Tier 2: 10-50TB</apex:panelGroup>
+                        <apex:panelGroup layout="block">{!StoragePolicy2Tier2}</apex:panelGroup>
+                        <apex:panelGroup layout="block">Storage Policy 2-Tier 3: 50-100TB</apex:panelGroup>
+                        <apex:panelGroup layout="block">{!StoragePolicy2Tier3}</apex:panelGroup>
+                        <apex:panelGroup layout="block">Storage Policy 2-Tier 4: 100-500TB</apex:panelGroup>
+                        <apex:panelGroup layout="block">{!StoragePolicy2Tier4}</apex:panelGroup>
+                        <apex:panelGroup layout="block">Storage Policy 2-Tier 5: 500-1,000TB</apex:panelGroup>
+                        <apex:panelGroup layout="block">{!StoragePolicy2Tier5}</apex:panelGroup>
+                        <apex:panelGroup layout="block">Storage Policy 2-Tier 6: 1,000+TB</apex:panelGroup>
+                        <apex:panelGroup layout="block">{!StoragePolicy2Tier6}</apex:panelGroup>
+                    </apex:panelGrid>
+                </div>
+                <br/>
+                <apex:outputPanel >
+                    <br/>
+                    <br/>
+                    <apex:panelGrid border="1" columns="2">
+                        <apex:panelGroup style="width:50%"><b><apex:outputLabel value="{!$Label.avpn_pricing_summary}"/></b>
+                        </apex:panelGroup>
+                        <apex:panelGroup style="width:50%">
+                            <apex:outputLabel value="" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%">
+                            <apex:outputLabel value="{!$Label.AVPN_Label70}" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%">
+                            <apex:outputText value="$ {!NonRecurringPricewithoutDiscount}" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%">
+                            <apex:outputLabel value="{!$Label.AVPN_Label71}" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%">
+                            <apex:outputText value="$ {!RecurringPricewithoutDiscount}" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%">
+                            <apex:outputLabel value="{!$Label.AVPN_Label72}" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%">
+                            <apex:outputText value="$ {!TotaltDiscount}" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%">
+                            <apex:outputLabel value="{!$Label.AVPN_Label73}" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%">
+                            <apex:outputText value="$ {!RecurringPricewithDiscount}" /></apex:panelGroup>
+                    </apex:panelGrid>
+                </apex:outputPanel>
+                <br/>
+                <br/>
+                <apex:outputPanel rendered="{!TotaltDiscount != null && TotaltDiscount > 0}">
+                    <apex:panelGrid border="1" columns="2">
+                        <apex:panelGroup style="width:50%"><b><apex:outputLabel value="{!$Label.AVPN_Label74}"/></b>
+                        </apex:panelGroup>
+                        <apex:panelGroup style="width:50%">
+                            <apex:outputLabel value="" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%" rendered="{!AdditionalDealRegistrationDiscount != null && AdditionalDealRegistrationDiscount > 0 && proposal.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Deal_Approved}">
+                            <apex:outputLabel value="{!$Label.AVPN_Label75}" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%" rendered="{!AdditionalDealRegistrationDiscount != null && AdditionalDealRegistrationDiscount > 0 && proposal.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Deal_Approved}">
+                            <apex:outputText value="$ {!AdditionalDealRegistrationDiscount}" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%" rendered="{!AdditionalDealRegistrationDiscount != null && AdditionalDealRegistrationDiscount > 0 && proposal.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Special_Pricing_Approved}">
+                            <apex:outputLabel value="{!$Label.AVPN_Label76}" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%" rendered="{!AdditionalDealRegistrationDiscount != null && AdditionalDealRegistrationDiscount > 0 && proposal.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Special_Pricing_Approved}">
+                            <apex:outputText value="$ {!AdditionalDealRegistrationDiscount}" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%">
+                            <apex:outputLabel value="{!$Label.AVPN_Label77}" /></apex:panelGroup>
+                        <apex:panelGroup style="width:50%">
+                            <apex:outputText value="{!LargeDealRebate}" /></apex:panelGroup>
+                    </apex:panelGrid>
+                </apex:outputPanel>
+            </li>
+            
+            <!-- Promotional Term Section -->
+            <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.CSP_Label76}</u></b>
+                <apex:panelGrid columns="2" width="100%" border="1" style="margin-top:7px;">
+                    <apex:panelGroup layout="block">
+                        <center><b>{!$Label.CSP_Label77}</b>
+                        </center>
+                    </apex:panelGroup>
+                    <apex:panelGroup layout="block">
+                        As described and accepted during Service order process (when applicable)
+                    </apex:panelGroup>
+                </apex:panelGrid>
+                <br/>{!$Label.CSP_Label78} <a href="https://www.synaptic.att.com/">{!$Label.CSP_Label79}</a>{!$Label.CSP_Label80}
+                <br/>
+                <br/>{!$Label.CSP_Label81}<a href="https://www.synaptic.att.com/">{!$Label.CSP_Label82}</a>{!$Label.CSP_Label83}
+            </li>
+        </ol>
+    </apex:outputPanel>
+</apex:page>

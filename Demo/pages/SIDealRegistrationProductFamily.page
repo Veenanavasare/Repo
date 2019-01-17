@@ -1,0 +1,85 @@
+<apex:page standardController="Opportunity" extensions="SIDealRegistrationProductFamily" tabStyle="SPProduct__c">
+  <apex:sectionHeader title="Deal Registration at Product Family Level"/>
+        <apex:form rendered="{!IF((isProduct==true),false,true)}">
+            <Center><apex:outputLabel >
+            <font size="4" color="Gray"><p> No Product has been Deal Registration Requested.</p></font>
+            </apex:outputLabel></Center>
+            <Center><apex:commandButton value="Back" action="{!cancel}"/></Center>
+        </apex:form>
+        <apex:form id="formId" rendered="{!IF((isProduct==true),true,false)}">  
+            <apex:pageMessages ></apex:pageMessages>
+            <apex:pageBlock title="All Products">
+           <apex:pageBlockButtons > 
+               <apex:commandButton value="Calculate" action="{!calculateDiscount}" / >
+               <apex:commandButton value="Submit" action="{!saveProduct}"/>
+                <apex:commandButton value="Close" action="{!Cancel}" />   
+            </apex:pageBlockButtons>  
+             <apex:pageBlockTable value="{!resultSet }" var="fm" id="pBlockTableId" rendered="{!dispaly}"> 
+                       <apex:column >
+                            <apex:facet name="header">Product Family</apex:facet>
+                                {!fm.recTypeName}
+                        </apex:column>
+                       
+                        <apex:column >
+                            <apex:facet name="header">List Price</apex:facet>
+                                {!fm.listPrice}
+                            <!-- <apex:outputText value="{0, number,00.00}">
+                                <apex:param value="{!fm.listPrice}" />
+                            </apex:outputText> -->
+                        </apex:column>
+                        
+                        <apex:column >
+                            <apex:facet name="header">OTC Price</apex:facet>
+                                {!fm.otcPrice}
+                            <!--<apex:outputText value="{0, number,00.00}">
+                                <apex:param value="{!fm.otcPrice}" />
+                            </apex:outputText>-->
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Deal Reg Discount</apex:facet>
+                                {!fm.discountedPercent}
+                        </apex:column>
+                         <apex:column >
+                            <apex:facet name="header">Discounted Price</apex:facet>
+                                <!--{!fm.discountedPrice}    -->
+                            <apex:outputText value="{0, number,00.00}">
+                                <apex:param value="{!fm.discountedPrice}" />
+                            </apex:outputText>
+                        </apex:column> 
+                       <apex:column >
+                            <apex:facet name="header">Discount Amount</apex:facet>
+                              <!-- {!fm.discountAmount}-->
+                               <apex:outputText value="{0, number,00.00}">
+                            <apex:param value="{!fm.discountAmount}" />
+                       </apex:outputText>     
+                        </apex:column>
+                        <apex:column >   
+                            <apex:facet name="header">OTC Discounted Price</apex:facet>
+                                <!--{!fm.otcDiscountedPrice}    -->
+                            <apex:outputText value="{0, number,00.00}">
+                                <apex:param value="{!fm.otcDiscountedPrice}" />
+                            </apex:outputText>
+                        </apex:column>  
+                        <apex:column >
+                           
+                            <apex:facet name="header">OTC Discount Amount</apex:facet>
+                                <!--{!fm.otcDiscountAmount} -->
+                                <apex:outputText value="{0, number,00.00}">
+                            <apex:param value="{!fm.otcDiscountAmount}" />
+                       </apex:outputText>  
+                        </apex:column> 
+                        <apex:column >
+                            <apex:facet name="header">Current Deal Status</apex:facet> 
+                                {!fm.currentDealStatus}
+                        </apex:column>
+                       <apex:column >
+                            <apex:facet name="header">Select Deal Status</apex:facet> 
+                            <apex:selectList multiselect="false" size="1" id="selectList" value="{!fm.dealStatus}">
+                           
+                               <apex:selectOptions value="{!DealStatus}" />
+                           </apex:selectList>
+                        </apex:column>  
+                       </apex:pageBlockTable>
+            </apex:pageBlock>
+    </apex:form>
+</apex:page>

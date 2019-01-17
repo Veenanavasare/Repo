@@ -1,0 +1,24 @@
+<apex:page standardController="Account" extensions="ThirdPartyFinancingController">
+    <apex:form >
+        <div style="color:#FF0000; font-weight:bold">
+            <apex:pageMessages id="pagemessage" />
+        </div>
+        <apex:pageBlock title="Third Party Financing" >
+            <apex:pageBlockSection >
+               <apex:inputField value="{!fht.Finance_Type__c}" required="true"/>
+               <apex:inputField value="{!fht.Term_Code__c}" required="true"/>
+               <apex:pageBlockSectionItem >
+               <apex:outputLabel value="Request Amount"/>
+               <apex:outputPanel styleClass="requiredInput" id="pnlid1" layout="block">
+               <apex:outputPanel styleClass="requiredBlock" id="pnlid2" layout="block"/>
+               <apex:inputText value="{!requestAmount1}" label="Request Amount" />
+               </apex:outputPanel>
+               </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="bottom" >
+                <apex:commandButton value="Submit" action="{!submit}"/>
+                <apex:commandButton value="Cancel" action="{!cancel}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

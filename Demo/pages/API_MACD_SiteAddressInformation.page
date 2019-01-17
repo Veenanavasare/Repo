@@ -1,0 +1,2035 @@
+<apex:page id="siteMgmntPageId" controller="API_MACD_SiteAddInfoController" standardStylesheets="false" sidebar="false" showHeader="false" cache="false" action="{!createquote}">
+    <style type="text/css">
+    #addSite .form-group{
+        margin-bottom:0px !important;
+    }
+      .paginate_button_disabled {
+        cursor: no-drop !important;
+        color: #cfcfcf !important;
+        }
+   
+        #manage_content .pagination > a {
+            margin-left: 0px !important;
+        }
+    
+      .paginate_button, .paginate_active{ 
+         float: left;
+         padding: 3px 12px;
+         margin-left: -1px;
+         line-height: 1.42857143;
+        color: #428bca;
+        text-decoration: none;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        cursor: pointer;
+    }
+    
+      .paginate_active {
+        z-index: 2;
+        color: #fff;
+        cursor: default;
+        background-color: #428bca;
+        border-color: #428bca;
+    }
+
+ 
+    .messageCell { color: #32cd32; }
+    #closeMatch .has-error .control-label {
+            color: rgb(51, 51, 51);
+        }
+            .message.errorM3 {
+                margin-top: -30px;
+            }
+            #addaddress {
+                z-index: 999;
+            }
+            .container {
+                margin-top: 0;
+            }
+            .btn-primary:hover,
+            .btn-primary:focus {
+                background-color: #2d6ca2 !important;
+                background-position: 0 -15px;
+            }
+            /*#bulkupload button, #bulkupload input{
+            float: left;
+            width: 30%;
+            }*/
+            .messageCell,
+            .errorMsg {
+                color: #cc0000;
+                font-weight: bold;
+            }
+            .messageCell h4 {
+                color: #cc0000;
+                font-weight: normal;
+            }
+            .container h4,
+            .h4,
+            h5,
+            .h5,
+            h6,
+            .h6 {
+                margin-top: 0;
+                margin-bottom: 0;
+            }
+            .tab-pane h4 {
+                margin-top: 10px;
+                margin-bottom: 10px;
+            }
+            .messageText h4 {
+                margin: 0 !important;
+            }             
+            #addSiteTabs {
+                border-bottom: 0px none !important;
+            }
+            #addSiteTabs li {
+                width: 33.33% !important;
+            }
+            #selectExisting {
+                background: none;
+            }
+            #addSite {
+                background: none;
+            }
+            #bulkUpload {
+                background: none;
+            }
+            /**** added for Selct product Modal **/
+            #oppurtunityModal .modal-body p {
+                border-bottom: 1px solid #e5e5e5;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+            }
+            #oppurtunityModal .modal-body label {
+                font-family: inherit;
+                margin: 0 0 0 10px;
+            }
+            #oppurtunityModal .modal-body div {
+                margin-bottom: 10px;
+            }
+            #headerFormId label {
+                font-size: 18px;
+            }
+            .panel-group h4 {
+                padding: 10px;
+                margin: 0;
+            }
+            .panel-default>.panel-heading {
+                background: #fff;
+                border-bottom: 1px dashed #ddd;
+            }
+            .panel-default {
+                border: 0;
+                box-shadow: none;
+            }
+            .listItemSpan{
+                display: list-item;
+                list-style-type: disc;
+                margin-left: 20px;
+            }
+            .closeMatchLi {
+                margin: 10px 0 0 !important;float: left;width: 100%;
+            }
+            #closeMatch input {
+                line-height: 15px;
+            }
+            #closeMatch label {
+                margin-bottom: 5px !important;
+            }
+            #addSiteTabs .active {
+               height:64px;
+            }
+            .nav>li>a:hover{
+                background-color:white;
+            }
+            li.ng-isolate-scope.active::after {
+                content: ' ';
+                display: inline;
+                width: 0;
+                height: 0;
+                border-left: 20px solid transparent;
+                border-right: 20px solid transparent;
+                position: absolute;
+                border-top: 14px solid #056fab;
+                bottom: -14px !important;
+                left: 40%;
+                z-index: 99999;
+            }
+            .eligibleSitesDataTable {
+                width: 100%;
+                margin-top: -15px;
+            }
+            .eligibleSitesDataTable thead th:first-child div.reorder_btn {
+                /*display: none;*/
+            }
+            #enterAddress .dataTables_info {
+                width : 40%;
+                right: -10px;
+                position: relative;
+            }
+            #enterAddress .dataTables_paginate {
+                margin-top: -15px;
+            }
+            .dataTables_info{
+                bottom: -10px;
+            }
+            .btn-complete-parent-disabled {
+                cursor: not-allowed;
+            }
+            .addressMatchContainer {
+                display: inline;
+            }
+            #legend { margin-top: 20px; font-size: 12px; }
+            
+            .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus { color: #555; cursor: default; background-color: #056fab; border: 0px; border-bottom-color: transparent; }          
+        
+        .eligibleSitesSearchButton {
+            position: absolute;
+            display: inline;
+            top: 9px;
+            z-index: 9;
+        }
+        .eligibleSitesSearch {
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        .eligibleSitesDataTable thead th:nth-child(1) {
+            width: 25px !important;
+        }
+        .eligibleSitesDataTable thead th:nth-child(2) {
+            width: 340px !important;
+        }
+        .eligibleSitesDataTable thead th:nth-child(3) {
+            width: 200px !important;
+        }
+        .eligibleSitesDataTable thead th:nth-child(4) {
+            width: 116px !important;
+        }
+        .eligibleSitesDataTable thead th:nth-child(5) {
+            width: 142px !important;
+        }
+        .eligibleSitesDataTable thead th:nth-child(6) {
+            width: 100px !important;
+        }
+        .eligibleSitesDataTable thead th:nth-child(7) {
+            width: 142px !important;
+        }
+        .eligibleSitesDataTable .searchField {
+            width: 370px !important;margin-top: -8px;margin-bottom: 10px;
+        }
+    .fade.in{
+        display: block !important;
+    }
+    /* Additional styles to match the wireframes */
+    .m-t-20, #manage_content label.m-t-20
+    {
+        margin-top: 20px !important;
+    }
+
+    #manage_content h3
+    {
+            margin-top: 25px;
+            margin-bottom: 10px;
+
+    }
+    #manage_content label.m-b-10
+    {
+        margin-bottom: 10px !important;
+    }
+    #manage_content label.m-t-10
+    {
+        margin-top: 10px !important;
+    }
+    .m-b-40
+    {
+        margin-bottom: 40px;
+    }
+    #manage_content label.m-r-10
+    {
+        margin-right: 10px !important;
+    }
+    #addSiteTabs li a
+    {
+        font-size: 16px;
+    }
+    #addSiteTabs li.active a 
+    {
+        color: #fffefe !important;
+    }
+    #addSiteTabs li a 
+    {
+        color: #000 !important;
+    }
+    .eligibleSitesSearch
+    {
+        margin: 30px 0;
+    }
+    .eligibleSitesSearchButton
+    {
+        top: 35px !important;
+    }
+    .eligibleSitesDataTable thead th
+    {
+        font-size: 16px;
+        color: #009add;
+        font-weight: normal;
+        letter-spacing: 0;
+        height: 38px !important;
+        max-height: 38px !important;
+        padding: 10px 0 0 16px;
+    }
+    /* Pointer for table headers */
+    .eligibleSitesDataTable thead th span.headerLink:hover
+    {
+        cursor: pointer;
+    }
+    /* reorder button styles */
+    .eligibleSitesDataTable thead th .reorder_btn
+    {
+        top: -20px;
+    }
+    .eligibleSitesDataTable>tbody>tr>td:nth-child(2) 
+    {
+        font-size: 16px;
+        color: #009add;
+        font-weight: normal;
+        letter-spacing: 0;
+        padding-left: 16px;
+        letter-spacing: 0;
+    }
+    #EligibleSitesTable_info
+    {
+        margin-left: 0;
+        padding-top: 0;
+    }
+    .paginate_button
+    {
+        color: #009add;
+    }
+    input.siteAddressValidateBtn:disabled, input.clearMsg:disabled, input.exportBtn:disabled
+    {
+        background-color: #eeeeee !important;
+        color: #fff;
+    }
+    a.addedSiteName
+    {
+        font-size: 16px;
+        color: #009add;
+    }
+    span.addedSiteInfo
+    {
+        font-size: 14px;
+        color: #333333;
+    }
+    select.inputLocation, select.inputState
+    {
+        height: 30px;
+    }
+    span.listItemSpan
+    {
+        margin-bottom: 10px;
+    }
+    table.eligibleSitesDataTable>thead>tr>th
+    {
+        padding-bottom:0;
+    }
+    #addSite .addNewValidateAddBtn
+    {
+        margin-right: 0;
+    }
+    #bulkUpload .bulkUploadSiteAdd:hover
+    {
+        cursor: default;
+    }
+    /* Fix for Firefox specific issue */
+    @-moz-document url-prefix() 
+    { 
+          .inputState, .inputLocation 
+          {
+             padding-top:2px !important;
+          }
+          #browseButtonPadding { padding: 0px 0px 0px 0px !important; }
+    }
+    .messageText {display: flex;top: 12px;position: relative; margin-top: 28px;}
+    #addSite h4 {margin-top: 0px;font-weight:bold; }
+    .errorText {color:#A94442;}
+    .headerErrorMsg{margin-left: 8px;}
+    .headerErrorMsg .messageCell{background: #f7f7f7;}
+    .headerErrorMsg .messageText{margin:0 !important;} 
+    #vasaITPAErrorModal .OkayBtn{
+        background-color: #056fab !important;
+        width: 115px !important;
+        color: #fff !important;
+        padding: 8px 10px !important;        
+    }
+    .modal{
+        background-color: rgba(0, 0, 0, 0.6);
+    }
+    #addSite .messageText{
+        margin-left: 15px;
+        margin-top: 0;
+        margin-bottom: 10px;        
+    }
+    </style>
+    <div class="container" style="padding: 0;">
+        <div class="col-xs-12 p0">
+            <apex:form id="headerFormId">
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <h3 style="font-size: 28px !important;">Enter Addresses</h3>
+                        
+                    </div>
+                </div>
+                <apex:outputPanel rendered="{!checkServErr}" >
+                    <div class="headerErrorMsg">
+                        <apex:pageMessages />
+                    </div><br/>
+                </apex:outputPanel>                
+                <apex:outputPanel rendered="{!displayNoSiteAdded}">
+                    <script>
+                        if($('#addSiteTabs .active a').text() != 'Select Site'){
+                            $('#vasaITPAErrorModal').addClass('in');
+                        } 
+                    </script>
+                    <div class="modal fade" id="vasaITPAErrorModal" role="dialog" data-backdrop="static">
+                        <div class="modal-dialog">                      
+                            <div class="modal-content" style="margin-top: 25%;text-align:center;">
+                                <div class="modal-header"> </div>  
+                                <div class="modal-body" style="padding: 10px 25px !important;">
+                                    <div>The new site was saved to your Customer Sites list</div>
+                                    <div>but has not been added to the quote due to the processing error.</div><br/>
+                                    <div>When you are ready to try adding the site to the quote again,</div>
+                                    <div>select it from the list on the Select Existing Site tab.</div>
+                                </div>
+                                <div class="modal-footer" style="padding: 30px 25px 40px;">
+                                    <button type="button" class="btn OkayBtn" data-dismiss="modal" aria-hidden="true" onClick="$('#vasaITPAErrorModal').removeClass('in');">Okay</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                  
+                </apex:outputPanel>                 
+            </apex:form>
+            <div class="clear"></div>
+            <div class="col-xs-9 col-md-9" style="padding-left: 10px;">
+                <div class="">
+                    <div class="col-xs-12" style="padding: 0;">
+                        <div class="tabbed_menu p0 m0" style="margin: 8px;">
+                            <ul class="nav nav-tabs" id="addSiteTabs" role="tablist" ng-class="{'nav-stacked': vertical, 'nav-justified': justified}" ng-transclude="">
+                                <li ng-class="{active: active, disabled: disabled}" heading="Select from Existing" class="ng-isolate-scope br1" style="border-top-left-radius: 4px;border-bottom-left-radius: 4px;">
+                                    <a href="#selectExisting" role="tab" data-toggle="tab" ng-click="select()" tab-heading-transclude="" class="ng-binding">Select Site</a>
+                                </li>
+                                <li ng-class="{active: active, disabled: disabled}" heading="Add A Site" class="ng-isolate-scope active br1">
+                                    <a href="#addSite" role="tab" data-toggle="tab" ng-click="select()" tab-heading-transclude="" class="ng-binding">Add New Site</a>
+                                </li>
+                                <li ng-class="{active: active, disabled: disabled}" heading="Bulk Upload" class="ng-isolate-scope br1" style="border-bottom-right-radius: 4px;">
+                                    <a href="#bulkUpload" role="tab" data-toggle="tab" ng-click="select()" tab-heading-transclude="" class="ng-binding">Add Multiple Sites</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content br1" style="padding: 10px 0; min-height: 510px;">
+                                <div id="selectExisting" class="tab-pane ng-scope" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab" style="margin-top: 10px;">
+                                    <div class="row ng-scope">
+                                        <div class="col-xs-12">
+                                            <div class="row" id="search">
+                                                <div class="col-xs-12 p0">
+                                                    <div class="searchField input-group w50p" style="width: 370px !important;">
+                                                    <div class="eligibleSitesSearchButton search_button"></div>
+                                                    <input type="text" class="eligibleSitesSearch custom_filter" placeholder="Search" />
+                                                    </div>
+                                                </div>  
+                                           </div>                            
+                                       </div>
+                                        <div class="row p0 m0">
+                                            <apex:form styleClass="form-horizontal" id="form1">
+                                                <apex:pageBlock >
+                                                    <div class="col-md-12" style="padding: 0;">
+
+                                                        <table id="EligibleSitesTable" class="eligibleSitesDataTable table table-bordered table-striped table-hover"  
+                                                            style="background: #fff; width: 775px !important;">
+                                                            <thead>
+                                                                <th>&nbsp;</th>
+                                                                <th><span class="headerLink">Site Name</span></th>
+                                                                <th><span class="headerLink">Address</span></th>
+                                                                <th><span class="headerLink">City</span></th>
+                                                                <th><span class="headerLink">State</span></th>
+                                                                <th><span class="headerLink">Zip</span></th>
+                                                                <th><span class="headerLink">Phone</span></th>
+                                                            </thead>
+                                                            <tbody>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <input type="button" class="btn btn-primary br-0 m-t-10 pull-right siteAddressValidateBtn" 
+                                                        style="padding: 7px 20px !important; top:-6px;position:relative;margin-right:5px;" value="Validate Address" onclick="callSelectSite();" />
+                                                </apex:pageblock>
+                                                <apex:actionFunction status="loading" name="selectSiteExecute" action="{!doSitesSelection}" 
+                                                    reRender="form-2,form4,form3,form1" oncomplete="checkServiceAvailExecute();">
+                                                    <apex:param name="selectedCustomerIds" value="" />
+                                                </apex:actionFunction>
+                                                <apex:actionFunction status="loading" name="selectSiteForAIAExecute" action="{!doMultipleSitesSelectionForAIA}"  reRender="form4,form3,form1,form6" oncomplete="checkAIAPageMsg();pageRefreshed();callEligibleSitesDataTable('loadDefault');">
+                                                     <apex:param name="selectedCustomerIds" value="" />
+                                                </apex:actionFunction>
+                                                
+                                            </apex:form>
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end ngRepeat: tab in tabs -->
+                                <!-- ngRepeat: tab in tabs -->
+                                <div id="addSite" class="tab-pane ng-scope active" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab">
+                                    <div class="col-md-12 m-t-0 ng-scope">
+                                        <apex:form styleClass="form form-2" id="form-2">
+                                            <apex:outputPanel rendered="{!!checkServErr}">
+                                                <apex:pageMessages escape="false"></apex:pageMessages>
+                                            </apex:outputPanel>
+                                            <div class="col-xs-12 col-md-6">
+                                                <div class="form-group">
+                                                    <label class = "m-t-20 m-b-10">Site Name</label>
+                                                    <apex:inputField value="{!CustomerSite.Site_Name__c}" styleClass="form-control inputName required" html-maxlength="30" html-placeholder="Site Name" />
+                                                    <div id="inputName_error" class="errorText">&nbsp;</div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="m-b-10">Address</label>
+                                                    <div class="requiredInput">
+                                                        <div class="requiredBlock"></div>
+                                                        <apex:inputText label="Address Line" value="{!addressLine}" styleClass="form-control inputAdd required" html-placeholder="Address Line" />
+                                                        <div id="inputAdd_error" class="errorText">&nbsp;</div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="form-group">
+                                                    <label class="m-b-10" style="width:100%;">Location (Optional)</label>
+                                                    <div class="pull-left" style="width: 60%; padding-right: 15px;">
+                                                        <div class="">
+                                                            <apex:selectList value="{!customerSite.Location__c}" label="State" multiselect="false" size="1" styleClass="form-control styled-select-small" style="color:#555; height:32px; padding:3px 15px 3px 5px;width:100%;" onchange="onchangeLocationPicListFun(this,'main')">
+                                                                <apex:selectOptions value="{!LocationPicklist}" />
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                    <div class="pull-left" style="width: 40%; padding-left: 15px;">
+                                                        <!--<apex:inputField styleClass="form-control" html-placeholder="#"  />-->
+                                                        <apex:inputField styleclass="form-control pull-right" html-placeholder="#" value="{!customerSite.RoomBuildingFloorInput__c}" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class = "m-t-20 m-b-10">City</label>
+                                                    <apex:inputField value="{!CustomerSite.City__c}" styleClass="form-control inputCity required" html-placeholder="City" />
+                                                    <div id="inputCity_error" class="errorText">&nbsp;</div>
+                                                </div> 
+                                                <!-- Developers Note Robyn 1/26/16: modify columns per defect 18081 -->
+                                                <div class="form-group row">
+                                                    <div class="pull-left" style="width: 60%; padding-right: 15px;">
+                                                        <label class = "m-b-10">State</label>
+                                                        <div class="requiredInput">
+                                                            <div class="requiredBlock"></div>
+                                                            <apex:selectList value="{!state}" label="State" multiselect="false" id="statePickList" size="1" styleClass="form-control inputState required styled-select-small" style="color:#555; padding:0 15px 3px 5px;width:100%;">
+                                                                <apex:selectOptions value="{!statePickList}" />
+                                                            </apex:selectList>
+                                                            <div id="inputState_error" class="errorText">&nbsp;</div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="pull-left" style="width: 40%; padding-left: 15px;">
+                                                        <label class = "m-b-10">{!$Label.ZIP}</label>
+                                                        <apex:inputField value="{!CustomerSite.Zip_Code__c}" 
+                                                            styleClass="form-control inputZip required" html-placeholder="Zip Code" />
+                                                            <div id="inputZip_error" class="errorText">&nbsp;</div>
+                                                    </div>
+                                                </div>
+                                                <!-- End Developers Note Robyn 1/26/15 -->
+                                            </div>
+                                            <div class="col-xs-12 col-md-6">
+                                                                                               
+                                                <div class="form-group">
+                                                    <label class = "m-t-20 m-b-10">Phone Number (Optional)</label>
+                                                    <apex:inputField value="{!customerSite.Phone__c}" 
+                                                        styleClass="form-control inputPhone" html-placeholder="" required="false" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12 m0">
+                                                    <div class="form-group">
+                                                        <div class="btn-complete-parent btn-complete-parent-disabled">
+                                                            <apex:commandButton id="singlesitevalidateBtn" value="Validate Address" 
+                                                                onclick="callValidateSite();"  status="loading" 
+                                                                rerender="none" 
+                                                                styleClass="btn btn-primary pull-right m-l-10 completeBtn addNewValidateAddBtn" style="padding: 7px 20px !important;" />
+                                                            <apex:actionFunction name="validateSiteExecute" status="loading" action="{!doValidate}" 
+                                                                rerender="form6,closeMatchTable,form3,form1,form-2" 
+                                                                oncomplete="checkServiceAvailExecute();">
+                                                            </apex:actionFunction>
+                                                            <apex:actionFunction name="validateSiteForAIAExecute" status="loading" 
+                                                                action="{!doSitesSelectionForAIA}" 
+                                                                rerender="form-2,form6,closeMatchTable,form3,form1" oncomplete="pageRefreshed();callEligibleSitesDataTable('loadDefault');checkPollingStatus();">
+                                                            </apex:actionFunction>
+                                                            <apex:actionFunction name="startPollingFn" status="loading" action="{!startPolling}" 
+                                                                rerender="form-2,form6,closeMatchTable,form3,form1" 
+                                                                oncomplete="checkPollingStatus();callEligibleSitesDataTable('loadDefault');pageRefreshed();">
+                                                            </apex:actionFunction>
+                                                            <script>
+                                                                isContinuePolling = '{!doPolling}';
+                                                                function checkPollingStatus() {
+                                                                    isContinuePolling = '{!doPolling}';
+                                                                    if (isContinuePolling == 'true'){
+                                                                        startPollingFn();
+                                                                    }else{
+                                                                        checkAIAPageMsg();
+                                                                    }
+                                                                }
+                                                            </script>
+                                                        </div>
+                                                        <apex:commandButton value="Clear Form" onclick="this.form.reset();initializeFieldValidations_Step3();initializeFieldValidations_ExactMatch();return false;" styleClass="btn-secondary pull-right" style="padding: 7px 20px !important;"/>
+                                                        
+                                                        <apex:actionFunction name="singleInputValidate" reRender="singlesitevalidateBtn" status="loading" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </apex:form>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                                <!-- end ngRepeat: tab in tabs -->
+                                <div id="bulkUpload" class="tab-pane ng-scope" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab">
+                                    <div ng-app='App' class="row ng-scope">
+                                        <div ng-controller="PreviewController" style="padding: 10px 20px;">
+                                            <p class="m-b-10"><strong>Adding Multiple Addresses Using Our Template</strong>
+                                            </p>
+                                            <p>
+                                                To add multiple sites, download the bulk template. Follow the instructions included in the template. Then upload it. To save the bulk template to your computer as a Microsoft Excel file, click Download Template.
+                                            </p>
+                                            <p style="margin-top: 20px;">
+                                                <apex:outputLink value="{!strDocUrl}" id="theLink" target="_blank" styleClass="btn btn-primary">Download Template</apex:outputLink>
+                                            </p>
+                                            <div class="clear"></div>
+                                            <p style="margin-top: 20px;">When you upload the template, our system will validate each site.</p>
+                                            <section class="p10">
+                                                <span>To help validation go smoothly, follow these tips:</span>
+                                                <div class="p10">
+                                                    <span class="listItemSpan">Use the USPS Address Validation Tool to validate each address before adding it to your template.</span>
+                                                    <span class="listItemSpan">Complete all required fields in the template before you upload it.</span>
+                                                    <span class="listItemSpan">Remove unnecessary spaces before and after data in each cell. (For example, our system recognizes "Chicago" but not " Chicago".</span>
+                                                </div>
+                                            </section>
+                                            <p style="margin-top: 20px; margin-bottom: 20px;">
+                                                <apex:form id="form-bulk-input2">
+                                                    <span style="height: inherit;width:70%;">
+                                                        <input id="browseButtonPadding" type="file" name="excel_file" accept=".xlsx" onchange="processFileForParsing(this, this.files)" required="true" Class="pull-left btn m-l-10 bulkUploadSiteAdd" style="background: none !important; width: 240px; float: left; padding: 0; margin: -10px 0 0 0;color: #000 !important;border:none;"></input>
+                                                        <!-- Hidden Inputs -->
+                                                        <input type="checkbox" ng-model="showPreview" ng-change="showPreviewChanged();" style="display:none;" ></input>
+                                                        <apex:inputTextArea value="{!excelBody}" id="theTextInput" style="display:none;"/>
+                                                    </span>
+                                                    
+                                                    <input type="button" onclick="ReadFileFn();bulkUploadBtnDisabled();" value="Validate Address" class="btn btn-primary pull-left siteAddressValidateBtn disabled" style="padding: 7px 20px !important;" />
+                                                    <apex:actionFunction name="ReadFile" action="{!ReadFile}" status="loading" oncomplete="checkServiceAvailExecute();"></apex:actionFunction>
+                                                    <apex:actionFunction name="ReadFileForAIA" action="{!ReadFileForAIA}" status="loading"> 
+                                                    </apex:actionFunction>
+                                                    
+                                                    <apex:outputPanel id="oPRes">
+                                                                                   
+                                                    <script>
+                                                    $('#enterAddress #bulkUpload .bulkUploadSiteAdd').on('change', function(){
+                                                        if($(this).val().length > 0){
+                                                            $('#enterAddress #bulkUpload .siteAddressValidateBtn').removeClass('disabled');
+                                                        } else {                
+                                                            $('#enterAddress #bulkUpload .siteAddressValidateBtn').addClass('disabled');
+                                                        }
+                                                    }); 
+                                                        
+                                                    function processFileForParsing(obj, obj1) {
+                                                        angular.element(obj).scope().fileChanged(obj1);
+                                                    }
+                                                    
+                                                    (function(undefined) {
+                                                        'use strict';
+                                                        // Check if dependecies are available.
+                                                        if (typeof XLSX === 'undefined') {
+                                                            console.log('xlsx.js is required. Get it from https://github.com/SheetJS/js-xlsx');
+                                                            return;
+                                                        }
+                                                    
+                                                        if (typeof _ === 'undefined') {
+                                                            console.log('Lodash.js is required. Get it from http://lodash.com/');
+                                                            return;
+                                                        }
+                                                    
+                                                        // Baseline setup
+                                                        // --------------
+                                                    
+                                                        // Establish the root object, `window` in the browser, or `exports` on the server.
+                                                        var root = this;
+                                                    
+                                                        // Save the previous value of the `XLSXReader` variable.
+                                                        var previousXLSXReader = root.XLSXReader;
+                                                    
+                                                        // Create a safe reference to the XLSXReader object for use below.
+                                                        var XLSXReader = function(file, readCells, handler) {
+                                                            var obj = {};
+                                                            XLSXReader.utils.intializeFromFile(obj, file, readCells, handler);
+                                                            return obj;
+                                                        };
+                                                    
+                                                        // Export the XLSXReader object for **Node.js**, with
+                                                        // backwards-compatibility for the old `require()` API. If were in
+                                                        // the browser, add `XLSXReader` as a global object via a string identifier,
+                                                        // for Closure Compiler 'advanced' mode.
+                                                        if (typeof exports !== 'undefined') {
+                                                            if (typeof module !== 'undefined' && module.exports) {
+                                                                exports = module.exports = XLSXReader;
+                                                            }
+                                                            exports.XLSXReader = XLSXReader;
+                                                        } else {
+                                                            root.XLSXReader = XLSXReader;
+                                                        }
+                                                    
+                                                        // Current version.
+                                                        XLSXReader.VERSION = '0.0.1';
+                                                    
+                                                        XLSXReader.utils = {
+                                                            'intializeFromFile': function(obj, file, readCells, handler) {
+                                                                var reader = new FileReader();
+                                                                
+                                                                reader.onload = function(e) {
+                                                                    var data = e.target.result;
+                                                                    var workbook = XLSX.read(data, {
+                                                                        type: 'binary'
+                                                                    });
+                                                                    
+                                                                    obj.sheets = XLSXReader.utils.parseWorkbook(workbook, readCells);
+                                                                    handler(obj);
+                                                                };
+                                                                
+                                                                reader.readAsBinaryString(file);
+                                                            },
+                                                            'parseWorkbook': function(workbook, readCells) {
+                                                                var sheets = {};
+                                                                
+                                                                _.forEachRight(workbook.SheetNames, function(sheetName) {
+                                                                    var sheet = workbook.Sheets[sheetName];
+                                                                    sheets[sheetName] = XLSXReader.utils.parseSheet(sheet, readCells, sheetName);
+                                                                });
+                                                                
+                                                                return sheets;
+                                                            },
+                                                            'parseSheet': function(sheet, readCells, sheetName) {
+                                                                var range = XLSX.utils.decode_range(sheet['!ref']);
+                                                                var sheetData = [];
+                                                                if (readCells === true) {
+                                                                    _.forEachRight(_.range(range.s.r, range.e.r + 1), function(row) {
+                                                                        var rowData = [];
+                                                                        _.forEachRight(_.range(range.s.c, range.e.c + 1), function(column) {
+                                                                            var cellIndex = XLSX.utils.encode_cell({
+                                                                                'c': column,
+                                                                                'r': row
+                                                                            });
+                                                                            var cell = sheet[cellIndex];
+                                                                            rowData[column] = cell ? cell.v : undefined;
+                                                                        });
+                                                                        sheetData[row] = rowData;
+                                                                    });
+                                                                };
+                                                                var processedExcelBodyString = '';
+                                                                if(sheetData.length > 0) {
+                                                                    for(var i=0; i < sheetData.length; i++) {
+                                                                        processedExcelBodyString += sheetData[i].toString() +"~~";
+                                                                    }
+                                                                }                        
+                                                                document.getElementById("j_id0:idAPI_MACD_SiteAddressInformation:siteMgmntPageId:form-bulk-input2:theTextInput").value = processedExcelBodyString;
+                                                                return {
+                                                                    'data': sheetData,
+                                                                    'name': sheet.name,
+                                                                    'col_size': range.e.c + 1,
+                                                                    'row_size': range.e.r + 1
+                                                                };
+                                                            }
+                                                        };
+                                                    }).call(this);
+                                                                                           
+                              var app = angular.module("App", []);
+                              app.factory("XLSXReaderService", ['$q', '$rootScope',
+                                function($q, $rootScope) {
+                                    var service = function(data) {
+                                        angular.extend(this, data);
+                                    };
+                                    service.readFile = function(file, showPreview) {
+                                        var deferred = $q.defer();
+                    
+                                        XLSXReader(file, showPreview, function(data) {
+                                            $rootScope.$apply(function() {
+                                                deferred.resolve(data);
+                                            });
+                                        });
+                    
+                                        return deferred.promise;
+                                    };
+                    
+                                    return service;
+                                }
+                            ]);
+                            
+                            app.controller('PreviewController', function($scope, XLSXReaderService) {
+                                $scope.showPreview = false;
+                    
+                                $scope.fileChanged = function(files) {
+                                    $scope.isProcessing = true;
+                                    $scope.sheets = [];
+                                    $scope.excelFile = files[0];
+                                    XLSXReaderService.readFile($scope.excelFile, $scope.showPreview).then(function(xlsxData) {
+                                        $scope.sheets = xlsxData.sheets;
+                                        $scope.isProcessing = false;
+                                    });
+                                    $scope.isProcessing = true;
+                                    $scope.showPreview = true;
+                                    var temp = XLSXReaderService.readFile($scope.excelFile, $scope.showPreview).then(function(xlsxData) {
+                                        $scope.sheets = xlsxData.sheets;
+                                        $scope.isProcessing = false;
+                                    });
+                                }; 
+                            });
+                    
+                            document.onkeypress = function(e){
+                                        e=e?e:window.event;
+                                        if (e.keyCode==13)return false;
+                            }
+                                                </script>
+                                            </apex:outputPanel>
+                                            
+                                                </apex:form>
+                                                </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- end ngRepeat: tab in tabs -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="validateModal" class="modal fade m-t-20" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" onclick="$('.modal-backdrop').not(':last-child').hide();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                            </button>
+                            <h2 class="modal-title" id="myModalLabel">Site Address Validation</h2>
+                        </div>
+                        <div class="modal-body">
+                            <apex:form id="form6">
+                                <apex:pageBlock >
+                                    <br/>
+                                    <br/>
+                                    <apex:pagemessages />
+                                    <br/>
+                                    <br/>
+                                </apex:pageBlock>
+                                <br/>
+                            </apex:form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <apex:form id="form4" styleClass="form4">
+                    <apex:pageBlock id="form3">
+                        <div class="col-xs-3 col-md-3" id="addedsites">
+                            <h4 style="margin-bottom: 20px;">{!IF(selectedSitesWrapperList.size>0,selectedSitesWrapperList.size,0)} Sites submitted</h4>
+                            <div id="SitesCtrlDiv" class="row">
+                                <!-- Export -->
+                                <div class="pull-right">
+                                    <apex:commandButton disabled="{!!isSiteSelected}" styleClass="btn btn-primary exportBtn" action="{!updateJunctionOnExport}" 
+                                        style="padding: 7px 20px !important;margin-right:0;" value="Export" 
+                                        reRender="form4,form3,form1" oncomplete="exportSelectedSite();callEligibleSitesDataTable('loadDefault');" status="loading"/>
+                                </div>
+
+                                <!-- Remove -->
+                                <div class="pull-right">
+                                    <apex:commandButton disabled="{!!isSiteSelected}" styleClass="btn btn-primary clearMsg" style="padding: 7px 20px !important;margin-right:20;" action="{!doRemove}" value="Remove" reRender="form4,form3,form1" oncomplete="pageRefreshed();callEligibleSitesDataTable('loadDefault');" status="loading" />
+                                </div>
+                                
+                            </div>
+                            <br/>
+                            <div style="margin: 0; padding: 10px; background: #fff; border: 1px solid #ddd; border-bottom: 0;">
+                                <apex:inputCheckbox value="{!isSelectAll}" onclick="selectAll();" disabled="{!!(selectedSitesWrapperList.size > 0) }" />
+                                <apex:outputText id="outputTextField" value="" >Select All</apex:outputText>
+                                <apex:actionFunction name="selectAll" status="loading" action="{!doSiteSelectionAll}" reRender="form4,form3" />
+                            </div>
+                            <div id="addedsitescontainer" style="margin-top: 0;">
+                                <accordion is-open="m.open">
+                                    <div class="panel-group" ng-transclude="">
+                                        <apex:actionFunction name="IsSelectedCheck" action="{!doSiteSelectionCheck}" status="loading" reRender="form4,form3" oncomplete="validateButton(this);initializeFieldValidations_Step3();initializeFieldValidations_ExactMatch();">
+                                            <apex:param name="selectedJunctionId" value="" />
+                                        </apex:actionFunction>
+                                        <apex:repeat value="{!selectedSitesWrapperList}" var="item">
+                                            <div class="panel panel-default ng-isolate-scope" style="padding: 10px;">
+                                                <div class="panel-heading">
+                                                    <h5 class="panel-title">
+                                                        <a class="accordion-toggle" accordion-transclude="heading" data-toggle="collapse" data-target="#{!item.selectedSite.id}">
+                                                            <span class="pull-right">
+                                                                <apex:image url="{!URLFOR($Resource.legendicons,'icon_circle_check.png')}" 
+                                                                    rendered="{!IF(item.glyphicon == 'glyphicon-ok',true,false)}" style="width: 25px; height: 25px;" />
+                                                                <apex:image url="{!URLFOR($Resource.legendicons,'icon_circle_warning.png')}" 
+                                                                    rendered="{!IF(item.glyphicon == 'glyphicon-minus',true,false)}" style="width: 25px; height: 25px;" />
+                                                                <apex:image url="{!URLFOR($Resource.legendicons,'icon_circle_close.png')}" 
+                                                                    rendered="{!IF(item.glyphicon == 'glyphicon-remove',true,false)}" style="width: 25px; height: 25px;" />
+                                                            </span>
+                                                            <span class="ng-scope">
+                                                                <apex:inputCheckbox id="chkBxId" value="{!item.isSelected}" 
+                                                                    onclick="IsSelectedCheck('{!item.junctionRecordId}');" /> 
+                                                                <!--<apex:commandLink value="{!item.selectedSite.Site_Name__c}" 
+                                                                    action="{!doFetchUpdatingRecord}" reRender="form-2,SiteOverlay" status="loading"  styleClass="closeMatchTrigger"  oncomplete="initializeFieldValidations_ExactMatch();$('#closeMatch').modal('show');">
+                                                                    <apex:param name="siteToUpdate" value="{!item.selectedSite.id}" assignTo="{!siteToUpdateId}" />
+                                                                    <apex:param name="junctionRecId" value="{!item.junctionRecordId}" assignTo="{!junctionToUpdateId}" />
+                                                                </apex:commandLink>-->
+                                                                <apex:commandLink value="{!item.selectedSite.Site_Name__c}" 
+                                                                    action="{!doFetchUpdatingRecord}" reRender="form-2,SiteOverlay" status="loading" html-data-toggle="modal" html-data-target="#closeMatch" styleClass="closeMatchTrigger addedSiteName" html-data-backdrop="static" oncomplete="initializeFieldValidations_ExactMatch();$('#closeMatch').modal('show');$('.modal-backdrop').not(':last-child').remove();">
+                                                                    <apex:param name="siteToUpdate" value="{!item.selectedSite.id}" assignTo="{!siteToUpdateId}" />
+                                                                    <apex:param name="junctionRecId" value="{!item.junctionRecordId}" assignTo="{!junctionToUpdateId}" />
+                                                                </apex:commandLink>  
+                                                            </span>
+                                                            <br class="ng-scope"/>
+                                                        </a>
+                                                    </h5>
+                                                    <span class="ng-scope addedSiteInfo" style="text-transform: normal !important; margin: 5px 0px 5px 18px; display: block;"> {!item.selectedSite.Address_Line__c + ' ' +  item.selectedSite.City__c + ' ' + item.selectedSite.State__c + ' ' + item.selectedSite.Country__c}</span>
+                                                </div>
+                                            </div>
+                                        </apex:repeat>
+                                    </div>
+                                </accordion>
+                            </div>
+                        <div id="legend">
+                            <div class="row">
+                                <div class="col-xs-7 p0">
+                                    <div class="pull-left">
+                                    <apex:image url="{!URLFOR($Resource.legendicons,'icon_circle_check.png')}" style="width: 25px; height: 25px;" />
+                                    </div>
+                                    <div class="pull-left" style="padding: 8px;">
+                                    Ready To Submit
+                                    </div>
+                                </div>
+                                <div class="col-xs-5 p0 text-right">
+                                    <div class="pull-left">
+                                    <apex:image url="{!URLFOR($Resource.legendicons,'icon_circle_warning.png')}" style="width: 25px; height: 25px;"/>
+                                    </div>
+                                    <div class="pull-left" style="padding: 8px 0 8px 5px;">
+                                    Close Match
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row" style="margin-top: 10px;">
+                                <div class="col-xs-9 p0">
+                                    <div class="pull-left">
+                                    <apex:image url="{!URLFOR($Resource.legendicons,'icon_circle_close.png')}" style="width: 25px; height: 25px;"/>
+                                    </div>
+                                    <div class="pull-left" style="padding: 8px;">
+                                    Address Correction
+                                    </div>
+                                </div>
+                                <div class="col-xs-3 p0">
+                                    &nbsp;
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+
+                        <apex:outputPanel id="chkServiveBtnId" rendered="true" styleClass="form-horizontal ng-pristine ng-valid">
+                            <div class="row m0">
+                                <div class="col-xs-12 m-t-10">
+                                    <hr class="blue_hr" />
+                                </div>
+                            </div>
+                            <div>
+                                <div class="form-group" id="bulkupload">
+                                    <div class="col-xs-12 text-center">
+                                        <script>
+                                            checkIsConfigureReady();
+                                            function checkIsConfigureReady() {
+                                                var isConfigureReady = '{!isConfigureReady}';
+                                            }
+                                        </script>
+                                        <apex:commandButton id="configureNewBtnId" action="{!callBlackFlag}" oncomplete="makeITPACall();" value="Check Service Availability"
+                                            styleClass="btn btn-primary pull-right" disabled="{!!isConfigureReady}" style="margin-top: 20px; padding: 7px 20px !important;"
+                                             status="loading"/>
+                                        <apex:actionFunction name="makeITPACall" action="{!configureSiteForITPA}" oncomplete="checkStatus();" reRender="form4,form-2,chkServiveBtnId,headerFormId,resetErrFlag" status="loading" />
+                                       <apex:actionfunction name="doRequest" action="{!CallITPAContinuation}"  reRender="isConRequ,form4,form-2,chkServiveBtnId,headerFormId,resetErrFlag"  status="loading" oncomplete="checkRetrigger();"/>
+                                       
+                                       <apex:actionfunction name="checkRetriggerEvent" action="{!callFirstRetriggerMethod}" reRender="isConRequ,form4,form-2,chkServiveBtnId,headerFormId,resetErrFlag"  oncomplete="checkRetriggerSecond();"  status="loading"/> 
+                                       <apex:actionfunction name="checkRetriggerEventSecond" action="{!callSecondRetriggerMethod}" reRender="isConRequ,form4,form-2,chkServiveBtnId,headerFormId,resetErrFlag"  oncomplete="checkRetriggerThird();" status="loading" />
+                                       <apex:actionfunction name="checkRetriggerEventThird" action="{!callThirdRetriggerMethod}" reRender="isConRequ,form4,form-2,chkServiveBtnId,headerFormId,resetErrFlag"  oncomplete="createITSupport();" status="loading" />
+                                       <apex:actionfunction name="createITSupportTickets" action="{!CreateITSupportTicket}" reRender="isConRequ,form4,form-2,chkServiveBtnId,headerFormId,resetErrFlag"  status="loading" />
+                                         
+                                        <input type="button" class="m-r-10 pull-right btn-secondary" id="saveExitBtnId" Value="Save and Exit" 
+                                            onclick="navigateToDashboard();" style="margin-top: 20px; padding: 7px 20px !important;" />
+                                        <script>
+                                            checkASEType = '';
+                                            function populateASEType() {
+                                                checkASEType = '{!ASE_type}';
+                                            }
+                                            
+                                            function checkServiceAvailCall() {
+                                                checkServiceAvailExecute();
+                                            }
+                                            
+                                            function executeAIA() {
+                                                var checkErr = '{!checkServErr}';
+                                                var checkAIA = '{!isAIASelected}';
+                                                if(checkErr == 'false' && checkAIA == 'true') {
+                                                    handleConfigureSite();
+                                                }
+                                            }
+                                            $('.clearMsg').on('click', function(){
+                                                $('.infoM3').text('');
+                                            });
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                            <apex:actionFunction status="loading" name="checkServiceAvailExecute" reRender="form-2,form6,form4,chkServiveBtnId,headerFormId,form-bulk-input2,resetErrFlag" 
+                                action="{!doConfigure}" oncomplete="handleSiteAvailError('{!isConfigured}');pageRefreshed();callEligibleSitesDataTable('loadDefault');">
+                                <apex:param name="isAIASelected" value=""></apex:param>
+                            </apex:actionFunction>
+                        </apex:outputPanel>
+                        <apex:outputPanel id="resetErrFlag">
+                            <script>
+                            vasaITPAErr = {!checkServErr};
+                            </script>
+                        </apex:outputPanel>                
+                        <apex:actionFunction status="loading" name="handleSiteAvailErrorMsg" reRender="form6,form4" action="{!doHandleServiceAvailError}" oncomplete="openValidateModalForExisting();pageRefreshed();">
+                            <apex:param name="isAIASelected" value=""></apex:param>
+                        </apex:actionFunction>      
+                        <apex:actionFunction status="loading" name="reInitSiteAddress" action="{!reInitializeSiteAddress}" 
+                            reRender="form4,form1,form6,headerFormId,EligibleSitesTable" oncomplete="callEligibleSitesDataTable('loadDefault');handleConfigureSite();" />
+                        <apex:actionFunction status="loading" name="reInitSiteAddressMain" action="{!reInitializeSiteAddress}" 
+                            reRender="form4,form1,form6,headerFormId,EligibleSitesTable" />                        
+                        <apex:actionFunction name="handleSiteAddressPage" oncomplete="handleBulkMsg();callEligibleSitesDataTable('loadDefault');" action="{!doFetchQuoteInfo}" id="handleSiteAddFuncId" status="loading" rerender="form4,configureNewBtnId,form1,form6,headerFormId">
+                            <apex:param name="quoteId" value="" />
+                        </apex:actionFunction>                        
+                        <apex:actionFunction name="handleSiteAddressPageNew" oncomplete="handleBulkMsg();callEligibleSitesDataTable('loadDefault');reloadThisPage();" action="{!doFetchQuoteInfo}" id="handleSiteAddFuncNewId" status="loading" rerender="form4,configureNewBtnId,form1,form6,headerFormId">
+                            <apex:param name="quoteId" value="" />
+                        </apex:actionFunction>
+                        <script>
+                            isSelectedAIA = '{!isAIASelected}';
+                            function reloadThisPage() {
+                                location.reload();
+                            }
+                            function checkStatus(){
+                                 doRequest(); 
+                            }
+                            function checkRetrigger(){
+                                checkRetriggerEvent(); 
+                            }
+                            function checkRetriggerSecond(){
+                                checkRetriggerEventSecond();
+                            }
+                            function checkRetriggerThird(){
+                                checkRetriggerEventThird();
+                            }
+                            function createITSupport(){
+                                createITSupportTickets();
+                            }
+                        </script>
+                        <apex:actionFunction name="displayBulkMsg" oncomplete="openValidateModalForExisting();" status="loading" />
+                    </apex:pageBlock>
+                </apex:form>
+
+                <!-- Modal -->
+                <div class="modal fade" id="closeMatch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <apex:form id="SiteOverlay">                            
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" onclick="clearMessage();"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                    <h3 style="margin-left:28px;">{!customerSite.VASA_Response_Status__c}</h3>
+                                    <apex:pageMessages ></apex:pageMessages>
+                                </div>
+                                
+                                <div class="modal-body" style="height: 390px; overflow-y: auto;">
+                                
+                                    <div class="col-xs-12" id="UpdateSitesTable">
+                                        <apex:pageBlock id="UpdateSitesTable" rendered="true">
+                                            
+                                            <apex:pageBlockTable id="closeMatchTable" value="{!closeMatchAddrWrapper}" var="item" rendered="{!IF(closeMatchAddrWrapper.size>0,true,false)}" styleClass="table table-bordered table-striped table-hover">
+                                                <apex:column headerValue="Select">
+                                                    <input type="radio" value="{!item.isSelected}" name="group12" id="{!item.radioId}" 
+                                                        onchange="updateSelectCloseMatchRadio('{!item.radioId}');" />
+                                                </apex:column>
+                                                <apex:column value="{!item.closeMatchAddress.street}" headerValue="Street" />
+                                                <apex:column value="{!item.closeMatchAddress.city}" headerValue="City" />
+                                                <apex:column value="{!item.closeMatchAddress.state}" headerValue="State" />
+                                                <apex:column value="{!country}" headerValue="Country" />
+                                            </apex:pageBlockTable>
+                                            <ul class="col-xs-6">
+                                                <li class="closeMatchLi">
+                                                    <label for="" class="control-label">Site Name</label>
+                                                    <apex:inputField value="{!customerSite.Site_Name__c}" styleClass="form-control inputSite required" html-placeholder="Site Name"  />
+                                                </li>                                            
+                                                
+                                                <li class="closeMatchLi">
+                                                    <label for="" class="control-label">Address Line</label>
+                                                    <apex:inputText label="Address Line" value="{!addressLine}" styleClass="form-control inputAddress required"  html-placeholder="Address Line"  />
+                                                </li>
+                                                <li class="closeMatchLi">
+                                                    <div class="form-group row m0" id="locationFloorBlock">
+                                                        <div class="pull-left" style="width: 60%; padding-right: 15px;">
+                                                            <label class="control-label" style="width: 100%;">Location (Optional)</label>
+                                                            <apex:selectList value="{!customerSite.Location__c}" label="Location"  multiselect="false" size="1" styleClass="form-control pull-left styled-select-small" style="font-family:inherit; font-size:inherit;width:100%;padding-top: 3px;padding-bottom: 3px;" onchange="onchangeLocationPicListFun(this, 'popup')">
+                                                                <apex:selectOptions value="{!LocationPicklist}" />
+                                                            </apex:selectList>  
+                                                        </div>
+                                                        <div class="pull-left" style="width: 40%; padding-left: 15px;">
+                                                            <label class="control-label" style="width: 100%;">&nbsp;</label>
+                                                            <apex:inputField value="{!customerSite.RoomBuildingFloorInput__c}" styleClass="form-control pull-right" html-placeholder="#" style="width: 100%;" />
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="closeMatchLi">
+                                                    <label for="" class="control-label">City</label>
+                                                    <apex:inputField value="{!customerSite.City__c}" styleClass="form-control inputCity required" html-placeholder="City"  />
+                                                </li>
+                                                <li class="closeMatchLi">
+                                                    <div class="form-group row m0" id="siteStateZip">
+                                                        <div class="pull-left" style="width: 60%; padding-right: 15px;">
+                                                            <label for="" class="control-label">State</label>
+                                                            <apex:selectList value="{!state}" label="State"  multiselect="false" id="statePickList" size="1" styleClass="form-control inputState required styled-select-small" style="font-family:inherit; font-size:inherit;padding-top: 3px;padding-bottom: 3px;width:100%;">
+                                                                <apex:selectOptions value="{!statePickList}" />
+                                                            </apex:selectList>
+                                                        </div>
+                                                        <div class="pull-left" style="width: 40%; padding-left: 15px;">
+                                                        
+                                                            <label for="" class="control-label">{!$Label.ZIP}</label>
+                                                            <apex:inputField value="{!customerSite.Zip_Code__c}" styleClass="form-control inputZip required" html-placeholder="" style="width:100%;"  />
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                    
+                                                
+                                            </ul>
+                                            <ul class="col-xs-6">
+                                                <li class="closeMatchLi">
+                                                    <label for="" class="control-label">Phone Number (Optional)</label>
+                                                    <apex:inputText value="{!customerSite.Phone__c}" styleClass="form-control inputPhone" html-placeholder="Optional" required="false" maxlength="10"/>
+                                                </li>
+                                                
+                                            </ul>
+                                            <hr/>
+                                        </apex:pageBlock>
+                                    </div>
+                                
+                                </div>
+                                <div class="modal-footer" style="margin-left:22px;margin-bottom:20px;">
+                                    <span class="addressMatchContainer">
+                                        <input type="button" value="Continue" class="btn btn-primary addressMatchbtn" 
+                                            onclick="callDoValidate();" data-dismiss="modal" />
+                                    </span>
+                                    <apex:commandButton value="Remove" status="loading" styleClass="btn btn-primary" 
+                                        action="{!doSingleSiteRemove}" oncomplete="openValidateModalForExisting();pageRefreshed();clearMessage();callEligibleSitesDataTable('loadDefault');" 
+                                        reRender="form6,closeMatchTable,form3" html-data-dismiss="modal">
+                                            <apex:param name="siteToRemove" value="{!customerSite.id}" assignTo="{!siteToRemoveId}" />
+                                    </apex:commandButton>
+                                </div>
+                            </div>
+                        </div>
+                        <apex:actionFunction status="loading" name="updateSelectRadio" action="{!doValidate}" reRender="form6,closeMatchTable,form3,form1,form-2" 
+                            oncomplete="checkServiceAvailExecute();clearMessage();openValidateModalForExisting();">
+                            <apex:param name="selectedCloseRadio" value="" />
+                        </apex:actionFunction>
+                        <apex:actionFunction status="loading" name="updateSelectRadioAIA" action="{!doSitesSelectionForAIA}" reRender="form6,closeMatchTable,form3,form1,form-2" 
+                            oncomplete="openValidateModalForExisting();pageRefreshed();clearMessage();callEligibleSitesDataTable('loadDefault');">
+                            <apex:param name="selectedCloseRadio" value="" />
+                        </apex:actionFunction>
+                    </apex:form>
+                </div>
+                <!-- Select Product Modal -->
+                <div class="modal fade" id="oppurtunityModal" tabindex="-1" role="dialog" aria-labelledby="oppurtunityModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                </button>
+                                <h4 class="modal-title" id="oppurtunityModalLabel">Continue</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>
+                                    To start the Quote and deal registration process, the AT&amp;T premier Store will open in a new window. To proceed choose one of the selections below then click contiue.
+                                </p>
+                                <div>
+                                    <input type="radio" id="endCustomerFan" value="" name="continueRadio" onclick="atLeastOneRadio();" />
+                                    <label for="endCustomerFan">End Customer Fan</label>
+                                </div>
+                                <div>
+                                    <input type="radio" id="consumeForUseFan" value="" name="continueRadio" onclick="atLeastOneRadio();" />
+                                    <label for="consumeForUseFan">Consume for use Fan</label>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="select_prod_modal_continue" type="button" class="btn  btn-primary disabled" data-dismiss="modal" onclick="">Continue</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--This static resource is required to parse the excel file into csv sends to controller------------>
+        <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/angular.min.js')}"/>
+       <!---<apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/jquery.min.js')}"/> --> 
+        <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/bootstrap.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/lodash.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/jszip.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/xlsx.js')}"/>
+      <!---  <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/xlsx-reader.js')}"/>   --> 
+        
+    <script>
+    /****** Please do not move below function to static resource as we need this here - Shishir*****/
+    function loadImageFun() {
+        $('.waitingImage').attr('src', '{!$Resource.LoadingImage}');
+    }        
+                // Function to initialize each of the validations present on the Exact Match form fields
+            function initializeFieldValidations_ExactMatch() {
+                // Add a keyup event handler to each of the fields to ensure that on keyup we validate the field
+                // Site Name
+                $("#closeMatch .inputSite").on({"keyup": function()
+                    {
+                        validateEmptyFields_ExactMatch("inputSite","Site Name should not begin with a space","Enter a Site Name.", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields_ExactMatch("inputSite","Site Name should not begin with a space","Enter a Site Name.", true);
+                    }
+                });
+                // Address
+                $("#closeMatch .inputAddress").on({"keyup": function()
+                    {
+                        validateEmptyFields_ExactMatch("inputAddress","Address should not begin with a space","Enter an Address.", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields_ExactMatch("inputAddress","Address should not begin with a space","Enter an Address.", true);
+                    }
+                });
+                // Location
+                $("#closeMatch .inputLocation").on({"keyup": function()
+                    {
+                        validateEmptyFields_ExactMatch("inputLocation","Location should not begin with a space","Select a Location.", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields_ExactMatch("inputLocation","Location should not begin with a space","Select a Location.", true);
+                    }   
+                });
+                // City
+                $("#closeMatch .inputCity").on({"keyup": function()
+                    {
+                        validateEmptyFields_ExactMatch("inputCity","City should not begin with a space","Enter a city.", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields_ExactMatch("inputCity","City should not begin with a space","Enter a city.", true);
+                    }
+                });
+                // State
+                $("#closeMatch .inputState").on({"keyup": function()
+                    {
+                        validateEmptyFields_ExactMatch("inputState","State should not begin with a space","Select a State.", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields_ExactMatch("inputState","State should not begin with a space","Select a State.", true);
+                    }
+                });
+                
+                // Numerical Fields - Verify the length along with the checks for invalid characters and empty space
+                // Zip Code
+                $("#closeMatch .inputZip").on({"keyup": function()
+                    {
+                        validateNumericalFields_ExactMatch($("#closeMatch .inputZip").val(), "Invalid Zip code", "Enter a Zip code.", "Zip code must be of five digits", true, "inputZip","Zip code should not begin with a space");
+                    },
+                "blur":function()
+                    {
+                        validateNumericalFields_ExactMatch($("#closeMatch .inputZip").val(), "Invalid Zip code", "Enter a Zip code.", "Zip code must be of five digits", true, "inputZip","Zip code should not begin with a space");
+                    }
+                });
+                // Phone Number
+                $("#closeMatch .inputPhone").on({"keyup": function()
+                    {
+                        validateNumericalFields_ExactMatch($("#closeMatch .inputPhone").val(), "Invalid Phone Number", "Enter a Phone Number.", "Phone Number must be of ten digits", false,"inputPhone","Phone Number should not begin with a space");
+                    },
+                "blur":function()
+                    {
+                        validateNumericalFields_ExactMatch($("#closeMatch .inputPhone").val(), "Invalid Phone Number", "Enter a Phone Number.", "Phone Number must be of ten digits", false,"inputPhone","Phone Number should not begin with a space");
+                    }
+                });
+            }
+
+            // Function to initialize each of the validations present on the form fields
+            function initializeFieldValidations_Step3 () {
+            $('#addSite .addNewValidateAddBtn').addClass('disabled');
+            //$(".errorText").remove();
+                // Add a keyup event handler to each of the fields to ensure that on keyup we validate the field
+                // Site Name
+                $("#addSite .inputName").on({"keyup": function()
+                    {
+                        validateEmptyFields_Step3("inputName","Site Name should not begin with a space","Enter a Site Name.", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields_Step3("inputName","Site Name should not begin with a space","Enter a Site Name.", true);
+                    }
+                });
+                // Address
+                $("#addSite .inputAdd").on({"keyup": function()
+                    {
+                        validateEmptyFields_Step3("inputAdd","Address should not begin with a space","Enter an Address.", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields_Step3("inputAdd","Address should not begin with a space","Enter an Address.", true);
+                    }
+                });
+                // Location
+                $("#addSite .inputLocation").on({"keyup": function()
+                    {
+                        validateEmptyFields_Step3("inputLocation","Location should not begin with a space","Select a Location.", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields_Step3("inputLocation","Location should not begin with a space","Select a Location.", true);
+                    }   
+                });
+                // City
+                $("#addSite .inputCity").on({"keyup": function()
+                    {
+                        validateEmptyFields_Step3("inputCity","City should not begin with a space","Enter a city.", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields_Step3("inputCity","City should not begin with a space","Enter a city.", true);
+                    }
+                });
+                // State
+                $("#addSite .inputState").on({"change": function()
+                    {
+                        validateEmptyFields_Step3("inputState","State should not begin with a space","Select a State.", true);
+                    }
+                ,
+                "blur":function()
+                    {
+                        validateEmptyFields_Step3("inputState","State should not begin with a space","Select a State.", true);
+                    }
+                });
+                
+                // Numerical Fields - Verify the length along with the checks for invalid characters and empty space
+                // Zip Code
+                $("#addSite .inputZip").on({"keyup": function()
+                    {
+                        validateNumericalFields_Step3($("#addSite .inputZip").val(), "Invalid Zip code", "Enter a Zip code.", "Zip code must be of five digits", true, "inputZip","Zip code should not begin with a space");
+                    },
+                "blur":function()
+                    {
+                        validateNumericalFields_Step3($("#addSite .inputZip").val(), "Invalid Zip code", "Enter a Zip code.", "Zip code must be of five digits", true, "inputZip","Zip code should not begin with a space");
+                    }
+                });
+                // Phone Number
+                $("#addSite .inputPhone").on({"keyup": function()
+                    {
+                        validateNumericalFields_Step3($("#addSite .inputPhone").val(), "Invalid Phone Number", "Enter a Phone Number.", "Phone Number must be of ten digits", false,"inputPhone","Phone Number should not begin with a space");
+                    },
+                "blur":function()
+                    {
+                        validateNumericalFields_Step3($("#addSite .inputPhone").val(), "Invalid Phone Number", "Enter a Phone Number.", "Phone Number must be of ten digits", false,"inputPhone","Phone Number should not begin with a space");
+                    }
+                });
+            }
+
+            // Function to handle numerical values
+            // If any non - numerical characters are entered, we show an invalid entry message
+            // If a required field is blank, we show a message indicating that the field is blank
+            // If a phone number is greater or less than 10 digits in length, we show a message indicating that the number is longer than expected
+            function validateNumericalFields_Step3(sValue, sErrorMessage, sBlankMessage, sPhoneDigitErrorMessage, boolIsRequired, sFieldClassName, sFirstSpaceErrorMessage){
+                var oError = $('#'+sFieldClassName+"_error"), oParent = $('#addSite .'+sFieldClassName).parent(), sFilteredValue = sValue.replace(/[\s()-]/g,""); // Remove all spaces, - and () from the phone number field
+                if(oParent[0]) {
+                    if((boolIsRequired) && ("" === sValue))
+                    {
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+                        oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sBlankMessage+"</p>" );
+                    }
+                    else if((" " === sValue) || (sValue !== $.trim(sValue))){
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+                        oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sFirstSpaceErrorMessage+"</p>" );
+                    }
+                    // Handle the Phonenumber field separately since we allow the () and - in the phonenumber field
+                    else if(isNaN(sValue) && "inputPhone" !== sFieldClassName){
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+                        oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sErrorMessage+"</p>" );
+                        
+                    }
+                    // Handle the Phonenumber field separately since we allow the () and - in the phonenumber field
+                    else if("inputPhone" === sFieldClassName && (isNaN(sFilteredValue)))
+                    {
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+                        oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sErrorMessage+"</p>" );
+                    }
+                    // Fitering out the () and - from the number, check if all other characters are digits
+                    // Phone Number must be exactly 10 Characters
+                    // Zip Code must be exactly 5 Characters
+                    else if(("inputPhone" === sFieldClassName && (sFilteredValue.length > 10 || sFilteredValue.length < 10) && (sFilteredValue.length !== 0 ))||
+                            ("inputZip" === sFieldClassName && (sValue.length > 5 || sValue.length < 5))){
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+                        oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sPhoneDigitErrorMessage+"</p>" );
+                        
+                    }
+                    else{
+                         oParent.removeClass("has-error");
+                         if(oError){
+                            oError.remove();
+                        }
+                    }
+                }
+                // All Field Check
+                validateRequiredFields_Step3();
+            }
+            // Function to check whether the field is empty or whether the field contains preceeding white space
+            // If the field contains white space or preceeding white space, we show an error message
+            // If a required field is blank, we show a message indicating that the field is blank
+            function validateEmptyFields_Step3(sClassName,sErrorMessage, sBlankMessage, boolIsRequired) {
+                var sValue = "",oField = $("#addSite ."+sClassName), oParent = oField.parent();
+                console.log('inside >>>> '+sClassName+' sErrorMessage '+sErrorMessage+'sBlankMessage '+sBlankMessage);
+                if(oField[0])
+                {
+                    // Check if the field contains blank value as the first character
+                    sValue = oField.val();
+                    if((boolIsRequired) && ("" === sValue || "Select" === sValue))
+                    {
+                        // Append the error message in case the field is not filled
+                        if(oParent[0]){
+                            // Remove all spaces and () from the string
+                            //$(".errorText."+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error").remove();
+                            //oParent.addClass("has-error").append("<p class='errorText "+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error'>"+ sBlankMessage +"</p>");
+                            console.log('inside >>>11');
+                            $('#'+sClassName+'_error').text(sBlankMessage);
+                            oParent.addClass("has-error");
+                        }
+                    }
+                    //else if((" " === sValue) || (sValue !== $.trim(sValue)))
+                    else if((" " === sValue) || (sValue !== sValue.trimLeft()))
+                    {
+                        // Append the error message in case the field is wrongly filled
+                        if(oParent[0]){
+                            // Remove all spaces and () from the string
+                            //$(".errorText."+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error").remove();
+                            //oParent.addClass("has-error").append("<p class='errorText "+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error'>"+ sErrorMessage +"</p>");
+                            $('#'+sClassName+'_error').text(sErrorMessage);
+                            oParent.addClass("has-error");
+                        }
+                    }
+                    else
+                    {   
+                        // Remove the error message
+                        if(oParent[0]){
+                            oParent.removeClass("has-error");
+                            // Remove all spaces and () from the string
+                            //$(".errorText."+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error").remove();
+                            $('#'+sClassName+'_error').html('&nbsp');
+                            
+                        }
+                    }
+                }
+                // All Field Check
+                validateRequiredFields_Step3();
+            }
+            // Function to verify whether all the required fields are filled before submitting the form
+            function validateRequiredFields_Step3() {
+                $('#addSite .addNewValidateAddBtn').addClass('disabled');
+                // Iterate through all fields and check if there are any invalid entries. If yes, then return false    
+                var arrRequiredFields = $("#addSite .required"), boolIsNumberValid = true,boolIsValid = true, oAddCustomerButton = $(".addNewValidateAddBtn");
+                arrRequiredFields.each(function () 
+                {   
+                    oRequiredField = $(this);
+                    if(oRequiredField[0]) 
+                    {
+                        // 2nd Condition added to check the select dropdown for state
+                        if (0 === oRequiredField.val().length || "Select" === oRequiredField.val())
+                        {
+                            boolIsValid = false;
+                            return false;
+                        }
+                    }
+                });
+                    // If there is any error message present, do not enable the button
+                    $(".errorText").each(function(){
+                        if(1 < $(this).text().length)
+                        {
+                            boolIsNumberValid = false;
+                            return false;
+                        }
+                    });
+                    
+                    
+                    if(boolIsValid && boolIsNumberValid){
+                        // Add customer button enabled
+                        if(oAddCustomerButton[0])
+                        {
+                            oAddCustomerButton.parent().removeClass("btn-complete-parent-disabled");
+                            oAddCustomerButton.removeClass("disabled");
+                        }
+                    }
+                    else
+                    {
+                        // Add customer button disabled
+                        if(oAddCustomerButton[0])
+                        {
+                            oAddCustomerButton.parent().addClass("btn-complete-parent-disabled");
+                            oAddCustomerButton.addClass("disabled");
+                        }
+                    }
+            }
+
+            // Function to handle numerical values
+            // If any non - numerical characters are entered, we show an invalid entry message
+            // If a required field is blank, we show a message indicating that the field is blank
+            // If a phone number is greater or less than 10 digits in length, we show a message indicating that the number is longer than expected
+            function validateNumericalFields_ExactMatch(sValue, sErrorMessage, sBlankMessage, sPhoneDigitErrorMessage, boolIsRequired, sFieldClassName, sFirstSpaceErrorMessage){
+                var oError = $('#'+sFieldClassName+"_error"), oParent = $('#closeMatch .'+sFieldClassName).parent(), sFilteredValue = sValue.replace(/[\s()-]/g,""); // Remove all spaces, - and () from the phone number field
+                if(oParent[0]) {
+                    if((boolIsRequired) && ("" === sValue))
+                    {
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+                        oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sBlankMessage+"</p>" );
+                    }
+                    else if((" " === sValue) || (sValue !== $.trim(sValue))){
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+                        oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sFirstSpaceErrorMessage+"</p>" );
+                    }
+                    // Handle the Phonenumber field separately since we allow the () and - in the phonenumber field
+                    else if(isNaN(sValue) && "inputPhone" !== sFieldClassName){
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+                        oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sErrorMessage+"</p>" );
+                        
+                    }
+                    // Handle the Phonenumber field separately since we allow the () and - in the phonenumber field
+                    else if("inputPhone" === sFieldClassName && (isNaN(sFilteredValue)))
+                    {
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+                        oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sErrorMessage+"</p>" );
+                    }
+                    // Fitering out the () and - from the number, check if all other characters are digits
+                    // Phone Number must be exactly 10 Characters
+                    // Zip Code must be exactly 5 Characters
+                    else if(("inputPhone" === sFieldClassName && (sFilteredValue.length > 10 || sFilteredValue.length < 10) && (sFilteredValue.length !== 0 ))||
+                            ("inputZip" === sFieldClassName && (sValue.length > 5 || sValue.length < 5))){
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+                        oParent.append("<p id='"+sFieldClassName+"_error' class='errorText'>"+sPhoneDigitErrorMessage+"</p>" );
+                        
+                    }
+                    else{
+                         oParent.removeClass("has-error");
+                         if(oError){
+                            oError.remove();
+                        }
+                    }
+                }
+                // All Field Check
+                validateRequiredFields_ExactMatch();
+            }
+            // Function to check whether the field is empty or whether the field contains preceeding white space
+            // If the field contains white space or preceeding white space, we show an error message
+            // If a required field is blank, we show a message indicating that the field is blank
+            function validateEmptyFields_ExactMatch(sClassName,sErrorMessage, sBlankMessage, boolIsRequired) {
+                var sValue = "",oField = $("#closeMatch ."+sClassName), oParent = oField.parent();
+                if(oField[0])
+                {
+                    // Check if the field contains blank value as the first character
+                    sValue = oField.val();
+                    if((boolIsRequired) && ("" === sValue))
+                    {
+                        // Append the error message in case the field is not filled
+                        if(oParent[0]){
+                            // Remove all spaces and () from the string
+                            $(".errorText."+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error").remove();
+                            oParent.addClass("has-error").append("<p class='errorText "+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error'>"+ sBlankMessage +"</p>");
+                        }
+                    }
+                    //else if((" " === sValue) || (sValue !== $.trim(sValue)))
+                    else if((" " === sValue) || (sValue !== sValue.trimLeft()))
+                    {
+                        // Append the error message in case the field is wrongly filled
+                        if(oParent[0]){
+                            // Remove all spaces and () from the string
+                            $(".errorText."+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error").remove();
+                            oParent.addClass("has-error").append("<p class='errorText "+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error'>"+ sErrorMessage +"</p>");
+                        }
+                    }
+                    else
+                    {   
+                        // Remove the error message
+                        if(oParent[0]){
+                            oParent.removeClass("has-error");
+                            // Remove all spaces and () from the string
+                            $(".errorText."+sClassName.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error").remove();
+                        }
+                    }
+                }
+                // All Field Check
+                validateRequiredFields_ExactMatch();
+            }
+            // Function to verify whether all the required fields are filled before submitting the form
+            function validateRequiredFields_ExactMatch() {
+                $('#closeMatch .addressMatchbtn').addClass('disabled');
+                // Iterate through all fields and check if there are any invalid entries. If yes, then return false    
+                var arrRequiredFields = $("#closeMatch .required"), boolIsNumberValid = true,boolIsValid = true, oAddCustomerButton = $('#closeMatch .addressMatchbtn');
+                arrRequiredFields.each(function () 
+                {   
+                    oRequiredField = $(this);
+                    if(oRequiredField[0]) 
+                    {
+                        if (0 === oRequiredField.val().length)
+                        {
+                            boolIsValid = false;
+                            return false;
+                        }
+                    }
+                });
+                    // If there is any error message present, do not enable the button
+                    if(0 < $("#UpdateSitesTable .errorText").length)
+                    {
+                        boolIsNumberValid = false;
+                    }
+                    if(boolIsValid && boolIsNumberValid){
+                        // Add customer button enabled
+                        if(oAddCustomerButton[0])
+                        {
+                            oAddCustomerButton.parent().removeClass("btn-complete-parent-disabled");
+                            oAddCustomerButton.removeClass("disabled");
+                        }
+                    }
+                    else
+                    {
+                        // Add customer button disabled
+                        if(oAddCustomerButton[0])
+                        {
+                            oAddCustomerButton.parent().addClass("btn-complete-parent-disabled");
+                            oAddCustomerButton.addClass("disabled");
+                        }
+                    }
+            }
+
+            initializeFieldValidations_Step3();
+            initializeFieldValidations_ExactMatch();
+            AIAPageMsg = 'false';
+            function checkAIAPageMsg() {
+                if(isSelectedAIA == 'true') {
+                    AIAPageMsg = 'true';
+                    handleBulkMsg();
+                }
+            }
+            selectedRadioBtnVal = '';
+            function clearMessage() {
+                $('#addSite .messageText').text('');
+                $('#closeMatch').modal('hide');
+            }                                    
+            
+            function updateSelectCloseMatchRadio(slectedRadioVal) {
+                selectedRadioBtnVal = slectedRadioVal;
+            }
+            
+            function callDoValidate() {
+                if (isSelectedAIA == 'false') {
+                    updateSelectRadio(selectedRadioBtnVal);
+                } else {
+                    updateSelectRadioAIA(selectedRadioBtnVal);
+                }
+            }
+            
+        function passSelectedSite(eleName) {
+            $('[id*="tempVar"]').val(eleName);
+            updateSiteTable();
+        }
+
+        function handleBulkMsg() {
+            var msg = '{!$CurrentPage.parameters.display}';
+            if (msg == 'err' || msg == 'invalid' || msg =='syncAIA' || msg == 'sync' || msg=='blank' || msg=='Async' || msg == 'AsyncServ' || AIAPageMsg == 'true' || msg == 'fileErr') {
+                AIAPageMsg = 'false';
+                displayBulkMsg();
+            }
+        }
+
+        function handleSiteAvailError(bool) {
+            if (bool == 'true') {
+                handleConfigureSite();
+            } else if (bool == 'false') {
+                handleSiteAvailErrorMsg(isSelectedAIA);
+            }
+        }
+        
+        //Method for handling LATA Sites insertion: RK
+        function handleLATASelectedSites(lataName) {
+            handleLataSites(lataName);
+        }
+        
+        function pageRefreshed() {
+            $('.openSiteTabs').on('click', function () {
+                $('#addaddress').toggleClass('hide', 'show');
+            });
+            $('#addSiteTabs').tab();
+            initializeFieldValidations_Step3();
+            initializeFieldValidations_ExactMatch();
+        }
+
+        function openValidateModalForExisting() {
+            $('#addSite .messageText').css('display','none');
+            $('#validateModal').modal();
+        }
+
+        function handleConfigureSite() {
+            handleConfigureSitePage(generatedQuoteId);
+            //Disable current tab code starts
+            $("a[data-name='enterAddress']").parent('li').addClass("disabled");
+            $("a[data-name='enterAddress']").removeAttr('data-toggle href');
+            //Disable current tab code starts
+            $("a[data-name='configSites']").parent('li').removeClass("disabled");
+            $('a[data-name="configSites"]').attr({
+                'data-toggle' : "tab",
+                href : "#configSites"
+            });
+            $("a[data-name='configSites']").trigger("click");
+        }
+
+        function showModal() {
+            $('#oppurtunityModal').modal('show');
+        }
+
+        function chkReqFields() {
+            $('.completeBtn').prop('disabled', false);
+            if ($('.inputName').val().length > 0 &&
+                $('.inputAdd').val().length > 0 &&
+                $('.inputCity').val().length > 0 &&
+                $('.inputZip').val().length > 0 &&
+                $('.inputState').val() !== "Select" &&
+                $('.inputPhone').val().length > 0) {
+                $('.completeBtn').prop('disabled', false);
+            } else {
+                $('.completeBtn').prop('disabled', true);
+            }
+        }
+
+        function validateButton(obj) {
+            var flag = obj.checked;
+            toggleButtons(flag);
+        }
+        
+        function toggleButtons(flag){
+            $("#SitesCtrlDiv :input[type=button]").each(function () {
+                var input = $(this);
+                if (flag) {
+                    input.removeClass('disabled');
+                    input.prop('disabled', false);
+
+                } else {
+                    input.addClass('disabled');
+                    input.prop('disabled', true);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            pageRefreshed();
+            toggleButtons(false);    
+            handleBulkMsg();
+            callEligibleSitesDataTable('loadDefault');       
+        });
+        
+        vasaITPAErr = {!checkServErr};
+        function resetSearch() {
+            if(!vasaITPAErr){
+                chkValArr=[];
+            }
+            searchText = $('.eligibleSitesSearch').val(''); 
+        }
+
+        function callEligibleSitesDataTable(searchCalled) {
+            $('.messageText:contains("success")').attr('style','color:green');
+            $('.messageText:contains("unsuccess")').attr('style','color:#cc0000')
+            $('.eligibleSitesDataTable').dataTable().fnDestroy();
+            siteFields = ['Id', 'Site_Name__c', 'Address_Line__c', 'City__c', 'State__c', 'Zip_Code__c', 'Phone__c'];
+            searchTerm = '';
+            var aoColumns = [];
+            if(searchCalled == 'loadSearch'){
+                searchTerm = $('.eligibleSitesSearch').val();
+            } else {
+                resetSearch();
+            }           
+            for (var i = 0; i < siteFields.length; i++) {
+                aoColumns.push({'mData': siteFields[i]});
+            }
+            $('.eligibleSitesDataTable thead tr th:first-child').html('<div class=""><input class="chkbox" id="checkboxAll" name="checkboxAll" type="checkbox"><label class="css-label radGroup1 clr chklbl" for="checkboxAll" style="margin-left:5px;"></label></div>');           
+            
+            /************************ Data table code starts ******************************/
+           
+            $('.eligibleSitesDataTable').dataTable({
+                "iDisplayLength": 8,
+                "oLanguage": {
+                    "sInfo": "Showing _START_ - _END_ of _TOTAL_",
+                    "sProcessing": '<div class="waitingSearchDiv" id="loadingDatatable" style="background-color: #fbfbfb;height: 10000px;opacity: 0.65;width: 10000px;position: fixed;z-index: 999999;left: 0;top: 0;"><div class="waitingHolder" style="top: 200px; left:700px; width: 91px; position: fixed;"><img class="waitingImage" src="" title="Please wait" alt="" /></div></div>'
+                },
+                'bPaginate': true,
+                'sPaginationType': 'full_numbers',
+                'aoColumns': aoColumns,
+                'bProcessing': true,
+                'bServerSide': true,
+                'bFilter': false,
+                'bDestroy': false,
+                'bLengthChange': false,
+                'sAjaxSource': 'fakeUrl',
+                'fnInitComplete': function (aoData) {
+                    if(typeof(Storage) !== "undefined") {
+                        if (typeof sessionStorage.getItem('quoteStateId_page_'+generatedQuoteId) != 'undefined' && sessionStorage.getItem('quoteStateId_page_'+generatedQuoteId) != null){
+                            var quotePageNum = sessionStorage.getItem('quoteStateId_page_'+generatedQuoteId);
+                            var pageNum =0;
+                            if(quotePageNum != null && typeof quotePageNum != 'undefined'){
+                                pageNum = parseInt(quotePageNum)-1;
+                            }                           
+                                this.fnPageChange(pageNum); 
+                                setTimeout(function(){$('.paginate_active').trigger('click'),200});
+                            sessionStorage.removeItem('quoteStateId_page_'+generatedQuoteId);
+                        }                           
+                    }
+                    else{
+                        this.fnPageChange('first'); 
+                    }
+                },
+                'fnServerData': function(sSource, aoData, fnCallback) {
+                    //Set the search text in aoData
+                    aoData.push({"name":"searchText","value":searchTerm});
+                    //Set the quote Id in aoData
+                    aoData.push({"name":"quoteId","value":generatedQuoteId});
+                    // Call the @RemoteAction JavaScript function
+                    API_MACD_SiteAddInfoController.fetchCustomerSiteRecords(aoData, function(result, event) {
+                        if (event.type != 'exception') {
+                            for (var i = 0; i < result.aaData.length; i++) {
+                                var r = result.aaData[i];
+                                for (var j = 0; j < siteFields.length; j++) {
+                                    var field = siteFields[j];
+                                    if (r[field] == undefined || r[field] == null || r[field] == '') {
+                                        // DataTables pops a dialog for undefined values
+                                        r[field] = '';
+                                    }
+                                }
+                            }                                    
+                            // Call back into the DataTable function
+                            fnCallback(result);
+                        } else {
+                            console.log(event.type+'-----'+event.message);
+                        }
+                        
+                    });
+                },
+                'fnDrawCallback': function (oSettings) {
+                    $("#checkboxAll").parent('div').parent('th').removeAttr('class aria-controls role aria-label');
+                    var tdData = $("#checkboxAll").parent('div').parent('th').html();
+                    $(".eligibleSitesDataTable thead tr th:first-child").replaceWith( "<td>"+tdData+"</td>" );
+                    addCheckbox(); // Inserting checkboxes in first column
+                    searchText = $('.eligibleSitesSearch').val(); 
+                    $('#selectExisting .siteAddressValidateBtn').attr('disabled', 'true');
+                    isChkTrue('oneByOne');
+                    loadImageFun();                          
+                }                  
+            });
+            /************************ Data table code ends ******************************/
+                $('.eligibleSitesDataTable .reorder_btn').remove(); 
+                $('.eligibleSitesDataTable thead th:not(:first)').addClass('sorting').append('<div class="reorder_btn"></div>');
+                $('#enterAddress .dataTables_paginate').addClass('pagination');
+                $('#enterAddress .dataTables_filter:not(:last)').remove();                
+                //$(".errorText").remove();
+        }
+        
+        function isChkTrue(clickType) {
+            if(clickType == 'oneByOne'){
+                if(chkValArr.length === 0){
+                    $('#selectExisting .siteAddressValidateBtn').prop('disabled', 'true');
+                } else {
+                    $('#selectExisting .siteAddressValidateBtn').removeAttr('disabled');
+                }
+            }             
+        }
+
+        function addCheckbox() {
+            $('.eligibleSitesDataTable tbody tr td:first-child').not('td.dataTables_empty').each(function(){ 
+                var custId = $(this).text();  
+                var createField = '<input type="checkbox" name="selected" id="'+custId+'" value="val_'+custId+'" class="chkbox"/>';
+                $(this).html(createField);                
+            });
+            $.each( chkValArr, function( key, value ) {
+              $('input:checkbox[id="'+value+'"]').prop('checked', true);
+            });  
+
+            $('thead input[id="checkboxAll"]').on('click', function(e){                    
+                if(this.checked){
+                     $('#EligibleSitesTable tbody input[type="checkbox"]:not(:checked)').trigger('click');
+                  } else {
+                     $('#EligibleSitesTable tbody input[type="checkbox"]:checked').trigger('click');
+                  }
+                  
+                 e.stopPropagation();
+            });         
+            
+            $('input.chkbox').change(function(){
+                if($(this).is(':checked')){
+                    var chkVal = $(this).attr('id');
+                    chkValArr.push(chkVal); 
+                    console.log('Pushed: '+chkVal);
+                    isChkTrue('oneByOne');
+                } else {
+                    var chkValRemove = $(this).attr('id');
+                    chkValArr.splice( $.inArray(chkValRemove , chkValArr), 1 );
+                    console.log('Popped: '+chkValRemove);
+                    isChkTrue('oneByOne');
+                }  
+                updateDataTableSelectAllSites();
+                e.stopPropagation();                
+            });
+            updateDataTableSelectAllSites();
+            
+        }
+        
+        function updateDataTableSelectAllSites(){
+            var $table             = $('#EligibleSitesTable').DataTable();
+            var $chkbox_all        = $('tbody input[type="checkbox"]', $table);
+            var $chkbox_checked    = $('tbody input[type="checkbox"]:checked', $table);
+            var chkbox_select_all  = $('thead input[id="checkboxAll"]', $table).get(0);
+            if($chkbox_checked.length === 0){
+                chkbox_select_all.checked = false;
+                if('indeterminate' in chkbox_select_all){
+                    chkbox_select_all.indeterminate = false;
+                }
+            } 
+            else if ($chkbox_checked.length === $chkbox_all.length){
+                chkbox_select_all.checked = true;
+                if('indeterminate' in chkbox_select_all){
+                    chkbox_select_all.indeterminate = false;
+                }
+            }
+            else if($chkbox_checked.length >0 &&  $chkbox_checked.length < $chkbox_all.length){
+                chkbox_select_all.checked = false;
+            }
+            else {
+                //chkbox_select_all.checked = true;
+                if('indeterminate' in chkbox_select_all){
+                    //chkbox_select_all.indeterminate = true;
+                }
+            }
+        }
+        
+        $('.eligibleSitesSearch').on('keyup', function(ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+            setTimeout(function() {
+                callEligibleSitesDataTable('loadSearch');
+            }, 3000);
+        });
+                   
+        function navigateToDashboard() {
+            window.open('{!$Site.Prefix}/apex/PortalDashboard_UI', '_self');
+        }
+        
+        function exportSelectedSite() {
+            window.open('{!$Site.Prefix}/apex/exportSelectedSites?quoteId='+generatedQuoteId, '_blank');
+        }
+        
+        function callFakeBtn() {
+            $('.callFakeBtn').trigger('click');
+        }
+            
+        function callSelectSite() {
+            sessionStorage.setItem('quoteStateId_page_'+generatedQuoteId,$('.paginate_active').text());
+            var quoteIdString = chkValArr.join(";");   
+            if (isSelectedAIA == 'false'){
+                selectSiteExecute(quoteIdString);
+            }else{
+                selectSiteForAIAExecute(quoteIdString);
+            }
+        }
+        
+        function callValidateSite(){
+            validateSiteExecute();        
+        }
+
+        myVar = setInterval(function(){myTimer()}, 2000);
+       
+        function myTimer() {
+            if(isContinuePolling == 'false') {
+                myStopFunction();
+            }else{
+                startPollingFn();
+            }
+        }
+
+        function myStopFunction() {
+            clearInterval(myVar);
+        }
+        
+        function ReadFileFn(){
+            if (isSelectedAIA == 'false'){ 
+                console.log ('ENTERED !!');
+                ReadFile();        
+            }else{
+                ReadFileForAIA();
+            }
+        }
+        
+        function onchangeLocationPicListFun(inpObj, cmd){
+            
+            if(inpObj.value == 'Building'){
+                document.getElementById("j_id0:j_id267:siteMgmntPageId:form-2:j_id339").setAttribute("maxlength","10");
+                document.getElementById("j_id0:j_id267:siteMgmntPageId:SiteOverlay:UpdateSitesTable:j_id482").setAttribute("maxlength","10");
+            }
+            else if(inpObj.value == 'Room'){
+                document.getElementById("j_id0:j_id267:siteMgmntPageId:form-2:j_id339").setAttribute("maxlength","9");
+                document.getElementById("j_id0:j_id267:siteMgmntPageId:SiteOverlay:UpdateSitesTable:j_id482").setAttribute("maxlength","9");
+                
+            }
+            
+            else if(inpObj.value == 'Floor'){
+                document.getElementById("j_id0:j_id267:siteMgmntPageId:form-2:j_id339").setAttribute("maxlength","9");
+                document.getElementById("j_id0:j_id267:siteMgmntPageId:SiteOverlay:UpdateSitesTable:j_id482").setAttribute("maxlength","9");
+            }
+            else{
+                document.getElementById("j_id0:j_id267:siteMgmntPageId:form-2:j_id339").setAttribute("maxlength","255");
+                document.getElementById("j_id0:j_id267:siteMgmntPageId:SiteOverlay:UpdateSitesTable:j_id482").setAttribute("maxlength","255");
+            }
+            document.getElementById("j_id0:j_id267:siteMgmntPageId:form-2:j_id339").value="";
+            document.getElementById("j_id0:j_id267:siteMgmntPageId:SiteOverlay:UpdateSitesTable:j_id482").value="";
+            
+        }
+     </script>   
+</apex:page>

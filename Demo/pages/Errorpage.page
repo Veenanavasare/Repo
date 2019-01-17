@@ -1,0 +1,21 @@
+<apex:page Controller="ErrorButtonController">
+  <!-- Begin Default Content REMOVE THIS -->
+  
+  <span style="font-weight: bold; font-size: 12pt;">Unable to Submit for Approval</span>
+  <div style="font-size:10pt;margin-top:1%;margin-bottom:1%" id="errorDesc">This record does not meet the entry criteria or initial submitters of any active approval processes. Please contact your administrator for assistance.</div>
+    <apex:form id="commonForm">
+   Click&nbsp;
+   <apex:commandLink style="margin-top:5%" dir="" value="here" oncomplete="ErrorSubmit();" rerender="commonForm1"/>
+   <input type="hidden" value="{!retURL3}" id="urlHDN3"/>
+    to return to the previous page
+  </apex:form>
+  
+  <script>
+  function ErrorSubmit() {
+               
+        var urlParam3 = document.getElementById("urlHDN3").value;
+         
+        window.top.location.href = urlParam3; 
+    }
+    </script>
+</apex:page>

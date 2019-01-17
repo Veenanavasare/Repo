@@ -1,0 +1,781 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="ContactPrototypeController">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />        
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8" /><!-- 
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css"/>  -->
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!$Resource.main_stylesheet_CSS}"/>
+    
+    <style type="text/css">
+        body {
+            background-color: #f2f2f2 !important;
+        }
+        .paginate_active {
+            color: #fff !important;
+        } 
+        .wireline, 
+        .mobility,
+        .productFamily-details-header {
+            display: none;
+        }
+        input[disabled='disabled'] {
+            background-color: silver !important;
+        }
+        hr {
+            border:0px solid #056fab !important;
+            border-bottom:1px solid #056fab !important;
+        }
+
+        .gray-hr {
+            border-width: 1px !important;
+            border-color: #c8c8c8 !important; 
+        }
+        .comments .gray-hr:last-child {
+            display:  none !important;
+        }
+        .scBlack {
+            color: #000 !important;
+        }
+        .mb-40 {
+            margin-bottom: 40px !important;
+        }
+        .mb-20 {
+            margin-bottom: 20px !important;
+        }
+        .mt-40 {
+            margin-top: 40px !important;
+        }
+        .mbm-40 {
+            margin-bottom: -40px !important;
+        }
+        .footer_copy{
+            margin-top:0px;
+        }
+        .mrm-20 {
+            margin-right: -15px !important;
+        }
+        .mbm-20 {
+            margin-bottom: -20px !important;
+        }
+        .displayTimeZone {
+            display: none;
+        }
+        .comment-submit:hover {
+            background-color: #3bc1f4;
+        }
+        .comment-submit {
+            margin-bottom: 20px; 
+            width: 175px;
+            float: right;
+            margin-top: 15px;
+            height: 38px;
+            background-color: #056FAB;
+            color: #fff;
+            border: 0px;
+            transition-duration: 0.2s;
+        }
+        .comment-date {
+            color: #555;
+            font-size: 90%;
+        }
+        .comment-body {
+            display: block;
+            margin-top: -7px;
+            margin-bottom: 17px;
+        }
+        .comment-title {
+            margin-top: 20px; 
+            /*font-size: 150%;*/
+        }
+        .comment-hr
+        .comment-input-area { }
+        .comment-textarea {
+            width: 100%; 
+            border-radius: 4px; 
+            height: 150px; 
+            padding: 0px; 
+            padding:10px; 
+            border: 1px 
+            solid #939393;
+        }
+        .character-count {
+            float: right;
+            margin-right: 20px; 
+            margin-top: 20px; 
+        }
+        .add-comment-verb {
+            display: inline-block;
+            margin-bottom: 10px; 
+        }
+        .case-history-verb {
+            font-family: "omnesatt_iiregular" !important;
+            font-size: 1em;
+            display: inline-block;
+            margin-top: 40px !important; 
+            margin-bottom: 20px !important; 
+        }
+        .main-comment-container .value .comment-container{
+            position: relative;
+        }
+        .comment-icons {
+            position: relative;
+            top: 7px; 
+            float: left;
+        }
+        .comment-container {
+            display: inline-block;
+            margin-left: 10px;
+            width: 96%;
+        }
+        .comment-icon-img {
+            position: relative;
+            vertical-align: top !important;
+        }
+        .chat-icon {
+            top: -3px;
+            width: 18px;
+        }
+        .email-icon {
+            top: -9px;
+            width: 20px;
+            display: none;
+        }
+        .illegal {
+            font-size: 80%;
+            background-color: #ffb81c;
+            padding: 2px 8px;
+            border-radius: 40px;  
+            margin-left: 10px; 
+        }
+        .read-more {
+            background-color: #056fab !important;
+            /* background-color: transparent !important; */
+            /* border: 1px solid silver  !important; */
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+            /* color: #056fab  !important; */
+            color: #fff  !important;
+            left: -10px;
+            padding: 4px;
+            position: relative;
+            text-align: center;
+            width: 100%;
+            transition-duration: .3s;
+        }
+        .read-more:hover {
+            /* background-color: #e1e1e1 !important; */
+            /* transform: scale(1.05); */
+        }
+        .template-container {
+            font-family: "omnes_att_iimedium" !important;
+            padding-bottom: 4px;
+            padding-left: 15px;
+            padding-top: 0;
+            color:  #fff;
+            background-color: #056fab;
+        }
+        .email-body  {
+            margin-top: 20px; 
+            padding: 20px;
+        }
+        .email-body table {
+            margin-bottom:  10px;
+        }
+        .to-line,
+        .subject-line {
+            margin-top:  7px;
+        }
+        .WordSection1 {
+            padding-bottom:  40px;
+        }
+        .manage-notifications {
+            position: absolute;
+            z-index: 100;
+            right:  15px;
+            margin-top:  70px; 
+        }
+        .loading-messages-container {
+            text-align: center;
+            position: fixed;
+            width:  100%; 
+            height:  100%;
+            top:  0px; 
+            left:  0px; 
+            z-index: 9999;
+            background-color: rgba(0,0,0,0.3);
+            color:  #fff;
+        }
+        .loading-image {
+            position: relative;
+            top:  50%;
+            z-index: 100;
+        }
+        .loading-image img { width:  40px; }
+        .rotate {
+            transition-duration: 20s;
+            transform:  rotate(2000deg);
+            transition-timing-function: linear;
+        }
+        .macd {
+            display: none;
+        }
+    </style>
+    <div class="manage_content_sc">
+        <div class="container case-datails-page">
+            <div class="row mbm-20">
+                <div class="title-container">
+                    <h1 class="mb-40">Support Center</h1> 
+                    <hr class="blue_hr"/>
+                    <h2 class="scBlack mb-20">Case Details</h2>
+                    <div class="row mb-40">
+                        <div class="col-sm-3">
+                            <div class="case-details-header">
+                                <span class="medium-font">Case #: </span> <span class="value">{!cList.CaseNumber}</span>
+                            </div>
+                            <div class="status-details-header">
+                                <span class="medium-font ">Status: </span> <span class="value">{!cList.Status}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="topic-details-header">
+                                <span class="medium-font ">Topic: </span> <span class="isTopic value">{!cList.Topic}</span>
+                            </div>
+                            <div class="category-details-header">
+                                <span class="medium-font ">Category: </span> <span class="isCategory value">{!cList.Category}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="productFamily-details-header">
+                                <span class="medium-font ">Product Family: </span> <span class="value">{!cList.Product_Family}</span>
+                            </div>
+                            <div class="product-details-header">
+                                <span class="medium-font ">Product: </span> <span class="value">{!cList.Product}</span>
+                            </div>
+                            <div class="contact-details-header">
+                                <span class="medium-font ">Contact: </span> <span class="value">{!cList.Contactname}</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="opened-details-header">
+                                <span class="medium-font ">Opened (CT): </span> <span class="value">{!cList.CreatedDate}</span>
+                            </div>
+                            <div class="displayZone-details-header displayTimeZone">
+                                <span class="medium-font ">User Time Zone: </span> <span class="value">{!displayName}</span>
+                            </div>
+                            <div class="closed-details-header">
+                                <span class="medium-font ">Closed (CT): </span> <span class="value">{!cList.ClosedDate}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="gray-hr" />
+                </div>  
+            </div>
+            <div class="row">
+                <div class="case-details-body">
+                    <div class="sd-item productDetail">
+                        <span class="medium-font">Product: </span> <span>{!cList.Product}</span>
+                    </div>
+                    <!-- <div class="billing-item">
+                        <span class="medium-font">Product Family: </span> <span>{!cList.Product_Family}</span>
+                    </div> -->
+                    <div class="hiddenSi">
+                        <div class="sd-item sysa-item billing-item">
+                            <span class="medium-font">Issue Type: </span> <span>{!cList.Issue_Type}</span>
+                        </div>
+                    </div>
+                    <div class="showSi">
+                        <div class="sysa-item">
+                            <span class="medium-font">Application: </span> <span>{!cList.subCategory}</span>
+                        </div>
+                        <div class="sd-item sysa-item">
+                            <span class="medium-font">Issue: </span> <span>{!cList.Issue_Type}</span>
+                        </div>
+                       <div class="sd-item notmacd">
+                         <span class="medium-font">Opportunity ID: </span> <span>{!cList.OpportunityID}</span>
+                       </div> 
+                    </div>
+                    <div class="billing-item">
+                        <span class="medium-font">Billing Account Number (BAN): </span> <span>{!cList.Billing_Account_Number_BAN}</span>
+                    </div>
+                    <div class="sd-item">
+                        <span class="medium-font">Order Number: </span> <span>{!cList.Order_Number}</span>
+                    </div>
+                    <div class="sa-item wireline ttc tte">
+                        <span class="medium-font">Asset Type: </span> <span>{!cList.Asset_Type}</span>
+                    </div>
+                    <div class="sa-item wireline ttc tte">
+                        <span class="medium-font">Asset ID: </span> <span>{!cList.Asset_ID}</span>
+                    </div>
+                     
+                <!--     <div class="macd">
+                         <span class="medium-font">OpportunityID: </span> <span>{!cList.OpportunityID}</span>
+                    </div> -->
+
+
+                    <div class="macd">
+                        <span class="medium-font">Request Type: </span> <span>{!cList.Issue_Type}</span>
+                    </div>
+                    <div class="macd">
+                        <span class="medium-font">Circuit ID: </span> <span>{!cList.CircuitID}</span>
+                    </div>
+                    <div class="macd">
+                        <span class="medium-font">Is there live traffic on this circuit? </span> <span>{!cList.liveTraffic}</span>
+                    </div>
+                    
+                    <!-- Added -->
+                    <div class="sa-item wireline ttc tte">
+                        <span class="medium-font">End Customer Company Name: </span> <span>{!cList.End_Customer_Company_Name}</span>
+                    </div>                  
+                    
+                    <div class="sysa-item">
+                        <span class="medium-font">Description of Issue: </span> <span>{!cList.Description}</span>
+                    </div>
+                    
+                    <!-- Added -->
+                    
+                    <div class="sd-item notMobility">
+                         <span class="medium-font">Opportunity ID: </span> <span>{!cList.OpportunityID}</span>
+                    </div> 
+                    
+                    <div class="sd-item notMobility">
+                         <span class="medium-font">End Customer: </span> <span>{!cList.End_Customer_Company_Name}</span>
+                    </div>                    
+                    <div class="sd-item notMobility">
+                         <span class="medium-font">Customer PON: </span> <span>{!cList.SP_Internal_Ticket_Number}</span>
+                    </div>
+                    <div class="sd-item notMobility">
+                         <span class="medium-font">Street: </span> <span>{!cList.Service_Address_Street}</span>
+                    </div>
+                    <div class="sd-item notMobility">
+                         <span class="medium-font">City: </span> <span>{!cList.Service_Address_City}</span>
+                    </div>
+                    <div class="sd-item notMobility">
+                         <span class="medium-font">State: </span> <span>{!cList.Service_Address_State}</span>
+                    </div>
+                    <div class="sd-item notMobility">
+                         <span class="medium-font">Zip: </span> <span>{!cList.Service_Address_Zip}</span>
+                    </div>
+                    <div class="sd-item notMobility">
+                         <span class="medium-font">Country: </span> <span>{!cList.Service_Address_Country}</span>
+                    </div>              
+                    
+                    <div class="row billing-item sd-item macd">
+                        <div class="col-sm-1 medium-font">Description: </div> <div class="col-sm-10">{!cList.Description}</div>
+                    </div>
+                    <div class="sa-item mobility">
+                        <span class="medium-font">What is your AT&amp;T trouble ticket number?: </span> <span>{!cList.ATT_Trouble_Ticket_Number}</span>
+                    </div>
+                    <div class="sa-item mobility tte">
+                        <span class="medium-font">What is your AT&amp;T trouble ticket number?: </span> <span>{!cList.ATT_Trouble_Ticket_Number}</span>
+                    </div>
+                    <div class="sa-item mobility ttc tte">
+                        <span class="medium-font">What type of Mobility trouble are you experiencing?: </span> <span>{!cList.Mobility_Trouble_Type}</span>
+                    </div>                   
+                    
+                    <div class="sa-item mobility ttc tte wireline trouble-description">
+                        <span class="medium-font">Trouble Description: </span> <span>{!cList.Description}</span>
+                    </div>
+                    <div class="sa-item mobility wireline ir">
+                        <span class="medium-font">I need information related to: </span> <span>{!cList.Information_Request_Subject}</span>
+                    </div>
+                    
+                    <div class="sa-item mobility wireline ir tte">
+                        <span class="medium-font">Please describe additional details regarding this escalation: </span> <span>{!cList.Description}</span>
+                    </div>
+                    <div class="sa-item wireline ttc tte sp-ticket-num">
+                        <span class="medium-font">SP Internal Ticket Number: </span> <span>{!cList.SP_Internal_Ticket_Number}</span>
+                    </div>
+                   
+                    <div class="row billing-item sa-item sysa-item sd-item ttc tte ir mobility wireline macd comments">       
+                        <div class="container">
+                        <div class="row">
+                                <div class="col-sm-12"><hr class="blue_hr"/></div>
+                            </div>
+                          <apex:outputPanel rendered="{!cList.status != 'Closed'}">
+                          <div>                   
+                            <div class="row">
+                            <div class="col-sm-12">
+                                <span class="medium-font add-comment-verb">Add a comment to this case:</span>
+                            </div>         
+                            </div>                                                    
+                            <div class="row">
+                            <div class="col-sm-8 comment-input-area">
+                                <apex:form >
+                                    <apex:inputTextarea value="{!spComment}" styleClass="comment-textarea required"/>                            
+                                    <apex:commandButton styleClass="comment-submit" value="Submit Comment" action="{!commentSubmit}"/><span class="character-count"></span>
+                                    <div class="manage-notifications">    
+                                        <apex:outputPanel rendered="{!EmailCommentNotify==true}">
+                                        <apex:commandLink action="{!emailNotifyOn_SD}" value="Click to disable case comment notifications" id="enableLink"/>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!EmailCommentNotify==false}">
+                                        <apex:commandLink action="{!emailNotifyOn_SD}" value="Click to enable case comment notifications" id="disableLink"/>
+                                        </apex:outputPanel>
+                                    </div>
+                                </apex:form>
+                            </div>
+                         </div>
+                         
+                        </div>
+                        </apex:outputPanel> 
+                      
+                        <apex:outputPanel rendered="{!cList.status == 'Closed'}">
+                          <div class="row">
+                            <div class="col-sm-12">
+                                <h2><span class="comment-title">Case Comments</span></h2>
+                             </div>
+                         </div>
+                         <div class="row">
+                            <div class="col-sm-12">
+                                <span class="medium-font">This case is closed and no longer available for new comments.</span><br/>
+                            </div>
+                         </div>
+                        </apex:outputPanel>   
+                        
+                        <apex:outputPanel > 
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span class="case-history-verb">
+                                    <h2>Case Feed</h2>
+                                </span>
+                            </div>
+                        </div>
+                        </apex:outputPanel>                 
+                        <div class="row">
+                            <div class="col-sm-9 main-comment-container"></div>
+                        </div>
+                    </div>
+               </div>                   
+                    <hr class="blue_hr mt-40"/>
+                    <div class="footer-nav">
+                        <div class="goto-sc"><a href="/Support_Center">Go To Support Center</a></div>
+                        <a href="/Support_Center_Case_List"><div class="back btn btn-default">Back</div></a>
+                    </div>
+                    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <apex:includeScript value="{!$Resource.atomjqueryjs}"/>    
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/bootstrap.min.js')}" />
+    <script type="text/javascript" src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+
+            (function RemoveLastHr(){ $(".comment-hr:last").remove() })();
+            
+            (function CharacterCounter() {
+                $charCounter = $(".character-count");
+                $textArea = $(".comment-textarea");
+                maxCount = 4000;
+                warningCount = 3900;
+                var charCount;
+                $textArea.on("keyup", function(charCount){
+                  charCount = $textArea.val().length;
+                  if(charCount > warningCount){
+                    charRemaining = maxCount - charCount;
+                    $charCounter.text(charRemaining + " characters remaining");
+                    if(charCount > maxCount){
+                      var stopText = $textArea.val().slice(0,-1);
+                      $charCounter.text("0 characters remaining");
+                      $textArea.val(stopText);
+                    }
+                  } else {
+                    $charCounter.text("");
+                  }
+                });
+                $textArea.on("mouseup", function(charCount){
+                  charCount = $textArea.val().length;
+                  if(charCount > warningCount){
+                    charRemaining = maxCount - charCount;
+                    $charCounter.text(charRemaining + " characters remaining");
+                    if(charCount > maxCount){
+                      var stopText = $textArea.val().slice(0,-1);
+                      $charCounter.text("0 characters remaining");
+                      $textArea.val(stopText);
+                    }
+                  } else {
+                    $charCounter.text("");
+                  }
+                });
+            })();
+
+            (function (){
+                var CaseDetails = {
+                    Headers: { 
+                        caseNum:            $(".case-details-header .value").text(),
+                        status:             $(".status-details-header .value").text(),
+                        topic:              $(".topic-details-header .value").text(),
+                        closed:             $(".closed-details-header .value").text(),
+                        contact:            $(".contact-details-header .value").text(),
+                        opened:             $(".opened-details-header .value").text(),
+                        displayZone:        $(".displayZone-details-header .value").text(),
+                        category:           $(".category-details-header .value").text(),
+                        productHeader:      $(".product-details-header .value").text(), 
+                        productFamily:      $(".productFamily-details-header .value").text(),
+                        billSubjectHeader:  $(".topic-details-header .value").text().indexOf("Billing"),
+                        sysaSubjectHeader:  $(".topic-details-header .value").text().indexOf("System Access Issue"),
+                        serviceDelHeader:   $(".topic-details-header .value").text().indexOf("Service Delivery"),
+                        serviceAssurance:   $(".topic-details-header .value").text().indexOf("Service Assurance"),
+                        categoryHeader:     $(".category-details-header .value").text(),
+                        prodFamilyHeader:   $(".productFamily-details-header .value").text(),
+                        commentDate:        $(".case-details-body .value").text().substr(1,19),
+                        commentContent:     $(".case-details-body .value").text().substr(20)
+                    }, 
+                    Init: function () {
+                        this.ContentController();       
+                        this.SmartButton();
+                        this.GetMessagesFromController();
+                        this.PreventIllegalCharacters();                        
+                        this.RemoveListElements();
+                    }, 
+                    GetMessagesFromController: function (){
+                        var caseNum = $(".case-details-header .value").text();
+                        var loadingMarkup   = "<div class='loading-messages-container'>"+
+                                              "<span class='loading-image'><img src='{!URLFOR($Resource.support_center_images,'/loading.png')}'/>"+
+                                              "<BR>Loading messages...</span></div>";
+
+                        $("body").append( loadingMarkup );
+                        setTimeout(function() { $(".loading-image img").addClass('rotate') }, 300);
+                        Visualforce.remoting.Manager.invokeAction( '{!$RemoteAction.ContactPrototypeController.getMessage}', caseNum, function(result,event){
+                            var arr = []; 
+                            arr = result;   
+                            if(arr.length == 0){ 
+                                $(".loading-messages-container").fadeOut(500, function() { $(this).remove() });
+                                $(".main-comment-container").text("There are currently no comments or emails related to this case.").addClass("medium-font");
+                            } 
+                            else {
+                                    var codeArr = []
+                                    var i = 0;
+                                    arr.map(function(value, index){
+                                        var commentMarkup = "<div class='comment-icons'><img class='comment-icon-img chat-icon' src='{!$Resource.icon_message_blu}' />"+
+                                                    "<img class='comment-icon-img email-icon' src='{!$Resource.icon_email_blu}'  /></div><div class='commentValue'>"+value+"</div>"+
+                                                    "<div class='newCommentValue'></div><hr class='gray-hr comment-hr' />";
+                                        $(".main-comment-container").append( commentMarkup );
+                                    });
+                                    $(".loading-messages-container").fadeOut(500, function() { $(this).remove() });
+                                    CaseDetails.RegenerateHTML();  
+                                    CaseDetails.TemplateImageResizer();  
+                                    CaseDetails.RemoveHTMLTags();  
+                                    CaseDetails.InternalComment();
+                                }
+                        });
+                    },
+                    TemplateImageResizer: function(){
+                        $("img").each(function(){
+                            if($(this).width() > 600 ){
+                                var myWidth = $(this).width();
+                                var myHeight = $(this).height();
+                                $(this).css({"width":myWidth/4});
+                                $(this).css({"height":myHeight/4});
+                            }
+                        });
+                    },
+                    RegenerateHTML: function(){
+                        $(".commentValue").each(function(counter, value) {
+                            var commentValue = $(this).text();
+                            var newCommentValue = commentValue.replace(/(<script>)|(<marquee>)|(<\/marquee>)|(<\/script>)|(<script)|(<marquee)/g, "");
+                            $(".newCommentValue:eq("+counter+")").html(newCommentValue);
+                            $(this).remove();
+                        });
+                        CaseDetails.ShowOrHideCommentIcons();
+                        CaseDetails.TruncateEmailBodyContent();
+                    },
+                    RemoveListElements: function (){
+                        var arr = [];
+                        $(".comment-block ul li").unwrap();
+                        $(".comment-block ol li").unwrap();
+                        $(".comment-block li").each(function (index, value){  
+                        $(this).after("*"+value.innerHTML+"<BR/>");
+                        $(this).remove();
+                        });
+                    },
+                    RemoveHTMLTags: function (){
+                        $(".email-body").each(function(){
+                            $(this).find("style").remove();
+                            $(this).find("meta").remove();
+                        });
+                    },
+                    TruncateEmailBodyContent: function (){ 
+                        $(".email-body").each(function (){
+                          var myHeight = $(this).height();
+                          console.log("myHeight");
+                          $(this).attr("oheight", myHeight);
+                          if(myHeight > "300"){
+                            $(this).css({"overflow":"hidden","height":"250px", "background-color":""})
+                            $(this).after("<button class='read-more' status='closed'>Show more</button>")
+                          }
+                        });
+
+                        $(".read-more").each(function() {
+                          var emailBody = $(this).prev(".email-body");
+                          var emailBodyHeight ;
+                          var me = $(this);
+                          var myStatus = me.attr("status");
+                          emailBody.css({"border":"2px solid #fff","background-color":"#fff","border-radius":"4px","border-bottom-left-radius":"0px","border-bottom-right-radius":"0px", "border-bottom":"0px"});
+
+                          $(this).click(function(){
+                            emailBodyHeight = $(this).prev(".email-body").attr("oheight");
+                            if($(this).attr("status") == "closed"){
+                              emailBody.animate({
+                                height: emailBodyHeight
+                              }, 400, function(){
+                                me.text("Show less");
+                                me.attr("status", "open");
+                              });
+                            }
+                            if($(this).attr("status") == "open"){
+                              emailBody.animate({
+                                height: 250
+                              }, 400, function(){
+                                me.text("Show more");
+                                me.attr("status", "closed");
+                              });
+                            }
+                          });
+                        });
+                    },
+                    PreventIllegalCharacters: function (){
+                        $(".comment-textarea").on("keyup", function(){
+                          var commentValue = $(".comment-textarea").val();
+                          if(commentValue.indexOf("<") >= 0 || commentValue.indexOf(">") >= 0) {
+                            $(".illegal").remove();
+                            $(".add-comment-verb").append("<span class='illegal medium-font'>The '<' and '>' characters are not allowed, and were removed. </span>");
+                            setTimeout(function(){
+                              $(".illegal").fadeOut(function (){
+                                $(".illegal").remove();
+                              });
+                            }, 4000);
+                          }
+                          var newCommentValue = commentValue.replace(/</g,"").replace(/>/g, "")
+                          $(".comment-textarea").val(newCommentValue);
+                        }); 
+                    },
+                    InternalComment: function(){
+                        $(".comment-container:contains('##Comment from AT&T Partner Exchange##')").each(function(){
+                          var myText = $(this).find("span:eq(0)").text();
+                          var myNewText = myText.replace(/##Comment from AT&T Partner Exchange##/g, "Comment from AT&T Partner Exchange - ");
+                          $(this).find("span:eq(0)").text(myNewText);
+                          $(this).css({"background-color":"#d2d2d2", "padding":"20px"});
+                        });
+                    },
+                    ShowOrHideCommentIcons: function () {
+                        $(".email-from").each(function(){
+                          $(this).parents(".newCommentValue").prev(".comment-icons").find(".chat-icon").hide();
+                          $(this).parents(".newCommentValue").prev(".comment-icons").find(".email-icon").show();
+                        });
+                    },
+                    SmartButton: function(){
+                        $(".comment-submit").attr("disabled", "disabled");
+                        $(".comment-textarea").on("keyup", function (){
+                            $(this).val() != "" ? $(".comment-submit").removeAttr("disabled") : $(".comment-submit").attr("disabled", "disabled")
+                        });
+                        $(".comment-textarea").on("mouseup", function (){
+                            $(this).val() != "" ? $(".comment-submit").removeAttr("disabled") : $(".comment-submit").attr("disabled", "disabled")
+                        });
+                        setInterval(function() {
+                            $(".comment-textarea").trigger("keyup");
+                            $(".comment-textarea").val() != "" ? $(".comment-submit").removeAttr("disabled") : $(".comment-submit").attr("disabled", "disabled")
+                        }, 500);
+                    },
+                    ContentController: function () {
+                        CaseDetails.Headers.billSubjectHeader == 0   ?   $(".billing-item").show()   : null  
+                        CaseDetails.Headers.sysaSubjectHeader == 0   ?   $(".sysa-item").show()      : null
+
+                        /*if (CaseDetails.Headers.billSubjectHeader == 0) {
+                            $(".billing-item").show();
+                            $(".macd").hide();
+                        }*/
+
+                        /*if (CaseDetails.Headers.sysaSubjectHeader == 0) {
+                            $(".sysa-item").show();
+                            $(".macd").hide();
+                        }*/
+
+                        if(CaseDetails.Headers.serviceDelHeader  == 0 && CaseDetails.Headers.categoryHeader == "MACD"){
+                            $(".mobility").hide(); 
+                            $(".wireline").hide(function(){ $(".macd").show(); $(".macd .comments ").show() });
+                        } else if(CaseDetails.Headers.serviceDelHeader  == 0 && CaseDetails.Headers.categoryHeader != "MACD"){
+                            $(".macd").hide();
+                            $(".sd-item").show();
+                        }
+
+                        
+                        if($(".product-details-header").is(":visible"))
+                            { $(".productDetail").hide() }
+                            
+                        if(CaseDetails.Headers.productHeader == "Mobility")
+                            { $(".notMobility").hide()} 
+
+                        if(CaseDetails.Headers.productHeader == "" )
+                            {  
+                                if (CaseDetails.Headers.prodFamilyHeader == "") 
+                                    {
+                                        if(CaseDetails.Headers.categoryHeader == "Trouble Ticket Escalation" || CaseDetails.Headers.categoryHeader == "Trouble Ticket Creation" || CaseDetails.Headers.categoryHeader == "General Technical Information"){
+                                            $(".productFamily-details-header").show(100, function () {
+                                                $(".productFamily-details-header .value").text("Mobility");
+                                            });
+                                            $(".product-details-header").hide();
+                                        } else {
+                                            $(".product-details-header .value").text("N/A");
+                                        }
+
+                                    } else {
+                                        $(".product-details-header").hide(function () { $(".productFamily-details-header").show(); })         
+                                    }
+                                
+                            } 
+                            if(CaseDetails.Headers.topic == "System Access Issue") {
+                                $(".showSi").show();
+                                $(".hiddenSi").hide();
+                            } else {
+                                $(".showSi").hide();
+                                $(".hiddenSi").show();
+                            }
+                            setTimeout(function () {
+                                CaseDetails.CheckHeaders();
+                            }, 500);
+                    },
+                    CheckHeaders: function() {
+                        if( CaseDetails.Headers.serviceAssurance  == 0) { 
+                            if( CaseDetails.Headers.categoryHeader == "Trouble Ticket Creation" &&  $(".productFamily-details-header .value").text() == "Mobility" )
+                            {
+                                $(".wireline").hide(function () { $(".sa-item.ttc.mobility").show() });
+                            } 
+                            if( CaseDetails.Headers.categoryHeader == "Trouble Ticket Creation" && CaseDetails.Headers.productHeader != "" ) 
+                            {
+                                $(".mobility").hide(function () { $(".sa-item.ttc.wireline").show() });
+                            }
+                            if( CaseDetails.Headers.categoryHeader == "Trouble Ticket Escalation" && CaseDetails.Headers.productHeader != "" ) 
+                            {
+                                $(".mobility").hide(function () {
+                                    $(".sa-item.tte.wireline").show(); 
+                                    $(".ir").not(".comments").hide();
+                                });
+                            } 
+                            if( CaseDetails.Headers.categoryHeader == "Trouble Ticket Escalation" && $(".productFamily-details-header .value").text() == "Mobility" ) 
+                            {
+                                $(".wireline").hide(function () { 
+                                    $(".sa-item.tte.mobility").show() 
+                                    $(".sp-ticket-num").show() 
+                                    $(".trouble-description").hide() 
+                                });
+                            }
+                            
+                            if( CaseDetails.Headers.categoryHeader == "General Technical Information" && CaseDetails.Headers.prodFamilyHeader == "Wireline" ) 
+                            {
+                                $(".mobility").hide(function () { $(".sa-item.ir.wireline").show();});
+                            }
+                            if( CaseDetails.Headers.categoryHeader == "General Technical Information" && $(".productFamily-details-header .value").text() == "Mobility" ) 
+                            {
+                                $(".wireline").hide(function () { $(".sa-item.ir.mobility").show();});
+                            }
+                        }
+                    }
+                }
+                CaseDetails.Init();
+            })()
+        });
+    </script>
+</apex:page>

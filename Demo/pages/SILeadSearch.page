@@ -1,0 +1,113 @@
+<apex:page sidebar="true" showHeader="true" id="searchPage"
+    extensions="SILeadSearchController" tabStyle="Lead" standardController="Lead">
+<script src="/soap/ajax/27.0/connection.js" type="text/javascript"></script>
+<script>
+var previousSel = "";
+function playSelection(recordId) {
+    var currentSel = recordId;
+    if(previousSel == "") {
+        previousSel  = currentSel;
+        document.getElementById("createLeadSpan_1").style.visibility = 'visible';
+        
+        
+    } else {
+        document.getElementById(previousSel).checked= false;
+        previousSel = currentSel;
+    }
+    doAssignObjectCounter(currentSel);
+}
+function hideLegend() {
+    var searchLegend = document.getElementById("searchPage:searchForm:searchLegend");
+    var searchRes = document.getElementById("searchPage:searchForm:leadSearchRes");
+    searchLegend.style.visibility = "hidden";
+    searchRes.style.visibility = "hidden";
+}
+
+function showToolTip(fieldName) {
+    var msgToDisplay = 'Help Text: ';
+    if(fieldName == 'Company Legal Name') {
+        msgToDisplay += 'Must be at least 5 characters and you can use \'*\' as a wildcard, for example: "Cingular*"';
+    } else if(fieldName == 'DUNS Number') {
+        msgToDisplay += 'Must be exactly 9 characters long and contain only numeric values (0-9),'+ 
+            'example: "987012345". If DUNS Number is entered, all other fields will be ignored.';
+    } else if(fieldName == 'Zip/Postal Code') {
+        msgToDisplay += 'Must be 5 characters long and contain only numeric values (0-9), example: \'10002\'.';
+    } else if(fieldName == 'State/Province') {
+       msgToDisplay += 'Only abbreviated States are allowed, for example: use "TX" for "Texas" or "NJ" for "New Jersey".';
+    }
+    
+    if(msgToDisplay != 'Help Text: ') {
+        document.getElementById("helpText").innerHTML = msgToDisplay;
+        document.getElementById("helpText").style.visibility = 'visible';
+        } else {
+        document.getElementById("helpText").innerHTML = "";
+        document.getElementById("helpText").style.visibility = 'hidden';
+    }
+}
+</script>
+<apex:form id="searchForm">
+     <apex:pageBlock id="leadSearchParam">
+        <b><apex:pageMessages id="pagemessage"  /></b>
+         <apex:pageBlock rendered="{!isDuplicateRomeAccountId}">
+         <apex:outputLabel rendered="{!isDuplicateRomeAccountId}">Duplicate Lead found:</apex:outputLabel> &nbsp; 
+         <apex:outputLink value="/{!leadDuplicate.Id}" >{!leadDuplicate.Name}</apex:outputLink>   
+         </apex:pageBlock>
+           <div id="helpText" class="message infoM3" style="visibility:visible;color:blue;font-weight:bold;">
+           Help Text: Company Legal Name must be at least 5 characters, and you can use '*' as a wildcard, for example: "Cingular*"
+           
+        </div> 
+        
+        
+        <apex:pageBlockSection title="Lead Search - Business Address" columns="2">
+            <apex:repeat value="{!$ObjectType.Lead.FieldSets.Lead_Search}" var="fieldVal">
+                <apex:inputText value="{!leadObj[fieldVal.fieldPath]}" label="{!fieldVal.Label}"
+                    onclick="showToolTip('{!fieldVal.Label}')"/>
+            </apex:repeat>
+        </apex:pageBlockSection>
+       <apex:pageBlockButtons location="bottom">
+           <apex:commandButton value="Search Lead" action="{!doLeadSearch}" onclick="hideLegend()"/>    
+           <apex:commandButton value="Reset" action="{!doLeadReset}"/>
+           <apex:commandButton onclick="if('{!isObjectCounterFlag}'=='true'){return confirm('Are you sure you want to save this Lead?');}else{ return confirm('Are you sure you want to create a new Lead from scratch?');}"   value="{!IF(isObjectCounterFlag, 'Save Lead','Create New Lead')}" 
+              action="{!doCreateNewLead}"  id="leadSearId"/>
+          
+           
+           <apex:commandButton value="Back To Lead Tab" action="{!doNavigateLeadTab}"/>
+            <span id="createLeadSpan_1" style="visibility: hidden;">  
+           <apex:commandButton onclick="return Confirm('Are you sure you want to create a new Lead from scratch?')" value="Create New Lead" action="{!createNewLead}"  id="createNewBtnId"/>  
+           </span>
+       </apex:pageBlockButtons> 
+    </apex:pageBlock>
+   
+    <apex:pageBlock id="searchLegend">
+        <apex:pageBlockSection title="Best Practice on Lead Search" columns="1">
+            <ol style="color:black;font-weight:bold;">
+                <li>Search with DUNS Number if you have it. </li>
+                <li>Search Company Legal Name with a Zip/Postal Code and/or State/Province</li>
+                <li>Specific searches (all fields) will return an exactly matching search result. If the search result you are expecting is not found, reduce the specificity of your search.</li> 
+            </ol>
+        </apex:pageBlockSection>
+    </apex:pageBlock>    
+    
+    <apex:pageBlock rendered="{!NOT(displayLeadResList.empty)}" id="leadSearchRes">
+       <apex:pageBlockSection title="Lead Search Results" columns="1">
+          <apex:pageBlockTable value="{!displayLeadResList}" var="ldObj" width="100%">
+              <apex:column ><input type="radio" id="{!ldObj.objectCounter}" class="btn"
+                  onclick="playSelection({!ldObj.objectCounter})"/></apex:column>
+              <apex:column value="{!ldObj.company}" headerValue="Company"></apex:column>
+              <apex:column value="{!ldObj.dunsNo}" headerValue="Duns #"/>
+              <apex:column value="{!ldObj.romeAccountId}" headerValue="ROME Account ID"/>
+              <apex:column value="{!ldObj.street}" headerValue="Street"/>
+              <apex:column value="{!ldObj.city}" headerValue="City"/>
+              <apex:column value="{!ldObj.state}" headerValue="State/Province"/>
+              <apex:column value="{!ldObj.zipCode}" headerValue="Zip/Postal Code"/>
+          </apex:pageBlockTable>
+       </apex:pageBlockSection>
+    </apex:pageBlock>
+    
+    <apex:actionFunction action="{!doAssignObjectCounter}" status="loadingStatus"
+        name="doAssignObjectCounter" rerender="leadSearId">
+        <apex:param name="firstParam" assignTo="{!leadObjectCounter}" value="" />
+    </apex:actionFunction>    
+    
+</apex:form> 
+</apex:page>

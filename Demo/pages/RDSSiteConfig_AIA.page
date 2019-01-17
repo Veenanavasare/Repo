@@ -1,0 +1,105 @@
+<apex:page controller="AIARDSController" cache="true" sidebar="false" showChat="false" showHeader="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" docType="html-5.0" id="test">
+<!--    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:includeScript value="{!$Resource.atomjqueryjs}" />
+    <apex:includeScript value="{!URLFOR($Resource.bootstrapMin, 'js/bootstrap.min.js')}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalExchangeCSS}" />
+    <apex:stylesheet value="{!$Resource.PortalDesignLayoutCSS}" />
+    <apex:stylesheet value="{!$Resource.PortalDesignCSS}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCss}" />-->
+    <style>
+        #customerDetailsTable tr td {
+            border: 0px;
+        }
+        .darkDiv {
+            background: #E6E6E6;
+            margin: 10px 0;
+            padding: 10px 20px;
+            font-family: omnesatt_iiregular !important;
+        }
+        .darkDiv label { font-family: omnesatt_iiregular !important; }
+        .omesregular { font-family: omnesatt_iiregular !important; }
+        .omesmedium { font-family: omnes_att_iimedium; }
+        #finalSites { max-height: 448px; overflow-y: auto; background: #fff; border: 1px solid #ddd; }
+        #finalSites div { border-bottom: 1px dashed #ddd; }
+        .requiredInput, .requiredInput:focus { border-left-width: medium !important; border-left-color: #FF0000 !important; border-left: 2px solid #ddd !important; }
+    </style>
+
+    <div class="m-t-20">
+        <apex:form >
+                      <div id="customerDetailsTable" class="row" style="margin-top: 20px;">
+                        <div class="col-xs-12 col-md-12">
+                            <!-- @Cameron 11/01/2014 Start: DE84283 fix -->
+                            <h3>{!quote.End_Customer__r.Name}</h3>
+                            <!-- @Cameron 11/01/2014 End: DE84283 fix -->
+                            <div class="row m0 p0" style="margin-top: 10px;">
+                                <div class="col-xs-3 p0">
+                                    <label style="margin-right: 10px !important;">Quote Name</label>{!quoteObj[0].Apttus_Proposal__Proposal_Name__c}</div>
+                                <div class="col-xs-3 p0">
+                                    <label style="margin-right: 10px !important;">Quote Number</label>{!quoteObj[0].Name}</div>
+                                <div class="col-xs-4 p0">
+                                    <label style="margin-right: 10px !important;">Product</label>{!quoteObj[0].Product__r.name}</div>
+                                <div class="p0">
+                                    <label style="margin-right: 10px !important;">Terms</label>{!quoteObj[0].Apttus_Proposal__Payment_Term__c}</div>
+                            </div>
+                        </div>
+                    </div>      
+        
+          <!--  <div>
+                <table id="customerDetailsTable" class="table" style="width:75%">
+                    <tr>
+                        <td class="f-s-larger">Order for : {!quoteObj[0].End_Customer__r.Name} | {!quoteObj[0].End_Customer__r.Name}, {!quoteObj[0].End_Customer__r.Mailing_Street_Address__c}, {!quoteObj[0].End_Customer__r.City__c}, {!quoteObj[0].End_Customer__r.State__c}, {!quoteObj[0].End_Customer__r.Zip__c}</td>
+                        <td>Order Number : {!quoteObj[0].Name}</td>
+                        <td>{!quoteObj[0].Product__r.Category__c} - {!quoteObj[0].Product__r.name}</td>
+                        <td></td>
+                    </tr> 
+                    <tr>
+                        <td>
+                            <div><span class="f-s-larger">Quote Name</span> 
+                                <label>{!quoteObj[0].Apttus_Proposal__Proposal_Name__c}</label>
+                            </div>
+                        </td>
+                        <td>
+                            <div><span class="f-s-larger">Quote Number</span> 
+                                <label><apex:outputText value="{!quoteObj[0].Name}"/></label>
+                            </div>
+                        </td>
+                        <td>
+                            <div><span class="f-s-larger">Product</span> 
+                                <label> <apex:outputText value="{!quoteObj[0].Product__r.name}"/> </label>
+                            </div>
+                        </td>
+                        <td>
+                            <div><span class="f-s-larger">Term</span> 
+                                <label>{!quoteObj[0].Apttus_Proposal__Payment_Term__c}</label>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>-->
+            <hr class="blue_hr" />
+                        
+        </apex:form>
+        <br />
+        <div class="col-xs-12 col-md-12 m-t-20 p0">
+            <!-- Sites container now present in the RDS_page1_siteInfo_AIA so the Page container is updated to 12 columns from 9 -->
+            <div class="col-xs-12">
+                <apex:outputPanel id="pagecontainer">
+                    <apex:include pageName="AIARDSContentPage"/>
+                </apex:outputPanel>
+            </div>
+        </div>
+    </div>
+    <apex:outputPanel rendered="{!!hubsitedisable}">
+        <script>
+            var j$ = jQuery.noConflict();
+            j$('#hubblockDiv').hide();
+    
+            function updateVPNConnectionPolicy(event) {
+                if (event.target.value == 'Hub and Spoke')
+                    j$('#hubblockDiv').show();
+                else
+                    j$('#hubblockDiv').hide();
+            }
+        </script>
+    </apex:outputPanel>
+</apex:page>

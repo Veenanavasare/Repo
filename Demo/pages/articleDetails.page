@@ -1,0 +1,877 @@
+<apex:page showHeader="false"  Controller="articleDetailsController" sidebar="false" applyBodyTag="false" action="{!verifyAuthentication}" cache="false">
+
+<apex:includeScript value="{!URLFOR($Resource.jQueryMin)}"/> 
+<apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" rendered="{!(Contains($CurrentPage.URL, 'partnerexchange')) && (!Contains($CurrentPage.URL, 'Connect')) && (isPartnerUser || isInternalUser)}"/>
+<apex:include pageName="PortalDesignHeaderUnAuth" id="PortalDesignHeaderUnAuth" rendered="{!(Contains($CurrentPage.URL, 'partnerexchange')) && (isCommunityUser || isInternalUser)}"/>
+<apex:include pageName="PortalDesignHomeUnauth" id="PortalDesignHomeUnauth" rendered="{!(Contains($CurrentPage.URL, 'partnerexchange')) && (Contains($User.LastName, 'Guest'))}"/>                             
+<script src="{!$Label.DTMHeader}"></script>
+<apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-1.9.1.js')}"/>
+<style type="text/css">
+     html, body {
+            background:#f7f7f7 !important;
+    }
+    b {font-weight: bold;}
+    .storyStandArt table tr td {border: 1px solid;}
+    .storyStandArt ol {list-style-type: decimal;}
+    //.storyStandArt ol, ul {margin: 1em; margin-left: 40px;}
+    #newDivForm{display:block;background-color:#f7f7f7;}
+    .container{padding: 0px 10px;}
+    .highlightWord { background-color: #ff2; }
+     #publishersharebutton{width: 70px;}
+    .publishercontainer .bottomBar{height:50px}
+    #publisherAttachContentPost { display:none;}
+    #publisherAttachLinkPost { display:none;}
+    #publisherAttachPollPost { display:none;}
+    #publisherAttachRypplePost { display:none;}
+    #publisherDropdown { display:none;}
+    .pArrow { display:none;}
+    /*ul li, ol li{ margin-left: 0;padding-left: 0;}*/
+    li.nav_quote_li>span>a>button {width: auto !important;}
+    ul li {
+        margin-left: 0em !important;
+    }
+    .dropdown-link-container ul{
+        list-style: none;
+    }
+    .user_welcome ul{
+        list-style: none;
+    }
+    .user_badge{margin-left: 10px;}
+</style>
+<style>
+    #footpara {
+        margin-left: 6%;
+        
+    }
+    .footer_copy {        
+        width: 59%;
+        margin-top: 0px;
+    }
+    .footer_logo{
+        margin-left: -30px;
+        float: left;
+    }
+    .begin_quote_btn{
+        left: -5px !important;
+        margin-left: 20px;
+    }
+    .zen .zen-btn {
+        float: none;
+    }
+    iframe {
+        width: 500px;
+        margin-left: -158%;
+    }
+    #slice_footer {
+        margin: 31px auto auto;
+    }
+    .headerMargin{
+         margin-top: 7%;
+    }
+</style>
+<script>
+
+</script>
+<script type="text/javascript">
+    
+    
+    $j = jQuery.noConflict(); 
+    jQuery.fn.highlight = function (str, className) {
+        var regex = new RegExp(str, "gi");
+        return this.each(function () {
+            $j(this).contents().filter(function() {
+                return this.nodeType == 3;
+            }).replaceWith(function() {
+                return (this.nodeValue || "").replace(regex, function(match) {
+                    return "<span class=\"" + className + "\">" + match + "</span>";
+                });
+            });
+        });
+    };
+    
+    /*
+    $j(document).ready(function() {
+         document.getElementById("publishersharebutton").setAttribute("onclick","chatter.getPublisher().submit();createCommentHistory();") ;
+     });
+    
+    $j(document).ready(function() {
+        
+        $j("#body *").highlight("{!strValue}", "highlightWord");
+        $j('#hl').click(function(e) {
+            e.preventDefault();
+            $j("#body *").highlight("{!strValue}", "highlightWord");
+            
+        });
+
+        $j('#unhl').click(function(e) {
+            e.preventDefault();
+            $j(".highlightWord").replaceWith(function() { return $(this).contents(); });
+           
+        });
+    });
+    */
+</script>
+<script type='text/javascript'>
+    function noenter(ev) {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+            doSearchAF();
+            return false;
+         } else {
+              return true;
+         }
+     }
+</script>
+<script>
+ function reviewShowBut(){
+        document.getElementById('ReviewBut').style.display = "block";        
+    }
+    
+ /*window.onload = function(){
+    alert('hi1'); 
+    document.getElementById("publishersharebutton").setAttribute("onclick","createCommentHistory();") ;
+ }   
+ function createCommentHistory(val){
+     alert(val);
+ }   */
+</script>
+ <!-- comment 123-->
+<title>Newsroom</title>
+<style>
+    div#si_primaryMenu ul, div#si_primaryMenu ul li {margin:0; padding:0; list-style-type: none}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}}') no-repeat scroll 5px -40px; width: 982px; height: 40px;}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}') no-repeat scroll -5px -150px transparent; width: 982px; height: 92px;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+     div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem:hover,
+    li#programOverviewTab.programOverviewTabActive,
+    li#Connect.programOverviewTabActive,
+    li#productsTab.productsTabActive,
+    li#newsTab.newsTabActive
+    {
+        background-image: url('{!$Resource.NavConnect}'); 
+        background-repeat:no-repeat;
+        background-attachment:scroll;
+        background-color:transparent;
+        height:63px;
+        position:relative; 
+        top:0px; 
+        left:-70px;
+    }   
+    </style>
+<style type="text/css"> 
+#share-buttons img {
+width: 50px;
+padding: 10px;
+
+border: 0;
+box-shadow: 0;
+display: inline;
+}
+
+#navSharing {
+    float: left;
+    position: absolute;
+    width:80px;
+    height:65px;
+    margin-top:20px;
+    margin-left:895px;
+    border-radius: 7px;
+    Z-index:1;
+}
+
+#navSharing1 {
+    background-color: #EDF5F8;
+    float: left;
+    position: absolute;
+    width:80px;
+    height:65px;
+    margin-top:20px;
+    margin-left:895px;
+    border-radius: 7px;
+    Z-index:1;
+}
+
+#menuSharing{
+    padding:0px;
+}
+#mybox
+    {
+    position:absolute;
+    width:auto;
+    display:none;
+    margin-top:40px; 
+    margin-left:230px; 
+    border:2px solid #d3d3d3;
+    padding:40px 40px 40px 40px; 
+    background:#EDF5F8;
+    border-radius:2px;
+    box-shadow: 0 0 5px #B7B7B7;
+    Z-index:1;
+}
+#mybox1
+    {
+    position:absolute;
+    width:auto;
+    display:none;
+    margin-top: 0px; 
+    margin-left:230px; 
+    border:2px solid #d3d3d3;
+    padding:40px 40px 40px 40px; 
+    background:#EDF5F8;
+    border-radius:2px;
+    box-shadow: 0 0 5px #B7B7B7;
+    Z-index:1;
+}
+div.rounded {
+    background-image:url('{!$Resource.GrayGradient}');
+    background-repeat: repeat;
+    border-bottom: 0px solid #C4C4C4;
+    border-radius: 7px 5px 0 0;
+    height: 55px;
+    width: 330px; 
+      
+}
+
+div.roundedComment {
+    background-image:url('{!$Resource.GrayGradient}');
+    background-repeat: repeat;
+    border-bottom: 0px solid #C4C4C4;
+    border-radius: 7px 5px 0 0;
+    height: 55px;      
+}
+
+.fontHeader{
+    padding: 15px 15px 20px 20px;
+    font-size:20px;   
+}
+.inpuTypeField{
+            background-image: url({!($Resource.Search_bar_middle_img)}); 
+            background-repeat:repeat; 
+            border:none; 
+            height:18px;
+}  
+
+hr.BlueHr{ 
+                    border: 0; 
+                    height: 2px; 
+                    background: #a8a8a8;
+                    margin-top:36px;      
+                    margin-bottom:1px
+                    border-bottom: 1px #056fab;
+                    
+                  
+}
+    
+.ext-webkit{
+            background: #FFFFFF;
+}
+.ext-chrome{
+            background: #FFFFFF;
+}
+          
+.inputTextArea{
+            width: 237px; padding: 5px; height:18px; margin-left:-4px; border-radius:3px 0 0 3px; border-left:1px solid #CACAC4;
+}
+.body .bPageBlock, body #bodyCell .bResource .secondaryPalette, body .secondaryPalette.bPageBlock, body .individualPalette .secondaryPalette.bPageBlock, body .bodyDiv .genericTable, body .genericPageBlockTable, body .bodyDiv .bSubBlock, body .bComponentBlock .bPageBlock, body .bMyDashboard .bPageBlock, body.rlHoverFrame .bPageBlock, body.subjectSelectionPopup div.choicesBox, body.lookupTab .secondaryPalette.bPageBlock, body.popupTab .secondaryPalette.bPageBlock, body.UserTagStatsPage .secondaryPalette.bPageBlock{ background-color: #FFFFFF; border-bottom: 0px solid #FFFFFF;border-left: 0px solid #FFFFFF; border-radius: 0px; border-right: 0px solid #FFFFFF;}
+.TextAreaReview{resize:none; border: 1px solid #cccccc; border-radius: 5px 5px 0px 0px; padding:15px; width:380px;height:98px; margin-top:10px; border-bottom: 0px; font-family:Arial; font-size:12px; color:#333333; line-height:17px; }
+.groupNameStyle { background-image:url('{!$Resource.GrayGradient}'); width:380px; height:50px; border: 1px solid #CCCCCC;  border-radius: 0px 0px 5px 5px; border-top: 0px; }
+.shareArtStyle { font-size:18px; font-family:Arial; font-wright:bold; padding-top:12px;}
+.publishercontainer { padding-top:0px; }
+.publishercontainer ul.publisherFeedItemTypeChoices { margin-top: -5px; }
+@-moz-document url-prefix() {
+        .TextAreaReview { width:380px; }
+    }
+
+div.Newshead {
+    margin-left: 124px;
+}
+input{
+    width:auto;
+}
+.autoCompleteBoxScrolling{
+    width:380px !important;
+}
+</style>
+<script type="text/javascript">
+
+ function countChatter(){
+ 
+    $j = jQuery.noConflict(); 
+    $j('#Chatter').click(
+     function () {
+       $j('#mybox1').show();
+      // $("[id$=OptionID1] option:selected").val('-Group Name-').show();
+       $j("[id$=requestMessId1]").val('').empty();
+     } 
+    );
+    //$("[id$=OptionID1] option:selected").val('-Select Group-').empty();
+}
+</script>
+
+<script>
+    function countGoogle(){}
+    function countLinkedIn(){}
+    function countEmail(){}
+    function countTwitter(){}
+</script>
+
+
+<html>
+
+<head>
+    <apex:includeScript value="{!URLFOR($Resource.SharingImage, 'SharingImage')}"/> 
+    <apex:stylesheet value="{!$Resource.newsroomStyleSheet}"/>
+    <apex:stylesheet value="{!$Resource.Newsroom_hover}"/>
+    <apex:stylesheet value="{!$Resource.ProviderDirectory}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-1.9.1.js')}"/>
+    <apex:includeScript value="/resource/1388026863000/masonry/masonry-site/jquery.masonry.js"/>
+    
+    <!-- USE THIS CommunitiesVideoXML for Videos for Communities and Sites -->
+    <apex:outputPanel rendered="{!Contains($CurrentPage.URL,'attpartnerexchange')}">
+        <script type="text/javascript"  src="{!URLFOR($Resource.newsroomplayer2, 'amp/amp.min.js')}?amp-defaults={!$Resource.communitiesVideoXML}"></script>
+    </apex:outputPanel>
+    
+    <!-- USE THIS prodVideoXML3 for sandbox/Production -->
+    <apex:outputPanel rendered="{!NOT(Contains($CurrentPage.URL,'attpartnerexchange'))}"> 
+        <script type="text/javascript"  src="{!URLFOR($Resource.newsroomplayer2, 'amp/amp.min.js')}?amp-defaults={!$Resource.prodVideoXML3}"></script>
+    </apex:outputPanel>
+    
+        <script type="text/javascript">
+            var amp;
+            
+            function vidPlayer(Title, hlsVid,hdsVid )
+            {   
+                
+                var config_overrides = 
+                {
+                    autoplay: true,
+                    media: 
+                    {
+                        title: Title,
+                        source:
+                        [
+                           {src: hdsVid, type: "video/f4m"},
+                           {src: hlsVid, type: "application/x-mpegURL"}
+                           //{src: vid, type: "video/f4m"}
+                        ] 
+                    }
+                };
+                amp = new akamai.amp.AMP("akvideo", config_overrides);
+                
+                //console.log(amp);
+            }
+           
+        </script>
+        
+<script type="text/javascript" src="/resource/jQuery"></script>
+<script type="text/javascript">  
+    
+   $j = jQuery.noConflict(); 
+   $j(window).ready(function() { 
+      $j("#provider >a ").addClass("linkInActive");
+    $j("#events >a ").addClass("linkInActive");
+    $j("#news >a ").addClass("linkActive");
+        $j('.blogs_heading').click(
+             function () {
+               $j('#mybox').show();
+             } 
+            );
+            
+          $j('#closed').click(
+             function () {
+               $j('#mybox').hide();
+             } 
+           );
+           
+           $j('#closed1').click(
+             function () {
+               $j('#mybox1').hide();
+             } 
+           );
+           
+           $j('#Chatter').click(
+             function () {
+               $j('#mybox').hide();
+             } 
+           );
+                      
+            $j('#google').click(
+             function () {
+               $j('#mybox').hide();
+             } 
+           );
+            $j('#linked').click(
+             function () {
+               $j('#mybox').hide();
+             } 
+           );
+           $j('#twitter').click(
+             function () {
+               $j('#mybox').hide();
+             } 
+           );
+           $j('#email').click(
+             function () {
+               $j('#mybox').hide();
+             } 
+           );
+  
+  
+    });
+    
+</script> 
+
+<script type="text/javascript">  
+    $j = jQuery.noConflict(); 
+   $j(window).ready(function() { 
+      $j("#provider >a ").addClass("linkInActive");
+    $j("#events >a ").addClass("linkInActive");
+    $j("#news >a ").addClass("linkActive");
+        $j('.blogs_heading1').click(
+             function () {
+               $j('#mybox1').show();
+             } 
+            );
+            
+          $j('#closed').click(
+             function () {
+               $j('#mybox1').hide();
+             } 
+           );
+           
+           $j('#closed1').click(
+             function () {
+               $j('#mybox1').hide();
+             } 
+           );
+           
+            $j('#Chatter').click(
+             function () {
+               $j('#mybox1').hide();
+             } 
+           );
+                      
+            $j('#google').click(
+             function () {
+               $j('#mybox1').hide();
+             } 
+           );
+            $j('#linked').click(
+             function () {
+               $j('#mybox1').hide();
+             } 
+           );
+           $j('#twitter').click(
+             function () {
+               $j('#mybox1').hide();
+             } 
+           );
+           $j('#email').click(
+             function () {
+               $j('#mybox1').hide();
+             } 
+           );
+  
+  
+    });
+    
+</script> 
+
+<style>
+.linkActive
+     {
+        color:#369;
+        text-decoration:underline;
+        font-size: 13px ;
+    }
+    
+    .linkInActive
+     {
+        text-decoration:none;
+        font-size: 13px ;
+    }
+    .profileImgSty { float:left; margin-right:15px; margin-bottom:20px;}
+    .headerMainDiv{
+        width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    } 
+    .ML10{
+        margin-left:15px;
+    }
+    #atntHeaderSty{
+        margin-bottom: 6px;
+        display: block;
+    }
+    .pageHeaderMargin{
+       padding-top:35px;
+    }
+</style>
+
+</head>
+
+<!-- NewsRoom Image DIV -->  
+<div class="pageHeaderMargin"></div>       
+<div id="newsDiv">
+
+<!-- START PAGE -->
+   <div class="headerMainDiv">
+       <div class="ML10">
+           <h1 style="font-style: italic;" id="atntHeaderSty">AT&amp;T Partner Exchange Newsroom</h1>
+           <h2>Channel insights for business transformation and growth</h2>
+       </div>
+       <hr class="blue_hr" style="width:1200px;"></hr> 
+   </div>
+</div>   <!-- End of NewsRoom Image DIV -->
+
+
+<!-- News DIV Form-->   
+<div id="newDivForm">
+    <div class="mainDiv">
+     <!--<c:LoggedInUser ></c:LoggedInUser>-->
+    <!--
+            <div  class="pName">
+                <apex:outPutText value="{!assignText}"/>
+                <apex:outPutText value=" "/>
+                <apex:outPutText value="{!lastName}"/>
+            </div>
+     -->
+         
+         <!-- start pagination -- -->
+        <div style="margin:40px 20px 20px 10px;">
+            <apex:outputLink value="/apex/Connect/Connect?bidID={!bidID}" rendered="(!Contains($CurrentPage.URL, 'Connect'))" target="_self" style="text-decoration:none;">
+                <apex:outputLabel value="Connect" styleClass="breadcomActive"/>
+            </apex:outputLink>
+            <apex:outputLabel value="/" styleClass="deActive" rendered="{!type !='Search'} && (!Contains($CurrentPage.URL, 'Connect'))"/>
+            
+            <apex:outputLink value="/apex/newsroomTrayView?Flag=R&bidID={!bidID}"  target="_self" style="text-decoration:none;" rendered="{!type !='Search'}">
+                 <apex:outputLabel value="Newsroom" styleClass="breadcomActive"/>
+            </apex:outputLink>
+            <apex:outputLabel value="/" rendered="{!TName !=null}" styleClass="deActive"/>
+            <apex:outputLink value="/apex/NewsroomBlogArticleTrayView?bidID={!bidID}&TName={!SUBSTITUTE(TName,'&','^')}&type={!type}&Id={!blogId}"  target="_self" style="text-decoration:none;">
+                <apex:outputLabel value="{!SUBSTITUTE(TName,'^','&')}" rendered="{!TName !=null}" styleClass="breadcomActive"/>
+            </apex:outputLink>
+            
+            <!-- ---------------- Start Breadcom from Search page ------------------- -->
+                <apex:outputPanel rendered="{!type ='Search'}">
+                    <apex:outputLabel value="/"  styleClass="deActive"/>
+                    <apex:outputLink value="/apex/Connect/SI_SearchResultsPage?strValue={!strValue}&objType=Newsroom&type={!type}"  target="_self" style="text-decoration:none;">
+                        <apex:outputLabel value="{!type}" styleClass="breadcomActive"/>
+                    </apex:outputLink>
+                </apex:outputPanel>
+                <!-- ---------------- End Breadcom from Search page ------------------- -->
+            
+            <apex:outputLabel value="/" styleClass="deActive"/>
+            <apex:outputLabel value="{!Tilte}" styleClass="deActive"/>
+            
+             <!-- -----------------------Search button div----------------------------------- -->
+             <!-- <apex:form >
+             
+              <apex:outputPanel style="float:right;margin-top:-33px;">
+                <!--<apex:image value="{!URLFOR($Resource.Search_bar_left_img)}" style="margin-bottom:-8.8px; height:28px; "/>-->
+                <!-- <apex:inputText value="{!strValue}" styleClass="inpuTypeField inputTextArea" onkeypress="return noenter(event);" id="pgblcktbl"/>
+                <apex:actionFunction name="doSearchAF" action="{!searchFound}"/> 
+                <apex:commandLink action="{!searchFound}" id="h1">
+                    <apex:image value="{!URLFOR($Resource.searchButton)}" style="margin-bottom:-8.8px; margin-left: -4px;"/>
+                </apex:commandLink>
+            </apex:outputPanel>
+            
+            </apex:form> -->
+         
+          <!-- ----------------- End of Search button div----------------------------------- -->
+        </div>             
+        <div style="margin-left: 663px; margin-top:-15px;"> <apex:pageMessages id="pagemessage"/> </div>
+        <!-- end Pagination -- -->
+
+        
+      <!--Blog Banner starts -->
+         <apex:outputPanel rendered="{!BlogAvail}">
+             <apex:outputLink target="_self" value="/apex/NewsroomBlogArticleTrayView?id={!blogs.Id}&bidID={!bidID}&type=Blog" >
+             <div style="padding-top:42px; padding-left: 25px;" >
+                 <apex:image value="{!blogs.Banner_Link__c}" style="max-width:975px;"/>
+             </div>
+             </apex:outputLink>
+        </apex:outputPanel>
+      <!--Blog Banner Ends-->
+      
+     
+    <div class="newsroomDiv" id="body" > 
+         <!-- start menu -->
+            <apex:outputPanel >
+              <apex:outputPanel rendered="{!IF(isCustomer,false,true) || IF(isPartner,false,true)}">
+            <div id="navSharing">
+                <div id="blogs_hover" class="blogs_heading blogs_hover">
+                    <apex:image value="{!$Resource.share_B}" style="padding-left: 3px;padding-top:10px; cursor: pointer;" /> 
+                </div>
+                <div style="color:#000;font-family: Arial;font-size:16px;font-weight:bold;padding:5px 20px 20px 35px;">
+                    <apex:outputLabel value="{!totalShare}"/>
+                </div>
+            </div>
+            </apex:outputPanel>
+              </apex:outputPanel>
+              
+              <apex:outputPanel >
+                <apex:outputPanel rendered="{!IF(isCustomer,true,false) || IF(isPartner,true,false)}">
+                <div id="navSharing1">
+                    <div id="blogs_hover1" class="blogs_heading1 blogs_hover1">
+                        
+                        <apex:image value="{!$Resource.share_B}" style="padding-left: 3px;padding-top:10px; cursor: pointer;"/> 
+                        
+                    </div>
+                    <div style="color:#000;font-family: Arial;font-size:16px;font-weight:bold;padding:5px 20px 20px 35px;">
+                        <apex:outputLabel value="{!totalShare}"/>
+                    </div>
+                </div>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        <!-- end menu -->
+        <apex:outputPanel rendered="{!(!Contains($User.LastName,'Guest'))}">
+            <div id="mybox1">
+            <div id="closed1">
+                    <apex:image title="Close" value="{!$Resource.btnClose}"  style="float:right;margin-top:-54px;margin-right:-54px;width:28px;height:28px; cursor:pointer;"/>
+                </div>
+                   
+                <div id="blogsContainer" class="blogs_hover" style="background-color:white;border-radius:2px;border: 1px solid #A9A9A9; width:430px; height:330px;">
+                
+                    <!--<apex:image value="{!URLFOR($Resource.SharingImage,'SharingImage/share-header.png')}" style="margin-top:25px;margin-left:20px;"/>-->
+                    <div style="width:100%"> 
+                    <div style="padding:15px 17px 35px 17px;"> 
+                    <div>
+                     <apex:outputLabel value="Share Article" styleClass="shareArtStyle"></apex:outputLabel>
+                    <apex:form style="margin-left:8px;">           
+                        <apex:pageMessages id="requestMessId1"></apex:pageMessages>
+                                                                   
+                        <apex:image id="profileImage" URL="{!profileImageUrl}" height="50" width="40" styleClass="profileImgSty"/>
+                        <div style="margin-top:20px;">     
+                            <apex:outputLink value="{!urlType}/Connect/{!$User.Id}" rendered="{!isAttPartner=TRUE}">
+                                <apex:OutputText value="{!($User.FirstName+ " " + $User.LastName) }" style="margin-top:20px;font-family: Arial;font-weight:bold; color:#015ba7"/>
+                            </apex:outputLink>
+                            <apex:outputLink value="{!urlType}/{!$User.Id}" rendered="{!isAttPartner=FALSE}">
+                                <apex:OutputText value="{!($User.FirstName+ " " + $User.LastName) }" style="margin-top:20px;font-family: Arial;font-weight:bold; color:#015ba7"/>
+                            </apex:outputLink>
+                        </div>
+                        <br />
+                         <apex:commandLink value="{!Tilte}" style="font-family:Arial;color:#015ba7;padding-right:15px;padding-left:0px;font-weight:bold; margin-top:25px"/>                
+                         <apex:inputTextArea value="{!Comment}" styleClass="TextAreaReview" html-placeholder="Write a comment�"/><br />
+                         <div class="groupNameStyle">
+                             <apex:outputLabel value="To:" for="gm" style="float:left; padding-right:2px; padding-left:10px; padding-top: 22px;"/>
+                             <apex:outputPanel styleClass="requiredInput" layout="block" style="float:left; padding-top: 18px;">
+                                 <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                                 <apex:selectList value="{!groupChaterId}" size="1" id="OptionID1">
+                                     <apex:selectOptions value="{!group}"/>
+                                 </apex:selectList>
+                             </apex:outputPanel>
+                             <apex:commandLink action="{!doPost}" onclick="countChatter();" id="postButtonId" reRender="requestMessId1">
+                                  <apex:image value="{!$Resource.BlueShareButton}" style="padding-top: 15px; float:right; padding-right:10px;"/>
+                             </apex:commandLink>
+                         </div>     
+                    </apex:form>
+                     </div>
+                      </div>
+                    </div>  
+                      </div>
+                    </div>
+                 </apex:outputPanel>
+<!-- start Sharing Image -->
+    <div id="mybox">
+         <div id="closed">
+            <apex:image title="Close" value="{!$Resource.btnClose}"  style="float:right;margin-top:-54px;margin-right:-54px;width:28px;height:28px; cursor:pointer;"/>
+        </div>
+        <div id="blogsContainer" class="blogs_hover" style="background-color:white;border-radius:2px;border: 1px solid #A9A9A9;">
+                    <apex:image value="{!URLFOR($Resource.SharingImage,'SharingImage/share-header.png')}" style="margin-top:25px;margin-left:20px;"/>
+                    <div style="width:100%"> 
+                        <div style="padding:15px 17px 35px 17px;"> 
+                            <div>
+                               <apex:form >
+                               <table>
+                                    <tr>
+                                    
+                                    <!------Chatter------>  
+                                                                    
+                                                          
+                                        <td id="Chatter">
+                                       <!--<apex:outputLink value="http://ebm--devsep--c.cs18.visual.force.com/apex/ArticlePost?articletitle={!articletitle}" target="_blank" style="padding-bottom:1px;">-->                                  
+                                          <!--<apex:actionFunction name="countChatter" action="{!updateChatterShare}" oncomplete="location.reload()"/>-->
+                                          <apex:outputPanel rendered="{!(!Contains($User.LastName,'Guest'))}"> 
+                                            <apex:image value="{!URLFOR($Resource.SharingImage,'SharingImage/share-icon-chatter.png')}" title="Chatter" onclick="countChatter();" style="cursor: pointer; margin-right:15px" rendered="{!IF(isPublic,false,true)}"/>
+                                          </apex:outputPanel> 
+                                       <!--</apex:outputLink>-->
+                                        <br/>
+                                          <apex:outputPanel rendered="{!(!Contains($User.LastName,'Guest'))}"> 
+                                            <apex:outputLabel value="Chatter" style="font-family:Arial;font-size:12px;color:#333;margin-left:10px;" rendered="{!IF(isPublic,false,true)}"/>
+                                          </apex:outputPanel> 
+                                        </td>
+                                   
+                                    
+                                        <td id="linked">
+                                        <apex:outputLink value="http://www.linkedin.com/shareArticle?umini=tre&url={!url}={!articleTitle}" target="_blank" style="padding-bottom:1px;">
+                                            <apex:actionFunction name="countLinkedIn" action="{!updateLinkedInShare}" oncomplete="location.reload()"/>
+                                            <apex:image value="{!URLFOR($Resource.SharingImage,'SharingImage/share-icon-linkedin.png')}" title="linkedin" onclick="countLinkedIn();"/>
+                                        </apex:outputLink>
+                                        <br/>
+                                            <apex:outputLabel value="LinkedIn" style="font-family:Arial;font-size:12px;color:#333;margin-left:5px;"/>
+                                        </td>
+                                    
+                                        
+                                     <!-- Google+ -->
+                                         <td id="google">
+                                            <apex:outputLink value="https://plus.google.com/share?url={!url}={!articleTitle}" target="_blank" style="padding-left:15px;">
+                                                <apex:actionFunction name="countGoogle" action="{!updateShare}" oncomplete="location.reload()"/>
+                                                <apex:image value="{!URLFOR($Resource.SharingImage,'SharingImage/share-icon-googleplus.png')}" title="Google+" onclick="countGoogle();"/>                                            
+                                            </apex:outputLink>
+                                        <br/>
+                                            <apex:outputLabel value="Google+" style="font-family:Arial;font-size:12px;color:#333;margin-left:20px;"/>
+                                        </td>
+                                    <!-- Twitter -->
+                                        <td id="twitter">
+                                        <apex:outputLink value="http://twitter.com/share?url={!url}={!articleTitle}" target="_blank" style="padding-left:15px;">
+                                           <apex:actionFunction name="countTwitter" action="{!updateTwitterShare}" oncomplete="location.reload()"/>
+                                           <apex:image value="{!URLFOR($Resource.SharingImage,'SharingImage/share-icon-twitter.png')}" title="Twitter" onclick="countTwitter();"/>
+                                        </apex:outputLink>
+                                        <br/>
+                                        <apex:outputLabel value="Twitter" style="font-family:Arial;font-size:12px;color:#333;margin-left:25px;"/>
+                                        </td>
+                                    <!-- Email -->
+                                        <td id="email">
+                                            <apex:outputLink value="mailto:?Subject={!SUBSTITUTE(Tilte,'&','%26')}&Body=I%20thought%20you%20might%20find%20this%20interesting!%20 {!url}={!articleTitle}" style="padding-left:15px;">
+                                                <apex:actionFunction name="countEmail" action="{!updateEmailShare}" oncomplete="location.reload()"/>
+                                                <apex:image value="{!URLFOR($Resource.SharingImage,'SharingImage/share-icon-email.png')}" title="Email" onclick="countEmail();"/>
+                                            </apex:outputLink>
+                                            <br/>
+                                            <apex:outputLabel value="Email" style="font-family:Arial;font-size:12px;color:#333;margin-left:25px;"/>
+                                        </td>
+                                    </tr>
+                            </table>
+                            </apex:form>
+                       </div>
+                   </div>
+            </div>
+       
+<!-- end sharing -->
+</div> 
+</div>
+
+        <!-- END OF NEWSROOM HEADLINE -->  
+        <div  style="margin-top: 58px;">
+            <table style="width:98%; margin-left:1%; margin-right:1%; padding-top: 10px;" >
+                <td class="articleDetail" >
+                    
+                        <div style="border:2px; margin-left:-15px;">
+                        <div class="headlineDetailPage" style="width: 400px; padding-left: 15px;" id="headline">
+                            {!Tilte}                     
+                        </div>
+
+                        <div style="padding-top:30px; padding-left:15px;" class="publishDateArticleDetail">
+                            <apex:OutputText value="{0,date,MMMMM' 'd', 'yyyy}">
+                                 <apex:param value="{!Newsrooms.PublishedDate__c}"/>
+                            </apex:OutputText>
+                            
+                            <apex:outputLink value="/apex/NewsroomBlogArticleTrayView?Id={!newsrooms.Author__c}&bidID={!bidID}&type=Author&TName={!newsrooms.Author__r.Name}" style="text-decoration:none;">  
+                                <apex:outputText value=" {!newsrooms.Author__r.Name}" styleClass="articleAuthor"/>
+                            </apex:outputLink>
+                        </div>
+                        
+                        <div style="padding-top:30px; padding-left: 15px;">
+                            <apex:image value="{!URLFOR($Resource.articledetailicons, 'icon-topics.png')}" title="List View" style="padding-right:5px;"/>
+                                <span style="color:#000; font-weight: bold; font-size:13px; font-family:Arial;">
+                                Topics:
+                                </span> 
+                                <apex:variable value="{!0}" var="rowNum"/>  
+                                 <apex:repeat value="{!topicList}" var="str">
+                                  <apex:outputLink value="/apex/newsroomBlogArticleTrayView?TName={!SUBSTITUTE(str,'&','^')}&type=Topic&bidID={!BidID}" style="Text-decoration:none;color:#067ab4;font-family:Arial;font-size:13px;">{!str}</apex:outputLink>
+                                  <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                                  <apex:outputText value=", " style="color:#067ab4" rendered="{!FLOOR(rowNum)< topicListSize}"></apex:outputText>
+                              </apex:repeat> 
+                                <!--<apex:outputText escape="false" value="{!SUBSTITUTE(topic,';',', ')}" styleClass="topicsDetailPage"/>-->
+                        </div>
+                        
+                        <div style="padding-top:30px;">
+                            <table>
+                                <td  class="storyStandArt" style="vertical-align:top; padding-right:25px;">
+                                    <apex:outputPanel rendered="{!newsrooms.HDS_Video_URL__c!= null}"> 
+                                        <div style="padding-bottom:30px;">
+                                            <body onload="vidPlayer('{!JSINHTMLENCODE(newsrooms.Title)}','{!newsrooms.HLS_Video_URL__c}','{!newsrooms.HDS_Video_URL__c}')">
+                                                <div class="articleDetailPlayer">
+                                                    <div id="akvideo"></div>
+                                                </div>
+                                            </body>
+                                         </div>
+                                    </apex:outputPanel>
+                                    <div >
+                                        <apex:outputPanel rendered="{!Newsrooms.Article_Image__c != null && Newsrooms.Tile_Template__c!='Video Articles'}" >
+                                            <div style="max-width:250px; float:right; padding-left:10px; padding-bottom:10px;">
+                                                <div id="articleDiv">
+                                                 <apex:outputText escape="false" value="{!NewsRooms.Article_Image__c}" />
+                                                 </div>
+                                             </div>
+                                        </apex:outputPanel>
+                                        <apex:outputText value="{!NewsRooms.story__c }" escape="false" id="text"/>
+                                     </div>
+                                </td>
+                                <td style="width:30%; vertical-align:top;">
+                                    <apex:outputPanel rendered="{!relatedContent}">
+                                        <div style="border: 1px solid #e5e5e5; border-radius: 7px; margin-right:-17px;">
+                                            <div class="rounded">
+                                             <div class="fontHeader">
+                                    
+                                                <apex:outputText value="Related Content" escape="false"/>                                 
+                                    
+                                               </div>
+                                                
+                                            </div> 
+                                            
+                                            <apex:repeat value="{!SearchNews}" var="rec">
+                                                <div style="border-top:1px solid #e5e5e5; padding-top:15px; padding-bottom:15px; padding-left:20px; padding-right:25px; ">
+                                                    <apex:outputLink target="_self"  value="/apex/articleDetails?blogId={!blogId}&TName={!SUBSTITUTE(TName,'&','^')}&type={!type}&articletitle={!rec.urlName}&id={!rec.Id}&bidID={!bidID}" style="text-decoration:none;">
+                                                        <apex:outPutText value="{!rec.Title}" styleClass="relContentListTitle"/>
+                                                    </apex:outputLink>
+                                                    <br/> <br/>
+                                                    
+                                                    <apex:OutputText value="{0,date,MMMMM' 'd', 'yyyy}" style="font-size: 12px; font-family:Arial; color:#333333; line-height:16px;">
+                                                        <apex:param value="{!rec.PublishedDate__c}"/>
+                                                    </apex:OutputText>
+                                                    /
+                                                   <span style="font-size: 12px; font-family:Arial; color:#333;">
+                                                   <apex:variable value="{!0}" var="rowNum"/>  
+                                         <apex:repeat value="{!newsTopicMap[rec.Id]}" var="str">
+                                                      <apex:outputLink value="/apex/newsroomBlogArticleTrayView?TName={!SUBSTITUTE(str,'&','^')}&type=Topic&bidID={!BidID}" style="Text-decoration:none;color:#0c2577;font-size: 12px;font-family:Arial; ">{!str}</apex:outputLink>
+                                                          <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                                                          <apex:outputText value=", " style="color:#0c2577" rendered="{!FLOOR(rowNum)< topicCountMap[rec.Id]}"></apex:outputText>
+                                                  </apex:repeat> 
+                                                    <!--{!SUBSTITUTE(rec.Topics__c,';',', ')}-->
+                                                    </span>
+                                                </div>
+                                            </apex:repeat>
+                                        </div>
+                                    </apex:outputPanel>
+                               </td>
+                            </table>
+                        </div> 
+            
+                    </div>            
+                </td>
+            </table>
+        </div>
+    </div>
+    <!--
+    <apex:outputText rendered="{!NOT(Contains($User.LastName, 'Guest'))}"> 
+        <div style="border: 1px solid #e5e5e5; border-radius: 7px; margin-left: 11px; margin-right: 282px; margin-top: 20px;">
+            <div class="roundedComment ">
+             <div class="fontHeader">
+                <apex:outputText value="Comments" escape="false"/>                                 
+             </div>            
+            </div> 
+           <div style="margin-left:20px; margin-top:20px;" id="chatterReviewBut"><chatter:feed entityId="{!commentRecord}" /></div>                             
+        </div>
+   </apex:outputText>
+   -->
+ <!-- end sharing -->
+<!--- START OF Footer--->
+        <apex:include pageName="PortalDesignFooter" id="PortalDesignFootertop" />       
+    </div>    
+</div><!-- End of NewsDivform-->   
+    
+</html>
+</apex:page>

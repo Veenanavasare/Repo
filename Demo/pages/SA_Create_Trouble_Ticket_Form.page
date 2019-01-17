@@ -1,0 +1,632 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="ContactPrototypeController">
+    <style type="text/css">
+        .wireline-container,
+        .Voice-container,
+        .Data-container,
+        .Messaging-container,
+        .Voicemail-container,
+        .disp-table-container,
+        .intrusive-test-container,
+        .wireline-form-elements,
+        .mobility-container { display: none; }
+        .order-num-container { display: block !important; }
+        .disp-table {
+            border: 1px solid silver !important; 
+        }
+        h1.reg {
+            margin-bottom: 0px !important; 
+        }
+        h4.reg {
+            margin-top: 10px !important; 
+        }
+        h1.separator  {
+            padding-top: 20px; 
+            border-top: 1px solid #333;
+            margin-top: 40px !important; 
+        }
+        .opportunity-id-container {
+            display: block !important;
+        }
+        .created-ticket {
+            position: relative;
+            height: 20px !important;
+            margin-right: 5px !important;
+            width: 20px !important;
+        }
+        .errorText{
+            display: inline-block;
+            color: #ce2828;
+            margin-top: 4px;
+            font-size: 15px;
+        }
+        /*Following style is overwritten by walkme styles to over write this style is written internally*/
+        input[type="radio"] {
+            margin: 4px 0px 0px 0px !important;
+            top: 0px !important;
+        }
+    </style>
+    <apex:form styleClass="escalations-form" html-action="">
+        <apex:inputText value="{!Topic}" styleClass="topic-field internal hidden" />
+        <apex:inputText value="{!Category}" styleClass="category-field internal hidden" />    
+        <apex:inputText value="{!Subject}" styleClass="subject-field internal hidden"/>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-back-link">Back</div>
+                <div class="row">
+                    <div class="col-md-12 additional-links">
+                        <h1>Helpful Links</h1>
+                        <ol>
+                            <apex:outputPanel >   
+                                <apex:repeat value="{!DocMapSATTCreation}" var="docMap"> 
+                                    <li>
+                                        <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}" target="_blank" styleClass="document-file">
+                                            <apex:outputText value="{!docMap.Name}"/>
+                                        </apex:outputLink>        
+                                    </li>
+                                </apex:repeat>    
+                            </apex:outputPanel>
+                        </ol>
+                    </div>
+                </div>
+            </div>  
+            <div class="col-md-8">
+                <!-- <h1 class="topic-form-title"></h1> -->
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Is your trouble related to Wireline or Mobility?</label>
+                            <apex:selectRadio styleClass="radio-button wireline-or-mobility required" value="{!Product_Family}">
+                                <apex:selectoption itemValue="Wireline" itemLabel="Wireline"></apex:selectoption>
+                                <apex:selectoption itemValue="Mobility" itemLabel="Mobility"></apex:selectoption>
+                            </apex:selectRadio>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div>
+
+                    <div class="wireline-container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h1 class="reg">Maintenance Center Contact Numbers</h1>
+                                <h4 class="reg">24x7 365 Days</h4>
+                                <p>As an AT&amp;T Partner Exchange program participant, you are responsible for creating trouble tickets with the appropriate AT&amp;T Maintenance Center.</p>
+                                <table class="table table-striped disp-table">
+                                  <thead>
+                                      <tr>
+                                          <th>Product</th>
+                                          <th>Suport Contact Information</th>
+                                      </tr>
+                                  </thead>
+                                  <tbody>
+                                      <tr>
+                                          <td>AVPN - AT&amp;T Virtual Private Network</td>
+                                          <td>877-ATT-FIXX (877-288-3499)</td>
+                                      </tr>
+                                      <tr>
+                                          <td>MIS/PNT -  Managed Internet Service / Private Network Transport</td>
+                                          <td>888-613-6330</td>
+                                      </tr>
+                                      <tr>
+                                          <td>AT&amp;T Switched Ethernet</td>
+                                          <td>888-644-3662</td>
+                                      </tr>
+                                      <tr>
+                                          <td>IP Flexible Reach (VOIP)</td>
+                                          <td>877-288-8362</td>
+                                      </tr>
+                                      <tr>
+                                          <td>AT&amp;T Internet Access (DSL, Broadband)</td>
+                                          <td>877-XDSL-ATT (877-937-5288)</td>
+                                      </tr>
+                                      <tr>
+                                          <td>ANIRA with AVPN (AT&amp;T Network-Based IP VPN Remote Access)</td>
+                                          <td>877-ATT-FIXX (877-288-3499)</td>
+                                      </tr>
+                                      <tr>
+                                          <td>ANIRA with PNT (AT&amp;T Network-Based IP VPN Remote Access)</td>
+                                          <td>888-613-6330</td>
+                                      </tr>
+                                      <tr>
+                                          <td>NBFW - Network Based Firewall</td>
+                                          <td>877-677-2881, ClientPIN</td>
+                                      </tr>
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label><input type="checkbox" class="created-ticket"/>I was not able to create a ticket with the appropriate AT&amp;T Maintenance Center.</label>
+                            </div>
+                        </div>
+                        <div class="wireline-form-elements">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Please select your impacted product</label>
+                                    <apex:selectList styleClass="product-felement required" size="1" value="{!Product}">
+                                        <apex:selectoption itemValue="none" itemLabel="Select"></apex:selectoption>
+                                        <apex:selectoption itemValue="AIA" itemLabel="AIA - AT&T Internet Access (DSL, Broadband)"></apex:selectoption>
+                                        <apex:selectoption itemValue="ANIRA with AVPN" itemLabel="ANIRA with AVPN (AT&T Network-Based IP VPN Remote Access)"></apex:selectoption>
+                                        <apex:selectoption itemValue="ANIRA with PNT" itemLabel="ANIRA with PNT (AT&T Network-Based IP VPN Remote Access)"></apex:selectoption>
+                                        <apex:selectoption itemValue="ASE" itemLabel="ASE - AT&T Switched Ethernet"></apex:selectoption>
+                                        <apex:selectoption itemValue="AVPN" itemLabel="AVPN - AT&T Virtual Private Network"></apex:selectoption>
+                                        <apex:selectoption itemValue="IPFLEX" itemLabel="IPFLEX - IP Flexible Reach (VOIP)"></apex:selectoption>
+                                        <apex:selectoption itemValue="MIS/PNT" itemLabel="MIS/PNT -  Managed Internet Service / Private Network Transport"></apex:selectoption>
+                                        <apex:selectoption itemValue="NBFW" itemLabel="NBFW - Network Based Firewall"></apex:selectoption>
+                                    </apex:selectList>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Asset Type</label>
+                                     <apex:selectList value="{!Asset_Type}" size="1" styleClass="issue-type required">
+                                        <apex:selectoption itemLabel="Select" itemValue="none"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Circuit ID" itemValue="Circuit ID"></apex:selectoption>
+                                        <apex:selectoption itemLabel="IP Address" itemValue="IP Address"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Router Host Name" itemValue="Router Host Name"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Telephone Number" itemValue="Telephone Number"></apex:selectoption>
+                                    </apex:selectList>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 order-num-container">
+                                     <label>Asset ID</label>
+                                     <apex:inputText value="{!Asset_ID}" styleClass="required"/> 
+                                  </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-7">
+                                    <label>Trouble Description</label>
+                                    <apex:inputTextarea styleClass="required" value="{!Description}" style="width: 260px; border-radius: 4px; height: 100px; padding: 0px; padding:10px; border: 1px solid #939393;"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 intrusive-check required">
+                                    <label>Do you Authorize Intrusive Testing Immediately?</label>
+                                    <apex:selectRadio styleClass="radio-button intrusive-test" value="{!Intrusive_Test_Authorization}">
+                                        <apex:selectoption itemValue="Authorized" itemLabel="Yes"></apex:selectoption>
+                                        <apex:selectoption itemValue="Not Authorized" itemLabel="No"></apex:selectoption>
+                                    </apex:selectRadio>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row intrusive-test-container">
+                                <div class="col-md-6">
+                                    <label>Intrusive Test Authorization Window <i class="ionicons ion-help-circled help-text" data-toggle="tooltip" data-placement="right" title="Please provide a 4-hour test window."></i></label>
+                                    <apex:inputText styleClass="required" value="{!Intrusive_Test_Window}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <!-- /////////////////////End Customer Information//////////////////// -->
+                            <div class="row">
+                                <h1 class="separator">End Customer Information</h1>
+                                <div class="col-md-6">
+                                    <label>End Customer Company Name</label>
+                                    <apex:inputText styleClass="required" value="{!End_Customer_Company_Name}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>End Customer Local Contact Name <i class="ionicons ion-help-circled help-text" data-toggle="tooltip" data-placement="right" title="Provide the name of the person that is physically onsite and able to provide access to the premises if a technician dispatch is necessary."></i></label>
+                                    <apex:inputText styleClass="required" value="{!End_Customer_Local_Contact_Name}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>End Customer Site Access Hours: Monday- Friday</label>
+                                    <apex:inputText styleClass="required" value="{!End_Customer_Site_Access_Hours_M_F}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>End Customer Site Access Hours: Saturday- Sunday</label>
+                                    <apex:inputText styleClass="required" value="{!End_Customer_Site_Access_Hours_Sat_Sun}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Street</label>
+                                    <apex:inputText styleClass="required" value="{!Service_Address_Street}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>City</label>
+                                    <apex:inputText styleClass="required" value="{!Service_Address_City}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>State</label>
+                                    <apex:selectList size="1" value="{!Service_Address_State}"  styleClass="required">
+                                        <apex:selectoption itemLabel="Select" itemValue="none"></apex:selectoption>
+                                        <apex:selectoption itemLabel="AL" itemValue="AL"></apex:selectoption>
+                                        <apex:selectoption itemLabel="AK" itemValue="AK"></apex:selectoption>
+                                        <apex:selectoption itemLabel="AZ" itemValue="AZ"></apex:selectoption>
+                                        <apex:selectoption itemLabel="AR" itemValue="AR"></apex:selectoption>
+                                        <apex:selectoption itemLabel="CA" itemValue="CA"></apex:selectoption>
+                                        <apex:selectoption itemLabel="CO" itemValue="CO"></apex:selectoption>
+                                        <apex:selectoption itemLabel="CT" itemValue="CT"></apex:selectoption>
+                                        <apex:selectoption itemLabel="DE" itemValue="DE"></apex:selectoption>
+                                        <apex:selectoption itemLabel="FL" itemValue="FL"></apex:selectoption>
+                                        <apex:selectoption itemLabel="GA" itemValue="GA"></apex:selectoption>
+                                        <apex:selectoption itemLabel="HI" itemValue="HI"></apex:selectoption>
+                                        <apex:selectoption itemLabel="ID" itemValue="ID"></apex:selectoption>
+                                        <apex:selectoption itemLabel="IL" itemValue="IL"></apex:selectoption>
+                                        <apex:selectoption itemLabel="IN" itemValue="IN"></apex:selectoption>
+                                        <apex:selectoption itemLabel="IA" itemValue="IA"></apex:selectoption>
+                                        <apex:selectoption itemLabel="KS" itemValue="KS"></apex:selectoption>
+                                        <apex:selectoption itemLabel="KY" itemValue="KY"></apex:selectoption>
+                                        <apex:selectoption itemLabel="LA" itemValue="LA"></apex:selectoption>
+                                        <apex:selectoption itemLabel="ME" itemValue="ME"></apex:selectoption>
+                                        <apex:selectoption itemLabel="MD" itemValue="MD"></apex:selectoption>
+                                        <apex:selectoption itemLabel="MA" itemValue="MA"></apex:selectoption>
+                                        <apex:selectoption itemLabel="MI" itemValue="MI"></apex:selectoption>
+                                        <apex:selectoption itemLabel="MN" itemValue="MN"></apex:selectoption>
+                                        <apex:selectoption itemLabel="MS" itemValue="MS"></apex:selectoption>
+                                        <apex:selectoption itemLabel="MO" itemValue="MO"></apex:selectoption>
+                                        <apex:selectoption itemLabel="MT" itemValue="MT"></apex:selectoption>
+                                        <apex:selectoption itemLabel="NE" itemValue="NE"></apex:selectoption>
+                                        <apex:selectoption itemLabel="NV" itemValue="NV"></apex:selectoption>
+                                        <apex:selectoption itemLabel="NH" itemValue="NH"></apex:selectoption>
+                                        <apex:selectoption itemLabel="NJ" itemValue="NJ"></apex:selectoption>
+                                        <apex:selectoption itemLabel="NM" itemValue="NM"></apex:selectoption>
+                                        <apex:selectoption itemLabel="NY" itemValue="NY"></apex:selectoption>
+                                        <apex:selectoption itemLabel="NC" itemValue="NC"></apex:selectoption>
+                                        <apex:selectoption itemLabel="ND" itemValue="ND"></apex:selectoption>
+                                        <apex:selectoption itemLabel="OH" itemValue="OH"></apex:selectoption>
+                                        <apex:selectoption itemLabel="OK" itemValue="OK"></apex:selectoption>
+                                        <apex:selectoption itemLabel="OR" itemValue="OR"></apex:selectoption>
+                                        <apex:selectoption itemLabel="PA" itemValue="PA"></apex:selectoption>
+                                        <apex:selectoption itemLabel="RI" itemValue="RI"></apex:selectoption>
+                                        <apex:selectoption itemLabel="SC" itemValue="SC"></apex:selectoption>
+                                        <apex:selectoption itemLabel="SD" itemValue="SD"></apex:selectoption>
+                                        <apex:selectoption itemLabel="TN" itemValue="TN"></apex:selectoption>
+                                        <apex:selectoption itemLabel="TX" itemValue="TX"></apex:selectoption>
+                                        <apex:selectoption itemLabel="UT" itemValue="UT"></apex:selectoption>
+                                        <apex:selectoption itemLabel="VT" itemValue="VT"></apex:selectoption>
+                                        <apex:selectoption itemLabel="VA" itemValue="VA"></apex:selectoption>
+                                        <apex:selectoption itemLabel="WA" itemValue="WA"></apex:selectoption>
+                                        <apex:selectoption itemLabel="WV" itemValue="WV"></apex:selectoption>
+                                        <apex:selectoption itemLabel="WI" itemValue="WI"></apex:selectoption>
+                                        <apex:selectoption itemLabel="WY" itemValue="WY"></apex:selectoption>
+                                    </apex:selectList>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Zip</label>
+                                    <apex:inputText styleClass="required" value="{!Service_Address_Zip}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Country</label>
+                                     <apex:selectList value="{!Service_Address_Country}" size="1" styleClass="country-felement required">
+                                        <apex:selectoption itemLabel="Select" itemValue="none"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Canada" itemValue="Canada"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Mexico" itemValue="Mexico"></apex:selectoption>
+                                        <apex:selectoption itemLabel="United States" itemValue="USA"></apex:selectoption>
+                                        <apex:selectoption itemLabel="other" itemValue="other"></apex:selectoption>
+                                      </apex:selectList>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row country-other">
+                                <div class="col-md-6">
+                                    <label>Country (Other)</label>
+                                    <apex:selectList value="{!Service_Address_Country_Other}" styleClass="country-other required" size="1">
+                                        <apex:selectoption itemLabel="Select" itemValue="none"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Argentina" itemValue="Argentina"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Australia" itemValue="Australia"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Austria" itemValue="Austria"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Belgium" itemValue="Belgium"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Brazil" itemValue="Brazil"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Bulgaria" itemValue="Bulgaria"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Canada" itemValue="Canada"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Chile" itemValue="Chile"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Colombia" itemValue="Colombia"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Costa Rica" itemValue="Costa Rica"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Croatia" itemValue="Croatia"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Cyprus" itemValue="Cyprus"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Czech Republic" itemValue="Czech Republic"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Denmark" itemValue="Denmark"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Dominican Republic" itemValue="Dominican Republic"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Ecuador" itemValue="Ecuador"></apex:selectoption>
+                                        <apex:selectoption itemLabel="El Salvador" itemValue="El Salvador"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Finland" itemValue="Finland"></apex:selectoption>
+                                        <apex:selectoption itemLabel="France" itemValue="France"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Germany" itemValue="Germany"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Greece" itemValue="Greece"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Guatemala" itemValue="Guatemala"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Honduras" itemValue="Honduras"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Hong Kong" itemValue="Hong Kong"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Hungary" itemValue="Hungary"></apex:selectoption>
+                                        <apex:selectoption itemLabel="India" itemValue="India"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Indonesia" itemValue="Indonesia"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Italy" itemValue="Italy"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Japan" itemValue="Japan"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Korea (Republic of)" itemValue="Korea (Republic of)"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Latvia" itemValue="Latvia"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Lithuania" itemValue="Lithuania"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Luxembourg" itemValue="Luxembourg"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Malaysia" itemValue="Malaysia"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Mexico" itemValue="Mexico"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Netherlands" itemValue="Netherlands"></apex:selectoption>
+                                        <apex:selectoption itemLabel="New Zealand" itemValue="Iceland"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Nicaragua" itemValue="Nicaragua"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Norway" itemValue="Iceland"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Pakistan" itemValue="Pakistan"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Panama" itemValue="Panama"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Peru" itemValue="Peru"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Philippines" itemValue="Philippines"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Portugal" itemValue="Portugal"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Puerto Rico" itemValue="Puerto Rico"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Romania" itemValue="Romania"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Singapore" itemValue="Singapore"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Slovakia (Slovak Republic)" itemValue="Poland"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Slovenia" itemValue="Poland"></apex:selectoption>
+                                        <apex:selectoption itemLabel="South Africa" itemValue="South Africa"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Switzerland" itemValue="Switzerland"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Sweden" itemValue="Sweden"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Taiwan, Province Of China" itemValue="Taiwan, Province Of China"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Thailand" itemValue="Thailand"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Turkey" itemValue="Turkey"></apex:selectoption>
+                                        <apex:selectoption itemLabel="United Kingdom" itemValue="United Kingdom"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Uruguay" itemValue="Uruguay"></apex:selectoption>
+                                        <apex:selectoption itemLabel="Venezuela" itemValue="Venezuela"></apex:selectoption>
+                                    </apex:selectList>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+
+                            <!-- /////////////////////Solution Provider Information//////////////////// -->
+
+                            <div class="row">
+                                <h1 class="separator">Solution Provider Information</h1>
+                                <div class="col-md-6">
+                                    <label>SP Technical Contact Name</label>
+                                    <apex:inputText styleClass="required" value="{!SP_Technical_Contact_Name}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>SP Technical Contact Phone</label>
+                                    <apex:inputText styleClass="required" value="{!SP_Technical_Contact_Phone}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>SP Technical Contact Email</label>
+                                    <apex:inputText styleClass="required email-addr-inputSp" value="{!SP_Technical_Contact_Email}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Alternate SP Technical Contact Name</label>
+                                    <apex:inputText styleClass="" value="{!Alternate_SP_Technical_Contact_Name}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Alternate SP Technical Contact Phone</label>
+                                    <apex:inputText styleClass="" value="{!Alternate_SP_Technical_Contact_Phone}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Alternate SP Technical Contact Email</label>
+                                    <apex:inputText styleClass="email-addr-inputASP" value="{!Alternate_SP_Technical_Contact_Email}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>SP Internal Ticket Number <i class="ionicons ion-help-circled help-text" data-toggle="tooltip" data-placement="right" title="If you have an internal ticket number associated with this issue, please list it here."></i></label>
+                                    <apex:inputText styleClass="" value="{!SP_Internal_Ticket_Number}" maxlength="255" />
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>    
+                        </div>
+                    </div>
+                    <div class="mobility-container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>What type of Mobility trouble are you experiencing?</label>
+                                <apex:selectList size="1" styleClass="mobility-trouble required" value="{!Mobility_Trouble_Type}">
+                                    <apex:selectoption itemValue="none" itemLabel="Select"></apex:selectoption>
+                                    <apex:selectoption itemValue="Voice" itemLabel="Voice"></apex:selectoption>
+                                    <apex:selectoption itemValue="Data" itemLabel="Data"></apex:selectoption>
+                                    <apex:selectoption itemValue="Messaging" itemLabel="Messaging"></apex:selectoption>
+                                    <apex:selectoption itemValue="Voicemail" itemLabel="Voicemail"></apex:selectoption>
+                                </apex:selectList>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+
+                        <!-- //////// VOICE ///////// -->
+                        <div class="mob-trbl Voice-container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Voice</h4>
+                                    <label>Impacted Phone Number</label>
+                                    <apex:inputText styleClass="required" value="{!Phone_Number_CTN}" maxlength="40"/>                             
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>  
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>IMEI Code</label>
+                                    <apex:inputText styleClass="" value="{!IMEI}" maxlength="40"/>                             
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>SIM Number</label>
+                                    <apex:inputText styleClass="" value="{!SIM_Number}" maxlength="40"/>                             
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Physical Address</label>
+                                    <apex:inputText styleClass="" value="{!Physical_Address}" maxlength="40"/>                             
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Trouble Description</label>
+                                    <apex:inputTextarea styleClass="required" value="{!Trouble_Report}" style="width: 260px; border-radius: 4px; height: 100px; padding: 0px; padding:10px; border: 1px solid #939393;"/>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>    
+                        </div>
+                        <!-- //////////// DATA ISSUE ///////////// -->
+                        <div class="mob-trbl Data-container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Data</h4>   
+                                 <label>Impacted Phone Number</label>
+                                    <apex:inputText styleClass="required" value="{!Phone_Number_CTN_1}" maxlength="40"/>                             
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>IMEI Code</label>
+                                    <apex:inputText styleClass="" value="{!IMEI_1}" maxlength="40"/>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>SIM Number</label>
+                                    <apex:inputText styleClass="" value="{!SIM_Number_1}" maxlength="40"/>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Physical Address</label>
+                                    <apex:inputText styleClass="" value="{!Physical_Address_1}" maxlength="40"/>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Trouble Description</label>
+                                    <apex:inputTextarea styleClass="required" value="{!Trouble_Report_1}" style="width: 260px; border-radius: 4px; height: 100px; padding: 0px; padding:10px; border: 1px solid #939393;"/>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div> 
+                        </div>
+                        <!-- //////////// MESSAGING ISSUE ///////////// -->
+                        <div class="mob-trbl Messaging-container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Messaging</h4>
+                                  <label>Impacted Phone Number</label>
+                                    <apex:inputText styleClass="required" value="{!Phone_Number_CTN_2}" maxlength="40"/>                             
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>  
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>IMEI Code</label>
+                                    <apex:inputText styleClass="" value="{!IMEI_2}" maxlength="40"/>                             
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>SIM Number</label>
+                                    <apex:inputText styleClass="" value="{!SIM_Number_2}" maxlength="40"/>                             
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Physical Address</label>
+                                    <apex:inputText styleClass="" value="{!Physical_Address_2}" maxlength="40"/>                             
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>  
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Trouble Description</label>
+                                    <apex:inputTextarea styleClass="required" value="{!Trouble_Report_2}" style="width: 260px; border-radius: 4px; height: 100px; padding: 0px; padding:10px; border: 1px solid #939393;"/>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div> 
+                        </div>
+                        <!-- //////////// VOICEMAIL ISSUE ///////////// -->
+                        <div class="mob-trbl Voicemail-container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Voicemail</h4>
+                                <label>Impacted Phone Number</label>
+                                    <apex:inputText styleClass="required" value="{!Phone_Number_CTN_3}" maxlength="40"/>                             
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>  
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>IMEI Code</label>
+                                    <apex:inputText styleClass="" value="{!IMEI_3}" maxlength="40"/>                             
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div> 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>SIM Number</label>
+                                    <apex:inputText styleClass="" value="{!SIM_Number_3}" maxlength="40"/>                             
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>  
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Trouble Description</label>
+                                    <apex:inputTextarea styleClass="required" value="{!Trouble_Report_3}" style="width: 260px; border-radius: 4px; height: 100px; padding: 0px; padding:10px; border: 1px solid #939393;"/>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>     
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-buttons">
+                        <div class="btn btn-default">Cancel</div>
+                        <input type="hidden"  id="external" name="external" value="1" />
+                        <div id="valSubmit" class="btn btn-primary submitToConfirm-button">Confirm</div>
+                        <apex:commandButton action="{!onSubmit}" styleClass="btn btn-primary submit-button" value="Quick Submit" reRender="true" />
+                    </div>
+                </div>          
+            </div>  
+        </div>
+    </apex:form>
+
+    <script type="text/javascript">
+        $(document).ready( function () {
+            /******************************EMAIL VALIDATOR*******************************/
+    
+            /******************************END OF EMAIL VALIDATOR************************/
+        });
+    </script>
+</apex:page>

@@ -1,0 +1,27 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetGrowPdfsCtrl">
+<style>
+</style>
+    <div class="overview">        
+        <section data-module="growOverview_content_block">
+            <h2>Create your business plan</h2>
+            <p>A key step to your success in the AT&amp;T Partner Exchange program is quickly incorporating AT&amp;T products into your value proposition. Our business plan template will help you integrate our products into your portfolio and uncover any gaps that may keep you from achieving success in the program.</p>
+            <p>The business plan template will help you add AT&amp;T products to your portfolio. It addresses your overall business strategy, as well as sales, marketing and operational planning. The plan also includes a Quarterly Business Review (QBR) with your account manager to help ensure that your business plan adapts to your changing business needs.</p>      
+            <apex:outputPanel >   
+                <div class="details">
+                <hr class="blue_hr mb-40" />
+                    <apex:repeat value="{!DocMapGROWAdditionalBusPlan }" var="docMap"> 
+                        <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                            <div class="document-row">
+                                <div class="file-type file-{!docMap.type}"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                    <p><apex:outputText value="{!docMap.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>        
+                     </apex:repeat>    
+                </div>
+                </apex:outputPanel>             
+        </section>
+    </div>
+</apex:page>

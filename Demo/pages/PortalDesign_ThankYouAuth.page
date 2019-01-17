@@ -1,0 +1,56 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" title="Contact Us" controller="ContactUsController">
+    <style>
+        #slice_contact_us { background: url({!URLFOR($Resource.PortalDesignHeros,'heros/contact.jpg')}); height:860px;}
+    </style>
+    
+    
+    <apex:outputPanel rendered="{!authenticated}" >
+        <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" />
+    </apex:outputPanel>     
+    
+    <apex:outputPanel rendered="{! !authenticated}" >
+        <apex:include pageName="PortalDesign_ThankYouUnAuth" id="PortalDesign_ThankYouUnAuth" />
+    </apex:outputPanel>
+    
+    <apex:includeScript value="{!$Resource.jQueryMin}" /> 
+    <apex:includeScript value="{!$Resource.jMaskedInput}" />
+    <apex:includeScript value="{!$Resource.atombootstrapminjs}" />
+
+
+    <div id="cred_pages">
+
+        <div id="slice_contact_us">
+            <apex:form id="contactForm">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <section class="contact_header">
+                            <h1>Contact Us</h1>
+                            <h2>Together we can build wireless, cloud, and network
+                                services around any business.</h2>
+                        </section>
+                    </div>
+                </div>
+
+                <div class="max_1000_width">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="contact_form_container" id="contactFormDiv">
+                                <apex:pageMessages ></apex:pageMessages>
+                                <apex:outputPanel id="thankYouText">
+                                    <div class="thankYouText">
+                                        {!thankYouMessage}
+                                    </div>
+                                </apex:outputPanel><br/>
+                                    <!-- <div class="btn_parent">
+                                           <apex:pageMessage summary="Your request was submitted successfully (Query Number: {!contactUsQueryNumber}). You will receive a confirmation email soon. Thank you for contacting AT&T.
+        " severity="warning" strength="3"/>
+                                                                                                       
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:form>
+        </div>
+    </div>    
+</apex:page>

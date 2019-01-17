@@ -1,0 +1,372 @@
+<apex:page controller="MulCASEPrcSchIntrastateController" showHeader="false" sidebar="false" renderAs="PDF" standardStylesheets="false" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false" showChat="false">
+
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+        <style type="text/css" media="print">
+            @page {
+                font-family: sans-serif;
+                /*margin-top: 2.54cm;*/
+                margin-bottom: 2.54cm;
+                @top-center {
+                    content: element(header);
+                }
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+            div.header {
+                display: block;
+                margin: 50px;
+                padding: 20px;
+                margin-right: 10px;
+                text-align: right !important;
+                position: running(header);
+            }
+            div.footer {
+                display: block;
+                line-height: 3em 0;
+                padding-bottom: 20px;
+                position: running(footer);
+            }
+            span.pagenumber:before {
+                content: counter(page);
+            }
+            span.pagecount:before {
+                content: counter(pages);
+            }
+            ol li {
+                margin: 1em 0;
+            }
+            .col1 {
+                width: 50%;
+                display: table-cell;
+            }
+            .col2 {
+                width: 50%;
+                display: table-cell;
+            }
+        </style>
+    </head>
+    <apex:panelGrid columns="2" width="100%">
+        <apex:panelGroup layout="block">
+            <apex:image value="{!URLFOR($Resource.ATTLogo)}" />
+        </apex:panelGroup>
+        <apex:panelGroup layout="block">
+            <apex:outputLabel value="{!$Label.ASE_Label1} {!MRANumber}" style="text-align:right;" />
+        </apex:panelGroup>
+    </apex:panelGrid>
+    <div class="footer">
+        <div style="width:100%; text-align: center;">
+            <label style="margin: 2em 0;"><b>AT&amp;T and Solution Provider Confidential Information</b>
+            </label>
+        </div>
+        <div style="width:100%; text-align: center;">
+            <label style="margin: 2em 0;">Page&nbsp;<span class="pagenumber" />&nbsp;of&nbsp;<span class="pagecount" />
+            </label>
+        </div>
+        <label style="margin: 2em 0;">EBM, ASE EBM {!Tier} {!proposal.Apttus_Proposal__Payment_Term__c} Rate Plan, {!OpptyName}</label>
+    </div>
+    <div class="content container">
+        <apex:outputPanel id="container" style="font-family: Arial;">
+            <apex:outputPanel >
+                <br/>
+                <center>
+                    <apex:outputlabel value="{!$Label.ASE_Label2}" />
+                    <br/>
+                    <apex:outputlabel value="{!$Label.ASE_Label3_Intrastate}" />
+                    <br/>
+                    <apex:outputlabel value="{!$Label.ASE_Label3_a}" />
+                </center>
+            </apex:outputPanel>
+            <br/>
+            <br/>
+            <apex:panelGrid columns="2" width="100%" border="1" columnClasses="col1, col2">
+                <apex:panelGroup layout="block">
+                    <b><apex:outputLabel value="{!$Label.ASE_Label4}"/></b>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <b><apex:outputLabel value="{!$Label.ASE_Label5}"/></b>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputText value="{!SPAddress.Name}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.ASE_Label6}" />
+                    <apex:outputText value="{!SPAddress.Street}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.ASE_Label7}" />
+                    <apex:outputText value="{!SPAddress.City}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.ASE_Label8}" />
+                    <apex:outputText value="{!SPAddress.State}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.ASE_Label9}" />
+                    <apex:outputText value="{!SPAddress.Zip}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.ASE_Label10}" />
+                    <apex:outputText value="{!SPAddress.Country}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputText value="{!ATTAddress.Name}" />
+                    <br/>
+                    <apex:outputText value="{!ATTAddress.Street}" />
+                    <br/>
+                    <apex:outputText value="{!ATTAddress.City}" />
+                    <br/>
+                    <apex:outputText value="{!ATTAddress.State}" />
+                    <br/>
+                    <apex:outputText value="{!ATTAddress.Zip}" />
+                    <br/>
+                    <apex:outputText value="{!ATTAddress.Country}" />
+                </apex:panelGroup>
+            </apex:panelGrid>
+            <apex:panelGrid columns="1" width="100%" border="1">
+                <apex:panelGroup layout="block">
+                    <b><apex:outputLabel value="{!$Label.ASE_Label11}"/></b>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!$Label.ASE_Label12}" />
+                    <apex:outputText value="{!EndCustomerAddress.Name}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.ASE_Label6}" />
+                    <apex:outputText value="{!EndCustomerAddress.Street}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.ASE_Label7}" />
+                    <apex:outputText value="{!EndCustomerAddress.City}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.ASE_Label8}" />
+                    <apex:outputText value="{!EndCustomerAddress.State}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.ASE_Label9}" />
+                    <apex:outputText value="{!EndCustomerAddress.Zip}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.ASE_Label10}" />
+                    <apex:outputText value="{!EndCustomerAddress.Country}" />
+                </apex:panelGroup>
+            </apex:panelGrid>
+            <br/>
+            <apex:outputLabel value="{!$Label.ASE_Label13}" />
+            <br/>
+            <br/>
+            <apex:outputLabel value="{!$Label.ASE_Label13_a}" />
+            <br/>
+            <br/>
+            <apex:outputLabel value="{!$Label.ASE_Label13_b}" />
+            <b><apex:outputLabel value="{!$Label.ASE_Label13_c_Intrastate}"/></b>
+            <apex:outputLabel value="{!$Label.ASE_Label13_d}" />
+            <br/>
+            <br/>
+            <apex:panelGrid columns="2" width="100%" border="1" columnClasses="col1, col2" style="page-break-after: always;">
+                <apex:panelGroup layout="block">
+                    <b><apex:outputLabel value="Solution Provider"/></b> <br/>(by its authorized representative)
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <b><apex:outputLabel value="AT&T"/></b> <br/>(by its authorized representative)
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <br/><apex:outputLabel value="By:" /> <apex:outputLabel value="," style="font-size:0.5px;"/> <br/><br/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <br/> <apex:outputLabel value="By:" /> <apex:outputLabel value="." style="font-size:0.5px;"/> <br/><br/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Name:" /> <apex:outputLabel value="," style="font-size:0.5px;"/>
+                    <apex:outputLabel value="{!$User.FirstName} {!$User.LastName}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Name:" /> <apex:outputLabel value="." style="font-size:0.5px;"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Title:" /> <apex:outputLabel value="," style="font-size:0.5px;"/>
+                    <apex:outputLabel value="{!$UserRole.Name}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Title:" /> <apex:outputLabel value="." style="font-size:0.5px;"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Date:" /> <apex:outputLabel value="," style="font-size:0.5px;"/>
+                    <apex:outputText />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Date:" /> <apex:outputLabel value="." style="font-size:0.5px;"/>
+                    <apex:outputText />
+                </apex:panelGroup>
+            </apex:panelGrid>
+            <ol>
+                <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.ASE_Label_Services}</u></b>
+                    <apex:panelGrid columns="2" width="100%" border="1" style="margin-top:7px;">
+                        <apex:panelGroup layout="block">
+                            <center><b>{!$Label.ASE_Label21}</b>
+                            </center>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <center><b>{!$Label.ASE_Label22}</b>
+                            </center>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <apex:outputlabel value="{!$Label.ASE_Label23}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <a href="{!$Label.ASE_Label24}" target="_blank">{!$Label.ASE_Label24}</a>
+                        </apex:panelGroup>
+                    </apex:panelGrid>
+                    <br/>{!$Label.ASE_Label25}
+                </li>
+                <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.ASE_Label27}</u></b>
+                    <apex:panelGrid columns="2" width="100%" border="1" style="margin-top:7px;">
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputlabel value="{!$Label.ASE_Label28}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputText value="{!OpptyName}"></apex:outputText>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputlabel value="{!$Label.ASE_Label29}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputText value="{!OpptyEffectiveDate}"></apex:outputText>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputlabel value="{!$Label.ASE_Label30}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputText value="{!OpptyTerm}"></apex:outputText>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputlabel value="{!$Label.ASE_Label31}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputText value="{!OpptyTerm}"></apex:outputText>
+                        </apex:panelGroup>
+                    </apex:panelGrid>
+                </li>
+                <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.ASE_Label32}</u></b>
+                    <apex:panelGrid columns="3" width="100%" border="1" style="margin-top:7px;">
+                        <apex:panelGroup layout="block">
+                            <apex:outputlabel value="{!$Label.ASE_Label32_a}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <apex:outputlabel value="{!$Label.ASE_Label32_b}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <apex:outputlabel value="{!$Label.ASE_Label32_c}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <apex:outputlabel value="{!$Label.ASE_Label32_d}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <apex:outputlabel value="50%" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <apex:outputlabel value="{!$Label.ASE_Label32_e}" />
+                        </apex:panelGroup>
+                    </apex:panelGrid>
+                    <br/>{!$Label.ASE_Label33}
+                </li>
+                <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.ASE_Label34}</u></b>
+                    <br/>{!$Label.ASE_Label35}
+                </li>
+                <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.ASE_Label36}</u></b> 
+                </li>
+                <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.ASE_Label37}</u></b>
+                    <br/>{!$Label.ASE_Label38} {!QuoteExpirtaionDate}
+                </li>
+                <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.ASE_Label39}</u></b>
+                    <div style="margin-bottom:15px;margin-top:4px;"><b>{!$Label.ASE_Label40}</b>
+                        <br/>{!$Label.ASE_Label41} <a href="www.att.com/partnerexchange">{!$Label.ASE_Label41_a}</a> {!$Label.ASE_Label41_b}
+                        <br/>
+                        <br/>{!$Label.ASE_Label42}
+                    </div>
+                    <br/>
+                    <br/>
+                    <div style="margin-bottom:15px;margin-top:4px;"><b>{!$Label.ASE_Label43}  </b>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <apex:variable var="countARs" value="{!0}" />
+                        <apex:repeat value="{!lineitems}" var="repeatItem">
+                            <apex:variable var="countARs" value="{!countARs + 1}" />
+                            <div style="margin-bottom:15px;margin-top:4px;"><!--b>{!$Label.ASE_Label44} #{!countARs} {!$Label.ASE_Label52} </b-->
+                                <apex:repeat value="{!repeatItem}" var="siteQuote">
+                                <b>{!siteQuote.CustomerName} {!$Label.ASE_Label52} </b>
+                                </apex:repeat>
+                                <br/>
+                                <br/>
+                                <apex:dataTable value="{!repeatItem}" var="item" border="1" width="100%" style="font-size:8.5px;">
+
+                                    <apex:column headerValue="Site Name" value="{!item.sitenumber}" />
+                                    <apex:column headerValue="Customer Name" value="{!item.CustomerName}" />
+                                    <!---->
+                                    <apex:column headerValue="Street" value="{!item.sitestreet}" />
+                                    <apex:column headerValue="City" value="{!item.sitecity}" />
+                                    <apex:column headerValue="State" value="{!item.sitestate}" />
+                                    <apex:column headerValue="Zip" value="{!item.sitezip}" />
+                                    <apex:column headerValue="Telephone Number" value="{!item.sitezip}" />
+                                    <!---->
+                                    <apex:column headerValue="LATA" value="{!item.AccessQty}" />
+                                    <!---->
+                                    <apex:column headerValue="Port Speed" value="{!item.PortSpeed}" />
+                                    <apex:column headerValue="CIR" value="{!item.AccessSpeed}" />
+                                    <!---->
+                                    <apex:column headerValue="Serving Arrangement" value="{!item.InstallationonOption}" />
+                                    <!---->
+                                    <apex:column headerValue="Class of Service" value="{!item.ClassofService}" />
+                                    <apex:column headerValue="Interface Type" value="{!item.ClassofService}" />
+                                    <!---->
+                                    <apex:column headerValue="Port Speed" value="{!item.PortSpeed}" />
+                                    <apex:column headerValue="CIR" value="$ {!item.AccessCost}" />
+                                    <!---->
+                                    <apex:column headerValue="Pricing for complete Deal without Discount" value="$ {!item.InstallationCost}" />
+                                    <!---->
+                                    <apex:column headerValue="{!$Label.AVPN_Label68}" value="$ {!item.NonRecurringPriceforcompletecircuit}" />
+                                    <apex:column headerValue="{!$Label.AVPN_Label69}" value="$ {!item.RecurringPricingforcompletecircuit}" />
+                                </apex:dataTable>
+                            </div>
+                        </apex:repeat>
+                        <apex:outputPanel >
+                            <br/>
+                            <br/>
+                            <apex:panelGrid border="1" columns="2">
+                                <apex:panelGroup style="width:50%"><b><apex:outputLabel value="{!$Label.ASE_Label45}"/></b>
+                                </apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="{!$Label.ASE_Label46}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputText value="$ {!RecurringPricewithoutDiscount}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="{!$Label.ASE_Label47}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputText value="$ {!TotaltDiscount}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="{!$Label.ASE_Label48}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputText value="$ {!RecurringPricewithDiscount}" /></apex:panelGroup>
+                            </apex:panelGrid>
+                        </apex:outputPanel>
+                        <br/>
+                        <br/>
+                        <apex:outputPanel rendered="{!TotaltDiscount != null && TotaltDiscount > 0 && AdditionalDealRegistrationDiscount != null && AdditionalDealRegistrationDiscount>0}">
+                            <apex:panelGrid border="1" columns="2">
+                                <apex:panelGroup style="width:50%"><b><apex:outputLabel value="{!$Label.ASE_Label49}"/></b>
+                                </apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%" rendered="{!AdditionalDealRegistrationDiscount != null && AdditionalDealRegistrationDiscount > 0 && proposal.Apttus_Proposal__Approval_Stage__c = $Label.ASE_TSC_Review_Confirmed}">
+                                    <apex:outputLabel value="{!$Label.ASE_Label51}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%" rendered="{!AdditionalDealRegistrationDiscount != null && AdditionalDealRegistrationDiscount > 0 && proposal.Apttus_Proposal__Approval_Stage__c = $Label.ASE_TSC_Review_Confirmed}">
+                                    <apex:outputText value="$ {!AdditionalDealRegistrationDiscount}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%" rendered="{!AdditionalDealRegistrationDiscount != null && AdditionalDealRegistrationDiscount > 0 && proposal.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Special_Pricing_Approved}">
+                                    <apex:outputLabel value="{!$Label.Special_Pricing_Discount}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%" rendered="{!AdditionalDealRegistrationDiscount != null && AdditionalDealRegistrationDiscount > 0 && proposal.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Special_Pricing_Approved}">
+                                    <apex:outputText value="$ {!AdditionalDealRegistrationDiscount}" /></apex:panelGroup>
+                            </apex:panelGrid>
+                        </apex:outputPanel>
+                        <br/>
+                        <br/>
+                    </div>
+                </li>
+            </ol>
+        </apex:outputPanel>
+    </div>
+</apex:page>

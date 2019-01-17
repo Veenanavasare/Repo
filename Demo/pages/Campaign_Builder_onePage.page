@@ -1,0 +1,413 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+ 
+    <style>
+
+    @font-face {
+        font-family: 'Portal-Fonts';
+        src:    url('{!URLFOR($Resource.icon_fonts,"/Portal-Fonts.eot?ho7d1w")}');
+        src:    url('{!URLFOR($Resource.icon_fonts,"/Portal-Fonts.eot?ho7d1w#iefix")}') format('embedded-opentype'),
+                url('{!URLFOR($Resource.icon_fonts,"/Portal-Fonts.ttf?ho7d1w")}') format('truetype'),
+                url('{!URLFOR($Resource.icon_fonts,"/Portal-Fonts.woff?ho7d1w")}') format('woff'),
+                url('{!URLFOR($Resource.icon_fonts,"/Portal-Fonts.svg?ho7d1w#Portal-Fonts")}') format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    i {
+        /* use !important to prevent issues with browser extensions that change fonts */
+        font-family: 'Portal-Fonts' !important;
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+
+        /* Better Font Rendering =========== */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .att-icon-bi-fold:before {
+    content: "\e901";
+    }
+    .att-icon-mobility:before {
+        content: "\e906";
+    }
+    .att-icon-network:before {
+        content: "\e907";
+    }
+    .att-icon-one-page:before {
+        content: "\e904";
+    }
+    .att-icon-security:before {
+        content: "\e909";
+    }
+    .att-icon-wrench:before {
+        content: "\e900";
+    }
+    .updateCustomer {
+        cursor: default;
+    }
+
+    .updateCustomer h4,
+    .updateCustomer .file-png {
+        cursor: pointer;
+    }
+    .updateCustomer h4 {
+        display: inline-block;
+    }
+
+    .document-file {
+        position: relative;
+    }
+    /*.details {
+        width: 65% !important;
+        float: left !important;
+    }*/
+    .linkedButton {
+       position: absolute;
+       right: 30px; 
+       top: 50%;
+       margin-top: -17px;
+        padding: 10px 20px;
+        font-family: clearviewattregular;
+        color: #FFF;
+        background: #056FAB none repeat scroll 0% 0%;
+        border: 0px none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .linkedButton:hover {
+        background-color: #3BC1F4;
+    }
+
+    .product-promo-content,
+    .template-promo-content {
+        display: none;
+    }
+
+    .product-promo-content {
+        margin: auto 25px;
+    }
+
+    .promo-link {
+        position: relative;
+        padding-top: 16px !important;
+        color: #fff !important;
+    }
+
+    .promo {
+        min-height: 152px !important;
+    }
+
+    .promo-link span {
+        position: absolute; 
+        bottom: 0px; 
+        width: 100%;
+    }
+    .transp-bg {
+        background-color: rgba(0,0,0,0.3);
+    }
+
+    .promo-link.active:after {
+        position: absolute;
+        bottom: -14px; 
+        left: 50%;
+        margin-left: -20px; 
+        content: "";
+        width: 0; 
+        height: 0; 
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-top: 20px solid #00688f;
+        z-index: -1;
+    }
+    .promo-link.active.dk-blue-arrow:after{
+        border-top: 20px solid #006e98 !important;    
+    }
+
+    .promo-link.active.dk-gray-arrow:after{
+        border-top: 20px solid #686868 !important; 
+    }
+
+    .promo-link.active.lt-blue-arrow:after{
+        border-top: 20px solid #4e89a1 !important;    
+    }
+    .learn-more {
+        padding-top: 10px !important; 
+        padding-bottom: 10px !important; 
+    }
+    
+    .step-heading {
+        margin-top: 7px;
+    }
+
+    .contentCol {
+        padding-top: 20px !important; 
+    } 
+
+    .body-load-content h2, 
+    .sub-h2 {
+        margin-bottom: 40px !important; 
+    }
+
+    .one-page-desc {
+        margin-top: 10px !important;
+    }
+
+    .att-icon {
+        color: #fff; 
+        font-size: 55px;
+        margin-bottom: 5px; 
+    }
+
+
+    </style>
+    <!-- GLOBAL HEADER INCLUDE -->
+    <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" /> 
+    <!-- ADDITIONAL INCLUDES FOR HEADER -->
+    <apex:stylesheet value="{!$Resource.products_css}"/>
+    <apex:form >
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="hero-grow-campaign jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                    <h1 class="hero_badge_1">{!$Label.Ad_Builder}</h1>
+                    <h2 class="hero_badge_2">Make your message count.</h2>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+
+    <!-- BODY SLICE -->
+    <div class="grow-body col-sm-12">
+        <div class="row">         
+            <div class="contentCol body-load-content" style="margin:0 6%;">
+
+              
+                
+                <!-- Tab: One-page, active tabbed content when user clicks on the One-page Learn More link -->
+                <div class="tab-content one-page-product-service">
+                    <a href="/apex/Campaign_Builder">&lt; Back to {!$Label.Ad_Builder} Overview</a><BR /><BR />
+                    <h2>One-page Product Sheets</h2>
+                    <p>Showcase your integrated solutions with AT&amp;T by providing your customers with easy-to-understand product information.</p>
+                    <p>From Network, to Mobility, to Hosting and Security Services we have a product sheet to help you communicate the value of your integrated solutions with AT&amp;T.</p>
+                    <!-- suggested text edit for intro paragraph:
+                    We have product sheets to help communicate the value of your solutions integrated with AT&amp;T from network, to mobility, to hosting and security services. Customize these one-pagers and showcase to your customers easy-to-understand product information about your AT&amp;T integrated solutions for them. 
+                    -->
+                    
+                    <hr class="blue_hr mt-40 mb-40" />
+                    
+                    <div class="section-indent product-promo">
+                        <div class="row">
+                        <!-- FIXME: need to show/hide correct tabbed content for these learn more links like the start selling section of Mobility Services page  --> 
+                            
+                            <!-- Network Services Section -->
+                            <div class="col-lg-4">
+                                <a data-content="network-services" href="javascript:void(0)" class="promo promo-link text-center bg-blue dk-blue-arrow">
+                                    <i class="att-icon att-icon-network"></i>
+                                    <h4>{!$Label.Network_Services}</h4>
+                                    <span class="transp-bg learn-more">Learn More</span>
+                                </a>
+                            </div>
+                            
+                            <!-- Mobility Services Section -->
+                            <div class="col-lg-4">
+                                <a data-content="mobile-services" href="javascript:void(0)" class="promo promo-link text-center bg-gray dk-gray-arrow">
+                                    <i class="att-icon  att-icon-mobility"></i>
+                                    <h4>{!$Label.Mobility_Services}</h4>
+                                    <span class="transp-bg learn-more">Learn More</span>
+                                </a>
+                            </div>
+                            
+                            <!-- Hosting & Security Services Section -->
+                            <div class="col-lg-4">
+                                <a data-content="hosting-services" href="javascript:void(0)" class="promo promo-link text-center bg-lt-blue lt-blue-arrow">
+                                    <i class="att-icon att-icon-security"></i>
+                                    <h4>{!$Label.Hosting_Security}</h4>
+                                    <span class="transp-bg learn-more">Learn More</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Document List: Resources -->
+                    <!-- FIXME: update GetPdfsController for this manaaged document section -->
+                    <div class="product-promo-content network-services">
+                        <h4 class="step-heading bg-blue">Network Services</h4>
+                        <div class="step-body">
+                            <p class="one-page-desc">Get integrated, reliable and high secure network solutions to give your customers peace of mind.</p>
+                            <hr class="blue_hr mt-40 mb-40" />                           
+                            <apex:outputPanel >   
+                                 <apex:repeat value="{!DocMapCampaignNetworkService}" var="docMap">                                  
+                                   <apex:outputLink styleClass="document-file updateCustomer" value="javascript:void(0)">                             
+                                      <div class="document-row mb-30">
+                                            <div class="file-type file-{!docMap.type}" network-id="{!docMap.id}"></div>
+                                            <div class="details">
+                                                <h4 network-id="{!docMap.id}"><apex:outputText value="{!docMap.Name}"/></h4>  
+                                                <p><apex:outputText value="{!docMap.description}"/></p> 
+                                                <span onclick="submitFormMethod('{!keyMapURL[docMap.DeveloperName]}')" class="linkedButton">Customize</span> 
+                                            </div>                                                                         
+                                        </div>                 
+                                    </apex:outputLink>           
+                                    <div id="networkService_{!docMap.id}" class="modal fade" aria-hidden="true">
+                                          <div class="modal-dialog modal-lg">   
+                                                <div class="modal-content"><button type="button" class="close" data-dismiss="modal">&times;</button>                                         
+                                                     <apex:image url="{!fileURL}+{!docMap.id}" styleClass="infographic mb-30" width="100%" />                                                                                      
+                                                </div>
+                                          </div>
+                                     </div>                                                                 
+                                </apex:repeat>   
+                            </apex:outputPanel> 
+                        </div>
+                    </div>
+                    <div class="product-promo-content mobile-services">
+                        <h4 class="step-heading bg-gray">Mobility Services</h4>
+                        <div class="step-body">
+                            <p class="one-page-desc">Keep your customers connected any time, virtually anywhere with almost any device.</p>
+                            <hr class="blue_hr mt-40 mb-40" />
+                            <apex:outputPanel >   
+                                 <apex:repeat value="{!DocMapCampaignMobileService}" var="docMap"> 
+                                   <apex:outputLink styleClass="document-file mobileService"  value="javascript:void(0)">                             
+                                      <div class="document-row mb-30">
+                                            <div class="file-type file-{!docMap.type}" mobile-id="{!docMap.id}"></div>
+                                            <div class="details">
+                                                <h4 mobile-id="{!docMap.id}"><apex:outputText value="{!docMap.Name}"/></h4>  
+                                                <p><apex:outputText value="{!docMap.description}"/></p> 
+                                                <span onclick="submitFormMethod('{!keyMapMobileURL[docMap.DeveloperName]}')" class="linkedButton">Customize</span>                                                                                                       
+                                            </div>                                     
+                                        </div>                                
+                                    </apex:outputLink> 
+                                       <div id="mobileService_{!docMap.id}" class="modal fade" aria-hidden="true">
+                                          <div class="modal-dialog modal-lg">   
+                                                <div class="modal-content"><button type="button" class="close" data-dismiss="modal">&times;</button>                                         
+                                                     <apex:image url="{!fileURL}+{!docMap.id}" styleClass="infographic mb-30" width="100%" />                                                                                      
+                                                </div>
+                                          </div>
+                                     </div> 
+                                </apex:repeat>   
+                            </apex:outputPanel>     
+                        </div>        
+                    </div>    
+                    
+                                       
+                   <div class="product-promo-content hosting-services">
+                        <h4 class="step-heading bg-lt-blue">Hosting &amp; Security Services</h4>
+                        <div class="step-body">
+                            <p class="one-page-desc">Deliver reliable, scalable and flexible solutions to grow with your customers.</p>
+                            <hr class="blue_hr mt-40 mb-40" />
+                           <apex:outputPanel >   
+                                 <apex:repeat value="{!DocMapCampaignHostingService}" var="docMap"> 
+                                   <apex:outputLink styleClass="document-file hostingService" value="javascript:void(0)">                             
+                                      <div class="document-row mb-30">
+                                            <div class="file-type file-{!docMap.type}" hosting-id="{!docMap.id}"></div>
+                                            <div class="details">
+                                                <h4 hosting-id="{!docMap.id}"><apex:outputText value="{!docMap.Name}"/></h4>  
+                                                <p><apex:outputText value="{!docMap.description}"/></p> 
+                                                <span onclick="submitFormMethod('{!keyMapHostingURL[docMap.DeveloperName]}')" class="linkedButton">Customize</span>                                                                                                       
+                                            </div>                                     
+                                        </div>                                
+                                    </apex:outputLink> 
+                                       <div id="hostingService_{!docMap.id}" class="modal fade" aria-hidden="true">
+                                          <div class="modal-dialog modal-lg">   
+                                                <div class="modal-content"> 
+                                                   <button type="button" class="close" data-dismiss="modal">&times;</button>                                            
+                                                     <apex:image url="{!fileURL}+{!docMap.id}" styleClass="infographic mb-30" width="100%" />                                                                                      
+                                                </div>
+                                          </div>
+                                     </div> 
+                                </apex:repeat>   
+                            </apex:outputPanel> 
+                        </div>        
+                    </div>                       
+                </div>
+                <!-- END Tab: One-page -->                  
+
+                <!-- Content that shows throughout all the Campaign Builder views -->
+                <hr class="blue_hr mt-40" />
+
+                <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-resources.png')}" />Additional resources to help with your campaign&nbsp;needs</h3>
+                <!-- Document List: Resources -->
+                <apex:outputPanel >   
+                     <apex:repeat value="{!DocMapCampaignResources}" var="docMap"> 
+                        <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}"  target="_blank" styleClass="document-file">                        
+                            <div class="document-row mb-30">
+                                <div class="file-type file-{!docMap.type}"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!docMap.Name}"/></h4>                            
+                                    <p><apex:outputText value="{!docMap.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>         
+                    </apex:repeat>   
+                </apex:outputPanel>
+            </div>
+        </div>
+    </div>
+    </apex:form>
+    <!-- END BODY SLICE -->
+    
+    <!-- GLOBAL FOOTER INCLUDE -->
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+
+    <script>
+        $(".updateCustomer h4, .updateCustomer .file-jpg").on("click", function () {
+            var networkId = $(this).attr("network-id");
+            $('#networkService_'+networkId+'').modal('show');
+         });
+        
+        $(".mobileService h4, .mobileService .file-jpg").on("click", function () {
+            var mobileId = $(this).attr("mobile-id");
+             $('#mobileService_'+mobileId+'').modal('show');
+        });
+       
+         $(".hostingService h4, .hostingService .file-jpg").on("click", function () {
+             var hostingId = $(this).attr("hosting-id");
+             $('#hostingService_'+hostingId+'').modal('show');
+        });
+
+
+         $(".promo-link").on("click", function () {
+            $(this).addClass("active");
+            $(".promo-link").not(this).removeClass("active");
+         });
+
+        $(".product-promo .promo-link").on("click", function () {
+            var myContent = $(this).attr("data-content");
+            $(".product-promo-content").hide();
+            $("."+myContent+"").show();
+        });
+
+        $(".template-promo .promo-link").on("click", function () {
+            var myContent = $(this).attr("data-content");
+            $(".template-promo-content").hide();
+            $("."+myContent+"").show();
+        });
+    
+        $("[data-js='modal']").click( function (e) {
+            e.preventDefault()
+            var myAsset = $(this).attr("href");
+            $("body").append("<div class='global-modal-container' style='position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; background-color: rgba(0,0,0,0.5);'><div class='global-modal-content' style='color: #fff;'></div></div>");
+            $(".global-modal-content").load(""+myAsset+"");
+        });
+    
+        function submitFormMethod(url){
+            $( "#poster" ).remove();
+            var parts = url.split('?');
+            var url = parts[0];
+            var params = parts[1].split('&');
+            var pp, inputs = '';
+            for(var i = 0, n = params.length; i < n; i++) {
+                pp = params[i].split('=');
+                inputs += '<input type="hidden" name="' + pp[0] + '" value="' + pp[1] + '" />';
+            }
+            $("body").append('<form action="'+url+'" method="post" id="poster" target="_blank">'+inputs+'</form>');
+            $("#poster").submit();        
+        }      
+    </script>
+</apex:page>

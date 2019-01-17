@@ -1,0 +1,301 @@
+<apex:page controller="BuyFlowController" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" title="BuyFlow">
+    <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" />
+    <!-- ============= CSS Included from Static resources =================== -->
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCss}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCSSDetails}" />    
+    <apex:stylesheet value="{!$Resource.ATTPortalExchangeCSS}" />
+    <!-- ============= Below CSS need to put in static resource CSS file once development is done =================== -->
+    <style>
+        #contentWrapper {
+            min-width: 1024px !important;
+        }
+        button.close {
+            font-size: 200%;
+        }
+        .active > a,
+        .active_tab > a {
+            color: #fff;
+        }
+        .tabbed_menu .active {
+            background: #056fab;
+        }
+        .tabbed_menu li {
+            padding: 0;
+             width: 25% !important;
+        }
+        .tabbed_menu li a {
+            padding: 20px;
+            display: block;
+            text-align: center;
+        }
+        .dataTables_length {
+            display: none;
+        }
+        .dataTables_info {
+            bottom: 22px;
+            position: absolute;
+            right: 180px;
+        }
+        .manage_user_name {
+            width: 17% !important;
+        }
+        .manage_user_contact_name {
+            width: 10% !important;
+        }
+        .manage_user_address {
+            width: 10% !important;
+        }
+        .manage_user_city {
+            width: 10% !important;
+        }
+        .manage_user_state {
+            width: 10% !important;
+        }
+        .manage_user_zip {
+            width: 10% !important;
+        }
+        #manage_content .pagination > a {
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #056fab;
+            margin-left: 5px;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+            cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+            cursor: no-drop;
+        }
+        .btn {
+            padding: 10px 20px !important;
+        }
+        .btn:hover {
+            background: #fff !important;
+            color: #333;
+        }
+        h1 {
+            font-family: omnesatt_iiregular;
+            margin: 40px 0 20px 0;
+        }
+        .tabbed_menu .mainnav li.active::after {
+            content: ' ';
+            display: inline;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            position: absolute;
+            border-top: 14px solid #056fab;
+            bottom: -12px;
+            margin-left: 11%;
+            z-index: 99999;
+        }
+
+        .waitingSearchDiv {
+            background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;z-index:999999;            
+        }
+
+        .waitingHolder {
+            top: 200px; left:700px; width: 91px; position: fixed;
+        }
+
+        /* Additional styles added to adhere to the buyflow redlines */
+        div.tabbed_menu
+        {
+            margin-bottom: 40px !important;
+        }
+        #manage_content label.greenText
+        {
+            color: green !important;
+            margin-left: 15px !important;
+        }
+        /* End styles */
+    </style>
+    <apex:actionstatus id="loading">
+        <apex:facet name="start">
+            <div class="waitingSearchDiv" id="loading">
+                <div class="waitingHolder">
+                    <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionstatus>
+    <div class="content_container">
+        <div id="hero_banner" class="hero_manage jumbotronContainer ng-scope">
+            <div class="row">
+                <div class="col-sm-12"></div>
+            </div>
+        </div>
+        <div id="manage_content" style="padding-top: 0;" class="page ng-scope" ng-controller="QuoteController as beginQuote">
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <h1 class="manage_content-header">Select Customer</h1>
+                </div>
+            </div>
+            <div class="container" style="width: 100% !important; margin-top: 0 !important; padding: 0 !important;">
+                <div id="main" class="row tabbed_menu">
+                    <div class="col-xs-12 col-md-12">
+                        <ul class="mainnav" role="tablist">
+                            <li >
+                                <a href="#selectCust" data-name="selectCust" role="tab" data-toggle="tab">
+                                    <div class="circlenum">1</div> 
+                                    {!$Label.Select_Customer} 
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#selectProd" data-name="selectProd" data-tabName="{!$Label.Select_Product}" role="tab" data-toggle="tab">
+                                    <div class="circlenum">2</div> 
+                                    {!$Label.Select_Product} 
+                                </a>
+                            </li>
+                            <li class="active">
+                                <a href="#configProd" data-name="configProd" data-tabName="Configure Product" role="tab" data-toggle="tab">
+                                    <div class="circlenum">3</div> 
+                                    Configure Product 
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#reviewQuote" data-name="reviewQuote" data-tabName="{!$Label.Review_Quote}" role="tab" data-toggle="tab">
+                                    <div class="circlenum">4</div> 
+                                    {!$Label.Review_Quote} 
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div>
+                    <div class="tab-content">
+                        <div class="tab-pane fade" id="selectCust">
+                        </div>
+                        <div class="tab-pane fade" id="selectProd">
+                        </div>
+                        <div class="tab-pane fade in active" id="configProd">
+                        </div>
+                        <div class="tab-pane fade" id="reviewQuote">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script>
+        // ******************** Setting global variables for buy flow steps ***************** //
+        customerId = '';
+        generatedQuoteId = '';        
+        
+        // ******************** Global Buy flow function for Tab click action ***************** //
+        $('#main ul li a').on('click', function () {
+            var tabName = $(this).attr('data-name'),
+                sTabName = $(this).attr('data-tabName'),
+                sParentClassName = $(this).parent().attr("class");
+                console.log(tabName);
+            // Update the header only if the tab clicked is the active tab
+            // We check the parent class name to determine if this is true
+            if (sTabName && "" !== sTabName && ("active" === sParentClassName || "" === sParentClassName)) {
+                // Check if the header exists and update the same
+                if ($(".manage_content-header")[0]) {
+                    $(".manage_content-header").text(sTabName);
+                }
+            }
+            
+            // ******************** Function for configure Site Tab ***************** //
+            $('#addaddressTrigger, .addaddressConfig> div > a > strong').on('click', function () {
+                $('.addaddressConfig').toggleClass('hide');
+            });
+            collapseMe();
+            toggleFunc();
+            //isCustomerSelected();
+        });
+
+        // ******************** Function for Select Product Tab ***************** //
+        $('input[name="productSelectId"]').on('click', function () {
+            isProductSelectedChk();
+        });        
+        
+        // ************* Function for checking if atleast one product is selected else disable next button *********** //
+        function isProductSelectedChk() {
+            if (!$("input[name='productSelectId']:checked").val()) {
+                $('input[value="Next"]').addClass('disabled');
+            } else {
+                $('input[value="Next"]').removeClass('disabled');
+            }
+        }
+        
+        // ******************** Function for adding tick for previous tab headings ***************** //
+        function activeTabIcon() {
+            var tabName = $('.tabbed_menu li.active a').attr('data-tabname');            
+            $('.manage_content-header').text(tabName);
+            var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+            $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);
+        }
+
+        // ******************** Function to get URL parameters ***************** //
+        function GetURLParameter(sParam) {
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++) {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam) {
+                    return sParameterName[1];
+                }
+            }
+        }
+
+        // ******************** Function for Review Quote tab collapse functionality ***************** //
+        function collapseMe() {
+            $('.collapseMe').on('click', function () {
+                triggerId = $(this).attr('data-cust');
+                $('#' + triggerId + ' .panel-body').slideToggle('fast');
+                $(this).children('i').toggleClass('glyphicon-plus glyphicon-minus');
+
+            });
+        }
+
+        // ******************** Function for Review Quote tab sliding blocks ***************** //
+        function toggleFunc() {
+            $('.accordion-toggle-config').on('click', function () {
+                $('#configBlock').slideToggle();
+            });
+        }
+
+        // ******************** Enable / Disable tabs on basis of URL paramenters ***************** //
+        mode = GetURLParameter('mode');
+        UrlQuoteId = GetURLParameter('quoteid');
+        UrlCustomerId = GetURLParameter('customerid');
+        UrlProductId = GetURLParameter('productid');
+        if (!UrlQuoteId) {
+            $("a[data-name='selectProd'], a[data-name='enterAddress'], a[data-name='configSites'], a[data-name='configProd'], a[data-name='reviewQuote']").parent('li').addClass("disabled");
+            $('.disabled a').removeAttr('data-toggle href');
+            activeTabIcon();
+        }
+        // ******************** Enable / Disable tabs on step by step flow ***************** //
+        if (UrlQuoteId) {
+            generatedQuoteId = UrlQuoteId;
+            console.log('Check Mode: '+mode);
+            if (mode == "confProd") {
+                $("a[data-name='configProd']").trigger("click");
+                $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='reviewQuote']").parent('li').addClass("disabled");
+                $('.disabled a').removeAttr('data-toggle href');
+            } else if (mode == "reviewquote") {
+                console.log('Check reviewquote stass');
+                $("a[data-name='reviewQuote']").attr('data-toggle', 'tab').attr('href', '#reviewQuote').parent('li').removeClass('disabled').children('a').trigger("click");
+                $("a[data-name='configProd']").removeAttr('data-toggle href').parent('li').addClass("disabled");
+                handleReviewQuotePage(generatedQuoteId);
+            }
+            
+            $('.disabled a').removeAttr('data-toggle href');
+            activeTabIcon(); //Function for adding tick mark in active tab
+        }
+
+        collapseMe('BuyFLow');
+        toggleFunc();
+    </script>
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+</apex:page>

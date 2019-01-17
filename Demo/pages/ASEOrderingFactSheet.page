@@ -1,0 +1,335 @@
+<apex:page controller="ASEOrderingFactSheetController" renderAs="PDF" showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false" showChat="false">
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+        <style type="text/css" media="print">
+            @page {
+                font-family: sans-serif;
+                margin-top: 4.54cm;
+                margin-bottom: 2.54cm;
+                @top-center {
+                    content: element(header);
+                }
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+            div.header {
+                font-weight:bold;
+                color:#959595;
+                position: running(header);
+            }
+            div.footer {
+                color:#959595;
+                position: running(footer);
+            }
+            span.pagenumber:before {
+                content: counter(page);
+            }
+            span.pagecount:before {
+                content: counter(pages);
+            }
+            .col1 {
+                width: 50%;
+                display: table-cell;
+            }
+            .col2 {
+                width: 50%;
+                display: table-cell;
+            }
+        </style>
+    </head> 
+    <div class="header">
+        <div>
+            <apex:image value="{!URLFOR($Resource.ATTLogo)}" />         
+            <div style="float:right !important;margin-top: 24px;">
+                <apex:outputLabel >AT&amp;T MRA No. {!mraNumber}</apex:outputLabel>
+            </div>        
+        </div>
+        <div style="text-align:center;">
+            <div>AT&amp;T PARTNER EXCHANGE SWITCHED ETHERNET SERVICE</div>
+            <div>ORDERING FACT SHEET</div>           
+        </div>
+    </div>
+    <div class="footer" style="text-align:center;">
+        <label style="font-weight:bold;"><b>AT&amp;T and Solution Provider Confidential Information</b></label><br />
+        <label>Page&nbsp;<span class="pagenumber" />&nbsp;of&nbsp;<span class="pagecount" /></label>
+    </div>
+    
+    <div class="content">
+        <div style="padding:10px 0;">
+            <label><b>1.&nbsp;&nbsp;&nbsp;Description:</b></label><br /><br />
+            <div>
+                This document intended to be used as a reference for placing AT&amp;T Switched Ethernet Orders through the ASR process. The qualification and rate calculation is determined based on the information available on the given date.
+            </div>
+        </div>
+        <div style="padding:10px 0;">
+            <label><b>2a.&nbsp;&nbsp;Solution Provider Information</b></label><br /><br />
+            <apex:panelGrid columns="2" width="100%" border="1" cellpadding="2px" columnClasses="col1, col2" cellspacing="0">
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Solution Provider Name"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!SPAddress.Name}"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Street Address" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!SPAddress.Street}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="City" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!SPAddress.City}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="State/ Province" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!SPAddress.State}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Zip Code" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!SPAddress.Zip}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Country" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!SPAddress.Country}" />
+                </apex:panelGroup>
+            </apex:panelGrid>
+        </div>
+        <div style="padding:10px 0;">
+            <label><b>2b.&nbsp;&nbsp;End Customer Information</b></label><br /><br />
+            <apex:panelGrid columns="2" width="100%" border="1" cellpadding="2px" columnClasses="col1, col2" cellspacing="0">
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="End Customer Name"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!EndCustomerAddress.Name}"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Street Address" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!EndCustomerAddress.Street}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="City" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!EndCustomerAddress.City}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="State" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!EndCustomerAddress.State}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Zip Code" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!EndCustomerAddress.Zip}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Country" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!EndCustomerAddress.Country}" />
+                </apex:panelGroup>
+            </apex:panelGrid>
+        </div>
+        <div style="padding:10px 0;">
+            <label><b>2c.&nbsp;&nbsp;Channel Account Manager Information</b></label><br /><br />
+            <apex:panelGrid columns="2" width="100%" columnClasses="col1, col2" cellpadding="2px" border="1" cellspacing="0">
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="CAM Name"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!CAMName}"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Email Address" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!CAMEmail}" />
+                </apex:panelGroup>
+            </apex:panelGrid>
+        </div>
+        <div style="padding:10px 0;">
+            <label><b>3.&nbsp;&nbsp;&nbsp;Reference Links:</b></label><br /><br />
+            <apex:panelGrid columns="2" width="100%" border="1" columnClasses="col1, col2" cellpadding="2px" cellspacing="0" style="page-break-after: always;">
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="ASR Web Access Ordering"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <a style="text-decoration:underline;" href="{!ASRWebAccessOrdering}">{!ASRWebAccessOrdering}</a>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="ASE Service Guide" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <a style="text-decoration:underline;" href="{!ASEServiceGuide}">{!ASEServiceGuide}</a>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="AT&T Partner Exchange portal" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <a style="text-decoration:underline;" href="{!portalURL}">{!portalURL}</a>
+                </apex:panelGroup>                
+            </apex:panelGrid>
+        </div> 
+        <div style="padding:10px 0;">
+            <label><b>4a.&nbsp;&nbsp;AT&amp;T Switched Ethernet Service Quote Details:</b></label><br /><br />
+            <apex:panelGrid columns="2" width="100%" border="1" cellpadding="2px" cellspacing="0">
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Quote Number"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!OpptyName}"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Quote Submitted Date" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!orderSubmittedDate}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Product Type" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!ProductType}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Product Name" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!ProductName}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Network Friendly Name" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!NetworkFriendlyName}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Term Length" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="{!OpptyTerm}" />
+                </apex:panelGroup>
+            </apex:panelGrid>
+        </div>
+        <div style="padding:10px 0;">
+            <label><b>4b.&nbsp;&nbsp;AT&amp;T Switched Ethernet Service Component, Network Configuration and Monthly Recurring Charge:</b></label><br /><br />
+            <table width="100%" cellpadding="2px" border="1" cellspacing="0">
+                <tr>
+                    <td colspan="3" align="center" bgcolor="#CBEB95">Site Information</td>
+                    <td colspan="9" align="center" bgcolor="#C4A4CB">Service Information</td>
+                    <td colspan="4" align="center" bgcolor="#91F8FC">Pricing</td>
+                </tr>
+                <tr style="font-size:8px;">
+                    <th>Site #</th>
+                    <th>Project ID</th>
+                    <th>Site Address</th>
+                    <th>PNUM #</th>
+                    <th>BAN</th>
+                    <th>Service Type</th>
+                    <th>Tier</th>
+                    <th>Port Speed</th>
+                    <th>Interface Type</th>
+                    <th>Committed Information Rate (CIR)</th>
+                    <th>Class of Service (CoS) Type</th>
+                    <th>Class of Service (CoS)</th>
+                    <th>Port Cost</th>
+                    <th>CIR Cost</th>
+                    <th>Non- Recurring Price for complete circuit</th>
+                    <th>Recurring Price for complete circuit</th>
+                </tr>
+                <apex:repeat value="{!lineitemsList1}" var="item">
+                    <tr style="font-size:8px;">
+                        <td>{!item.siteNumber}</td>
+                        <td>{!item.ProjectId}</td>
+                        <td>{!item.sitestreet}<br />{!item.sitecity} {!item.sitestate}<br />{!item.sitezip}</td>
+                        <td>{!item.CNUM}</td>
+                        <td>{!item.BAN}</td>
+                        <td>{!item.serviceType}</td>
+                        <td>{!item.aseTier}</td>
+                        <td>{!item.asePortSpeed}</td>
+                        <td>{!item.aseInterfaceType}</td>
+                        <td>{!item.CIR}</td>
+                        <td>{!item.cosTypeAse}</td>
+                        <td>{!item.cosAse}</td>
+                        <td>${!item.PortCost}</td>
+                        <td>${!item.cirCost}</td>
+                        <td>${!item.NonRecurringPriceforcompletecircuit}</td>
+                        <td>${!item.RecurringPricingforcompletecircuit}</td>
+                    </tr>
+                </apex:repeat>
+            </table>
+        </div>
+        <div style="padding:10px 0;">
+            <label><b>4c.&nbsp;&nbsp;AT&amp;T Switched Ethernet Service Component and Additional Network Configuration:</b></label><br /><br />
+            <table width="100%" cellpadding="2px" border="1" cellspacing="0">
+                <tr>
+                    <td colspan="3" align="center" bgcolor="#CBEB95">Site Information</td>
+                    <td colspan="9" align="center" bgcolor="#C4A4CB">Additional Configuration Details</td>
+                </tr>
+                <tr style="font-size:8px;">
+                    <th>Site #</th>
+                    <th>Project ID</th>
+                    <th>Site Address</th>
+                    <th>Circuit ID</th>
+                    <th>Network Type</th>
+                    <th>LATA</th>
+                    <th>Config Type</th>
+                    <th>Site Designation</th>
+                    <th>Port/VLAN Based</th>
+                    <th>NC Code</th>
+                    <th>MAC Addressess</th>
+                    <th>SPEC Code</th>
+                </tr>
+                <apex:repeat value="{!lineitemsList2}" var="item">
+                    <tr style="font-size:8px;">
+                        <td>{!item.siteNumber}</td>
+                        <td>{!item.ProjectId}</td>
+                        <td>{!item.sitestreet}<br />{!item.sitecity} {!item.sitestate}<br />{!item.sitezip}</td>
+                        <td>{!item.circuitId}</td>
+                        <td>{!item.nwTypeAse}</td>
+                        <td>{!item.lataAse}</td>
+                        <td>{!item.configTypeAse}</td>
+                        <td>{!item.siteDesignationAse}</td>
+                        <td>{!item.portVlanBasedAse}</td>
+                        <td>{!item.NCCode}</td>
+                        <td>{!item.macAddressesAse}</td>
+                        <td>{!item.SPECCode}</td>
+                    </tr>
+                </apex:repeat>
+            </table>
+        </div>
+        <apex:outputPanel rendered="{!isNewStart}">
+            <div style="padding:10px 0;">
+                <label><b>4d.&nbsp;&nbsp;&nbsp;Quote Pricing Summary:</b></label><br /><br />
+                <apex:panelGrid columns="2" width="100%" border="1" cellpadding="2px" columnClasses="col1, col2" cellspacing="0">
+                    <apex:panelGroup layout="block">
+                        <apex:outputLabel value="Total Non-Recurring Price"/>
+                    </apex:panelGroup>
+                    <apex:panelGroup layout="block">
+                        <apex:outputLabel value="${!nonRecurringTotal}" />
+                    </apex:panelGroup>
+                    <apex:panelGroup layout="block">
+                        <apex:outputLabel value="Total Recurring Price" />
+                    </apex:panelGroup>
+                    <apex:panelGroup layout="block">
+                        <apex:outputLabel value="${!recurringTotal}" />                
+                    </apex:panelGroup>               
+                </apex:panelGrid>
+            </div>         
+        </apex:outputPanel>        
+    </div>
+</apex:page>

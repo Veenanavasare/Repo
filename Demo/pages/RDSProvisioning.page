@@ -1,0 +1,313 @@
+<apex:page controller="RDSAVPNController" action="{!populateSiteData}" cache="true" sidebar="false" showChat="false" showHeader="false" standardStylesheets="false" docType="html-5.0" id="pagecontainer">
+    <apex:include pageName="PortalDesignHeader_UIUX" />
+    <apex:stylesheet value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.js')}" />
+    <apex:includeScript value="{!$Resource.atombootstrapminjs}"/>
+    <apex:includeScript value="{!URLFOR($Resource.validateInputTypeVLAN)}" /> 
+    <apex:includeScript value="{!URLFOR($Resource.RDSInputValidationsJS)}" />
+
+    <style>
+        #customerDetailsTable td>span{
+            margin-right:10px;
+            padding-left:8px;
+        }
+        .f-s-larger {
+            font-size: larger;
+        }
+        
+        .m-l-10 {
+            margin-left: 10px;
+        }
+        .manage_content-header {
+            font-family: omnes_light;
+            font-size: 2.625em;
+            margin-top:40px;
+            
+        }
+        .left-m-40{margin-left:40px;}
+        .left-m-25{margin-left:25px;}
+        .top-m-45{margin-top:45px;}
+        .top-m-25{margin-top:25px;}
+        h1{font-family:omnes_att_iimedium;font-size:32px;color:#000000;}
+        .dataCell{font-family:omnes_att_iimedium;color:#000000;padding-left: 25px !important;padding-top: 0px !important;padding-bottom: 0px !important;border: 1px dashed #ddd !important;}
+        .headerRow {font-family:omnes_att_iimedium;font-size:16px;color:#067ab4;padding-left: 25px !important;}
+        .tableHeader {font-family:omnes_att_iimedium;font-size:16px;color:#44c8f5;}
+        .table>thead>tr>th{vertical-align:top;}
+        .overlayContainer{margin: 0 auto 60px; padding: 40px; max-width: 1178px;overflow:auto;margin-top:3%;}
+        .noteData{font-family:omnes_light;font-size:12px;color:#000;cursor: auto;}
+        .activationDateStyle{font-family:omnes_light;font-size: 16px;color:#666;}
+        .tableOverflow{overflow:auto;max-height:172px;}
+        .table-bordered {border: 1px solid #ddd;}
+        .hr_heading{margin-left: -55px; margin-right: -55px;height: 1px; background-color: #666;margin-bottom: 0px;}
+        .btn-sec{font-family:omnes_att_iimedium;font-size:16px;color:#666;background: #fff;width: 175px !important;border: 1px solid #666; }
+        .btn-pri{font-family:omnes_att_iimedium;font-size:16px;color:#067ab4;width: 175px !important;border: 1px solid #666; }
+        .table{margin-bottom: 0px;font-size:16px;}
+        .circlenum1 {       
+            float: left;        
+            margin: -4px 7px 0px 0px;       
+            width: 25px;        
+            height: 25px;       
+            border-radius: 15px;        
+            font-size: 10px;        
+            line-height: 25px;      
+            text-align: center;     
+            border: 1px solid #056fab;     
+            color: #056fab;      
+        }
+        .tabbed_menu li {
+            width: 33.33% !important;
+            
+        }
+        .container {
+            width: 98% !important;
+        }
+        .tabbed_menu .active {
+            background: #056fab;
+            padding: 1px 0;
+        }
+        .tabbed_menu .active a {
+            color: #fff !important;
+        }
+        .tabbed_menu li {
+            padding: 0;
+        }
+        .tabbed_menu li a {
+            padding: 20px 50px;
+            display: block;
+            cursor: default !important;
+        }
+        .tabbed_menu {
+            position: static;
+        }
+        ul.mainnav li.disabled a, ul.mainnav li.disabled a:hover
+        {
+            color: #666 !important;     
+             border: 1px solid #a3a3a3 ;
+        }
+        .dataTables_length {
+            display: none;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+            cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+            cursor: no-drop;
+        }
+        div#footerDiv .btn {
+            text-align: left;
+        }
+        h3.f-s-larger {
+            padding: 10px 0 !important;
+        }
+        h3.f-s-large {
+            padding: 10px 0 !important;
+            font-size: 1.3em !important;
+        }
+        h3 span {
+            font-size: 12px !important;
+        }
+        hr.dashedHr {
+            width: 100% !important;
+            clear: both !important;
+        }
+        .breather {
+            padding: 10px 0 !important;
+        }
+        .btn{
+            height: 38px !important;
+        }
+        .btn:hover{
+            color:#FFF !important;
+        }
+        .btn-default:hover{
+            color:#000 !important;
+        }
+        .btn-pri:hover{background: #056fab !important;}
+        .btn-sec:hover{color: #666 !important;}
+        .tabbed_menu .mainnav li.active::after {
+            content: ' ';
+            display: inline;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            position: absolute;
+            border-top: 14px solid #056fab;
+            cursor: default;
+            margin-left:15%;
+        }
+        /*Add some breather around label*/
+        .row .form-group label {
+            padding-bottom: 10px;
+        }
+        .rowAligned {
+            margin-left: -30px !important;
+        }
+        .overlayClass{
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            background-color: rgba(0,0,0,0.5); /*dim the background*/
+        }
+        #manage_content label{
+            font-weight : normal;
+            margin: 0px !important;
+        }
+        
+        tbody tr:nth-child(odd) {
+            background: none; //override pecommon style
+        }
+        
+        tbody tr:nth-child(even) {
+            background: none; //override pecommon style
+        }
+        
+        input[type="radio"], input.radio, input.checkbox {
+            top: 5px !important;
+            margin-right: 5px !important;
+        }
+        
+         table td label {
+            font-family: omnesatt_iiregular !important;
+        }
+        
+        table a {
+            color: #3bc1f4;
+        }
+        
+        @media all and (max-width: 1208px) {
+            .nav>li>a {
+                padding: 10px 12px;
+            }
+        }
+        
+        .m-t-20 {
+            margin-top: 20px;
+        }
+        
+        .m-b-20 {
+            margin-bottom: 20px;
+        }
+    </style>
+
+    <div class="content_container">
+        <div id="manage_content" class="page">
+            <div id="main" class="row">
+                <div class="row tabbed_menu">
+                    <div class="col-xs-12 col-md-12">
+                        <ul class="mainnav" role="tablist">
+                            <li class="disabled">
+                                <a data-name="genQuoteTab"><div class="circlenum1"><span class="border-r-10 glyphicon glyphicon-ok"></span></div>Review Request</a>
+                            </li>
+                            <li class="disabled">
+                                <a data-name="reviewDealRegTab"><div class="circlenum1"><span class="border-r-10 glyphicon glyphicon-ok"></span></div>Terms &amp; Conditions</a>
+                            </li>
+                            <li class="active">
+                                <a href="javascript:void(0);" data-name="FinalizeOrderTab"><span class="border-r-10 circlenum">3</span> Complete Required Data Set (RDS) </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <h1 class="manage_content-header">Complete Required Data Set (RDS)</h1>
+                <apex:include pageName="{!pageToLoad}" />
+            </div>
+        </div>
+    </div> 
+    
+    <script>
+        var multiplevpnoverlaypage2id = '{! $Component.multiplevpnoverlaycontainerpage2 }'
+        var multiplevpnoverlaypage3id = '{! $Component.multiplevpnoverlaycontainerpage3 }'
+        var crddoverlaycontainerid = '{! $Component.crddoverlaycontainer }'
+    </script>
+
+    <apex:outputPanel id="crddoverlaycontainer" style="display:none;">
+        <apex:outputPanel id="crddoverlay">
+            <apex:form styleClass="overlayClass"> 
+                <div class="form-group overlayContainer" style="background:#fff;border-radius:10px;">
+                    <div class="col-xs-12 col-md-12">
+                        <div>
+                            <h1>Please provide valid Requested Service Activation Dates <br/>for the following sites:</h1>
+                            <hr class="hr_heading top-m-45"/>
+                            <!-- <apex:form styleClass="form-horizontal" id="form1">-->
+                            <div class="top-m-25 tableOverflow col-xs-12">
+                                <div class="col-xs-12 p0">
+                                    <apex:variable var="count" value="{!0}"/>
+                                    <apex:pageBlock rendered="{!AND(conflit!= null,conflit.size > 0)}">
+                                        <apex:pageBlockTable value="{!conflit}" var="item" id="EligibleSitesTable" styleClass="table table-bordered table-striped table-hover">
+                                            <apex:column styleClass="tableHeader" headerValue="Site Name" value="{!item.siteName}" />
+                                            <apex:column headerValue="Street" value="{!item.street }" />
+                                            <apex:column headerValue="City" value="{!item.city }" />
+                                            <apex:column headerValue="State" value="{!item.state }" />
+                                            <apex:column headerValue="Access Type" value="{!item.accessType }" />
+                                            <apex:column >
+                                                <apex:facet name="header" >
+                                                    <apex:outputText escape="false" value="Requested Service <br/> Activation Date"></apex:outputText>
+                                                </apex:facet>
+                                                
+                                                <apex:variable var="count" value="{!count + 1}"/>
+                                                <div class="col-xs-5" style="display:flex;">
+                                                    <div id="{!item.siteName}">
+                                                        <apex:input style="width:110px;height:25px" id="datepic" styleClass="activationDateStyle dpicker{!count} requiredInputField inputRequestedServiceActDate1" html-readonly="readonly" value="{!item.selectedDate}" label="Requested Service Activation Date" type="text"/>
+                                                    </div>
+                                                    <span class="glyphicon glyphicon-calendar calendarIcon{!count}" style="margin-top:2px;margin-left:5px;color: #44c8f5;font-size:20px"></span>
+                                                </div>
+                                                <script>
+                                                
+                                                $('.dpicker{!count}').datepicker({
+                                                    numberOfMonths: 2,
+                                                    beforeShowDay: noWeekendsOrHolidays,
+                                                    minDate: "{!item.minDate}",
+                                                    maxDate: "{!item.maxDate}",
+                                                    onClose: function (selectedDate) {
+                                                        console.log(selectedDate);
+                                                        validateRequiredFieldsNoErrorMsg();
+                                                        if(selectedDate != "" ){
+                                                            enabledSaveAndClose();
+                                                        }
+                                                    }
+                                                });
+                                                $(".calendarIcon{!count}").on("click", function () {
+                                                    $(".dpicker{!count}").focus();
+                                                });
+                                                </script>
+                                            </apex:column>
+                                        </apex:pageBlockTable>
+                                    </apex:pageBlock>
+                                </div>
+                            </div>
+                            <div class="top-m-25 col-xs-12">
+                                <apex:commandButton styleClass="btn btn-pri br-0 m-t-10 pull-right btnContinue disabled" action="{!SaveandSubmitFromPopUp}" status="loading" value="Submit" onclick="document.getElementById(crddoverlaycontainerid).style.display = 'none';" id="crddsubmitButtonId" style="font-family: omnes_att_iimedium !important;width: 175px !important;padding-top: 8px !important;margin-right:0px;"/>
+                                <apex:commandButton styleClass="disabled btn btn-sec br-0 m-t-10 pull-right" action="{!SaveandCloseFromPopUp}"  status="loading" value="Save & Close"  onclick="document.getElementById(crddoverlaycontainerid).style.display = 'none';" id="crddsaveButtonId" style="font-family: omnes_att_iimedium !important;width: 175px !important;height:40px;padding-top: 8px !important;border:1px solid #666 !important;color: #000000;background: #FFFFFF;margin-right:15px;"/>
+                                <div class="noteData">Note: Every effort will be made to deliver on or before the requested delivery date, but delivery is not guaranteed.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:form>
+        </apex:outputPanel>
+    </apex:outputPanel>
+
+    <div id="footerDiv">
+        <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+    </div>
+    <script>
+        //Global Variables
+        mode = '{!$CurrentPage.parameters.mode}';
+        UrlQuoteId = '{!$CurrentPage.parameters.quoteid}';
+    
+        function enabledSaveAndClose() {
+            $('.btn-sec').removeClass('disabled');
+            $('.btn-sec').css({
+                "background": "#fff",
+                "border": "1px solid #666 !important",
+                "color": "#666"
+             });
+        }
+    </script>
+</apex:page>

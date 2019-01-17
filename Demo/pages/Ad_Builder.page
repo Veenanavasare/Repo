@@ -1,0 +1,47 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" /> 
+    <apex:includeScript value="{!URLFOR($Resource.productMobileMenuJS)}" />
+<!-- transferred here from header -->
+	<style>
+		.adbuilder_hero_manage {
+			height: 99px;
+			background-image: url("{!$Resource.Hero_AdBuilder}") !important;
+		}
+	</style>
+
+        <!-- HERO SLICE -->
+        <div id="slice_hero" class="adbuilder_hero_manage jumbotronContainer col-sm-12">
+            <div class="row">
+                <div class="hero-container">
+                    <div class="hero_badge">
+                        <h1 class="hero_badge_1">Brochure Builder</h1>
+                        <h2 class="hero_badge_2">Customize your message. Make it count.</h2>
+                    </div>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+        </div>
+        <!-- END HERO SLICE -->
+
+    <!-- BODY SLICE -->
+    <div class="grow-body development-funds col-sm-12">
+        <!-- CONTENT MODULE -->
+        
+        <div id="managecustomerscontainer">
+            <apex:include pageName="Portal_ManageAdBuilder" />
+        </div>
+            
+        
+    </div>
+        <!-- END BODY SLICE -->
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+
+    <script>
+      $("[data-js='modal']").click( function (e) {
+        e.preventDefault()
+        var myAsset = $(this).attr("href");
+        $("body").append("<div class='global-modal-container' style='position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; background-color: rgba(0,0,0,0.5);'><div class='global-modal-content' style='color: #fff;'></div></div>");
+        $(".global-modal-content").load(""+myAsset+"");
+      });
+    </script>
+</apex:page>

@@ -1,0 +1,30 @@
+<apex:page controller="MACD_SpeedChangePSLnchcontroller" id="thepage" showChat="false" showHeader="false" sidebar="false">
+<script src="/soap/ajax/32.0/connection.js"></script>
+<apex:form >
+<script>
+    document.body.onload = function() {
+        quoteId = '{!$CurrentPage.parameters.quoteid}';
+        premiseId='{!$CurrentPage.parameters.pid}'
+        mode = '{!$CurrentPage.parameters.mode}';
+        console.log("mode :"+mode);
+        code = '{!$CurrentPage.parameters.code}';
+        subaccount = '{!$CurrentPage.parameters.subaccount}';
+        try{
+        sforce.connection.sessionId = '{!$Api.Session_ID}';
+        var quoteobj = new sforce.SObject('Apttus_Proposal__Proposal__c');
+        quoteobj.id = quoteId;
+        quoteobj.Contract_Signed__c = true;
+        result = sforce.connection.update([quoteobj]);
+        }
+        catch(e){
+            alert('***'+e);
+        }
+        //window.open('{!$Page.PortalDesign_SiteDetailsPage}?mode='+mode+'&quoteId='+quoteId+'&code='+code+'&subaccount=subaccount, '_parent');
+        window.open('{!$Page.sitedetails}?pid='+premiseId+'&quoteId='+quoteId+'&mode=TNC&code='+code+'&subaccount='+subaccount+'','_parent');
+    }
+</script>
+<style>
+    #revReqPriSchd{ color:#fff;}
+</style>
+</apex:form>
+</apex:page>

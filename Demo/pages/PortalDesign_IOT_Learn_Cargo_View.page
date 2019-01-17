@@ -1,0 +1,166 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    <style type="text/css">
+        .promo .promo-border {
+            border-color: #71c5e8;
+        }
+        .promo-static {
+            color: #000;
+            border: 2px solid #71c5e8;
+        }
+        .cv-items .promo {
+            min-height: 222px !important;
+        }
+        /*Remove the below style-temporary fix*/
+        .att-icon {
+            width: 90px;
+            height: 60px;
+        }
+        .stepTabCV {
+            position: relative;
+            display: table-cell;
+            float: none !important;
+        }
+        #step1CV,
+        #step2CV {
+            padding: 10px;
+            border-radius: 4px; 
+            cursor: pointer;
+            margin-left: 1%;
+            width: 19.2%; 
+            float: left;
+            position: relative;
+        }
+        #step1CV {margin-left: 0;}
+        @media (min-width: 1200px) {
+            .step-body-media {
+                min-height: 200px !important;
+            }
+        }
+    </style>
+    <div class="learnmore row">
+
+        <!-- Intro -->
+        <h2>AT&amp;T Cargo View with FlightSafe<sup>&reg;</sup></h2>
+        <h2>Keep a closer eye on your most precious cargo with AT&amp;T Cargo View with FlightSafe<sup>&reg;</sup></h2>
+
+        <p>Sensor-rich devices travel with shipments and stream information directly to you, maximizing valuable tracking data and closing monitoring gaps-both on the ground and in the air. AT&amp;T Cargo View with FlightSafe<sup>&reg;</sup> helps you monitor and track cargo from end to end.</p>
+        <p class="mb-30">By implementing IoT solutions, you can increase visibility of valuable assets-to mitigate risk, proactively improve quality control, and distinguish yourself from the competition.</p>
+        
+        <div class="row cv-items mb-30">
+            <div class="col-sm-4">
+               <div class="unclickable promo  text-center"> 
+                    <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-mobile-hotspot.svg')}" /> 
+                    <h4>Monitor</h4>
+                    <p>Stay informed of your cargo by monitoring for critical information such as GPS location, temperature and pressure</p>
+               </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="promo-static promo text-center">
+                    <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-ideation.svg')}" /> 
+                    <h4>Manage</h4>
+                    <p>Gain sensor graph displays and customized alerts with AT&amp;T cloud-hosted dashboard application for global cargo activity.</p>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="promo-static promo text-center">
+                    <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-interaction.svg')}" />
+                    <h4>Airplane Mode</h4>
+                    <p>Get your data transmitted upon landing with the FAA-compliant automatic airplane mode that turns radio off during flight.</p>
+                </div>
+            </div>
+        </div>
+
+        <hr class="blue_hr mb-40" />
+
+       
+       <!-- Sales and Technical -->
+       <!-- Code in here -->
+       <div class="spacingContent">
+            <div class="row">
+                <ol>
+                    <div class="col-lg-6 mb-30 step-body-media">
+                        <a href="javascript:void(0)" class="promo promo-link text-center bg-dk-blue dk-blue-arrow stepTabCV" id="step1CV">
+                            <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-sales-report.svg')}" />
+                            <h4>{!$Label.heading_sales}</h4>
+                            <p class="paraSet">Review our sales resources for an overview of product details.</p>
+                            <span class="transp-bg learn-more">Learn More</span>
+                        </a>
+                    </div>
+                    <div class="col-lg-6 mb-30 step-body-media">
+                        <a href="javascript:void(0)" class="promo promo-link text-center bg-dk-gray dk-gray-arrow stepTabCV" id="step2CV">
+                            <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-settings.svg')}" />
+                            <h4>{!$Label.heading_technical}</h4>
+                            <p class="paraSet">Take a deeper dive with our technical information.</p>
+                            <span class="transp-bg learn-more">Learn More</span>
+                        </a>
+                    </div>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="">
+            <div class="stepCont step1CV-cont">
+                <h3 class="step-heading bg-dk-blue">
+                    {!$Label.heading_sales}
+                    <p>Review our sales resources for an overview of product details.</p>
+                </h3>
+                <div class="step-body">
+                    <apex:outputPanel >
+                        <apex:repeat value="{!DocMapIOTCVSales}" var="docMap">
+                            <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                                <div class="document-row">
+                                    <div class="file-type file-{!docMap.type}"></div>
+                                    <div class="details">
+                                        <h4>
+                                            <apex:outputText value="{!docMap.Name}" />
+                                        </h4>
+                                        <p>
+                                            <apex:outputText value="{!docMap.description}" />
+                                        </p>
+                                    </div>
+                                </div>
+                            </apex:outputLink>
+                        </apex:repeat>
+                    </apex:outputPanel>
+                </div>
+            </div>
+            <div class="stepCont step2CV-cont">
+                <h3 class="step-heading bg-dk-gray">
+                    {!$Label.heading_technical}
+                    <p>Take a deeper dive with our technical information.</p>
+                </h3>
+                <div class="step-body">
+                    <apex:outputPanel >
+                        <apex:repeat value="{!DocMapIOTCVTech}" var="docMap">
+                            <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                                <div class="document-row">
+                                    <div class="file-type file-{!docMap.type}"></div>
+                                    <div class="details">
+                                        <h4>
+                                            <apex:outputText value="{!docMap.Name}" />
+                                        </h4>
+                                        <p>
+                                            <apex:outputText value="{!docMap.description}" />
+                                        </p>
+                                    </div>
+                                </div>
+                            </apex:outputLink>
+                        </apex:repeat>
+                    </apex:outputPanel>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".stepTabCV").click(function() {
+                var myId = $(this).attr("id");
+                $(".stepTabCV.active").removeClass("active");
+                $(this).addClass("active");
+                $(".stepCont").not("." + myId + "-cont").hide();
+                $("." + myId + "-cont").show();
+            });
+        });
+    </script>
+</apex:page>

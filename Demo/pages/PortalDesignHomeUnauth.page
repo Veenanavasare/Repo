@@ -1,0 +1,1379 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" applyHtmlTag="false" cache="false">
+<!-- Robyn 17.01.06: PE Request C1205_1333 add meta data, included needing to set applyHTMLTag to false so multiple head tags would not be created, manually added head and body tags to page -->
+<html>
+    <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Transform your business. Control your margins. Our acclaimed reseller program shows you how." />
+    <meta name="google-site-verification" content="61mMnbAFkug5Ga66TxJwJnHrccqsdXgjaYX4Dzh4fg4" />
+    <title>AT&amp;T Partner Exchange</title>    
+    <link rel="canonical" href="https://partnerexchange.att.com" />    <!--sc267n: Added canonical tag as part of TDP289163 user story.-->
+    <!-- Adobe DTM -->
+    <!-- IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <apex:includeScript value="{!URLFOR($Resource.jQueryForPopup, 'jQuery/jquery-1.8.2.min.js')}"/>
+    <!-- <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"/> -->
+    <!-- <apex:includeScript value="{!URLFOR($Resource.jQueryUnauth, 'js/jquery-1.7.2.js')}"/> -->
+    <!-- <apex:includeScript value="http://code.jquery.com/jquery-1.7.2.js"/> -->
+    <!--   <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/plugins/min/jquery.plugins.min.js')}"/> -->
+    <!-- <apex:includeScript value="{!$Resource.PortalDesignUnauthMinjs}"/> -->
+
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/plugins/min/scrollReveal.min.js')}"/>
+    <script>
+        var notLandPage=false;
+        var isNewsroom = window.location.href.toString().toLowerCase().indexOf("newsroom");
+        var isArticle = window.location.href.toString().toLowerCase().indexOf("article");
+
+        if(isNewsroom > -1 || isArticle > -1 )
+            notLandPage=true;
+            
+        // Robyn 10/23/16: use production link to static resource for document.write functions 
+        if(!notLandPage){ 
+            document.write('<script src="https://partnerexchange.att.com/resource/1430297408000/PortalDesignJS/plugins/min/jquery.plugins.min.js"><\/script>');
+        }
+        
+        if(typeof $q == 'undefined'){
+            $=jQuery.noConflict();
+            document.write('<script src="https://partnerexchange.att.com/resource/1422580293000/PortalDesignUnauthMinjs"><\/script>');
+        }
+        else{
+            $ = jQuery.noConflict(true);
+        }    
+    </script>
+    <!-- Bootstrap & Main stylesheets -->
+    <!-- Developers Note Robyn 12/04/15: removing extra bootstrap stylesheet PortalDesignBootCSS -->
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!$Resource.PortalDesignGlobalCSS}"/>
+    <apex:stylesheet value="{!$Resource.PortalDesignUnAuthCSS}"/>
+    <style type="text/css">
+        @font-face{font-family:'omnes_light';src:url("{!$Resource.PortalDesignFonts}/omnes_light.eot");src:url("{!$Resource.PortalDesignFonts}/omnes_light.eot?#iefix") format("embedded-opentype"),
+        url("{!$Resource.PortalDesignFonts}/omnes_light.woff2") format("woff2"),
+        url("{!$Resource.PortalDesignFonts}/omnes_light.woff") format("woff"),
+        url("{!$Resource.PortalDesignFonts}/omnes_light.ttf") format("truetype"),
+        url("{!$Resource.PortalDesignFonts}/omnes_light.svg#omnes_light") format("svg");
+        font-weight:normal;
+        font-style:normal;
+        }
+        #nav_desktop {margin-top: 11px;top: 0!important;}
+        .navbar-nav > li > a {padding: 15px;}
+        a.apply_btn_nav{margin-top: 11px; }
+        a:hover {text-decoration: none;}
+        .link-section h4{font-family: omnes_att_iilight_italic; font-size: 1.5em;color: #b9ddf9;margin-bottom: 5px;margin-top: 0px;}
+        .link-section li a {color: #fff;}
+        .tile_program_members {top: 0px;left: 150px;width: 226px;height: 120px;opacity: 0.9;}
+        .tile_direct_platform{top: 8px;left: 505px;width: 200px;height: 120px;opacity: 1;}
+        .tile_software_vendors {top: 190px;left: 130px;width: 200px;height: 120px;opacity: 0.9;}
+        .tile_app_developers{top: 145px;left: 365px;width: 200px;height: 120px;opacity: 0.9;}
+        .tile_service_providers{top: 195px;left: 580px;width: 200px;height: 120px;opacity: 0.9;}
+        .tile_program_members_content, .tile_direct_platform_content, .tile_software_vendors_content, .tile_app_developers_content, .tile_service_providers_content{opacity:1;}
+        .med_1_weather {top: 25px;left: 280px;width: 96px;height: 59px;opacity: 1;}
+        .med_2_email{top: 25px;left: 395px;width: 72px;height: 42px;opacity: 1;}
+        .med_3_stocks{top: -25px;left: 510px; width: 96px;height: 59px; opacity: 1;}
+        .med_4_dash{top: -40px;left: 263px;width: 96px;height: 59px;opacity: 1;}
+        .med_6_calendar{top: 34px;left: 340px;width: 93px;height: 53px;opacity: 1;}
+        .med_7_eye{top: 7px;left: 470px;width: 72px;height: 42px;opacity: 1;}
+        .med_8_battery{top: -157px;left: 534px;width: 96px;height: 59px;opacity: 1;}
+        .ecosystem_header h1 {display: inherit;}
+        .container.desktop_view{      
+            width:90%
+        }
+        /* Robyn 6/13/16: comment out for logo update
+        .navbar-logo {
+            margin-top: 5px;  
+        }*/
+        #connectDiv ul li {margin-left: 0 !important;}
+        li.pop_products {
+        font-size: 0.875em;
+        color: #009add !important;
+        cursor: pointer;
+        }
+        .m_flexible_reach,
+        .m_ringcentral,
+        .m_att_business_connect,
+        .m_push_to_talk,
+        .m_wwan, /* Phani 9/21/2016: Update class names for mobile services on WWAN */
+        .m_network_synaptic_storage,
+        .m_collocation_hosting_service,
+        .m_netBond,
+        .m_FlexWare,
+        .m_Dedicated_Ethernet,
+        .m_att_mobile_services,  /* Robyn 3/28: update class names for mobile services an iot */
+        .m_iot {
+            position: absolute;
+        }
+        .buttonNew,.buttonNew:hover{
+        background: #fff;
+        color: #3381b7;
+        font-family: clearviewattregular;
+        font-size: 16px;
+        text-decoration:none;
+        padding: 12px 40px;
+        border-radius: 5px;
+        border: 1px solid transparent;
+        }
+        #connectDiv{
+        padding: 10px;
+        background-color: #056FAB;
+        width: 100%;
+        padding: 40px 40px 20px 40px;
+    }
+    #connectDiv ul
+    {
+        margin-top: 20px !important;
+    }
+    .link-section {
+            margin-right: 0 !important;
+            margin-bottom: 30px;
+        }
+        .active_top {
+            position: relative;
+            top: 1px;
+            height: 62px;
+            color: #fff !important;
+            background: #056fab !important;
+        }
+        #news_slice_hero {
+            margin-bottom: 0px;
+            padding: 160px 0 0 0;
+            width: 100%;
+            height: 600px;
+            background: url({!$Resource.PortalUnauthImg}/hero_girl.jpg) 0 0 no-repeat;
+            background-size: cover;
+        }
+        #news_slice_hero .jumbotron {
+            background: transparent;
+            overflow: visible;
+        }
+        #news_slice_hero h1 {
+            color: #056fab;
+            font-family: omnes_light;
+            font-size: 2.75em;
+        }
+        #slice_hero{margin-bottom:0px;}
+        .container{width: 100%;}
+        .news_hero_badge, .news_hero_badge_bg {
+            position: relative;
+            top: 60px;
+            left: 0px;
+            padding: 20px 40px;
+            /*max-width: 750px;
+            width: 750px;*/
+            height: 120px;
+            -webkit-border-radius: 6px;
+            border-radius: 6px;
+            z-index: 3;
+        }
+        .news_hero_badge_bg {
+            top: -60px;
+            background: #eee;
+            /*opacity: .75;*/
+            z-index: 2;
+        }
+        #news_slice_hero h2 {
+            color: #666;
+            font-size: 1.25em;
+        }
+        .jumbotron .apply_now_hero, .ca-wrapper .ca-more{
+            color: #fff;
+        }
+        
+        .ca-content-wrapper{
+            z-index:0;
+        }
+        #atntHeaderSty{
+            font-style: italic;
+            font-size: 2.625em;
+            font-family: omnes_light;
+            color: #666;
+        }
+        .blue_hr {
+            height: 2px;
+            background: #056fab;
+            border-bottom: 1px solid #056fab;
+        }
+        .navbar {
+            position: fixed;
+        }
+        .footer_logo{
+            margin-right: -20px;
+            float:right;
+        }
+        #slice_products h1,h2{
+            display:inherit;
+        }
+        .conatiner.desktop_view {
+            width: 90%;
+        } /* Robyn 3/28 add closing bracket */
+        
+        /* Robyn 7/1/16: fix gray bg showing through on slices that should have white bg */
+        #slice_who_we_are { 
+            margin:0;
+            padding:90px 0;
+        }
+        /* Robyn 7/1/16: center up content in slice_who_we_are */
+        .center-img {
+            margin: 0 auto;
+        }
+        .desc{
+            font-size: 14px;
+            padding-left: 18px;
+        }
+    </style>
+    </head>
+    <body>
+        <!-- Modal Virtual Private Network
+        <div class="modal fade open_product_modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content p_modal">Test Shishir</div>
+            </div>
+        </div>
+-->
+        <!-- Main Fixed Nav -->
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="container">
+                <!-- Robyn 6/13/16: removed column classes from nav bar so it is positioned more like the authenticated header -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand navbar-logo" href="/apex/PortalDesignHomeUnauth">
+                        <apex:image url="{!URLFOR($Resource.portalDesignImg,'/logo_retina.png')}" width="222" height="32" title="AT&T Partner Exchange" alt="AT&T Partner Exchange"/>
+                    </a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul id="nav_desktop" class="nav navbar-nav navbar-right">
+                       <li class="btn_nav btn_who_we_are">
+                            <a id="who_we_are" onclick="NavigatetoID(this.id);">{!$Label.Who_We_Are}</a>
+                        </li>
+                        <li class="btn_nav btn_what_we_do">
+                            <a id="what_we_do" onclick="NavigatetoID(this.id);">{!$Label.What_We_Do}</a>
+                        </li>
+                        <li class="btn_nav btn_products">
+                            <a  id="products" onclick="NavigatetoID(this.id);">{!$Label.What_We_Offer}</a>
+                        </li>
+                        <li class="btn_nav">
+                            <!--<a href="https://attpartnerexchange.force.com/Connect/Connect" onclick='showConnectSection();' target="_blank">{!$Label.Connect}</a>-->
+                             <a href="/newsroomListView?Flag=R">Newsroom</a>
+                             <!-- <a id="communityId" href="javascript:void(0);">{!$Label.Community}</a> -->
+                        </li>
+                        <!-- <li class="nav_login">
+                            <a href="/apex/login" >{!$Label.Login}</a>
+                        </li> -->
+                        <!-- <li>
+                            <a class="apply_btn_nav" href="/apex/PortalDesignEnrollmentForm" target="_self">{!$Label.Apply}</a>
+                        </li> -->
+                        <li>
+                            <a class="apply_btn_nav" href="/apex/login">{!$Label.Login}</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div style="margin-top: 72px"></div>
+        <!-- 
+        <div id="connectDiv" style="display:none;">
+            <div class="row">
+                <div class="col-xs-2"></div>
+                <div class="col-sm-8 link-section">
+                    <h4>Community</h4>
+                    <ul>
+                        <li><a href="/newsroomListView?Flag=R">Newsroom</a></li>
+                    </ul>
+                 </div>
+             </div>
+        </div> -->
+        <!-- HERO SLICE -->
+        <div id="PortalDesignHomeUnauthMainId" style="display:none;height:100%">
+        <div id="news_slice_hero" class="jumbotronContainer">
+            <div class="jumbotron">
+                <div class="row">
+                    <div class="col-sm-2"></div>
+                    <div class="col-sm-5 hero_col">
+                        <div class="news_hero_badge" data-scroll-reveal="enter right move 50px, after 0.3s">
+                            <h1>Deliver the future</h1>
+                            <h2>A channel-leading reseller program built for you</h2>
+                        </div>
+                        <div class="news_hero_badge_bg"></div>
+                        <a class="apply_now_hero" data-scroll-reveal="enter right move 50px, after 0.6s" href="/apex/PortalDesignEnrollmentForm" target="_blank" role="button" title="Apply Now">Apply Now</a>
+                    </div>
+                    <div class="col-sm-5"></div>
+                </div>
+                <!-- <a href="#slice_who_we_are"><div class="hero_down btn_who_we_are"></div></a> -->
+            </div>
+        </div>
+        <!-- WHO WE ARE SLICE -->
+        <div id="slice_who_we_are" class="slice">
+            <div class="container desktop_view" style="width:100%;">
+                <!-- Robyn 7/1/16: add .text-center to cols with text, add .center-img to center images -->
+                <div class="row">
+                    <div class="col-sm-1"></div><div class="col-sm-5">
+                        <div class="copy_block copy_block_1" data-scroll-reveal='enter left'>
+                            <h3>Collaborate</h3>
+                            <p>Realize unlimited potential to grow your business. From open selling to sales enablement resources, we’re here to help you build recurring revenues. Deliver integrated solutions to solve business needs, nurture existing accounts and prepare your customers for the future.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-5" data-scroll-reveal='enter right'>
+                        <apex:image url="{!URLFOR($Resource.PortalUnauthImg,'/photo_who_we_are_1.jpg')}" alt="Kids" styleClass="img-responsive center-img" style="float:right;" />
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1"></div><div class="col-sm-5" data-scroll-reveal='enter left'>
+                        <apex:image url="{!URLFOR($Resource.PortalUnauthImg,'/photo_who_we_are_2.jpg')}" alt="Woman" styleClass="img-responsive"/>
+                    </div>
+                    <div class="col-sm-5">
+                        <div class="copy_block copy_block_2" style="float:right;" data-scroll-reveal='enter right'>
+                            <h3>Innovate</h3>
+                            <p>Gain industry-leading technology to stay connected to your customers. With innovative program tools to increase your autonomy, you gain insight into our processes so you can keep business moving for your customers.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1"></div><div class="col-sm-5">
+                        <div class="copy_block copy_block_3" data-scroll-reveal='enter left'>
+                            <h3>Accelerate</h3>
+                            <p>Win new business and quickly deliver cutting-edge solutions. You own the end-to-end customer relationship and drive your successes. With development funds, marketing resources and training certification, we help position you for success.</p>
+                        </div>
+                    </div>
+                    <div class="col-sm-5" data-scroll-reveal='enter right'>
+                        <apex:image url="{!URLFOR($Resource.PortalUnauthImg,'/photo_who_we_are_3.jpg')}" alt="Business" styleClass="img-responsive" style="float:right;"/>
+                    </div>
+                    <div class="col-sm-1"></div>
+                </div>
+                <!-- END Robyn 7/1/16 -->
+            </div>
+            <div class="container ipad_view">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="copy_block">
+                            <h3>Collaborate</h3>
+                            <p>Realize unlimited potential to grow your business. From open selling to sales enablement resources, we’re here to help you build recurring revenues. Deliver integrated solutions to solve business needs, nurture existing accounts and prepare your customers for the future.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <apex:image url="{!URLFOR($Resource.PortalUnauthImg,'/photo_who_we_are_1.jpg')}" alt="Kids" styleClass="img-responsive"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="copy_block">
+                            <h3>Innovate</h3>
+                            <p>Gain industry-leading technology to stay connected to your customers. With innovative program tools to increase your autonomy, you gain insight into our processes so you can keep business moving for your customers.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <apex:image url="{!URLFOR($Resource.PortalUnauthImg,'/photo_who_we_are_2.jpg')}" alt="Woman" styleClass="img-responsive"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="copy_block">
+                            <h3>Accelerate</h3>
+                            <p>Win new business and quickly deliver cutting-edge solutions. You own the end-to-end customer relationship and drive your successes. With development funds, marketing resources and training certification, we help position you for success.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <apex:image url="{!URLFOR($Resource.PortalUnauthImg,'/photo_who_we_are_3.jpg')}" alt="Business" styleClass="img-responsive"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- WHAT WE DO SLICE -->
+        <div id="slice_what_we_do" class="">
+            <div class="jumbotron">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="what_we_do_copy" style="height:auto;" data-scroll-reveal='enter right'>
+                            <h3>Better <span style="color:#009add;">together</span></h3>
+                            <p>Create customized, co-branded offerings for your customers. The power of AT&amp;T is behind you and the integrated solutions you offer. </p>
+                        </div>
+                        <div class="what_we_do_copy_bg"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- PRODUCTS SLICE -->
+        <div id="slice_products" class="" style="padding:0px;">
+            <div class="jumbotron">
+                <!-- Header Products -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <section class="products_header" data-scroll-reveal='enter bottom'>
+                            <h1>Transform the way your customers do business</h1>
+                            <h2>With fast, reliable and highly secure solutions, you can deliver connectivity to enable your customers to go wherever business takes them. </h2>
+                        </section>
+                    </div>
+                </div>
+                <!-- Products desktop view -->
+                <div class="ca-container" id="ca-container">
+                    <div class="ca-nav">
+                        <span class="ca-nav-prev">Previous</span>
+                        <span class="ca-nav-next">Next</span>
+                    </div>
+                    <div class="ca-wrapper" style="overflow: hidden;">
+                    <!-- Robyn 7/1/16: reordered the 3 product solution overviews -->
+                        <div class="ca-item ca-item-1" style="position: absolute; left: 0px;">
+                            <div class="ca-item-main" data-scroll-reveal="enter bottom move 50px, after 0.9s">
+                                <div class="ca-icon ico_globe"></div>
+                                <h3>Connect</h3>
+                                <p>Keep your customers connected anytime, virtually anywhere, with almost any device. With solutions powered by AT&amp;T, you can deliver seamless integration from desk to&nbsp;device.</p>
+                                <a class="ca-more" id="ca-more-id-3" onclick="CaMore(this.id);">More <div class="more_arr"></div></a>
+                            </div>
+                            <div class="ca-content-wrapper">
+                                <div class="ca-content">
+                                    <h3 class="text-left">Offer integrated solutions by:</h3>
+                                    <a class="ca-close" href="javascript:void(0);"><div class="ico_x" id="ico_close-3" onclick="CaClose(this.id);"></div></a>
+                                    <div class="ca-content-text">
+                                        <ul>
+                                            <li>Delivering scalable wired or wireless network solutions for unique business needs.</li>
+                                            <li>Building upon an existing network with a variety of powerful products and applications.</li>
+                                            <li>Providing connections between devices and machines to deliver information businesses can use to make smart, real-time decisions.</li>
+                                        </ul>
+                                        <!-- <ul>
+                                            <li>
+                                                <a href="https://www.att.com/partnerexchange/login.jsp?sessionExpired=true&_requestid=15256" target="_blank">Additional Details</a>
+                                            </li>
+                                        </ul> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ca-item ca-item-2" style="position: absolute; left: 33.33%;">
+                            <div class="ca-item-main" data-scroll-reveal="enter bottom move 50px, after 0.3s">
+                                <div class="ca-icon ico_wifi"></div>
+                                <h3>Protect</h3>
+                                <p>Security is ingrained in everything we do. The core of our network and the backbone of the technologies we touch, your customers gain a world where their business is smart with fortified&nbsp;data.</p>
+                                <a class="ca-more" id="ca-more-id-1" onclick="CaMore(this.id);">More <div class="more_arr"></div></a>
+                            </div>
+                            <div class="ca-content-wrapper">
+                                <div class="ca-content">
+                                    <h6>Help prepare for the unexpected by:</h6>
+                                    <a class="ca-close" href="javascript:void(0);"><div class="ico_x" id="ico_close-1" onclick="CaClose(this.id);" ></div></a>
+                                    <div class="ca-content-text">
+                                        <ul>
+                                            <li>Securing network connections end-to-end, protecting data at rest and in motion.</li>
+                                            <li>Protecting your customers across mobile, cloud, Wi-Fi and wireline assets where work happens.</li>
+                                            <li>Providing highly secure connectivity to help protect your customers and their private information.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ca-item ca-item-3" style="position: absolute; left: 66.66%;">
+                            <div class="ca-item-main" data-scroll-reveal="enter bottom move 50px, after 0.6s">
+                                <div class="ca-icon ico_cloud"></div>
+                                <h3>Mobilize</h3>
+                                <p>Transform nearly every aspect of the way your customers do business by adding mobility to your product offering. Increase your customer base, offer a more complete solution and improve&nbsp;revenues.</p>
+                                <a class="ca-more" id="ca-more-id-2" onclick="CaMore(this.id);">More <div class="more_arr"></div></a>
+                            </div>
+                            <div class="ca-content-wrapper">
+                                <div class="ca-content">
+                                    <h6>Equip a mobile workforce by:</h6>
+                                    <a class="ca-close" href="javascript:void(0);"><div class="ico_x" id="ico_close-2" onclick="CaClose(this.id);"></div></a>
+                                    <div class="ca-content-text">
+                                        <ul>
+                                            <li>Delivering cloud solutions to maximize productivity from anywhere at any time, without compromising overall network security.</li>
+                                            <li>Connecting people, processes and things with IoT.</li>
+                                            <li>Providing seamless interactions from desktop to device.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <!-- END Robyn 7/1/16: reordered the 3 product solution overviews -->
+                    </div>
+                </div>
+                <!-- Products mobile view -->
+                <div id="products_mobile_size">
+                    <div class="product_smll products_small_1">
+                        <div class="ca-icon ico_wifi"></div>
+                        <h3>Protect</h3>
+                        <p>Security is ingrained in everything we do. The core of our network and the backbone of the technologies we touch, your customers gain a world where their business is smart with fortified&nbsp;data.</p>
+                        <div class="more_down more_smll_1">More
+                            <div class="more_arr_down"></div>
+                        </div>
+                    </div>
+                    <div class="product_smll_more product_small_1_more">
+                        <h6>Help prepare for the unexpected by:</h6>
+                        <div>
+                            <ul>
+                                <li>Securing network connections end-to-end, protecting data at rest and in motion.</li>
+                                <li>Protecting your customers across mobile, cloud, Wi-Fi and wireline assets where work happens.</li>
+                                <li>Providing highly secure connectivity to help protect your customers and their private information.</li>
+                            </ul>
+                        </div>
+                        <div class="ico_x"></div>
+                    </div>
+                    <div class="product_smll products_small_2">
+                        <div class="ca-icon ico_cloud"></div>
+                        <h3>Mobilize</h3>
+                        <p>Transform nearly every aspect of the way your customers do business by adding mobility to your product offering. Increase your customer base, offer a more complete solution and improve&nbsp;revenues.</p>
+                        <div class="more_down more_smll_2">More <div class="more_arr_down"></div></div>
+                    </div>
+                    <div class="product_smll_more product_small_2_more">
+                        <h6>Equip a mobile workforce by:</h6>
+                        <div>
+                            <ul>
+                                <li>Delivering cloud solutions to maximize productivity from anywhere at any time, without compromising overall network security.</li>
+                                <li>Connecting people, processes and things with IoT.</li>
+                                <li>Providing seamless interactions from desktop to device.</li>
+                            </ul>
+                        </div>
+                        <!-- Robyn 2/9/16: remove link to bid -->
+                        <div class="ico_x"></div>
+                    </div>
+                    <div class="product_smll products_small_3">
+                        <div class="ca-icon ico_globe"></div>
+                        <h3>Connect</h3>
+                        <p>Keep your customers connected anytime, virtually anywhere, with almost any device. With solutions powered by AT&amp;T, you can deliver seamless integration from desk to&nbsp;device.</p>
+                        <div class="more_down more_smll_3">More <div class="more_arr_down"></div></div>
+                    </div>
+                    <div class="product_smll_more product_small_3_more">
+                        <h6>Offer integrated solutions by:</h6>
+                        <div class="ca-content-text">
+                            <ul>
+                                <li>Delivering scalable wired or wireless network solutions for unique business needs.</li>
+                                <li>Building upon an existing network with a variety of powerful products and applications.</li>
+                                <li>Providing connections between devices and machines to deliver information businesses can use to make smart, real-time decisions.</li>
+                            </ul>
+                            <div class="ico_x"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Blue bar -->
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="view_all_products">All products</div>
+                        <div class="blue_tri"></div>
+                    </div>
+                </div>
+                <!-- All products -->
+                <div id="all_products" class="row">
+                    <!-- Product Modals Container -->
+                    <!-- <div class="product_modals_container"></div>
+                    <div class="overlay close_p_modal"></div> -->
+                    <div class="col-sm-14 all_products_container">
+                        <div class="col-sm-4">
+                            <ul>
+                                <li class="li_header">
+                                    <div class="products_globe"></div><h2> Network Services </h2>
+                                </li>
+                                <li class="pop_products"
+                                    data-page="m_virtual_private_network"
+                                    data-toggle="modal"
+                                    data-target="#productsModal">
+                                    AT&amp;T Virtual Private Network
+                                </li>
+                                <li class="pop_products"
+                                    data-page="m_network_mis"
+                                    data-toggle="modal"
+                                    data-target="#productsModal">
+                                    AT&amp;T Managed Internet Service
+                                </li>
+                                <li class="pop_products"
+                                    data-page="m_network_internet_access"
+                                    data-toggle="modal"
+                                    data-target="#productsModal">
+                                    AT&amp;T Internet Access
+                                </li>
+                                <li class="pop_products"
+                                    data-page="m_flexible_reach"
+                                    data-toggle="modal"
+                                    data-target="#productsModal">
+                                    AT&amp;T IP Flexible Reach
+                                </li>
+                                <li class="pop_products"
+                                    data-page="m_network_ip_vpn"
+                                    data-toggle="modal"
+                                    data-target="#productsModal">
+                                    AT&amp;T Network-Based IP VPN Remote Access
+                                </li>
+                                <!-- Phani: 9/29/2016: Commenting list item to move from Network Services to Hosting services -->
+                                <!-- <li class="pop_products"
+                                    data-page="m_network_firewall"
+                                    data-toggle="modal"
+                                    data-target="#productsModal">
+                                    AT&amp;T Network-Based Firewall Service
+                                </li> -->
+                                <!-- Phani: End of changes: 9/29/2016 -->
+                                <li class="pop_products"
+                                    data-page="m_network_switched_ethernet_service"
+                                    data-toggle="modal"
+                                    data-target="#productsModal">
+                                    AT&amp;T Switched Ethernet Service&#x2120;
+                                </li>
+                                <li class="pop_products"
+                                    data-page="m_Dedicated_Ethernet"
+                                    data-toggle="modal"
+                                    data-target="#productsModal">
+                                    AT&amp;T Dedicated Point-to-Point Ethernet Service
+                            </li>
+                            <li class="pop_products"
+                                    data-page="m_FlexWare"
+                                    data-toggle="modal"
+                                    data-target="#productsModal">
+                                    AT&amp;T FlexWare<sup>&reg;</sup>
+                            </li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-4">
+                            <!-- Phani 9/21: content update -->
+                            <!-- Phani 12/14: Content Update as per C1117_1014 -->
+                            <ul>
+                                <li class="li_header">
+                                    <div class="products_wifi"></div>
+                                    <h2> Mobility Services </h2>
+                                </li>
+                                <li class="pop_products" data-page="m_att_mobile_services" data-toggle="modal" data-target="#productsModal">
+                                    {!$Label.Mobile_Services}
+                                </li>
+                                <li class="pop_products" data-page="m_push_to_talk" data-toggle="modal" data-target="#productsModal">
+                                    <!-- Robyn 01/09/17: PE Request C0106_1021 content update -->
+                                    Field Solutions
+                                </li>
+                                <li class="pop_products" data-page="m_iot" data-toggle="modal" data-target="#productsModal">
+                                    Internet of Things (IoT)
+                                </li>
+                                <li class="pop_products" data-page="m_wwan" data-toggle="modal" data-target="#productsModal">
+                                    Wireless Wide Area Network (Wireless WAN)
+                                </li>
+                            </ul>
+                            <!-- End of changes 12/14: Phani -->
+                            <!-- End Phani 9/21: content update -->
+                        </div>
+                        <div class="col-sm-4">
+                            <ul>
+                               <li class="li_header"><!-- Phani: 9/29/2016: Changing Hosting Services to Hosting & Security Services -->
+                                    <div class="products_cloud"></div><h2 class="cloud_and_hosting"> Hosting &amp; Security Services <!-- Robyn 2/9/16: text update --> </h2>
+                                </li>
+                                <!-- Robyn 2/9/16: Remove Synaptic Compute as a Service -->
+                                <!-- Robyn 2/9/16: Remove Synaptic Storate as a Service -->
+                                
+                                <!-- Robyn 2/9/16: Remove Private Cloud -->
+                               
+                                <li class="pop_products"
+                                    data-page="m_netBond"
+                                    data-toggle="modal"
+                                    data-target="#productsModal">
+                                    AT&amp;T NetBond<sup>&reg;</sup>
+                                </li>
+                                <!-- Phani 9/29/2016: Adding the AT&T Network-Based Firewall Services -->
+                                <li class="pop_products"
+                                    data-page="m_network_firewall"
+                                    data-toggle="modal"
+                                    data-target="#productsModal">
+                                    AT&amp;T Network-Based Firewall
+                                </li>
+                                <!-- Phani 9/29/2016: End of changes -->
+                                <!-- Phani 10/13/2016: PE Request C1013_1354: Content Change for Colocation on Unauth Homepage --> 
+                                <li class="pop_products"
+                                    data-page="m_collocation_hosting_service"
+                                    data-toggle="modal"
+                                    data-target="#productsModal">
+                                    AT&amp;T Colocation <!-- Robyn 2/9/16: correct spelling and remove service mark -->
+                                </li>
+                                <!-- Phani 10/13/2016: End of changes -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- SLICE ECOSYSTEM -->
+        <section class="jumbotron eco_jumbotron">
+            <div id="ecosystem_block">
+                <div class="modals">
+                    <div class="mod modal_program_members">
+                        <div class="close_modal ico_close_x"></div>
+                        <h2>Operational support services</h2>
+                        <p>
+                            Build customized compensation, rewards and incentive strategies and use sales effectiveness tools.
+                        </p>
+                    </div>
+                    <div class="mod modal_software_vendors">
+                        <div class="close_modal ico_close_x"></div>
+                        <h2>Software vendors</h2>
+                        <p>Work with software vendors specializing in CRM and E-Commerce platforms.  Integrate your CRM to your back office to automate your business.</p>
+                    </div>
+                    <div class="mod modal_app_developers">
+                        <div class="close_modal ico_close_x"></div>
+                        <h2>App Developers</h2>
+                        <p>
+                            Create customized applications to support your sales teams and customers by working with API Developers who specialize in supporting the reseller community.
+                        </p>
+                    </div>
+                    <div class="mod modal_direct_platform">
+                        <div class="close_modal ico_close_x"></div>
+                        <h2>API direct connection</h2>
+                        <!-- <h2 class="direct_connect_small">Direct Connect</h2> -->
+                        <p>Connect directly to our platform by developing customized applications. You can quickly check service availability and generate quotes for AT&amp;T products with our pre-sales APIs.</p>
+                    </div>
+                    <div class="mod modal_service_providers">
+                        <div class="close_modal ico_close_x"></div>
+                        <h2>As a Service providers</h2>
+                        <p>Leverage these platform to increase efficiencies. As a Service providers can jump  start your billing, taxation requirements and white label a NOC solution for your business.</p>
+                    </div>
+                </div>
+                <section class="ecosystem_header text-center">
+                    <h1 data-scroll-reveal="enter down move 50px, after 0.3s">Operational readiness</h1>
+                    <h2 class="eco_subhead" data-scroll-reveal="enter down move 50px, after 1s">Access third-party vendors to streamline &amp; automate your business processes. Develop APIs, get help with billing, outsource your Network Operations Center or automate your business processes. These accelerator resources can help you increase efficiency and focus on growing sales.</h2>
+                </section>
+                <section class="eco_tiles">
+                    <section class="top_group">
+                        <section class="tile_program_members top_tile" data-tile="program_members">
+                            <div class="tile_program_members_content">
+                                <h2>Operational support services</h2>
+                                <div class="top_icon ico_program_members"></div>
+                                <div class="tile_program_members_copy">
+                                    Build customized compensation, rewards and incentive strategies and use sales effectiveness tools.
+                                </div>
+                            </div>
+                        </section>
+                        <section class="tile_software_vendors top_tile" data-tile="software_vendors">
+                            <div class="tile_software_vendors_content">
+                                <h2>Software vendors</h2>
+                                <div class="top_icon ico_software_vendors"></div>
+                                <div class="tile_software_vendors_copy">Work with software vendors specializing in CRM and E-Commerce platforms. Integrate your CRM to your back office to automate your business.</div>
+                            </div>
+                        </section>
+                        <section class="tile_app_developers top_tile" data-tile="app_developers">
+                            <div class="tile_app_developers_content">
+                                <h2>App Developers</h2>
+                                <div class="top_icon ico_app_developers"></div>
+                                <div class="tile_app_developers_copy">
+                                    Create customized applications to support your sales teams and customers by working with API Developers who specialize in supporting the reseller community.
+                                </div>
+                            </div>
+                        </section>
+                        <section class="tile_direct_platform top_tile" data-tile="direct_platform">
+                            <div class="tile_direct_platform_content">
+                                <h2>API direct connection</h2>
+                                <!-- <h2 class="direct_connect_small">Direct Connect</h2> -->
+                                <div class="top_icon ico_direct_platform"></div>
+                                <div class="tile_direct_platform_copy">Connect directly to our platform by developing customized applications. You can quickly check service availability and generate quotes for AT&amp;T products with our pre-sales &amp; APIs.</div>
+                            </div>
+                        </section>
+                        <section class="tile_service_providers top_tile" data-tile="service_providers">
+                            <div class="tile_service_providers_content">
+                                <h2>As a Service providers</h2>
+                                <div class="top_icon ico_service_providers"></div>
+                                <div class="tile_service_providers_copy">Leverage these platforms to increase efficiencies. As a Service providers can jump  start your billing, taxation requirements and white label a NOC solution for your business.</div>
+                            </div>
+                        </section>
+                    </section>
+                    <section class="mid_group close_modal">
+                        <ul>
+                            <li>
+                                <div class="med_tile med_1_weather">
+                                    <div class="ico_weather"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="med_tile med_2_email">
+                                    <div class="ico_email"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="med_tile med_3_stocks">
+                                    <div class="ico_stocks"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="med_tile med_4_dash">
+                                    <div class="ico_dash"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="med_tile med_6_calendar">
+                                    <div class="ico_calendar"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="med_tile med_7_eye">
+                                    <div class="ico_eye"></div>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="med_tile med_8_battery">
+                                    <div class="ico_battery"></div>
+                                </div>
+                            </li>
+                        </ul>
+                    </section>
+                </section>
+                <!-- <div class="white_out"></div>
+                <div class="videobg close_modal">
+                    <video width="100%" height="100%" autoplay="autoplay" loop="loop" preload="auto">
+                        <source src="{!$Resource.PortalUnauthVideomp4}" type="video/mp4" />
+                        <source src="{!$Resource.PortalUnauthVideoogg}" type="video/ogg" />
+                        <source src="{!$Resource.PortalUnauthVideowebm}" type="video/webm" />
+                        <object data="{!$Resource.PortalUnauthVideomp4}" width="100%" height="100%">
+                            <param name="wmode" value="transparent" />
+                            <param name="autoplay" value="true" />
+                            <param name="loop" value="true" />
+                            <embed src="{!$Resource.PortalUnauthVideoswf}" width="100%" height="100%" wmode="transparent" />
+                        </object>
+                    </video>
+                </div> -->
+            </div>
+        </section>
+        <!-- SLICE TESTIMONIALS -->
+        <div id="slice_testimonial">
+            <div class="jumbotron jumbotron_testimonial">
+                <div class="row">
+                    <div class="testimonials_container col-md-12">
+                        <section>
+                            <header>
+                                <h2>See what the channel is buzzing about</h2>
+                            </header>
+                       </section>
+                        <div class="bubble_container">
+                            <section class="testimonial_bubble" data-scroll-reveal="enter bottom move 50px, after 0.3s">
+                                <h1>The VAR Guy</h1>
+                                <p>“Each addition is centered around helping partners to drive enablement, education and innovation opportunities.”</p>
+                                <div class="bubble_corner">
+                                    <div class="author" style="width:315px;">
+                                        <ul>
+                                            <li>AT&amp;T Enhances Partner Exchange, Creates Partner Solutions Organization</li>
+                                            <li>The VAR Guy, March 2015</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="testimonial_bubble" data-scroll-reveal="enter bottom move 50px, after 0.6s">
+                                <h1>CRN</h1>
+                                <p>“AT&amp;T has rolled out updates to its wireless WAN offerings, as well as two new certification tracks, aimed at helping partners break into or expand their mobility practices.” </p>
+                                <div class="bubble_corner">
+                                    <div class="author" style="width:315px;">
+                                        <ul>
+                                            <li>Partners Applaud AT&amp;T's Wireless and Mobility Enhancements, New Certifications</li>
+                                            <li>CRN, October 2016</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </section>
+                            <section class="testimonial_bubble" data-scroll-reveal="enter bottom move 50px, after 0.9s">
+                                <h1>Channel Partners</h1>
+                                <p>“AT&amp;T is giving its solution providers access to a cloud connection solution that one partner says might persuade customers to stick with their MPLS networks just a little longer.”</p>
+                                <div class="bubble_corner">
+                                    <div class="author" style="width:315px;">
+                                        <ul>
+                                            <li>AT&amp;T Gives Partners Cloud Connectivity, Commends IoT Opportunity</li>
+                                            <li>Channel Partners, October 2016</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- SLICE CONTACT -->
+        <div id="slice_contact">
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <div class="row">
+                        <div class="col-sm-5">
+                            <h2>Let's talk</h2>
+                            <p>Complete the contact form and we’ll get back&nbsp;to&nbsp;you&nbsp;shortly.</p>
+                            <!-- <button><a href="/apex/PortalDesign_ContactUsUnauth" target="_self">Contact Us</a></button> -->
+                            <input type="button" onclick="window.location.href='/apex/PortalDesign_ContactUsUnauth'" class="buttonNew" value="Contact Us"/>
+                        </div>
+                        <div class="col-sm-5">
+                            <h2>Apply now</h2>
+                            <p>Take the first step to becoming a member of the AT&amp;T&nbsp;Partner&nbsp;Exchange&nbsp;program.</p>
+                            <!-- <button><a href="/apex/PortalDesignEnrollmentForm" target="_self">Apply Today</a></button> -->
+                            <input type="button" onclick="window.location.href='/apex/PortalDesignEnrollmentForm'" class="buttonNew" value="Apply Today"/>
+                        </div>
+                        <div class="follow_us col-sm-2">
+                            <h5>Follow us</h5>
+                            <ul>
+                                <li><a href="https://mobile.twitter.com/partnerexchange" title="Follow us on Twitter" target="_blank">
+                                    <apex:image url="{!URLFOR($Resource.PortalUnauthImg,'/twitter_icon.png')}" alt="Follow us on Twitter"/>
+                                </a></li>
+                                <li><a href="https://www.linkedin.com/groups?trk=my_groups-b-grp-v&gid=6533434" title="Find us on LinkedIn" target="_blank">
+                                    <apex:image url="{!URLFOR($Resource.PortalUnauthImg,'/linkedin_icon.png')}" alt="Find us on LinkedIn"/>
+                                </a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>
+        </div>
+<!-- Modal -->
+<div class="modal fade" id="productsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content p_modal">
+    </div>
+  </div>
+</div>
+<!-- Product Modal Sections Starts -->
+<div class="prodCont hide">
+<section class="m_virtual_private_network p_modal">
+    <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+    <h1>AT&amp;T Virtual Private Network</h1>
+    <h4>Overview</h4>
+    <p>AT&amp;T Virtual Private Network (VPN) is a network-based Internet Protocol (IP) solution that provides a single IP network for all voice, video, and applications. Our simplified network management offers consistent performance across locations and devices.</p>
+    <p>Connect your main office, data center, branch offices, and remote and mobile workers to each other and the applications you need with our feature-rich solution.</p>
+    <h4>Benefits</h4>
+    <ul>
+        <li>Connect separate locations and workers through a single, secure network.</li>
+        <li>Quickly and easily add any number of locations, applications, and features.</li>
+        <li>Bridge legacy and multi-vendor networks and systems without adding or replacing equipment.</li>
+        <li>Strengthen security and business continuity.</li>
+        <li>Prioritize network traffic and improve performance using Class of Service (CoS) features.</li>
+    </ul>
+</section>
+</div>
+<div class="prodCont hide">
+<section class="m_network_mis p_modal">
+    <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+    <h1>AT&amp;T Managed Internet Service</h1>
+    <h4>Overview</h4>
+    <p>With AT&amp;T Managed Internet Service solutions, customers can choose to use an AT&amp;T provided router or their own router and receive reliable high-speed Internet access for all end users and applications.</p>
+    <h4>Benefits</h4>
+    <ul>
+        <li>Supported by the world-class AT&amp;T Internet backbone</li>
+        <li>Continuous, around-the-clock monitoring and technical support</li>
+        <li>Flexible access speeds and bundled options</li>
+        <li>Industry-leading Service Level Agreements (SLAs)</li>
+    </ul>
+</section>
+</div>
+<div class="prodCont hide">
+<section class="m_network_ip_vpn p_modal">
+    <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+    <h1>AT&amp;T Network-Based IP VPN Remote Access</h1>
+    <h4>Overview</h4>
+    <p>As companies decentralize workforces to be closer to customers, employees are becoming more disconnected from corporate resources. AT&amp;T Network-Based IP VPN Remote Access (ANIRA) provides highly secure access to critical business applications regardless of location, access type, or device across the AT&amp;T Global Network, a unified world-wide platform. </p>
+    <h4>Benefits</h4>
+    <ul>
+        <li>Provides backup options for business continuity</li>
+        <li>Maintains remote access to the virtual private network (VPN), including simultaneous access to the Internet</li>
+        <li>Features mirrored, geographically separated, load-balanced network gateways</li>
+        <li>Extends the reach and footprint for network-based VPN services</li>
+        <li>Provides highly secure broadband access to VPN for small branch locations</li>
+    </ul>
+</section>
+</div>
+<div class="prodCont hide">
+<section class="m_network_internet_access p_modal">
+    <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+    <h1>AT&amp;T Internet Access</h1>
+    <h4>Overview</h4>
+    <p>The Internet is a critical avenue for conducting business, connecting with customers and suppliers, and accessing real-time applications. With AT&amp;T Internet Access, businesses receive a fast, reliable and highly secure Internet connection.</p>
+   <h4>Benefits</h4>
+    <ul>
+        <li>High-bandwidth Internet access for transferring large amounts of data</li>
+        <li>Always-on high speed Internet </li>
+        <li>Avoid delays in communication due to a slow Internet connection </li>
+        <li>Dedicated 24/7 customer care</li>
+    </ul>
+</section>
+</div>
+<div class="prodCont hide">
+<section class="m_network_firewall p_modal">
+    <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+    <h1>AT&amp;T Network-Based Firewall</h1>
+    <h4>Overview</h4>
+    <p>Keep critical data secure. Help prevent intrusions into network infrastructure by offering flexible, scalable, and reliable security services for your customers. AT&amp;T Network-Based Firewall service provides a fully managed, cost-effective network security solution. Manage and control users’ access to the Internet and help prevent unauthorized access to corporate networks—without the expense of on-premises equipment.</p>
+    <h4>Benefits</h4>
+    <ul>
+        <li>Helps block malicious traffic, worms, and viruses. </li>
+        <li>Protects Internet, intranet, and extranet assets by only allowing for a single Internet presence. </li>
+        <li>Provides a centralized security policy that includes administration, alerting, and reporting. </li>
+        <li>Includes 24/7 management and maintenance from AT&amp;T.</li>
+    </ul>
+</section>
+</div>
+<div class="prodCont hide">
+<section class="m_network_switched_ethernet_service p_modal">
+    <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+    <h1>AT&amp;T Switched Ethernet Service</h1>
+    <h4>Overview</h4>
+    <p>AT&amp;T Switched Ethernet Service&#8480; helps ensure the delivery of critical voice, streaming data and video applications to offices around a metro area. Switched Ethernet provides high-speed, on-time performance while acting as the on-ramp to both the Internet and a customer's virtual private network (VPN).</p>
+    <h4>Benefits</h4>
+    <ul>
+        <li>Network flexibility to meet changing business requirements. </li>
+        <li>Scalable to fit the size of any business. </li>
+        <li>Simplified network architecture that can run multiple applications on a single network. </li>
+        <li>High performance to deliver traffic in milliseconds.</li>
+    </ul>
+</section>
+</div>
+<div class="prodCont hide">
+<section class="m_netBond p_modal">
+    <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+    <h1>AT&amp;T NetBond</h1>
+    <h4>Overview</h4>
+    <!-- Robyn 7/1/16: add hex code for service mark -->
+    <p>AT&amp;T NetBond<sup>&reg;</sup> extends the security of the AT&amp;T Global MPLS network, using patented AT&amp;T technology to seamlessly connect a customer's existing AT&amp;T MPLS VPN service to a cloud resource or platform.</p>
+    <h4>Benefits</h4>
+    <p>AT&amp;T NetBond can help your customers:</p>
+    <ul>
+        <li>Extend the security characteristics of the MPLS Private Network into the cloud</li>
+        <li>Offer end-to-end and multilayered protection</li>
+        <li>Provide superior network performance with as much as 50% lower latency relative to traditional cloud access over the public internet or hair pinning through a corporate data center and 3x greater availablity than traditional Internet<sup>1</sup></li>
+        <sup>1. IDC's2013 Global CloudTrack Survey: An Evolving Set of Cloud Drivers, Nov 2013</sup>
+    </ul>
+</section>
+</div>
+<div class="prodCont hide">
+<section class="m_FlexWare p_modal">
+    <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+    <h1>AT&amp;T FlexWare</h1>
+    <h4>Overview</h4>
+    <!-- Robyn 7/1/16: add hex code for service mark -->
+    <p>Designed and deployed on the AT&amp;T Integrated Cloud platform that leverages Software-Defined Networking (SDN) and Network Function Virtualization (NFV) technologies, AT&amp;T FlexWare simplifies your network infrastructure while potentially lowering capital investments. You only need a single AT&amp;T FlexWare Device at each site to run multiple AT&amp;T-certified virtual functions from the best-of-breed vendors (AT&amp;T FlexWare Applications).
+Benefits</p>
+    <h4>Benefits</h4>
+    <ul>
+        <li>Industry-standard x86 AT&amp;T FlexWare Devices that can support multiple AT&amp;T FlexWare Applications</li>
+        <li>An ever-growing library of AT&amp;T-certified FlexWare Applications that can be managed by either AT&amp;T or customers</li>
+        <li>A customer self-service portal</li>
+        <li>Competitive total cost of ownership</li>
+        <li>Flexible access options</li>
+    </ul>
+</section>
+</div>
+<!-- yamini- Added AT&amp;T Dedicated Point to point Ethernet service -->
+
+<div class="prodCont hide">
+<section class="m_Dedicated_Ethernet p_modal">
+    <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+    <h1>AT&amp;T Dedicated Point-to-Point Ethernet Service</h1>
+    <h4>Overview</h4>
+    <p>A dedicated 2-location connection for bandwidth-heavy applications like VoIP, video, and data center consolidation.  </p>
+    <h4>Benefits</h4>
+    <ul>
+        <li>A private, high-speed (up to 100 Gbps), fiber optic connection</li>
+        <li>Quickly move data to a back-up facility or data center</li>
+        <li>Use as a disaster recovery and diversity option</li>
+        <li>For circuit aggregation or as your network backbone</li>
+        <li>To transmit information critical to your business</li>
+    </ul>
+</section>
+</div>
+<div class="prodCont hide">
+<section class="m_flexible_reach p_modal">
+    <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+    <h1>AT&amp;T IP Flexible Reach</h1>
+    <h4>Overview</h4>
+    <p>Multiple plans, one solution. AT&amp;T IP Flexible Reach is a managed Voice over IP (VoIP) solution that provides inbound and outbound calling on an existing data network. This approach allows for long distance and international calling for U.S. sites. IP Flexible Reach provides VoIP calling service to the data network over the AT&amp;T Managed Internet Service or AT&amp;T Virtual Private Network.</p>
+    <h4>Benefits</h4>
+    <ul>
+        <li>Flexible calling plans to fit any business need.</li>
+        <li> Greater bandwidth utilization and cost savings with converged voice and data traffic.</li>
+        <li>Improved communications infrastructure, efficiency, and value.</li>
+        <li>Centralized call delivery in a single, unified answering system.</li>
+    </ul>
+</section>
+</div>
+<!-- Robyn 2/9/16: RingCentral -->
+<!-- Mobile Services -->
+<div class="prodCont hide">
+            <!-- Robyn 3/28: content update -->
+            <section class="m_att_mobile_services p_modal">
+                <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+                <h1>{!$Label.Mobile_Services}</h1>
+                <h4>Overview</h4>
+                <p>Mobility is a critical asset in business that can not only increase efficiency and productivity but also drive new revenue generation and competitive advantage.</p>
+                <h4>Benefits</h4>
+                <p>A mobility solution from AT&amp;T can help your customers:</p>
+                <ul>
+                    <li>Stay in touch while on the go</li>
+                    <li>Collaborate seamlessly between locations and devices</li>
+                    <li>Keep users connected to critical applications</li>
+                    <li>Facilitate productivity in the field</li>
+                </ul>
+            </section>
+            <!-- End Robyn 3/28: content update -->
+        </div>
+        <div class="prodCont hide">
+            <!-- Robyn 3/28: content update -->
+            <section class="m_iot p_modal">
+                <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+                <h1>Internet of Things (IoT)</h1>
+                <h4>Overview</h4>
+                <p>IoT solutions from AT&amp;T can help you accelerate your time to market, run your operations more efficiently, and optimize the profitability of your connected device initiatives.</p>
+                <h4>Benefits</h4>
+                <p>AT&amp;T Control Center, powered by Jasper, offers:</p>
+                <ul>
+                    <li>Intelligence: Gain strategic insight and manage your business</li>
+                    <li>Empowerment: Take control over your business processes and optimize operations</li>
+                    <li>Automation: Help streamline operations, reduce costs, and scale faster</li>
+                    
+                      <h5 class="desc">Learn more about opportunities in the Internet of Things:<br/><a href="https://att.com/youriotjourney" target="blank" >https://att.com/youriotjourney</a></h5>
+                </ul>
+            </section>
+            <!-- End Robyn 3/28: content update -->
+        </div>
+        <div class="prodCont hide">
+            <!-- Robyn 01/09/17: PE Request C0106_1021 content update -->
+            <section class="m_push_to_talk p_modal">
+                <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+                <h1>Field Solutions</h1>
+                <h4>Overview</h4>
+                <p>Empower mobile operations with advanced communication and dispatch tools.</p>
+                <h4>Solutions</h4>
+                <p><strong>AT&amp;T Enhanced Push-to-Talk:</strong> Coordinate people and processes with near-real-time, one-touch communication.</p>
+                <p><strong>AT&amp;T Fleet Complete<sup>&reg;</sup>:</strong> GPS-based vehicle tracking and fleet management, delivering information when you need it.</p>
+            </section>
+            <!-- End Robyn 3/28: content update -->
+        </div>
+        <!-- Robyn 01/09/17: PE Request C0105_1415 content update -->
+        <div class="prodCont hide">
+            <section class="m_wwan p_modal">
+                <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+                <h1>Wireless Wide Area Network (Wireless WAN)</h1>
+                <h4>Overview</h4>
+                <p>Wireless WAN provides diverse, cost-effective backup for data applications, quick deployment for temporary, new or remote locations and consistent network connectivity.</p>
+                <h4>Solutions</h4>
+                <p><strong>Business Connect:</strong> Wireless data plans to fit your machine-to-machine communication needs.</p>
+                <p><strong>AccessMyLAN<sup>&reg;</sup> from AT&amp;T:</strong> Provides secure remote access to the business network while controlling costs, adding security and enhancing productivity.</p>
+                <p><strong>AT&amp;T Private Mobile Connection:</strong> Extend your wide-area network into the AT&amp;T wireless network to access critical resources from virtually anywhere.</p>
+              <!--  <p>View the <a href="{!fileURL}+{!KeyMap['AT_T_Wireless_WAN_Solution_Guide']}" target="_blank">AT&amp;T Wireless WAN Solution Guide</a> to learn more about WWAN solutions</p> -->
+            </section>
+        </div>
+        <!-- Robyn 01/09/17: End content update -->
+        <!-- Hosting Services -->
+        <!-- Phani 10/13/2016: PE Request C1013_1354: Content Change for Colocation on Unauth Homepage (force) -->
+        <div class="prodCont hide">
+            <section class="m_collocation_hosting_service p_modal">
+                <div class="ico_x close_p_modal" data-dismiss="modal"></div>
+                <h1>AT&amp;T Colocation</h1>
+                <!-- Robyn 2/9/16: Remove sup tag -->
+                <h4>Overview</h4>
+                <p>AT&amp;T Colocation services help enable you to focus on solutions and resources-not real estate and overhead. Instead of building a new data center to support your growing business demands, you can lease space in an AT&amp;T highly-secure data center that houses, monitors and protects your equipment.</p>
+                    <!-- Robyn 2/9/16: Remove sup tag --><!-- Phani 10/13/2016: PE Request C1013_1354 Content Change for Colocation on Unauth Homepage -->
+                <h4>Benefits</h4>
+                <ul>
+                    <li>Access to a global, enterprise-class AT&amp;T Internet data center</li>
+                    <li>Connection to the AT&amp;T global network</li>
+                    <li>24&#x2F;7 monitoring of data centers and network connections</li>
+                    <li>Predictable monthly fee to avoid capital investments</li>
+                    <li>Multiple layers of redundancy for 99.999&#x25; availability</li>
+                </ul>
+                <!-- Phani 10/13/2016: End of Changes -->
+            </section>
+        </div>
+        <!-- Phani 10/13/2016: End of Changes -->
+        <!-- Robyn 2/9/16: Remove Private Cloud -->
+
+<!-- Product Modal Sections Ends -->
+        <!-- FOOTER SLICE -->
+        <div id="slice_footer">
+            <footer class="">
+                <div class="row">
+                    <!-- Robyn 6/6/16: update column structure for footer -->
+                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 footer_copy">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-xs-1  footer_logo_container">
+                                    <img class="footer_logo" src="{!$Resource.logo_footer}" alt="AT&amp;T" height="24" width="24" />
+                                </div>
+                                <div class="col-xs-11 footer_copy">
+                                    <a href="{!$Label.legal_link_intellectual_prop}" target="_blank">&copy; <script>document.write(new Date().getFullYear())</script> AT&amp;T Intellectual Property</a>. {!$Label.legal_footer_text_part2}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Robyn 6/6/16 -->
+                </div>
+            </footer>
+        </div>
+        <div style="background">
+        </div>
+</div>
+        <!--<apex:includeScript value="{!$Resource.atomjqueryjs}"/>-->
+        
+        
+        
+        
+        <!-- Vendors & plugins | jquery.plugins.min.js -->
+<!--         <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/libs/jquery-ui.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/bootstrap.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/plugins/min/scrollto.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/plugins/min/scrollReveal.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/plugins/min/carousel.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/plugins/min/easing.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/plugins/min/waypoints.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/plugins/min/retina.min.js')}"/>
+-->
+        <!-- Adobe DTM -->
+               <script type="text/javascript">
+            
+            // Robyn 7/1/16: comment out function to eliminate elements from fading in    
+            // (function($) {
+            //     'use strict';
+            //     window.scrollReveal = new scrollReveal({ reset: true, move: '50px' });
+            // })();
+
+            $('#communityId').delegate('','click', function () {
+            //alert("Insite");
+            if(this.id == "communityId"){
+                $('#connectDiv').toggle();
+                window.scroll(0, 0);
+                //alert(this.className);
+                if (this.className!="active_top")
+                    $(this).addClass("active_top");
+                else
+                     $(this).removeClass("active_top");
+            }
+            else{
+                 $('#connectDiv').hide();
+                 $("#communityId").removeClass("active_top");
+            }
+        });
+        
+            $('.all_products_container > div > ul > li').delegate('','click', function(){
+                var targetProduct = $(this).attr('data-page');
+                var prodContent = $('.prodCont .'+targetProduct).parent('div.prodCont').html();
+                $('#productsModal .modal-content').html(prodContent);
+            });
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : sParameterName[1];
+                }
+            }
+        };
+        /*var newsRoom = getUrlParameter('newsroomid');
+        //alert(typeof newsRoom);
+        if(typeof newsRoom =="undefined"){
+            $("#PortalDesignHomeUnauthMainId").show();
+        }
+        else if(window.location.href.indexOf("NewsroomTrayView")>-1){
+            $("#PortalDesignHomeUnauthMainId").hide();
+        }
+        else{
+            $("#PortalDesignHomeUnauthMainId").hide();
+         }*/
+         $(document).ready(function(){
+            var newsroomCheck = window.location.href.toString().toLowerCase().indexOf("newsroom");
+            var articleCheck = window.location.href.toString().toLowerCase().indexOf("article");
+            if(newsroomCheck >-1){
+                $("#PortalDesignHomeUnauthMainId").hide();
+                $('body').css('background','#f7f7f7');
+            }
+            else if(articleCheck >-1 )
+            {
+               $("#PortalDesignHomeUnauthMainId").hide();
+            }
+            else{
+                $('#PortalDesignHomeUnauthMainId').css('background','#fff');
+                $("#PortalDesignHomeUnauthMainId").show();
+            }
+            
+         });
+         function NavigatetoID(event_id){
+             //alert(event_id );
+             $('#PortalDesignHomeUnauthMainId').css('background','#fff');
+             if(event_id != "communityId"){
+                  $('#connectDiv').hide();
+                  $("#communityId").removeClass("active_top");
+             }
+             else{
+                 $('#connectDiv').show();
+             }
+             //Hide newsroom div
+             $("#newsDiv").css("display", "none");
+             $("#newDivForm").css("display", "none");
+             var sid="#slice_"+event_id;
+             var parser = document.createElement('a');
+             var oldUrl=window.location.href
+             parser.href = oldUrl;
+             var newUrl = parser.protocol+"://"+parser.hostname;
+             if (typeof (history.pushState) != "undefined") {
+                var obj = { Title: newUrl , Url: "/"+sid };
+                history.pushState(obj, obj.Title, obj.Url);
+              }
+             $("#PortalDesignHomeUnauthMainId").show();
+             $("#j_id0:PortalDesignHomeUnauth").css("display", "none");
+              //$("#slice_hero").css("display", "none");
+            $("#j_id0:PortalDesignHomeUnauth").hide();
+            
+             $('html, body').animate({
+                        scrollTop: $(sid).offset().top
+                },1000);
+            
+         }
+         function CaMore(ca_id){
+            ca_id="#"+ca_id;
+            if(notLandPage){
+                $(ca_id).closest('.ca-item').siblings().hide();
+                $(ca_id).closest('.ca-item').animate({left: "0"});
+                
+            }
+            $(ca_id).css("display", "none");
+            $(ca_id).parent().next().css("left","330px");
+            $(ca_id).parent().next().css("width","660px");
+            $(ca_id).parent().next().css("z-index","1");
+            
+            
+            
+            $(ca_id).closest('.ca-item-main').css("transform","translatey(0)");
+            $(ca_id).closest('.ca-item-main').css("opacity","1");
+            $(ca_id).closest('.ca-item-main').css("transition","transform 1s ease-in-out 1s, opacity 1s ease-in-out 1s");
+         }
+         function CaClose(ca_close_id)
+         {
+             var currPos=ca_close_id[ca_close_id.length-1] - 1;
+             currPos=currPos*33.33;
+             ca_close_id="#"+ca_close_id;
+             $(ca_close_id).closest('.ca-content-wrapper').css("width","0");
+             $(ca_close_id).closest('.ca-content-wrapper').prev().children('a').css("display","block");
+             $(ca_close_id).closest('.ca-content-wrapper').prev().children('a').css("cursor","pointer");
+             if(notLandPage){
+                 $(ca_close_id).closest('.ca-item').siblings().show();
+                 $(ca_close_id).closest('.ca-item').animate({left: currPos+"%"});
+             }    
+             
+         }
+         $=jQuery.noConflict();
+        </script>
+        <!--walkme--->
+        <script type="text/javascript">(function() {var walkme = document.createElement('script'); walkme.type = 'text/javascript'; walkme.async = true; walkme.src = 'https://cdn.walkme.com/users/5bda57bf91734f718b37ea407619b2e9/walkme_5bda57bf91734f718b37ea407619b2e9_https.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(walkme, s); window._walkmeConfig = {smartLoad:true}; })();</script>
+        <!--Adobe--->
+        
+<script src="//assets.adobedtm.com/3cb377f74dd760b920cb82680edd5ed3ee951963/satelliteLib-ed747715529f45d08618d00cf7cca3159b56bc30-staging.js"></script> 
+<!--Google Analytic--->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-63429768-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<script type="text/javascript">_satellite.pageBottom();</script>
+<!-- Following script added for walkMe Deeplink redirection-->
+<script type="text/javascript">
+    var url = window.location.href;
+    sessionStorage.URL = url;   
+</script>
+</body>
+</html>
+</apex:page>

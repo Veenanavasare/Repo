@@ -1,0 +1,24 @@
+<apex:page >
+    <form name="IVRfrm">
+        <input id="IVR_ON" value="On" name="IVR" type="radio">On</input>
+        <input id="IVR_OFF" value="Off" checked="true" name="IVR" type="radio">Off</input> 
+    </form> 
+
+    <object id="CTIInterface" classid="CLSID:A98EEAEE-3B08-11D5-BA1F-0004AC577859">
+    </object>
+    <script language="JavaScript">
+        function CTIInterfacenewCallEvent() { 
+            var CusID=CTIInterface.CustomerTN; 
+            var CusName=CTIInterface.CustomerName; 
+            var sjdurl = "https://ebm.my.salesforce.com/apex/SIVAR_IVRConnecttoAccount?CustId=A-"+CusID+"&CustName="+CusName; //check whether IVAR is enabled
+            if(document.getElementById('IVR_ON').checked) 
+            {
+                 window.open(sjdurl,"_blank",'height=800,width=800,resizable=yes,scrollbars=yes,toolbar=yes'); // to open in new window 
+            } 
+            else 
+            { 
+               
+            } 
+        } 
+    </script>
+</apex:page>

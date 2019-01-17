@@ -1,0 +1,292 @@
+<apex:page controller="RenewContractController" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" action="{!createquote}" title="RenewContract" cache="false">
+    <apex:include pageName="PortalDesignHeader_UIUX"/>
+    <apex:stylesheet value="{!$Resource.TextStylesCSS}"/>
+    <apex:stylesheet value="{!$Resource.renewContractStyles}"/>
+    <style>
+    .renewContract-container .tabbed_menu{
+        margin-top: 0px !important;
+    }   
+    
+    #stepIndicator li a, #stepIndicator li a:hover
+            padding: 20px 20px 20px 65px !important;
+        }
+    #stepIndicator li{
+        font-size: 18px;
+        font-family: omnes_att_iimedium !important;
+        font-weight: normal;
+    }
+    .termLabel{
+        margin-top:8px;
+    }
+    .quoteDetails span{
+        padding: 5px;
+        font-size:16px !important;
+        font-family: omnesatt_iiregular !important;
+    }
+    .quoteDetails label{
+        font-size:15px !important;
+        font-family: omnesatt_iiregular !important;
+    }
+    
+    .contractDetails label{
+        font-weight:normal !important;
+        color:#333333 !important;
+    }
+    .custDetails span{
+        padding: 5px;
+    }
+    
+    #stepIndicator li:nth-last-child(1) a,#stepIndicator li:nth-last-child(1) a:hover{
+        color: #666;
+        padding: 15px 20px 15px 45px;
+        border: 1px solid #a3a3a3;
+        display: block;
+        font-size: 18px;
+        font-family: omnes_att_iimedium !important;
+        font-weight: normal;
+    }
+    #stepIndicator li:nth-last-child(2) a,#stepIndicator li:nth-last-child(2) a:hover{
+        color: #666;
+        padding: 15px 20px 15px 40px;
+        border: 1px solid #a3a3a3;
+        display: block;
+        font-size: 18px;
+        font-family: omnes_att_iimedium !important;
+        font-weight: normal;
+    }
+    .manage_content-header{
+        font-family: omnesatt_iiregular !important;
+        color:#333333 !important;
+    }
+    
+    <!-- POP UP -->
+    #popUpbeforeCloseId{ width:100%; height:100%; opacity:.99; top:0; left:0; position:fixed; background-color:#313131; overflow:auto; z-index:1030 }
+    #popupContact { position:absolute; left:41%; top:17%; margin-left:-202px; font-family:'Raleway',sans-serif }
+    #popUpCloseDivId{ width:100%; height:100%; opacity:.99; top:0; left:0; position:fixed; background-color:#313131; overflow:auto; z-index:1030 }
+    #submit { text-decoration:none; text-align:center; display:block; color:#fff; border:1px solid #000; background:#056FAB; padding:10px 0; font-size:16px; cursor:pointer; border-radius:5px; width: 175px !important; height: 40px; float:right; padding-right:5px; margin-top:-34px; }
+
+    </style>
+
+    <div class="content_container">
+        <!-- banner -->
+        <div id="hero_banner" class="hero_manage">
+            <div class="row">
+                <div class="col-xs-12 col-md-12"></div>
+            </div>
+        </div>
+        <!-- Main processing block-->
+        <div id="manage_content">
+        
+            <div class="container renewContract-container col-xs-12 col-md-12 p0">
+                <div class="row m0 p0">
+                    <h1 class="manage_content-header">{!$Label.Renew_Contract}</h1>
+                </div>
+                
+                <div class="row m0 p0" id="contractDetails">
+                    <div class="p0 custDetails">
+                        <label>{!$Label.RENEWAL_CUSTNAME}{!$Label.RENEWAL_COLON}</label><span>{!custName}</span>
+                    </div>  
+                    <apex:outputPanel id="contractDetailsPanel">                    
+                    <div class="row p0 quoteDetails">
+                        <div class="col-xs-12 col-sm-6 col-md-3 p0">
+                            <label>{!$Label.RENEWAL_SUBACC}{!$Label.RENEWAL_COLON}</label><span>{!subAcc}</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-3 p0">
+                            <label>{!$Label.RENEWAL_QUOID}{!$Label.RENEWAL_COLON}</label><span>{!renewalQuoteNumber}</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-4 p0">
+                            <label>{!$Label.RENEWAL_PROD}{!$Label.RENEWAL_COLON}</label><span>{!fullProductName}</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 p0" style="text-align: right;display:{!IF(contractMode == 'terminfo' && isRenewSubmitted == false,'block;','none;')}">
+                            <label>{!$Label.RENEWAL_ORGTERM}{!$Label.RENEWAL_COLON}</label><span>{!originalTerm}</span>
+                        </div>
+                        <div class="col-xs-12 col-sm-6 col-md-2 p0" style="text-align: right;display:{!IF(isRenewSubmitted == true,'block;','none;')}">
+                            <label>{!$Label.RENEWAL_RENEWTERM}{!$Label.RENEWAL_COLON}</label><span>{!selectedTermNumber}</span>
+                        </div>                        
+                        <div class="p0" style="display:{!IF(isRenewSubmitted == true,'block;','none;')}">
+                            <label>{!$Label.RENEWAL_QUOTENAME}{!$Label.RENEWAL_COLON}</label><span>{!quoteName}</span>
+                        </div>                          
+                    </div>
+                    </apex:outputPanel>
+                    <div class="m0 p0">
+                        <c:portalStepIndicatorComponent timeWrapperComponent="{!timelineWrapperListObj}"></c:portalStepIndicatorComponent>
+                    </div>
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="renewContractFlows">
+                            <apex:include pageName="{!pageToLoad}" id="renewContractPageId" />
+                        </div>
+                    </div>               
+                </div>
+                
+           </div>
+           
+        </div>
+    </div>
+    <!-- pop up for Contract Renewal Lock Starts Here -->
+    <div id="popUpbeforeCloseId" style="display:none;">
+        <div id="popupContact">
+            <div style="width:600px;height:360px;padding:10px 50px;border:2px solid gray;border-radius:10px;font-family:raleway;background-color:#fff">
+                <apex:image value="{!($Resource.timerPopUpImg)}" id="close" onclick="div_hide()" style="margin-left:190px; width:115;height:105px;margin-bottom:5px;"/> 
+                <div style='text-align:center;font-size:16px' ><span style="font-family: omnes_att_iimedium;  font-size:32px;  color: #000000; text-align: center;">Your session is about to expire!</span>
+                    <br/><br/><br/>
+                    <span id="popUpFive" style="display:none;font-family:omnes_att_iimedium!important; font-size:22px; color:#000000; text-align:center;position:relative;top:-24px">Your session will expire in 5 minutes.<br/>
+                        Do you want to continue your change request?
+                    </span>
+                    
+                    <span id="popUpOne" style="display:none;font-family:omnes_att_iimedium; font-size:22px; color: #000000; text-align:center;position:relative;top:-24px">Your session will expire in 1 minute.<br/>
+                        Do you want to continue your change request?
+                    </span>
+                    
+                    <span id="popUpThirty" style="display:none;font-family:omnes_att_iimedium; font-size:22px; color:#000000; text-align:center;position:relative;top:-24px">Your session will expire in 30 seconds.<br/>
+                        Do you want to continue your change request?
+                    </span>
+                </div>
+                
+                <div style="margin-top:37;position:relative;top:16px;">                 
+                    <apex:form >
+                        <apex:commandLink action="{!cancelRequest}" value="No, Cancel Request" style="font-family:omnes_att_iimedium; font-weight:bold" />
+                     </apex:form>     
+                        <button id="submit" style="font-family:omnes_att_iimedium; font-weight:bold" onclick="lockContractOnLoad();unlockTheScroll();div_hide()">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="popUpCloseDivId" style="display:none;">
+        <script>window.scrollLock;</script>
+        <div id="popupContact">
+            <div style="width:647px;height:336px;padding:10px 50px;border:2px solid gray;border-radius:10px;font-family:raleway;background-color:#fff">
+                <apex:image value="{!($Resource.timerPopUpImg)}" id="close1" onclick="div_hide()" style="margin-left:218px; width:115;height:105px;margin-bottom:5px;position:relative;top:8px"/> 
+                <div style='text-align:center;font-size:16px;margin-top:8px' ><span style="font-family: omnes_att_iimedium;  font-size:32px;  color: #000000; text-align: center;">Your session has expired.</span>
+                    <br/><br/><br/>
+                    <span id="popUpFive" style="font-family:omnes_att_iimedium;  font-size:22px;  color: #000000; text-align: center; margin-left:-25px;position:relative;top:-30px">
+                        We apologize. You will need to start your request again.
+                    </span>
+                </div>                        
+                <div style="margin-top:34px; tex-align:center;position:relative;top:-5px;">           
+                    <apex:form >          
+                        <apex:commandButton action="{!redirectOnClose}" style="font-family:omnes_att_iimedium;font-size:16px;text-decoration:none; font-weight:bold; text-align:center; display:block; color:#fff; border:1px solid #000; background:#056FAB;  padding:10px 0; font-size:16px; cursor:pointer; border-radius:5px;  width: 175px !important; height: 40px;  padding-right:5px; margin-left:184px; margin-top:-30px" onclick="div_hide();unlockTheScroll();" value="Close"/>
+                    </apex:form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <apex:form id="actionForm">
+        <apex:outputPanel id="opHDNCookie">
+            <input type="hidden" id="popOneHdn" value="{!popUp1}" />
+            <input type="hidden" id="popTwoHdn" value="{!popUp2}" />
+            <input type="hidden" id="popThreeHdn" value="{!popUp3}" />
+            <input type="hidden" id="popFourHdn" value="{!popUp4}" />
+            <input type="hidden" id="isContractRenewalLockHdn" value="{!isContractRenewalLock}" />
+        </apex:outputPanel>
+        <!-- <apex:actionFunction name="resetAllCookies" action="{!resetCookies}" status="loading" rerender="opHDNCookie" oncomplete="startCheckingCookies();" /> -->
+        <apex:actionFunction id="lockContractOnLoadId" name="lockContractOnLoad" action="{!lockDealHashOnRenewContract}" rerender="opHDNCookie" status="loading" oncomplete="startCheckingCookies()"/>       
+        <apex:actionFunction name="resetMACDData" action="{!resetDataOnSessionExpiration}" reRender="none"/>
+    </apex:form>
+    <script>
+        $(document).ready(function(){
+            lockContractOnLoad();
+        });
+        
+        function startCheckingCookies(){
+            var cntp1 = 0;
+            var cntp2 = 0;
+            var cntp3 = 0;
+            var cntp4 = 0;
+            var pop1 = document.getElementById("popOneHdn").value;
+            var pop2 = document.getElementById("popTwoHdn").value;
+            var pop3 = document.getElementById("popThreeHdn").value;
+            var pop4 = document.getElementById("popFourHdn").value;
+            var isContractRenewalLock = document.getElementById("isContractRenewalLockHdn").value;
+            console.log('isContractRenewalLock outside hidden--'+isContractRenewalLock);
+            console.log('isContractRenewalLock outside----- {!isContractRenewalLock}');
+            
+            setInterval(function(){
+                isContractRenewalLock = document.getElementById("isContractRenewalLockHdn").value;
+                console.log('isContractRenewalLock inside hidden--'+ isContractRenewalLock );
+                //console.log('isContractRenewalLock ----- {!isContractRenewalLock}');
+                if  ((document.cookie.indexOf(pop1) == -1)  && (document.cookie.indexOf(pop2) != -1) && (document.cookie.indexOf(pop3) != -1) && (document.cookie.indexOf(pop4) != -1) && (cntp1 == 0) && isContractRenewalLock == 'true') {                                
+                     console.log('inside popup1');
+                     console.log('isContractRenewalLock inside pop1--'+ isContractRenewalLock  );
+                     showPopUpOne();  
+                     cntp1++; 
+                }
+                else if ((document.cookie.indexOf(pop1) == -1)  && (document.cookie.indexOf(pop2) == -1) && (document.cookie.indexOf(pop3) != -1) && (document.cookie.indexOf(pop4) != -1)&& (cntp2 == 0) && isContractRenewalLock == 'true') {                
+                    console.log('inside popup2');
+                    showPopUpTwo();
+                    cntp2++;   
+                }
+                else if ((document.cookie.indexOf(pop1) == -1)  && (document.cookie.indexOf(pop2) == -1) && (document.cookie.indexOf(pop3) == -1) && (document.cookie.indexOf(pop4) != -1)&& (cntp3 == 0) && isContractRenewalLock == 'true') {                
+                    console.log('inside popup3');
+                    showPopUpThree();                   
+                    cntp3++;   
+                }
+                else if ((document.cookie.indexOf(pop1) == -1)  && (document.cookie.indexOf(pop2) == -1) && (document.cookie.indexOf(pop3) == -1) && (document.cookie.indexOf(pop4) == -1)&& (cntp4 == 0) && isContractRenewalLock == 'true') {                 
+                    console.log('inside popup4');
+                    showPopUpFour();  
+                    cntp4++;                    
+                }
+            },1000); 
+        };
+    
+        //Function To Display Popup
+        function showPopUpOne() {
+            lockTheScroll();
+            document.getElementById('popUpbeforeCloseId').style.display = "block";
+            document.getElementById('popUpThirty').style.display = "none";
+            document.getElementById('popUpOne').style.display = "none";
+            document.getElementById('popUpFive').style.display = "block";           
+        }
+        function showPopUpTwo() {
+            lockTheScroll();
+            document.getElementById('popUpbeforeCloseId').style.display = "block";
+            document.getElementById('popUpFive').style.display = "none";
+            document.getElementById('popUpThirty').style.display = "none";
+            document.getElementById('popUpOne').style.display = "block";  
+                     
+        }
+        function showPopUpThree() {
+            lockTheScroll();
+            document.getElementById('popUpbeforeCloseId').style.display = "block";
+            document.getElementById('popUpOne').style.display = "none";
+            document.getElementById('popUpFive').style.display = "none";
+            document.getElementById('popUpThirty').style.display = "block"; 
+                       
+        }
+        function showPopUpFour() {
+            lockTheScroll();
+            resetMACDData();
+            document.getElementById('popUpbeforeCloseId').style.display = "none";
+            document.getElementById('popUpOne').style.display = "none";
+            document.getElementById('popUpFive').style.display = "none";
+            document.getElementById('popUpThirty').style.display = "none";
+            document.getElementById('popUpCloseDivId').style.display = "block";                     
+        }
+        
+        //Function to Hide Popup
+        function div_hide(){
+            document.getElementById('popUpbeforeCloseId').style.display = "none";
+            document.getElementById('popUpCloseDivId').style.display = "none";
+            
+        }
+        
+        function lockTheScroll() {
+            $('html, body').css({
+                'overflow': 'hidden',
+                'height': '100%'
+            }); 
+        }
+        
+        function unlockTheScroll() {
+            $('html, body').css({
+                'overflow': 'auto',
+                'height': 'auto'
+            });       
+        }
+    </script>
+    <!-- Footer -->
+    <div>
+        <apex:include pageName="PortalDesignFooter"/>
+    </div>
+</apex:page>

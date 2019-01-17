@@ -1,0 +1,554 @@
+<apex:page controller="MACD_AddCosMISPricingSchController"  renderAs="PDF" showHeader="false" sidebar="false" standardStylesheets="false" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false" showChat="false">
+
+    <head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" />
+        <style type="text/css" media="print">
+            @page {
+                font-family: sans-serif;
+                margin-top: 2.54cm;
+                margin-bottom: 2.54cm;
+                @top-center {
+                    content: element(header);
+                }
+                @bottom-left {
+                    content: element(footer);
+                }
+            }
+            div.header {
+                display: block;
+                margin: 50px;
+                padding: 20px;
+                margin-right: 10px;
+                text-align: right !important;
+                position: running(header);
+            }
+            div.footer {
+                display: block;
+                line-height: 3em 0;
+                padding-bottom: 20px;
+                position: running(footer);
+            }
+            span.pagenumber:before {
+                content: counter(page);
+            }
+            span.pagecount:before {
+                content: counter(pages);
+            }
+            ol li {
+                margin: 1em 0;
+            }
+            .col1 {
+                width: 50%;
+                display: table-cell;
+            }
+            .col2 {
+                width: 50%;
+                display: table-cell;
+            }
+        </style>
+    </head>
+    <!--<apex:panelGrid columns="2" width="100%">
+        <apex:panelGroup layout="block">
+            <apex:image value="{!URLFOR($Resource.ATTLogo)}" />
+        </apex:panelGroup>
+        <apex:panelGroup layout="block">
+            <apex:outputLabel value="{!$Label.AVPN_Label1} {!MRANumber}" style="text-align:right;" />
+        </apex:panelGroup>
+    </apex:panelGrid>-->
+    <div>
+        <apex:image value="{!URLFOR($Resource.ATTLogo)}" />
+    </div>
+    <div class="header">
+        <apex:outputLabel value="{!$Label.AVPN_Label1} {!MRANumber}" />
+        <apex:outputLabel value="" />
+        <apex:outputLabel value="" />
+    </div>
+    <div class="footer">
+        <div style="width:100%; text-align: center;">
+            <label style="margin: 2em 0;"><b>AT&amp;T and Solution Provider Confidential Information</b>
+            </label>
+        </div>
+        <div style="width:100%; text-align: center;">
+            <label style="margin: 2em 0;">Page <span class="pagenumber" /> of <span class="pagecount" />
+            </label>
+        </div>
+        <label style="margin: 2em 0;">EBM, MIS Addendum EBM {!Tier} {!proposal.Apttus_Proposal__Payment_Term__c} Rate Plan, {!OpptyName}</label>
+    </div>
+    <div class="content container">
+        <apex:outputPanel id="container" style="font-family: Arial;">
+            <apex:outputPanel >
+                <br/>
+                <center>
+                    <apex:outputlabel value="AT&T PARTNER EXCHANGE PRICING SCHEDULE ADDENDUM" />
+                    <br/>
+                    <br/>
+                    <apex:outputlabel value="{!$Label.MIS_Label3}" />
+                </center>
+            </apex:outputPanel>
+            <br/>
+            <br/>
+            <br/>
+            <apex:panelGrid columns="2" width="100%" border="1" columnClasses="col1, col2">
+                <apex:panelGroup layout="block">
+                    <b><apex:outputLabel value="{!$Label.AVPN_Label4}"/></b>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <b><apex:outputLabel value="{!$Label.AVPN_Label5}"/></b>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputText value="{!SPAddress.Name}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label6}" />
+                    <apex:outputText value="{!SPAddress.Street}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label7}" />
+                    <apex:outputText value="{!SPAddress.City}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label8}" />
+                    <apex:outputText value="{!SPAddress.State}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label9}" />
+                    <apex:outputText value="{!SPAddress.Zip}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label10}" />
+                    <apex:outputText value="{!SPAddress.Country}" />
+                    <br/>
+                    <apex:outputLabel value="SP Type:" rendered="{!displaySPType}"/>
+                    <apex:outputText value="{!displayBasic}" rendered="{!displaySPType}" />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                <!---added as part of US397240 --->
+                    <apex:outputLabel value="{!$Label.MIS_Label66}"/>
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label122}"/>
+                    <br/>
+                    <apex:outputLabel value="{!$Label.MIS_Label67}"/>
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label103}"/>
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label104}"/>                
+                    <apex:outputLabel value="{!$Label.AVPN_Label105}"/>
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label106}"/>                
+                    <apex:outputLabel value="{!$Label.AVPN_Label107}"/>
+                    <br/>
+                    <br/>
+                    <apex:outputText value="{!$Label.AVPN_Label108}" />
+                    <br/>
+                <!---ENDS added as part of US397240 --->
+                    <!--<apex:outputText value="{!ATTAddress.Name}" />
+                    <br/>
+                    <apex:outputText value="{!ATTAddress.Street}" />
+                    <br/>
+                    <apex:outputText value="{!ATTAddress.City}" />
+                    <br/>
+                    <apex:outputText value="{!ATTAddress.State}" />
+                    <br/>
+                    <apex:outputText value="{!ATTAddress.Zip}" />
+                    <br/>
+                    <apex:outputText value="{!ATTAddress.Country}" /> !-->
+                    <apex:outputText value="{!$Label.AVPN_Label113}" />
+                    <br/>
+                    <apex:outputText value="{!$Label.AVPN_Label114}" />
+                    <br/>
+                    <apex:outputText value="{!$Label.AVPN_Label115}" />
+                    <br/>
+                    <apex:outputText value="{!$Label.AVPN_Label116}" />
+                    <br/>
+                    <apex:outputText value="{!$Label.AVPN_Label117}" />
+                    <a href="{!$Label.AVPN_Label18}" target="_blank">{!$Label.AVPN_Label118}</a>                    
+                </apex:panelGroup>
+            </apex:panelGrid>
+            <apex:panelGrid columns="1" width="100%" border="1">
+                <apex:panelGroup layout="block" style="width:50%">
+                    <b><apex:outputLabel value="{!$Label.AVPN_Label11}"/></b>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block" style="width:50%">
+                    <apex:outputLabel value="{!$Label.AVPN_Label12}" />
+                    <apex:outputText value="{!EndCustomerAddress.Name}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label6}" />
+                    <apex:outputText value="{!EndCustomerAddress.Street}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label7}" />
+                    <apex:outputText value="{!EndCustomerAddress.City}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label8}" />
+                    <apex:outputText value="{!EndCustomerAddress.State}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label9}" />
+                    <apex:outputText value="{!EndCustomerAddress.Zip}" />
+                    <br/>
+                    <apex:outputLabel value="{!$Label.AVPN_Label10}" />
+                    <apex:outputText value="{!EndCustomerAddress.Country}" />
+                </apex:panelGroup>
+            </apex:panelGrid>
+            <br/>
+            <apex:outputLabel value="{!$Label.AVPN_Label13}" />
+            <br/>
+            <br/>
+            <apex:panelGrid columns="2" width="100%" border="1" columnClasses="col1, col2" style="page-break-after: always;">
+                <apex:panelGroup layout="block">
+                    <b><apex:outputLabel value="Solution Provider"/></b> <br/>(by its authorized representative)
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <b><apex:outputLabel value="AT&T"/></b> <br/>(by its authorized representative)
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <br/><apex:outputLabel value="By:" style="font-size:14px;"/> <apex:outputLabel value="," style="font-size:0.5px;"/> <br/><br/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <br/> <apex:outputLabel value="By:" style="font-size:14px;"/> <apex:outputLabel value="." style="font-size:0.5px;"/> <br/><br/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Name:" style="font-size:14px;"/> <apex:outputLabel value="," style="font-size:0.5px;"/>
+                    <apex:outputLabel value="{!$User.FirstName} {!$User.LastName}" rendered="{!docusignMode}"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Name:" style="font-size:14px;"/> <apex:outputLabel value="." style="font-size:0.5px;"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Title:" style="font-size:14px;"/> <apex:outputLabel value="," style="font-size:0.5px;"/>
+                    <apex:outputLabel value="{!userRole}" rendered="{!docusignMode}"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Title:" style="font-size:14px;"/> <apex:outputLabel value="." style="font-size:0.5px;"/>
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Date:" style="font-size:14px;"/> <apex:outputLabel value="," style="font-size:0.5px;"/>
+                    <apex:outputText />
+                </apex:panelGroup>
+                <apex:panelGroup layout="block">
+                    <apex:outputLabel value="Date:" style="font-size:14px;"/> <apex:outputLabel value="." style="font-size:0.5px;"/>
+                    <apex:outputText />
+                </apex:panelGroup>
+            </apex:panelGrid>
+
+          <!--  <ol>-->
+                <!--<li style="margin-bottom:15px;margin-top:4px;">-->
+                <b><u>1. PRICING SCHEDULE ADDENDUM SCOPE</u></b>
+                <br/>
+                    <!--<apex:panelGrid columns="2" width="100%" border="1" style="margin-top:7px;">
+                        <apex:panelGroup layout="block">
+                            <center><b>PRICING SCHEDULE ADDENDUM SCOPE</b>
+                            </center>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <center><b>{!$Label.AVPN_Label22}</b>
+                            </center>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <apex:outputlabel value="{!$Label.MIS_Label23}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <a href="{!$Label.AVPN_Label24}" target="_blank">{!$Label.AVPN_Label92}</a>
+                            <a href="{!$Label.AVPN_Label24}" target="_blank">{!$Label.AVPN_Label24}</a>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <apex:outputlabel value="{!$Label.AVPN_Label25}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <a href="{!$Label.AVPN_Label26}" target="_blank">{!$Label.AVPN_Label93}</a>
+                            <a href="{!$Label.AVPN_Label26}" target="_blank">{!$Label.AVPN_Label26}</a>
+                        </apex:panelGroup> 
+                    </apex:panelGrid> -->
+                    <br/>
+                    <br/>
+                    <apex:outputText value="The scope of this AT&T Manage Internet Service Pricing Schedule Addendum is to amend the original Pricing Schedule Opportunity Number {!masterOpptyName}, 
+                                            executed on {!rateStablityDate} and the sites listed below in Section 3, Pricing Schedule Updated Quote.  "></apex:outputText><br/><br/>
+                    <apex:outputText value="Except as expressly set forth herein, all other sections of the original Pricing Schedule Opportunity Number {!masterOpptyName}   
+                                            and any addendum executed in connection therewith prior to the date hereof remain unchanged and in effect."></apex:outputText>
+                    <br/><br/><br/><br/>
+                <!--</li>-->
+                <!--<li style="margin-bottom:15px;margin-top:4px;">-->
+                <b><u>2. PRICING SCHEDULE TERM AND EFFECTIVE DATES</u></b>
+                <br/>
+                <br/>
+                <!--<b><u>{!$Label.AVPN_Label27}</u></b>-->
+                    <apex:panelGrid columns="2" width="100%" border="1" style="margin-top:7px;">
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputlabel value="{!$Label.AVPN_Label28}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputText value="{!masterOpptyName}"></apex:outputText>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputlabel value="Opportunity ID (MACD)" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputText value="{!OpptyName}"></apex:outputText>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputlabel value="{!$Label.AVPN_Label29}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputText value="{!OpptyEffectiveDate}"></apex:outputText>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputlabel value="{!$Label.AVPN_Label95}" /><!---added as part of US397240 --->
+                        </apex:panelGroup>
+                        <!--- Garima To change the value--->
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputText value="{!rateCardEffectiveDate}"></apex:outputText><!---added as part of US397240 --->
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:50%">
+                            <apex:outputlabel value="{!$Label.AVPN_Label30}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block" style="width:100%">
+                            <apex:outputText value="Beginning On the Cutover Date and is coterminous with Pricing Schedule (Opportunity Number {!masterOpptyName}) executed on {!rateStablityDate}"></apex:outputText>
+                            <!--<apex:outputText value="{!OpptyTerm}  {!rateStablityDate}"></apex:outputText>-->
+                        </apex:panelGroup>
+                    </apex:panelGrid>
+               <!-- </li>-->
+               <!-- <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.AVPN_Label31}</u></b>
+                    <apex:panelGrid columns="3" width="100%" border="1" style="margin-top:7px;">
+                        <apex:panelGroup layout="block">
+                            <b><apex:outputlabel value="{!$Label.AVPN_Label32}" /></b>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <b><apex:outputlabel value="{!$Label.AVPN_Label33}" /></b>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <b><apex:outputlabel value="{!$Label.AVPN_Label34}" /></b>
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <apex:outputlabel value="{!$Label.AVPN_Label35}" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <apex:outputlabel value="50%" />
+                        </apex:panelGroup>
+                        <apex:panelGroup layout="block">
+                            <apex:outputlabel value="{!$Label.AVPN_Label36}" />
+                        </apex:panelGroup>
+                    </apex:panelGrid>
+                    <br/>{!$Label.AVPN_Label37}
+                </li>
+
+                <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.AVPN_Label38}</u></b>
+                    <br/>{!$Label.AVPN_Label39}
+                </li>
+                <li style="margin-bottom:15px;margin-top:4px;"><b><u>{!$Label.AVPN_Label41}<br/></u></b>
+                    {!$Label.AVPN_Label40} {!QuoteExpirtaionDate}
+                    <br/><br/>{!$Label.AVPN_Label96}
+                </li> -->
+                <!--<li style="margin-bottom:15px;margin-top:4px;">-->
+                
+                <br/>
+                <br/>
+                <br/> 
+                <b><u>3. PRICING SCHEDULE UPDATED QUOTE</u></b>
+                <br/>
+               <!-- <b><u>{!$Label.UBBAddOrChange_4}</u></b>-->
+                    <!-- <div style="margin-bottom:15px;margin-top:4px;"><b>{!$Label.MIS_Label43}</b>
+                        <br/>{!$Label.MIS_Label44}{!$Label.AVPN_Label45}<a href="www.att.com/partnerexchange">{!$Label.AVPN_Label97}</a>{!$Label.AVPN_Label46}
+                        <br/>
+                        <br/>{!$Label.MIS_Label51}
+                    </div> -->
+                    
+                    <div style="margin-bottom:15px;margin-top:4px;">
+                    <p>AT&amp;T MIS Service Component, Recurring Charges, Deal Registration Discount and Discounted Monthly Recurring Charge.</p>
+                        <br/>
+                        
+                        <apex:dataTable value="{!lineitems}" var="item" border="1" width="80%" style="font-size:7px;">
+                            <apex:column headerValue="{!$Label.AVPN_Label52}" value="{!item.sitenumber}" />
+                            <apex:column headerValue="{!$Label.AVPN_Label53}" value="{!item.sitestreet}" />
+                            <apex:column headerValue="{!$Label.AVPN_Label54}" value="{!item.sitecity}" />
+                            <apex:column headerValue="{!$Label.AVPN_Label55}" value="{!item.sitestate}" />
+                            <apex:column headerValue="{!$Label.AVPN_Label56}" value="{!item.sitezip}" />
+                            <apex:column headerValue="{!$Label.AVPN_Label98}" value="{!item.sitephonenumber}" /> <!---added as part of US397240 --->
+                            <apex:column headerValue="{!$Label.AVPN_Label57}" value="{!item.AccessQty}" />
+                            <apex:column headerValue="{!$Label.AVPN_Label99}" value="{!item.PortType}" /> <!---added as part of US397240 --->
+                            <apex:column headerValue="{!$Label.AVPN_Label58}" value="{!item.PortSpeed}" />
+                            <apex:column headerValue="{!$Label.AVPN_Label59}" value="{!item.AccessSpeed}" />
+                            <!--<apex:column headerValue="{!$Label.AVPN_Label60}" value="{!item.InstallationonOption}" />--> <!--Commented as a per Defect Id 75067-->
+                            <apex:column headerValue="Additional DNS" value="{!item.AdditionalDNS}" />
+                            <!--<apex:column headerValue="{!$Label.AVPN_Label61}" value="{!item.VLANLogicalChannel}" />-->                       
+                            <apex:column headerValue="{!$Label.AVPN_Label62}" value="{!item.ClassofService}" />
+                            <apex:column headerValue="{!$Label.AVPN_Label63}">
+                            <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                <apex:param value="{!item.PortCost}"/> 
+                                </apex:outputText>
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.AVPN_Label64}">
+                            <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                <apex:param value="{!item.AccessCost}"/> 
+                                </apex:outputText>
+                            </apex:column>
+                            <apex:column headerValue="Additional DNS Cost">
+                            <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                <apex:param value="{!item.AdditionalDNSCost}"/> 
+                                </apex:outputText>
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.AVPN_Label65}">
+                            <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                <apex:param value="{!item.InstallationCost}"/> 
+                                </apex:outputText>
+                            </apex:column>
+                           <!-- <apex:column headerValue="{!$Label.AVPN_Label66}">
+                            <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                <apex:param value="{!item.VLANLogicalchannelscost}"/> 
+                                </apex:outputText>
+                            </apex:column>-->
+                            <apex:column headerValue="{!$Label.AVPN_Label67}">
+                            <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                <apex:param value="{!item.ClassofServiceCost}"/> 
+                                </apex:outputText>
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.AVPN_Label68}">
+                            <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                <apex:param value="{!item.NonRecurringPriceforcompletecircuit}"/> 
+                                </apex:outputText>
+                            </apex:column>
+                            <apex:column headerValue="{!$Label.AVPN_Label69}">
+                                <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                <apex:param value="{!item.RecurringPricingforcompletecircuit}"/> 
+                                </apex:outputText>
+                            </apex:column>
+                        </apex:dataTable>
+                     </div>
+                     <br/>
+                     <br/>
+                     <br/>
+                     <br/>
+                     
+                     <div>    
+                        <apex:outputPanel >
+                            <br/>
+                            <br/>
+                            <br/>
+                            <apex:panelGrid border="1" columns="2">
+                                <apex:panelGroup style="width:50%"><b><apex:outputLabel value="{!$Label.avpn_pricing_summary}"/></b>
+                                </apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="{!$Label.AVPN_Label70}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                    <apex:param value="{!NonRecurringPricewithoutDiscount}"/>
+                                    </apex:outputText>
+                                    </apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="{!$Label.AVPN_Label71}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                    <apex:param value="{!RecurringPricewithoutDiscount1}"/>
+                                    </apex:outputText>
+                                    </apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="{!$Label.AVPN_Label72}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                    <apex:param value="{!TotaltDiscount}"/>
+                                    </apex:outputText>
+                                    </apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="{!$Label.AVPN_Label73}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                    <apex:param value="{!RecurringPricewithDiscount}"/>
+                                    </apex:outputText>
+                                    </apex:panelGroup>
+                            </apex:panelGrid>
+                        </apex:outputPanel>
+                        <br/>
+                        <br/>
+                        
+<!--    <apex:outputPanel rendered="{!TotaltDiscount != null && TotaltDiscount > 0 }">
+                            <apex:panelGrid border="1" columns="2">
+                                <apex:panelGroup style="width:50%"><b><apex:outputLabel value="{!$Label.AVPN_Label74}"/></b>
+                                </apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="" />
+                                </apex:panelGroup>
+                                <apex:panelGroup style="width:50%" rendered="{!showAdditionaldiscSection=true}">
+                                    <apex:outputLabel value="{!$Label.AVPN_Label75}" />
+                                </apex:panelGroup>
+                                <apex:panelGroup style="width:50%" rendered="{!showAdditionaldiscSection=true}">
+                                    <apex:outputText value="$ {!additionalSPAmount}" />
+                                </apex:panelGroup>
+                                
+                                
+                                <apex:panelGroup style="width:50%" rendered="{!dealRegDiscount=true && DealRegistrationAmount!= null && DealRegistrationAmount> 0 }">
+                                    <apex:outputLabel value="{!$Label.ASE_Label51}" />
+                                </apex:panelGroup>
+                                <apex:panelGroup style="width:50%" rendered="{!dealRegDiscount=true && DealRegistrationAmount!= null && DealRegistrationAmount> 0 }">
+                                    <apex:outputText value="$ {!DealRegistrationAmount}" />
+                                </apex:panelGroup>
+                                
+                                
+                                <apex:panelGroup style="width:50%" rendered="{!specialPricingDiscount=true && specialPricingAmount!= null && specialPricingAmount> 0 }">
+                                    <apex:outputLabel value="{!$Label.Special_Pricing_Discount}" />
+                                </apex:panelGroup>
+                                <apex:panelGroup style="width:50%" rendered="{!specialPricingDiscount=true && specialPricingAmount!= null && specialPricingAmount> 0 }">
+                                    <apex:outputText value="$ {!specialPricingAmount}" />
+                                </apex:panelGroup>
+                            </apex:panelGrid>
+                        </apex:outputPanel>-->
+                   
+                     <br/>   
+                     <br/>
+                     <br/>   
+                     <br/>
+                  <!--   <apex:outputPanel >
+                        <apex:panelGrid border="1" columns="2">
+                        <apex:panelGroup style="width:50%"><b><apex:outputLabel value="{!$Label.MACD_AVPN_Label10}"/></b>
+                        </apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="{!$Label.MACD_AVPN_Label11}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputText value="$ {!NonRecurringPricewithoutDiscount}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="{!$Label.MACD_AVPN_Label12}" /></apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputText value="$ {!RecurringPricewithoutDiscount}" /></apex:panelGroup>
+                            </apex:panelGrid>
+                        </apex:outputPanel>  -->
+                        
+                        
+                        <apex:outputPanel rendered="{!TotaltDiscount != null && TotaltDiscount > 0 }">
+                            <apex:panelGrid border="1" columns="2">
+                                <apex:panelGroup style="width:50%"><b><apex:outputLabel value="{!$Label.AVPN_Label74}"/></b>
+                                </apex:panelGroup>
+                                <apex:panelGroup style="width:50%">
+                                    <apex:outputLabel value="" /></apex:panelGroup>
+                                
+                                <apex:panelGroup style="width:50%" rendered="{!showAdditionaldiscSection=true}">
+                                    <apex:outputLabel value="{!$Label.AVPN_Label75}" />
+                                </apex:panelGroup>
+                                <apex:panelGroup style="width:50%" rendered="{!showAdditionaldiscSection=true}">
+                                    <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                    <apex:param value="{!additionalSPAmount}"/>
+                                    </apex:outputText>
+                                </apex:panelGroup>
+                                
+                                
+                               <!-- <apex:panelGroup style="width:50%" rendered="{!dealRegDiscount == true && DealRegistrationAmount != null && DealRegistrationAmount > 0 && proposal.Apttus_Proposal__Approval_Stage__c == $Label.Quote_Deal_Approved}">  -->
+                                <apex:panelGroup style="width:50%" rendered="{!dealRegDiscount == true && DealRegistrationAmount != null && DealRegistrationAmount > 0}">
+                                    <apex:outputLabel value="{!$Label.AVPN_Label119}" />
+                                </apex:panelGroup>
+                                <apex:panelGroup style="width:50%" rendered="{!dealRegDiscount == true && DealRegistrationAmount!= null && DealRegistrationAmount> 0}">
+                                    <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                    <apex:param value="{!DealRegistrationAmount}"/>
+                                    </apex:outputText>
+                                </apex:panelGroup>
+                                
+                                
+                                <apex:panelGroup style="width:50%" rendered="{!specialPricingDiscount=true && specialPricingAmount!= null && specialPricingAmount> 0 }">
+                                    <apex:outputLabel value="{!$Label.Special_Pricing_Discount}" />
+                                </apex:panelGroup>
+                                <apex:panelGroup style="width:50%" rendered="{!specialPricingDiscount=true && specialPricingAmount!= null && specialPricingAmount> 0 }">
+                                    <apex:outputText value="$ {0, number, ###,###,##0.00}">
+                                    <apex:param value="{!specialPricingAmount}"/>
+                                    </apex:outputText>
+                                </apex:panelGroup>
+                            </apex:panelGrid>
+                        </apex:outputPanel>
+                    </div>
+                <!--</li>
+            </ol>-->
+        </apex:outputPanel>
+    </div>
+</apex:page>

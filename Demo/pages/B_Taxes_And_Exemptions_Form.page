@@ -1,0 +1,241 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="ContactPrototypeController">
+    <style type="text/css">
+        .wireline-container,
+        .Voice-container,
+        .Data-container,
+        .Messaging-container,
+        .Voicemail-container,
+        .disp-table-container,
+        .intrusive-test-container,
+        .mobility-container { display: none; }
+        .order-num-container { display: block !important; }
+        .disp-table { border: 1px solid silver !important; }
+        .opportunity-id-container { display: block !important; }
+        h1.reg { margin-bottom: 0px !important;  }
+        h4.reg { margin-top: 10px !important;  }
+        h1.separator  {
+            padding-top: 20px; 
+            border-top: 1px solid #333;
+            margin-top: 40px !important; 
+        }
+        .created-ticket {
+            position: relative;
+            height: 20px !important;
+            margin-right: 5px !important;
+            width: 20px !important;
+        }
+        .invoice-dates-container,
+        .invoice-num-container {
+            position: absolute;
+            visibility: hidden;
+        }
+        /*Following style is overwritten by walkme styles to over write this style is written internally*/
+        input[type="radio"] {
+            margin: 4px 0px 0px 0px !important;
+            top: 0px !important;
+        }
+    </style>
+    <apex:form styleClass="escalations-form" html-action="">
+        <apex:inputText value="{!Topic}" styleClass="topic-field internal hidden" />
+        <apex:inputText value="{!Category}" styleClass="category-field internal hidden" />    
+        <apex:inputText value="{!Subject}" styleClass="subject-field internal hidden"/>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-back-link">Back</div>
+                <div class="row">
+                    <div class="col-md-12 additional-links">
+                        <h1>Helpful Links</h1>
+                        <ol>
+                            <apex:outputPanel >   
+                                <apex:repeat value="{!DocMapBTaxesExemptions}" var="docMap"> 
+                                    <li>
+                                        <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}" target="_blank" styleClass="document-file">
+                                            <apex:outputText value="{!docMap.Name}"/>
+                                        </apex:outputLink>     
+                                        
+                                    </li>
+                                </apex:repeat>    
+                            </apex:outputPanel>
+                        </ol>
+                    </div>
+                </div>
+            </div>  
+            <div class="col-md-8">
+                <!-- <h1 class="topic-form-title"></h1> -->
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Product Type</label>
+                            <apex:selectRadio styleClass="radio-button wireline-or-mobility required" value="{!Product_Family}">
+                                <apex:selectoption itemValue="Wireline" itemLabel="Wireline"></apex:selectoption>
+                                <apex:selectoption itemValue="Mobility" itemLabel="Mobility"></apex:selectoption>
+                            </apex:selectRadio>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div>
+                    <div class="wireline-container">
+                        <div class="wireline-form-elements">
+                            <div class="row">
+                                <div class="col-md-6 order-num-container">
+                                     <label>Account Number</label>
+                                     <apex:inputText styleClass="required" value="{!Account_Number}" /> 
+                                  </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Number of Invoices</label>
+                                    <apex:selectList styleClass="product-felement required invoice-num-wireline" size="1" value="{!Number_of_Invoices}">
+                                        <apex:selectoption itemValue="none" itemLabel="Select"></apex:selectoption>
+                                        <apex:selectoption itemValue="1" itemLabel="1"></apex:selectoption>
+                                        <apex:selectoption itemValue="2" itemLabel="2"></apex:selectoption>
+                                        <apex:selectoption itemValue="3" itemLabel="3"></apex:selectoption>
+                                        <apex:selectoption itemValue="4" itemLabel="4"></apex:selectoption>
+                                        <apex:selectoption itemValue="5" itemLabel="5"></apex:selectoption>
+                                        <apex:selectoption itemValue="6" itemLabel="6"></apex:selectoption>
+                                        <apex:selectoption itemValue="7" itemLabel="7"></apex:selectoption>
+                                        <apex:selectoption itemValue="8" itemLabel="8"></apex:selectoption>
+                                        <apex:selectoption itemValue="9" itemLabel="9"></apex:selectoption>
+                                        <apex:selectoption itemValue="10" itemLabel="10"></apex:selectoption>
+                                    </apex:selectList>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 invoice-dates-container">
+                                     <label>Invoice Dates</label>
+                                     <apex:inputText value="{!Invoice_Dates}" styleClass="date invoice-dates-field internal" />
+                                     <p class="comment-valid-para">Please separate multiple values with a comma (e.g. mm/dd/yyyy, mm/dd/yyyy).</p> 
+                                  </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label>Description of Issue</label>
+                                    <apex:inputTextarea styleClass="required" value="{!Description}" style="width: 260px; border-radius: 4px; height: 100px; padding: 0px; padding:10px; border: 1px solid #939393;"/>
+                                </div>
+                                <div class="col-md-6"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mobility-container">
+                        <div class="row">
+                            <div class="col-md-6 order-num-container">
+                                 <label>Billing Account Number (BAN)</label>
+                                 <apex:inputText styleClass="required" value="{!Billing_Account_Number_BAN}" /> 
+                              </div>
+                            <div class="col-md-6"></div>
+                        </div>  
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>How many wireless telephone numbers are you disputing?</label>
+                                <apex:selectList styleClass="product-felement required" size="1" value="{!Number_of_Disputed_Telephone_Numbers}">
+                                    <apex:selectoption itemValue="none" itemLabel="Select"></apex:selectoption>
+                                    <apex:selectoption itemValue="1" itemLabel="1"></apex:selectoption>
+                                    <apex:selectoption itemValue="2" itemLabel="2"></apex:selectoption>
+                                    <apex:selectoption itemValue="3" itemLabel="3"></apex:selectoption>
+                                    <apex:selectoption itemValue="4" itemLabel="4"></apex:selectoption>
+                                    <apex:selectoption itemValue="5" itemLabel="5"></apex:selectoption>
+                                    <apex:selectoption itemValue="6plus" itemLabel="6+"></apex:selectoption>
+                                </apex:selectList>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>  
+                        <div class="row">
+                            <div class="col-md-6 order-num-container">
+                                 <label>Wireless Telephone Numbers</label>
+                                 <apex:inputText styleClass="required" value="{!Phone_Number_CTN}" /> 
+                                 <p class="comment-valid-para">Please separate multiple values with a comma (e.g. 555-555-5555,999-999-9999).</p>
+                              </div>
+                            <div class="col-md-6"></div>
+                        </div> 
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>How many invoices?</label>
+                                <apex:selectList styleClass="product-felement required invoice-num-mobility" size="1" value="{!Number_of_Invoices_1}">
+                                    <apex:selectoption itemValue="none" itemLabel="Select"></apex:selectoption>
+                                    <apex:selectoption itemValue="1" itemLabel="1"></apex:selectoption>
+                                    <apex:selectoption itemValue="2" itemLabel="2"></apex:selectoption>
+                                    <apex:selectoption itemValue="3" itemLabel="3"></apex:selectoption>
+                                    <apex:selectoption itemValue="4" itemLabel="4"></apex:selectoption>
+                                    <apex:selectoption itemValue="5" itemLabel="5"></apex:selectoption>
+                                </apex:selectList>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>    
+                        <div class="row">
+                            <div class="col-md-6 invoice-num-container">
+                                 <label>Invoice number</label>
+                                 <apex:inputText styleClass="invoice-num-field internal" value="{!Invoice_Number}" /> 
+                                 <p class="comment-valid-para">Please separate multiple values with a comma (e.g. 123456, 456789).</p>
+                              </div>
+                            <div class="col-md-6"></div>
+                        </div>  
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Type of fee/tax</label>
+                                <apex:inputText styleClass="product-felement required" size="1" value="{!Type_of_fee_tax}" />
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>   
+                        <div class="row">
+                            <div class="col-md-6 order-num-container">
+                                 <label>Total Disputed Amount</label>
+                                 <apex:inputText styleClass="required currency" value="{!Disputed_Amount}" /> 
+                              </div>
+                            <div class="col-md-6"></div>
+                        </div>       
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Description of Issue</label>
+                                <apex:inputTextarea styleClass="required" value="{!Trouble_Report}" style="width: 260px; border-radius: 4px; height: 100px; padding: 0px; padding:10px; border: 1px solid #939393;"/>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-buttons">
+                        <div class="btn btn-default">Cancel</div>
+                        <input type="hidden"  id="external" name="external" value="1" />
+                        <div class="btn btn-primary submitToConfirm-button">Confirm</div>
+                        <apex:commandButton action="{!onSubmit}" styleClass="btn btn-primary submit-button" value="Quick Submit" reRender="true" />
+                    </div>
+                </div>          
+            </div>  
+        </div>
+    </apex:form>
+    <script type="text/javascript">
+        $(document).ready( function () {
+            /*$(".invoice-num-wireline").change( function () {
+                var myVal = $(this).val();
+                var i;
+                $(".gen-invoice-wireline").remove();
+                for(i = myVal ; i > 0; i--) {
+                    $(".invoice-num-wireline").after("<div class='gen-invoice-wireline'><label>Invoice "+i+" Date </label><input class='date required' type='text' data-felement='Invoice Date "+i+"' placeholder='mm/dd/yyyy'/></div>");
+                }
+            });
+            $(".invoice-num-mobility").change( function () {
+                var myVal = $(this).val();
+                var i;
+                
+                $(".gen-invoice-mobility").remove();
+                for(i = myVal ; i > 0; i--) {
+                    $(".invoice-num-mobility").after("<div class='gen-invoice-mobility'><label>Invoice "+i+" Number </label><input class='required' type='text' data-felement='Invoice "+i+" Number'/></div>");
+                }
+            });*/
+            $(".submitToConfirm-button").mousedown( function () {
+                var invoiceDateArr = [];
+                var invoiceNumArr = [];
+                $(".gen-invoice-wireline input:visible").each( function (index, value) {
+                  invoiceDateArr[index] = $(this).val();  
+                });
+                $(".gen-invoice-mobility input:visible").each( function (index, value) {
+                  invoiceNumArr[index] = $(this).val();  
+                });
+                $(".invoice-dates-field").val(invoiceDateArr);
+                $(".invoice-num-field").val(invoiceNumArr);
+            });
+        });
+    </script>
+</apex:page>

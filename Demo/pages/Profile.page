@@ -1,0 +1,1533 @@
+<apex:page id="myProfilePage" sidebar="false" showHeader="false" showChat="false" controller="ManagerUserProfile" docType="html-5.0" standardStylesheets="false">
+<apex:stylesheet value="{!$Resource.profileManagementStyles}"/>
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader" rendered="{!isPartnerUser}"/>
+    <apex:include pageName="PortalDesignHeaderUnAuth" id="PortalDesignHeaderUnAuth" rendered="{!isCommunityUser}"/>
+    
+    <!-- 3rd party css and js -->
+    <link href="{!$Resource.JSCroppingTool}/croppingToolJS/css/imgareaselect-animated.css" type="text/css" rel="stylesheet"/>
+    <script src="{!$Resource.JSCroppingTool}/croppingToolJS/scripts/jquery.imgareaselect.pack.js"></script>
+
+    <link rel="stylesheet" href="{!$Resource.JQueryUI}/jquery-ui-1.11.2.custom/jquery-ui.css"  />
+    <script src="{!$Resource.JQueryUI}/jquery-ui-1.11.2.custom/jquery-ui.js"></script>
+
+    <apex:includeScript value="{!$Resource.ATnT_AES}" />
+    <apex:includeScript value="{!$Resource.ATnT_mode_ecb_min}" />
+    
+    
+
+    <!-- this is temporary - we need to transfer the call to images in the static resources -->
+    <style>
+    .css-checkbox1{
+        margin-top:5px;
+    }
+    .labelFeildName{
+        font-weight:normal;
+        font-size:16px;
+        font-family:omnes_att_iimedium;
+        padding: 0px !important;
+    }
+    .popUpMsg{
+    font-size:14px;
+    }
+    .AdminRightCls{
+        font-weight:normal;
+        font-size:14px;
+        font-family:omnes_light;
+    }
+    .ui-widget {
+            font-family: Verdana,Arial,sans-serif;
+            font-size: .8em;
+        }
+        
+        .ui-widget-content {
+            background: #F9F9F9;
+            border: 0px;
+            color: #222222;
+        }
+        
+        .ui-dialog {
+            left: 0;
+            outline: 0 none;
+            padding: 0 !important;
+            position: absolute;
+            top: 0;
+        }
+        
+        .ui-dialog .ui-dialog-content {
+            background: none repeat scroll 0 0 #FFFFFF;
+            border: 0 none;
+            overflow: auto;
+            position: relative;
+            padding: 0 !important;
+        }
+        
+        .ui-widget-header {
+            background: #FFFFFF;
+            border: 0;
+            color: #000000;
+            font-weight: normal;
+        }
+        
+        .ui-dialog .ui-dialog-titlebar {
+            padding: 0.1em .5em;
+            position: relative;
+            font-size: 34px;
+            height:60px;
+            padding:top:7px;
+            background: #FFFFFF;
+            font-family:omnesatt_iiregular;
+        }
+        
+        .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+            border: 0px none;
+            font-weight: bold;
+            color: #000;
+            content: "X";
+        }
+        .ui-button .ui-widget .ui-state-default .ui-corner-all .ui-button-icon-only .ui-dialog-titlebar-close{
+            background-color:#FFFFFF;
+            border:0px;
+        }
+        .ui-dialog { z-index: 1201 !important ;}
+    .errorText {        
+            color: #cf2a2a;
+            font-size: 16px;            
+        }
+        
+    div.img {
+        
+        border: 2px solid #029FD6;
+        float: right;
+        width: 220px;
+        height: 160px;
+        text-align: center;
+        border-radius: 5px 5px 5px 5px;
+    }   
+
+    div.img img {
+     margin-top: 25px;
+     width: 20%;
+     height: auto;
+     text-align: center;
+    }
+
+    div.desc {
+        font-size: 18px;
+        font-weight: bold;
+        padding: 15px;
+        text-align: center;
+    }
+    .sub_navigation {
+        position: relative;
+        z-index:1000000;
+    }
+
+    .popover{
+        min-width:43em;
+       // box-shadow: 15px 15px 10px rgba(0,0,0,.2);
+        left: 25%;
+        //position:fixed !important;
+        top:244px !important;
+        height: 66px !important;
+        //z-index:-1;
+        
+     }
+     
+     .popover-content{
+         padding: 0px 20px 30px;
+     }
+     
+     #myPopoverContent{
+         line-height:1.2em;
+         font-family:omnes_light;
+     }
+     .popover-title{
+         font-size:14px;
+         padding:2px !important;
+     }
+     .closePopOver{
+        cursor:pointer;
+        float:right;
+        line-height:0.5em;
+        margin-bottom:20px;
+        //color:#808080;
+        color:lightgray;
+        font-size:28px;     
+        font-family:omnes_light;
+        
+    }
+    .popover.right{
+        margin-left:96px !important;
+    }
+    
+    .popover-header {
+        padding:8px 14px;
+        background-color:#fff;
+        
+        }
+        .popover-title {
+            margin:0;
+            padding:0;
+            background-color:transparent;
+            border:none;
+        }
+        
+        
+    #main_container input[type=radio]{
+        width:auto !important;
+        margin:0px !important;
+    }
+        .fileContainer {
+            background-image: url("{!$Resource.cameraIcon}");
+            width: 150px;
+            padding-left: 32px !important;
+            padding-top: 4px;
+            
+        }
+
+        .info {
+            color: #00529B;
+            background-color: #BDE5F8;
+            background-image: url('info.png');
+        }
+        .success {
+            color: #4F8A10;
+            background-color: #DFF2BF;
+            background-image:url('{!$Resource.Success}');
+        }
+        .warning {
+            color: #9F6000;
+            background-color: #FEEFB3;
+            background-image: url('warning.png');
+        }
+        .error {
+            color: #D8000C;
+            background-color: #FFBABA;
+            background-image: url('{!$Resource.Failure}');
+        }
+        .myProf{
+        font-size: 32px;
+        color: #666666;
+        font-style: Medium;
+        text-align: left;
+        letter-spacing: 0em;
+        line-height:16px;
+        margin-top:10px;
+        }
+        .section-dividerHr {
+            width: 100%;
+            clear: both;
+            margin: 35px 0px 35px 0px;
+            float: left;
+            border-bottom: 1px solid #d3d3d3;
+        }
+        .p0{
+        padding:0px;
+        }
+        .accInfo{
+         font-size: 24px;
+        color: #666666;
+        font-style: Medium;
+        text-align: left;
+        letter-spacing: 0em;
+        margin-bottom:34px;
+        }
+        .emailAlert_Sty{
+        font-size: 14px;
+            font-style: normal;
+            text-align: left;
+            line-height: 16px;
+            letter-spacing: 0.01em;
+            effect: none;
+            margin-left: 23px;
+            font-family:omnes_light !important;
+            display: block;
+            color:#959595;
+        }
+        .emailAlert_Sty_Other{
+            font-size: 14px;
+            font-style: normal;
+            text-align: left;
+            line-height: 16px;
+            letter-spacing: 0.01em;
+            effect: none;
+            margin-left: 23px;
+            font-family:omnes_light !important;
+            display: block;
+            color:#000;
+        }
+        .ML15 {
+            margin-left: 15px;
+             margin-top: 15px;
+        }
+        .MT11 {
+            margin-top: 7px;
+            color: #056fab;
+            font-weight: bolder;
+            font-style: normal;
+            text-align: left;
+            letter-spacing: 0em;
+            font-size: 18px;
+            line-height: 30px;
+        }
+        #verticalLine {
+            border-right: 1px solid #CFCFCF;
+            border-left: 1px solid #CFCFCF;
+            -moz-border-top-colors: none;
+            -moz- border-right-colors: none;
+            -moz-border-bottom-colors: none;
+            -moz-border-left-colors: none;
+            border-image: none;
+            height: 225px;
+            border-width: medium 1px;
+            border-style: none solid;
+            border-color: -moz-use-text-color #CFCFCF;
+            float: left;
+            position: absolute;
+            opacity: 0.3;
+            margin-top:0px;
+            margin-left:0px !important;
+            }
+            .check-label{
+             margin-left: 15px !important;
+             margin-bottom:0px !important;
+            }
+            .subHeader{
+            font-weight:normal;
+            font-size:14px;
+            font-family:omnes_light !important;
+            color:#959595;
+            text-align:left;
+            margin-top:0px !important;
+            margin-bottom: 5px !important;
+            }
+            .subHeader_Other{
+            font-weight:normal;
+            font-size:14px;
+            font-family:omnes_light !important;
+            color:#000;
+            text-align:left;
+            margin-top:0px !important;
+            margin-bottom: 5px !important;
+            }
+             .MB16 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-family: omnes_light;
+            color: #333333;
+            font-style: Medium;
+            text-align: left;
+            letter-spacing: 0em;
+            effect: none;
+            line-height: 16px;
+        }
+          .styDisc {
+            list-style-type: disc;
+            margin-left: 17px;
+            margin-top: 5px;
+        }
+         .styBorder {
+            border: 1px solid #cccccc;
+            background-color: #ffffff;
+            margin-bottom: 40px;
+        }
+        .totheright{
+        text-align:right;
+        }
+        #footer_links, #slice_footer{
+        margin:30px auto !important;
+        }
+        #createButtonDisable{
+        cursor:text;
+        }
+    </style>
+
+    <script type="text/javascript">
+      
+      function makeThisUserActive(){
+          setTimeout(function(){ updateUserActiveStatus(); }, 10000);
+      } 
+    
+      function goBackToManageUserPage(){
+          var msg = document.getElementById("returnMessage").value;
+          if(msg == 'V2UgcmVjZWl2ZWQgeW91ciB1cGRhdGVzLiBUaGV5IHdpbGwgYmUgcmVmbGVjdGVkIGJlbG93IGFmdGVyIHlvdSByZWZyZXNoIHRoZSBwYWdlLg=='){
+              setTimeout(function(){ window.location.href = '/apex/manage_users?msg='+msg; }, 3000);
+          }
+      }
+      
+      function goBackToManageUserPageAdminPanel(){
+          var msg = document.getElementById("returnMessageAdmin").value;
+          if(msg == 'V2UgcmVjZWl2ZWQgeW91ciB1cGRhdGVzLiBUaGV5IHdpbGwgYmUgcmVmbGVjdGVkIGJlbG93IGFmdGVyIHlvdSByZWZyZXNoIHRoZSBwYWdlLg=='){
+              setTimeout(function(){ window.location.href = '/apex/manage_users?msg='+msg; }, 3000);
+          }
+      }
+      
+      if( '{!isAdmin}' == 'false' && '{!isMine}' == 'false' ){
+            window.location.href = '/apex/Profile?id='+'{!thisUserId}';
+      }     
+      var dialog;
+        $( document ).ready(function() {
+        $('[data-toggle="popover"]').popover(); 
+            document.getElementById("jsErrorDiv").style.display = 'none';
+            //document.getElementById("jsErrorPhoneDiv").style.display = 'none';
+            fetchAndSetMDFAction();
+            
+            var mine = '';
+            var admin = '';
+            
+            if (document.getElementById("hdnIsMine").value) {
+                mine = document.getElementById("hdnIsMine").value;
+            }
+
+            if (document.getElementById("hdnIsAdmin").value) {
+                admin = document.getElementById("hdnIsAdmin").value;
+            }          
+        
+
+            $("#temporaryHolderDiv").hide();
+            if( mine == 'true' ){
+                //setUpNotificationChecks();
+                if (document.getElementById("claimMDF")) {
+                    document.getElementById("claimMDF").disabled = true;
+                }
+                if (document.getElementById("readOnly")) {
+                    document.getElementById("readOnly").disabled = true;
+                }
+                
+                document.getElementById("updateBtn").style.display = 'none';
+                document.getElementById("createButtonDisable").style.display = 'block';
+            }
+            if( admin == 'true' && mine != 'true' ){
+                setActiveInActive();
+            }
+           // var phoneNo = document.getElementById("u19_input").value;
+            /*if( phoneNo != '' ){
+                var typeNo = phoneValidationErrorTraffic(phoneNo);
+            
+                if( typeNo == 1 ){
+                
+                    //$("#u19_input").attr("maxlength","10");
+                    
+                }else {
+                
+                    //$("#u19_input").attr("maxlength","14");
+                }
+            }else {
+            
+                //$("#u19_input").attr("maxlength","14");
+            }*/
+            dialog = $( "#dialogForm" ).dialog({
+                autoOpen: false,
+                height: "auto",
+                width: "850",
+                modal: true,
+                draggable: false,
+                resizable: false,
+                close: function() {
+                    $("#previewWrapper").hide();
+                    document.getElementById("myProfilePage:formUpload:inptUploadPhoto").value = '';
+                    var ias = $('#croppingWindow').imgAreaSelect({ instance: true });
+                    ias.setOptions({ hide: true });
+                    ias.update();
+                    $("#temporaryHolderDiv").hide();
+                    $("#temporaryHolderDiv").attr("style","");
+                    $("#temporaryHolder").attr("src","");
+                    $('.ui-widget-overlay').css('z-index', '');
+                }
+            });
+        });
+      function doUploadChatterPhoto(){
+          var confirmation = true;
+          if( confirmation ){
+              var myChatterProfilePic = document.getElementById("myProfilePage:formUpload:inptUploadPhoto");
+              var fileUploadPath = myChatterProfilePic.value;
+              var extension = fileUploadPath.substring(fileUploadPath.lastIndexOf('.') + 1).toLowerCase();
+              if( extension == "gif" || extension == "png" || extension == "bmp" || extension == "jpeg" || extension == "jpg") {
+                  var file = myChatterProfilePic.files[0];
+                  if( file.size < 8000000 ){
+                      proceedForCropping();
+                  }else{
+                      alert('Please choose a smaller size image.(<8MB)');
+                  }
+              }else{
+                  alert('Please choose an image file.');
+              }
+          }
+      }
+      
+      function proceedForCropping(){
+            $("#previewWrapper").show();
+            var file = document.getElementById("myProfilePage:formUpload:inptUploadPhoto").files[0];
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = function(e) {
+                var img = $('#croppingWindow');
+                img.attr('src', this.result);
+                var img = $('#previewWindow');
+                img.attr('src', this.result);
+                var img = $('#temporaryHolder');
+                img.attr('src', this.result);
+            }
+            
+            $('#croppingWindow').imgAreaSelect({ aspectRatio: '1:1', handles: true, onSelectChange: preview, minWidth:40, minHeight:40 });
+            setTimeout(function(){ validateMyPhoto(); }, 2000);
+      }
+      function validateMyPhoto(){
+          var img = document.getElementById('temporaryHolder'); 
+          originalHt = img.clientHeight;
+          originalWd = img.clientWidth;
+          if(originalHt >=1500 || originalWd >=1500){
+              document.getElementById("uploadProfilePhotoBtn").style.display = "none";
+              document.getElementById("photoUploadError").innerHTML = "Error : The photo's dimensions are too large.";
+          }else{
+          
+              document.getElementById("uploadProfilePhotoBtn").style.display = "block";
+              document.getElementById("photoUploadError").innerHTML = "";
+          }
+      }
+      //Parameters to be saved to the database.
+      var X1 = parseInt("{!x1}");
+      var X2 = parseInt("{!x2}");
+      var Y1 = parseInt("{!y1}");
+      var Y2 = parseInt("{!Y2}");
+      var imgWidth = parseInt("{!imgWidth}");
+      var imgHeight = parseInt("{!imgHeight}");
+      var originalHt;
+      var originalWd;
+      var varWidth;
+      var varHeight;
+      function saveCroppedImage(img, selection){
+          if (!selection.width || !selection.height)
+                return;
+          X1 = selection.x1;
+          X2 = selection.x2;
+          Y1 = selection.y1;
+          Y2 = selection.y2;
+          imgWidth = selection.width;
+          imgHeight = selection.height;
+          var img = document.getElementById('temporaryHolder'); 
+          originalHt = img.clientHeight;
+          originalWd = img.clientWidth;
+          var imgVar = document.getElementById('croppingWindow');
+          varWidth = imgVar.clientWidth;
+          varHeight = imgVar.clientHeight;
+      }
+      
+      function preview(img, selection) {
+            saveCroppedImage(img, selection);
+            if (!selection.width || !selection.height)
+                return;
+            
+            var scaleX = 100 / selection.width;
+            var scaleY = 100 / selection.height;
+            
+            $('#previewBox img').css({
+                width: Math.round(scaleX * varWidth),
+                height: Math.round(scaleY * varHeight),
+                marginLeft: -Math.round(scaleX * selection.x1),
+                marginTop: -Math.round(scaleY * selection.y1)
+            }); 
+        }
+      function setActiveInActive(){
+      //console.log('>>>hdnIsActive '+document.getElementById("hdnIsActive").value);
+          var mine = document.getElementById("hdnIsMine").value;
+          var admin = document.getElementById("hdnIsAdmin").value;
+          if(mine != 'true' && admin == 'true'){
+              var isActive = document.getElementById("hdnIsActive").value;
+              if( isActive == 'true' ){
+                 document.getElementById("makeActive").checked = true;                  
+                  //$("[id$=makeActive]").prop('disabled', true);
+                  $("[id$=u6_input]").prop('disabled', false);
+                  $("[id$=u9_input]").prop('disabled', false);
+                  $("[id$=u12_input]").prop('disabled', false);
+                  //$("[id$=u19_input]").prop('disabled', true);                                  
+              }else{
+               document.getElementById("makeInActive").checked = true;
+                    $("[id$=makeInActive]").prop('disabled', true);
+                  $("[id$=u6_input]").prop('disabled', true);
+                  $("[id$=u9_input]").prop('disabled', true);
+                  $("[id$=u12_input]").prop('disabled', true);
+                  //$("[id$=u19_input]").prop('disabled', true);
+                  $("#readOnly").prop('disabled', true);
+                  $("#claimMDF]").prop('disabled', true);                 
+                  $('.resetPwd').attr('style','pointer-events:none;color:#ccc;');                                   
+              }
+          }
+      }
+      function fetchAndSetMDFAction(){
+      
+          
+          var isReadOnly = document.getElementById("hdnReadOnly").value;
+          var isMDFClaim = document.getElementById("hdnClaimMDF").value;
+          var isShowMDFPermission = document.getElementById("hdnMDFPermission").value;
+          
+          if( isShowMDFPermission == 'true' ){
+              document.getElementById("manageMDFPanel").style.display = "block";
+              var btnReadonly = '';
+              var btnMDFClaim = '';
+              if (document.getElementById("readOnly")) {
+                btnReadonly = document.getElementById("readOnly");
+              }
+              if (document.getElementById("claimMDF")) {
+                btnMDFClaim = document.getElementById("claimMDF");
+              }
+              if (btnReadonly != '' && btnMDFClaim != '') {
+                  if( isReadOnly == 'true' ){
+                      btnReadonly.checked = true;
+                      btnMDFClaim.checked = false;
+                  }else if( isMDFClaim == 'true' ){
+                      btnMDFClaim.checked = true;
+                      btnReadonly.checked = false;
+                  }
+              }
+          }else {
+          
+              document.getElementById("manageMDFPanel").style.display = "none";
+          }
+      }
+      
+      function setUpNotificationChecks(){
+          var mine = document.getElementById("hdnIsMine").value;
+          if( mine == 'true' ){
+              var pe = document.getElementById("hdnPE").value;
+              var news = document.getElementById("hdnNews").value;
+              var sales = document.getElementById("hdnSales").value;
+              var marketing = document.getElementById("hdnMarketing").value;
+              var support = document.getElementById("hdnSupport").value;
+              if( pe == 'true' ){
+                  document.getElementById("u47_input").checked = true;
+              }else {
+                  document.getElementById("u47_input").checked = false;
+              }
+              
+              if( news == 'true' ){
+                  document.getElementById("u49_input").checked = true;
+              }else {
+                  document.getElementById("u49_input").checked = false;
+              }
+              
+              if( sales == 'true' ){
+                  document.getElementById("u51_input").checked = true;
+              }else {
+                  document.getElementById("u51_input").checked = false;
+              }
+              
+              if( marketing == 'true' ){
+                  document.getElementById("u53_input").checked = true;
+              }else {
+                  document.getElementById("u53_input").checked = false;
+              }
+
+              
+              if( support == 'true' ){
+                  document.getElementById("u55_input").checked = true;
+              }else {
+                  document.getElementById("u55_input").checked = false;
+              }
+          }          
+      }
+      function setSubmitMessSty(){ 
+          //document.getElementById("idresetpassword").style.top = "472px";
+          document.getElementById("idresetpassword2").style.top = "472px";
+          document.getElementById("idupdatebutton").style.marginTop= "25px";
+          document.getElementById("createButtonDisable").style.marginTop= "25px";
+          document.getElementById("u22").style.top= "131px";
+          document.getElementById("u20").style.top= "175px";
+          document.getElementById("u15").style.top= "175px";
+          //document.getElementById("u104").style.top= "395px";
+          document.getElementById("u13").style.top= "173px";
+          //document.getElementById("notificationWrapper").style.top= "175px";
+          document.getElementById("u4").style.top= "230px";
+          document.getElementById("u6").style.top= "250px";
+          document.getElementById("u7").style.top= "290px";
+          document.getElementById("u9").style.top= "310px";
+          document.getElementById("u10").style.top= "350px";
+          document.getElementById("u12").style.top= "370px";
+          document.getElementById("u17").style.top= "415px";
+          document.getElementById("u19").style.top= "435px";
+          document.getElementById("u60").style.top= "495px";
+          document.getElementById("u59").style.top= "530px";
+          document.getElementById("permissionBox").style.marginTop= "60px";
+          document.getElementById("notificationWrapper").style.marginTop= "175px";
+          document.getElementById("u26").style.top= "185px";
+          document.getElementById("u47").style.top= "250px";
+          document.getElementById("u49").style.top= "278px";
+          document.getElementById("u51").style.top= "306px";
+          document.getElementById("u53").style.top= "334px";
+          document.getElementById("u55").style.top= "362px";
+          document.getElementById("u57").style.top= "394px";
+      }
+      
+      function resetSubmitMessSty(){ 
+          document.getElementById("u22").style.top= "101px";
+          document.getElementById("u20").style.top= "145px";
+          document.getElementById("u15").style.top= "143px";
+          //document.getElementById("u104").style.top= "395px";
+          document.getElementById("u13").style.top= "143px";
+          //document.getElementById("notificationWrapper").style.top= "175px";
+          document.getElementById("u4").style.top= "200px";
+          document.getElementById("u6").style.top= "220px";
+          document.getElementById("u7").style.top= "260px";
+          document.getElementById("u9").style.top= "282px";
+          document.getElementById("u10").style.top= "320px";
+          document.getElementById("u12").style.top= "340px";
+          document.getElementById("u17").style.top= "385px";
+          document.getElementById("u19").style.top= "405px";
+          document.getElementById("u59").style.top= "474px";
+          document.getElementById("permissionBox").style.marginTop= "26px";
+          document.getElementById("notificationWrapper").style.marginTop= "145px";
+          document.getElementById("u26").style.top= "155px";
+          document.getElementById("u47").style.top= "220px";
+          document.getElementById("u49").style.top= "249px";
+          document.getElementById("u51").style.top= "277px";
+          document.getElementById("u53").style.top= "305px";
+          document.getElementById("u55").style.top= "333px";
+          document.getElementById("u57").style.top= "365px";
+      }
+      
+       function updateUserDetails(){
+      
+          var firstName = $("[id$=u6_input]").val();
+          var lastName = $("[id$=u9_input]").val();
+          var email = $("[id$=u12_input]").val();
+          //var phone = $("[id$=u19_input]").val();          
+          if( firstName != '' && lastName != '' && email != '' && arError.length != 0 ){
+              enableUpdateButton();
+              
+          }else {
+              doUpdateTheContactRecord(status, firstName, lastName, email, '0000000000');
+          }
+          
+      
+      }
+      
+      function reloadPage(){
+          setTimeout(function(){   window.location.href = window.location.href; }, 500);
+      }
+      
+      function phoneValidationErrorTraffic( param ){
+      
+          var msg;
+          if( param.length < 10 && /^\d+$/.test(param) ){
+          
+              msg = '1';
+          }else {
+          
+              msg = '2';
+          }
+          
+          return msg;
+      
+      }
+      
+      var arError = []; 
+      function validatePhone(elem){
+          var phoneNum = elem.value;
+          var isFormatted = false;
+          var isValid = false;
+          var errMsg = '';
+          
+          if( /^\(\d{3}\) \d{3}-\d{4}$/.test(phoneNum) || /^\d{10}$/.test(phoneNum) ){
+          
+              isValid = true;
+              if( /^\(\d{3}\) \d{3}-\d{4}$/.test(phoneNum) ){
+                  isFormatted = true;
+              }
+          }else {
+              
+              if( phoneValidationErrorTraffic(phoneNum) == 1 ){
+                  errMsg = 'Business Phone must be ten digits.';
+              }
+              
+              if( phoneValidationErrorTraffic(phoneNum) == 2 ) {
+                  errMsg = 'Please enter a valid phone number.';
+              }
+              isValid = false;
+          }
+
+          if( phoneNum == '' ) {
+              if( arError.indexOf( 'Invalid phone number. Please enter only 10 digits.' ) != -1 ){
+                  var itemIndex = arError.indexOf( 'Invalid phone number. Please enter only 10 digits.' );
+                  arError.splice(itemIndex, 1);
+              } 
+              
+          }else if( !isValid ){
+              if( arError.indexOf( 'Invalid phone number. Please enter only 10 digits.' ) == -1 ){
+                  arError.push('Invalid phone number. Please enter only 10 digits.');
+              }
+          }else if( isValid ){
+
+              if( arError.indexOf( 'Invalid phone number. Please enter only 10 digits.' ) != -1 ){
+                  var itemIndex = arError.indexOf( 'Invalid phone number. Please enter only 10 digits.' );
+                  arError.splice(itemIndex, 1);
+              }
+              if( !isFormatted ){
+                  phoneNum = '('+phoneNum.substring(0, 3)+')'+' '+phoneNum.substring(3, 6)+'-'+phoneNum.substring(6,10);
+                  elem.value = phoneNum;
+              }
+          }
+          return errMsg;
+      }
+     
+       
+     function validateInput(inputField) {
+        var isValid = true;
+        if (isValid && inputField.value != '' && inputField.value.substring(0,1) != ' ') {
+            if( inputField.id == 'u6_input' ){
+                if( arError.indexOf( 'Please enter a valid firstname.' ) != -1 ){
+                    var itemIndex = arError.indexOf( 'Please enter a valid firstname.' );
+                    arError.splice(itemIndex, 1);
+                }
+                
+            }else if( inputField.id == 'u9_input' ){
+                
+                if( arError.indexOf( 'Please enter a valid lastname.' ) != -1 ){
+                    var itemIndex = arError.indexOf( 'Please enter a valid lastname.' );
+                    arError.splice(itemIndex, 1);
+                }
+            }
+        } else {
+            if( inputField.id == 'u6_input' ){
+                if( arError.indexOf( 'Please enter a valid firstname.' ) == -1 ){
+                      arError.push('Please enter a valid firstname.');
+                }
+            }else if( inputField.id == 'u9_input' ){
+                if( arError.indexOf( 'Please enter a valid lastname.' ) == -1 ){
+                      arError.push('Please enter a valid lastname.');
+                }
+            }
+        }
+        enableUpdateButton();
+    }
+   
+    function validateEmail(inputField) {
+        var isValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(inputField.value);
+        if (isValid && inputField.value != '' ) {
+            if( arError.indexOf( 'Please enter a valid email address.' ) != -1 ){
+                var itemIndex = arError.indexOf( 'Please enter a valid email address.' );
+                arError.splice(itemIndex, 1);
+            }
+        } else {
+            if( arError.indexOf( 'Please enter a valid email address.' ) == -1 ){
+                  arError.push('Please enter a valid email address.');
+            }
+        }
+        //enableUpdateButton();
+    }
+    
+    function showValidationError(){
+    
+        var isEmailError = document.getElementById("hdnIsDuplicateEmail").value;
+        if( isEmailError == 'true' ){
+            $("#u12_input").css("border","solid 1px red");
+            $("#u12_input").css("background-color","#FEF3F1");
+        }else{
+            //$("#u12_input").css("border","solid 1px #ccc");
+           // $("#u12_input").css("background-color","#FFFFFF");
+           $('#u12_input').removeAttr('style');
+        }
+    }
+    
+    var arFiller = [];
+    function checkIfMandetoryFilled(inputObj){
+
+        var firstName = $("[id$=u6_input]").val();
+        var lastName = $("[id$=u9_input]").val();
+        var email = $("[id$=u12_input]").val();
+        var mine = document.getElementById("hdnIsMine").value;
+        var admin = document.getElementById("hdnIsAdmin").value;
+         
+        
+        if( firstName != '' && lastName != '' && email != '' ){//saveByAdminBtnDisabled
+            if( mine != 'true' ){
+            
+                document.getElementById("saveByAdminBtnDisabled").style.display = 'none';
+                document.getElementById("saveByAdminBtn").style.display = 'block';
+            }else{
+                document.getElementById("createButtonDisable").style.display = 'none';
+                document.getElementById("updateBtn").style.display = 'block';
+            }
+        }else{
+            if( mine != 'true' ){
+            
+                document.getElementById("saveByAdminBtnDisabled").style.display = 'block';
+                document.getElementById("saveByAdminBtn").style.display = 'none';
+                
+            }else{
+            
+                document.getElementById("createButtonDisable").style.display = 'block';
+                document.getElementById("updateBtn").style.display = 'none';
+            }
+        }  
+    }
+    
+    var status = 'none';
+    function updateUserStatus(inputObj,flag){
+        
+        if(flag == 'True'){
+            status = 'active';
+            $('#hdnIsActive').val('true');
+        }
+        if(flag == 'False'){
+            status = 'inactive';
+            $('#hdnIsActive').val('false');
+        }
+        
+        var mine = document.getElementById("hdnIsMine").value;
+        var admin = document.getElementById("hdnIsAdmin").value;
+        
+        if( flag != '' ){
+            if( mine != 'true' ){
+            
+                document.getElementById("saveByAdminBtnDisabled").style.display = 'none';
+                document.getElementById("saveByAdminBtn").style.display = 'block';
+            }else{
+                document.getElementById("createButtonDisable").style.display = 'none';
+                document.getElementById("updateBtn").style.display = 'block';
+            }
+        }else{
+            if( mine != 'true' ){
+            
+                document.getElementById("saveByAdminBtnDisabled").style.display = 'block';
+                document.getElementById("saveByAdminBtn").style.display = 'none';
+                
+            }else{
+            
+                document.getElementById("createButtonDisable").style.display = 'block';
+                document.getElementById("updateBtn").style.display = 'none';
+            }
+        }
+    }    
+    
+    function enableSaveFromAdminPanel(){
+    
+        document.getElementById("saveByAdminBtnDisabled").style.display = 'none';
+        document.getElementById("saveByAdminBtn").style.display = 'block';
+    }
+    
+    function enableUpdateButton(){
+        var emailIndex = arError.indexOf('Please enter a valid email address.');
+        if( emailIndex != -1 ){
+            $("#jsErrorDiv").show();
+            $("#u12_input").css("border","solid 1px red");
+            $("#u12_input").css("background-color","#FEF3F1");
+            $("#jsErrorDiv").html(arError[emailIndex]);
+        }else{
+            $("#jsErrorDiv").html('');
+            $("#jsErrorDiv").hide();
+           // $("#u12_input").css("border","solid 1px #ccc");
+            //$("#u12_input").css("background-color","#FFFFFF");
+            $('#u12_input').removeAttr('style');
+        }
+        var mine = document.getElementById("hdnIsMine").value;
+        var admin = document.getElementById("hdnIsAdmin").value;
+        if( arError.length > 0 ){
+            if( arError.length == 1 && arError[0] == 'Invalid phone number. Please enter only 10 digits.' ){
+                $("#u12_input").css("border","1px solid #ccc");
+                $("#u12_input").css("background-color","#FFFFFF");
+                if( mine != 'true' ){
+                    document.getElementById("saveByAdminBtnDisabled").style.display = 'block';
+                    document.getElementById("saveByAdminBtn").style.display = 'none';
+                }else{
+                    document.getElementById("createButtonDisable").style.display = 'block';
+                    document.getElementById("updateBtn").style.display = 'none';
+                }
+            }else {
+                if( mine != 'true' ){
+                    document.getElementById("saveByAdminBtnDisabled").style.display = 'block';
+                    document.getElementById("saveByAdminBtn").style.display = 'none';
+                }else{
+                    document.getElementById("createButtonDisable").style.display = 'block';
+                    document.getElementById("updateBtn").style.display = 'none';
+                }
+            }
+        }else{
+            if( mine != 'true' ){
+            
+                document.getElementById("saveByAdminBtnDisabled").style.display = 'none';
+                document.getElementById("saveByAdminBtn").style.display = 'block';
+                
+            }else{
+            
+                document.getElementById("createButtonDisable").style.display = 'none';
+                document.getElementById("updateBtn").style.display = 'block';
+            }
+
+            $("#u12_input").css("border","1px solid #ccc");
+            $("#u12_input").css("background-color","#FFFFFF");
+            $("#jsErrorDiv").hide();
+        }
+    }
+    
+    function openUploadPhotoDialog(){
+    
+    dialog = $( "#dialogForm" ).dialog({
+                autoOpen: false,
+                height: "auto",
+                width: "850",
+                modal: true,
+                draggable: false,
+                resizable: false,
+                close: function() {
+                    $("#previewWrapper").hide();
+                    document.getElementById("myProfilePage:formUpload:inptUploadPhoto").value = '';
+                    var ias = $('#croppingWindow').imgAreaSelect({ instance: true });
+                    ias.setOptions({ hide: true });
+                    ias.update();
+                    $("#temporaryHolderDiv").hide();
+                    $("#temporaryHolderDiv").attr("style","");
+                    $("#temporaryHolder").attr("src","");
+                    $('.ui-widget-overlay').css('z-index', '');
+                }
+            });
+        dialog.dialog( "open" );
+        $("#previewWrapper").hide();
+        $("#temporaryHolderDiv").show();
+        $("#temporaryHolderDiv").attr("style","padding-top:800px");
+        $('.ui-widget-overlay').css('background', '#585858');
+        $('.ui-widget-overlay').css('z-index', '1200');
+    }
+    
+    
+    function uploadProfilePhoto(){
+        saveTheCroppingArea(X1,Y1,originalHt,originalWd,imgWidth,imgHeight,varWidth, varHeight );
+    }
+    
+    function doFinalCommitt(){
+    
+        execUpload();
+        dialog.dialog( "close" );
+        
+        setInterval(function(){ updateTheThumbnailPhoto(); }, 10000);
+    }
+    
+    var onlydigitAr = [];
+    function managePhoneFieldLength(inp){
+            onlydigitAr = [];
+            var inpText = inp.value;
+            var fullTextAr = inpText.split("");
+            
+            for( var i = 0; i < fullTextAr.length; i++ ){
+                if( /^\d+$/.test(fullTextAr[i]) ){
+                    onlydigitAr.push(fullTextAr[i]);
+                }
+            }
+
+            if( onlydigitAr.length >= 10 ){
+                $("#u19_input").attr("maxlength",inpText.length);
+            }else {
+                $("#u19_input").attr("maxlength","");
+            }
+    }
+    
+    function doAutoFormat(inp){
+            if( onlydigitAr.length == 10 && inp.value.length > 0 ){
+                var phoneNum = '';
+                for( var i = 0; i < onlydigitAr.length; i++  ){
+                
+                    phoneNum = phoneNum+onlydigitAr[i];
+                }
+                var phoneNum = '('+phoneNum.substring(0, 3)+')'+' '+phoneNum.substring(3, 6)+'-'+phoneNum.substring(6,10);
+                inp.value = phoneNum;
+                $("#u19_input").attr("maxlength",phoneNum.length);
+                onlydigitAr = [];
+            }
+    }
+    
+    function ReloadPageRefresh(){
+    }
+    
+    function deleteMyPhoto(){
+        var confirmation = confirm("Are you sure?");
+        if( confirmation ){ 
+            deleteMyProfilePhoto();
+        }
+    
+    }
+    
+    function makeThisUserActive(){
+          //setTimeout(function(){ updateUserActiveStatus(); }, 10000);
+      } 
+    </script>
+
+ <div class="content_container">
+ <apex:actionstatus id="loading">
+        <apex:facet name="start">
+            <div class="waitingSearchDiv" id="loading" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;z-index:999999">
+                <div class="waitingHolder" style="top: 40%; left: 50%; position: fixed;">
+                    <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionstatus>
+
+    <div class="content_container" id="main_container">
+        <div ng-view="" class="ng-scope">
+            <!-- HERO MODULE -->
+            <div id="hero_banner" class="hero_manage jumbotronContainer ng-scope">
+                <div class="row">
+                    <div class="col-sm-12"></div>
+                </div>
+            </div>
+        </div>
+        <div class="page" id="manage_content" style="margin-bottom:0px !important">
+                  <div class="myProf">
+                <p><span>{!tokenString} Profile</span></p>
+            </div>
+         <apex:outputPanel id="ActiveCheckDivPanel" rendered="{!isAdmin && !isMine}">
+         <div style="margin-top:28px" id="ActiveCheckDiv">
+    <div class="col-xs-1 p0" >
+        <input type="radio" name="isActive" id="makeActive" style="margin-top:2px !important" onchange="updateUserStatus(this,'True');">
+        <!--<apex:actionFunction name="makeThisUserActive" action="{!activateThisUser}" rerender="totalForm,errorPanel" status="loading" oncomplete="reloadPage();">
+                                <apex:param name="active" id="activeUser" value="" assignTo="{!activeToken}"/>
+                            </apex:actionFunction>-->
+        </input>
+         <label style="line-height:0px" class="labelFeildName">Active</label>
+    </div>
+    
+    <div class="col-xs-4 p0" >
+        <div>
+            <input type="radio" name="isActive" id="makeInActive" style="margin-top:2px !important" onchange="updateUserStatus(this,'False');">
+            </input>
+            <label style="line-height:0px" class="labelFeildName">Inactive</label>
+           <span data-title="<div class='closePopOver'>x</div>" class="profileWarningPopover myElement" data-container="body" data-toggle="popover" data-html="true" data-placement="right" data-content="<div id='myPopoverContent' style='width:100%;'><div><p><strong class='errorText'>{!$Label.PORTAL_WARNING_LABEL}</strong><label class='popUpMsg'>{!$Label.PORTAL_WARNING_LABEL1}</label></p>
+            <!--<p>{!$Label.PORTAL_WARNING_LABEL1}</p>--></div></div>"></span>
+        </div>
+    </div>
+</div>
+                <!--</div>-->
+</apex:outputPanel>
+<hr class="section-dividerHr" style="border-color: #056fab;"/>
+<apex:outputPanel rendered="{!isMine}">
+<div class="accInfo">
+    <p><span>Account Information</span></p>
+</div>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!!isMine}">
+<div class="accInfo">
+    <p><span>{!tokenString} Account Information</span></p>
+</div>
+</apex:outputPanel>
+    <apex:form id="totalForm">
+    
+        <div class="col-xs-12 p0 pull-left">
+            <div class="col-xs-2 p0">
+                <div id="photoHolder"><!--class="col-xs-3 p0"-->
+                    <img src="{!currentUser.FullPhotoUrl}" id="profilePic" height="200px" width="200px" />
+                </div>
+                <div  style="width:200px;text-align:center;">
+                <!--<apex:outputPanel rendered="{!isMine || !currentUser.isProfilePhotoUploaded__c}">
+                    <div onclick="openUploadPhotoDialog();" onsubmit="ReloadPageRefresh()">
+                        <label class="fileContainer">
+                                   Upload photo
+                            </label>
+                    </div>
+                </apex:outputPanel>-->
+                <apex:outputPanel rendered="{!isMine && !currentUser.isProfilePhotoUploaded__c}">
+                <div onclick="openUploadPhotoDialog();" onsubmit="ReloadPageRefresh()">
+                     <label class="fileContainer" style="width:0px; float:left; cursor:pointer; margin-top:4px;margin-left: 25px;padding-top:0;white-space:nowrap;color: #067ab5;">
+                           Upload photo
+                    </label>
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!isMine && currentUser.isProfilePhotoUploaded__c}" id="updateProfilePicID">
+                <div onsubmit="ReloadPageRefresh()">
+                     <label class="fileContainer" style="width:0px; float:left; cursor:auto; margin-top:4px;margin-left: 25px;" />
+                         <div style="padding-top:4px;float:left;"><a href="javascript:void(0);" id="updatePhoto" onclick="openUploadPhotoDialog();" >Update</a>&nbsp;|&nbsp;<a href="javascript:void(0);" id="deletePhoto" onclick="deleteMyPhoto();" >Delete</a></div>
+                        
+                </div>
+            </apex:outputPanel>
+                </div>
+            </div>
+            <apex:outputpanel rendered="true">
+            <div class="col-xs-6">
+            <div class="col-xs-12">
+                <div class="col-xs-10">
+                    <div>
+                        <apex:outputLabel style=" margin-bottom: 5px; margin-top: 0px;margin-right:10px;" styleClass="labelFeildName" value="Username" /><span>{!currentUser.Partner_Exchange_User_Name__c}</span>
+                       
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <apex:outputLabel styleClass="labelFeildName" value="First Name" />
+                        <apex:inputField id="u6_input" value="{!contactDetails.FirstName}" onchange="validateInput(this);checkIfMandetoryFilled(this);"/>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <apex:outputLabel styleClass="labelFeildName" value="Last Name" />
+                        <apex:inputField id="u9_input" value="{!contactDetails.LastName}" onchange="validateInput(this);checkIfMandetoryFilled(this);"/>
+                    </div>
+                </div>
+                <div class="col-xs-6">
+                    <div class="form-group">
+                        <apex:outputLabel style="margin-top:20px;" styleClass="labelFeildName" value="Email Address" />
+                        <input id="u12_input" type="text" value="{!contactDetails.Email}" onchange="validateEmail(this);checkIfMandetoryFilled(this);"/>
+                        <div id="jsErrorDiv" style="color:red;font-size:12px;font-family: omnes_att_iimedium;width:auto;border: 0px;padding-top: 30px;"></div>
+                        <apex:outputpanel id="emailValidationErrorMine" rendered="{!isDuplicateEmail}">
+                            <div id="jsErrorDivEmailDuplicate" style="color:red;font-size:12px;font-family: omnes_att_iimedium;width:auto;border: 0px;padding-top: 0px;">{!msgToUser}</div>
+                        </apex:outputpanel>
+                    </div>
+                </div>
+                <apex:outputPanel rendered="{!isMine}">
+                <div class="col-xs-12">
+                    <div class="form-group" style=" margin-top: 20px; ">
+                        <!--<apex:commandLink action="https://www.e-access.att.com/usersvcs/accountmgt/acctmgtMenu/" value="Reset Password" styleClass="resetPwd" target="_blank"/>-->
+                        <a href ="{!$Label.ResetPassword}" target="_blank" class="resetPwd">Reset Password</a>
+                    </div>
+                </div>
+                </apex:outputPanel>
+                
+                <div class="col-xs-6 p0" style=" margin-top: 10px; ">
+                    <div >            
+                        <apex:outputPanel rendered="{!isMine}">
+                            <!--<a href="javascript:void(0);" onclick="updateUserDetails();return false;" id="updateBtn" style="display:none;">    
+                                <button id = "idupdatebutton" class="" title="Update Details" style="width: 137px !important; display: inline-block;">
+                                    <div class="blue_button pull-right" style="padding: 0; margin: 0; float: left;"></div>
+                                    Update
+                            </button>
+                            </a>-->
+                            <input type="button" class="blue_button" onclick="updateUserDetails();" value="Update" id="updateBtn" style="display:none;width:auto;padding: 7px 40px;margin-left:15px;"/>
+                             <input type="button" value="Update" id="createButtonDisable" style="cursor :text;pointer-events:none;display:block;"/>
+                             </apex:outputPanel>
+                          
+                            <!--<input type="button" value="Update" id="createButtonDisable" style="cursor :initial;"/>-->
+                        
+                       
+                    </div>
+                </div>
+            </div>
+           
+            
+           
+
+
+        </div>
+        <apex:outputpanel rendered="{!isMine}">
+        <div class="col-xs-3 p0" style=" float: right; ">
+        <div class="img">
+          
+          
+            <img src="{!$Resource.notification_bell_icon}" width="100" height="100"/>
+          
+          <div class="desc">Notification settings are coming soon!</div>
+        </div>
+        </div>
+         </apex:outputpanel>
+         </apex:outputpanel>
+           
+             <input type="hidden" value="{!isMine}" id="hdnIsMine" />
+            <input type="hidden" value="{!isAdmin}" id="hdnIsAdmin" />
+             <apex:actionFunction name="deleteMyProfilePhoto" action="{!doDeleteMyProfilePhoto}" oncomplete="window.location.reload();" status="loading"/>
+          <apex:actionFunction action="{!saveTheCroppingSelection}" name="saveTheCroppingArea" oncomplete="doFinalCommitt();" status="loading">
+                <apex:param name="x1" id="x1" value="" assignTo="{!x1}"/>
+                <apex:param name="y1" id="y1" value="" assignTo="{!y1}"/>
+                <apex:param name="x2"  id="x2" value=""  assignTo="{!x2}"/>
+                <apex:param name="y2" id="y2" value="" assignTo="{!y2}"/>
+                <apex:param name="width" id="width" value="" assignTo="{!imgWidth}"/>
+                <apex:param name="height" id="height" value="" assignTo="{!imgHeight}"/>
+                <apex:param name="vwidth" id="vwidth" value="" assignTo="{!varWidth}"/>
+                <apex:param name="vheight" id="vheight" value="" assignTo="{!varHeight}"/>
+          </apex:actionFunction>
+          <apex:outputPanel id="errorPanel" rendered="{!isMessage}" >
+                <apex:outputpanel rendered="{!isError}">
+                    <div id="u1023" style="left:200px;top:5px;">
+                        <!-- Unnamed () -->
+                        <div id="u1024" class="text">
+                            <div style=" width:auto;Font-Family:omnesatt_iiregular; Color: #4CA90C; font-size: 18px;line-height: 30px;letter-spacing: 0em;">{!msgToUser}</div>
+                        </div>
+                    </div>
+                </apex:outputpanel>
+                <apex:outputpanel rendered="{!isSuccess}" id="sucessMessBox">
+                    <div id="u1023" style="left:200px;top:77px; margin-bottom:20px">
+                        <div id="u1024" class="text">
+                            <div style=" width:auto;Font-Family:omnesatt_iiregular; margin-bottom:20px; Color: #4CA90C; font-size: 18px;line-height: 30px;letter-spacing: 0em;">{!msgToUser}</div> 
+                        </div>
+                    </div>
+                </apex:outputpanel>
+           </apex:outputPanel>
+            <input type="hidden" id="returnMessage" value="{!listViewMessage}" />
+           <input type="hidden" id="hdnIsActive" value="{!currentUser.IsActive}" />
+           <input type="hidden" value="{!isDuplicateEmail}" id="hdnIsDuplicateEmail" />
+        </div>
+        
+        <apex:actionFunction name="doUpdateTheContactRecord" action="{!doUpdateContactDetails}" status="loading" oncomplete="makeThisUserActive();">
+                <apex:param name="status" id="activeUser" value="" assignTo="{!activeToken}"/>
+                <apex:param name="firstName" id="fName" value="" assignTo="{!contactDetails.FirstName}"/>
+                <apex:param name="lastName"  id="lName" value=""  assignTo="{!contactDetails.LastName}"/>
+                <apex:param name="email" id="email" value="" assignTo="{!contactDetails.Email}"/>
+                <!--- DEFECT FIX 222988 ---->
+              <!--  <apex:param name="phone" id="phone" value="" assignTo="{!contactDetails.Phone}"/> -->
+           </apex:actionFunction>
+            <!--<apex:actionFunction name="makeThisUserActive" action="{!activateThisUser}" rerender="totalForm,errorPanel" status="loading" oncomplete="showValidationError();goBackToManageUserPage();setUpNotificationChecks();fetchAndSetMDFAction();showPopOver('{!portalAdminCheck}');">
+           </apex:actionFunction>-->
+           <apex:actionFunction name="makeThisUserActive" action="{!activateThisUser}" rerender="totalForm,errorPanel,Form2" status="loading" oncomplete="showValidationError();goBackToManageUserPage();fetchAndSetMDFAction();showPopOver('{!portalAdminCheck}','{!portalUserActiveCheck}');setActiveInActive();">
+           </apex:actionFunction>
+    </apex:form>
+            <hr class="section-dividerHr" />
+             <apex:pageBlock id="page2">
+                <div class="row">
+                    <div >
+                        <div class="col-xs-12 col-md-12 col-lg-12" id="permissionBox">
+                            <div class="accInfo">{!tokenString} Permissions Settings</div>
+                            <div class="MB16">Basic User Permissions (Basic portal access)</div>
+                            <ul>
+                                <li class="styDisc">{!$Label.ViewGen_Cus}</li>
+                                <li class="styDisc">{!$Label.ATT_Prod}</li>
+                                <li class="styDisc">{!$Label.Acc_Pro_Builder}</li>
+                            </ul>
+                       
+                   
+                                <div class="MB16 MT35" style="margin-bottom: 25px;margin-top: 34px;">Optional User Permissions</div>
+                   
+                            
+                        </div> 
+                        <div class="col-xs-12 col-md-12" >
+                        <div class="manage_users_table_container">
+                            <div id="site_table_wrapper" class="dataTables_wrapper styBorder" role="grid">
+                            <apex:form id="Form2">
+                                <apex:actionFunction name="invokeUpdateOptionalPermission" id="setOptionalPermission" action="{!updateAdminPermission}" rerender="OutputPanel2,permissionBtPanel,savePermissionBtPanel" status="loading" Oncomplete="fetchAndSetMDFAction(); goBackToManageUserPageAdminPanel();"/>
+                                <apex:outputPanel id="OutputPanel2">
+                                    <input type="hidden" id="returnMessageAdmin" value="{!listViewMessage}" />
+                                    <input type="hidden" id="hdnClaimMDF" value="{!isClaimMDF}" />
+                                    <input type="hidden" id="hdnReadOnly" value="{!isReadOnlyAccess}" />
+                                    <input type="hidden" id="hdnMDFPermission" value="{!showMDFPermissions}" />
+                                    <!--<p class="optionalSty" style="padding-top:1px;">Optional Permissions </p>-->
+                                        <div class="check-label" >
+                                            <apex:inputCheckbox id="checkboxPortalAdmin" styleClass="css-checkbox1" value="{!contactDetails.Primary_Contact__c}" style="margin-top:15px;width:20px;" disabled="{!isAdminPanelDisabled}" >
+                                                <apex:actionSupport event="onchange" action="{!portalAdminAction}" reRender="OutputPanel2,permissionBtPanel,savePermissionBtPanel" status="loading" Oncomplete="fetchAndSetMDFAction();enableSaveFromAdminPanel();"/>
+                                            </apex:inputCheckbox>
+                                            <label for="checkboxAll" style=" font-family: omnes_light; font-weight: normal; font-size: 14px;{!IF(isMine == true,'color:#959595','color:#000')}">{!$Label.Assign_Add_inform}</label>
+                                        </div> 
+                                   
+                                    <table id="add_site_table" class="table manage_users_table" style="width: 100% !important;">
+                                        <!--<thead>                                                  -->
+                                            <tr>
+                                                <td>
+                                                    <div class="ML15 MT11" style="margin-left:7px !important;">Profile Management</div>
+                                                   <div class="check-label ML15" style="margin-left:7px !important;">
+                                                        <apex:inputCheckbox id="checkboxCreateModifyProfile" styleClass="css-checkbox1" value="{!contactDetails.Create_Modify_Profile__c}" disabled="{!isAdminPanelDisabled}">
+                                                            <apex:actionSupport event="onchange" action="{!updatePermissionCheckBox}" reRender="OutputPanel2,permissionBtPanel,savePermissionBtPanel" status="loading" oncomplete="fetchAndSetMDFAction();enableSaveFromAdminPanel();"/>
+                                                        </apex:inputCheckbox>
+                                                        <label class="{!IF(isMine == false,'subHeader_Other','subHeader')}">{!$Label.Cre_Mod_prof}</label>
+                                                        <ul >
+                                                            <li class="{!IF(isMine == false,'emailAlert_Sty_Other','emailAlert_Sty')}">{!$Label.Add_Mod_User}</li>
+                                                            <li class="{!IF(isMine == false,'emailAlert_Sty_Other','emailAlert_Sty')}">{!$Label.Add_Mod_Perm}</li>
+                                                        </ul>
+                                                    </div>
+                                                    <!-- <div id="verticalLine" style="{!IF(manageMDFEnable,'height:263px','height:225px')}"></div> -->
+                                                </td>
+                                                
+                                                <td>
+                                                <div id="verticalLine" style="{!IF(manageMDFEnable,'height:265px','height:225px')}"></div>
+                                                    <div class="ML15 MT11">{!$Label.Quotes_Orders}</div>
+                                                    <div class="check-label ML15" >
+                                                        <apex:inputCheckbox id="checkboxBeginQuotes" styleClass="css-checkbox1" value="{!contactDetails.Begin_Quote__c}"  disabled="{!isAdminPanelDisabled}">
+                                                            <apex:actionSupport event="onchange" action="{!updatePermissionCheckBox}" reRender="OutputPanel2,permissionBtPanel,savePermissionBtPanel" status="loading" oncomplete="fetchAndSetMDFAction();enableSaveFromAdminPanel();"/>
+                                                        </apex:inputCheckbox>
+                                                        <label  class="{!IF(isMine == false,'subHeader_Other','subHeader')}">Begin Quote</label>
+                                                        <li class="{!IF(isMine == false,'emailAlert_Sty_Other','emailAlert_Sty')}" >{!$Label.Cre_Mod_Quotes}</li>
+                                                         <li class="{!IF(isMine == false,'emailAlert_Sty_Other','emailAlert_Sty')}" >{!$Label.view_pric_promo}</li>
+                                                          <li class="{!IF(isMine == false,'emailAlert_Sty_Other','emailAlert_Sty')}" >{!$Label.Make_Changes}</li>
+                                                        
+                                                    </div>
+                                                     <div class="check-label ML15" >
+                                                        <apex:inputCheckbox id="checkboxApproveContracts" styleClass="css-checkbox1" value="{!contactDetails.Approve_Contracts__c}" disabled="{!isAdminPanelDisabled}">
+                                                            <apex:actionSupport event="onchange" action="{!updatePermissionCheckBox}" reRender="OutputPanel2,permissionBtPanel,savePermissionBtPanel" status="loading" oncomplete="fetchAndSetMDFAction();enableSaveFromAdminPanel();"/>
+                                                        </apex:inputCheckbox>                                                                
+                                                        <label  class="{!IF(isMine == false,'subHeader_Other','subHeader')}">{!$Label.Appr_Cont}</label>
+                                                        <li class="{!IF(isMine == false,'emailAlert_Sty_Other','emailAlert_Sty')}" >{!$Label.Approve_and_Sign}
+
+                                                    </li>
+                                                    </div>
+                                                </td>
+                                                
+                                                <td>
+                                                    <div style="position:absolute;"><div id="verticalLine" style="{!IF(manageMDFEnable,'height:265px','height:225px')}"></div></div>
+                                                    <div class="ML15 MT11">{!$Label.Tools_pro}</div>
+                                                        <div class="check-label ML15" >                                                                                                                           
+                                                        <apex:inputCheckbox id="manageMDFLabelId" styleClass="css-checkbox1" value="{!showPanel}"  style="margin-right: 5px;" disabled="{!isAdminPanelDisabled}" >                                                                                                                                
+                                                            <apex:actionSupport event="onchange" action="{!updatePermissionCheckBox}" reRender="OutputPanel2,permissionBtPanel,savePermissionBtPanel" status="loading" oncomplete="fetchAndSetMDFAction();enableSaveFromAdminPanel();"/>
+                                                        </apex:inputCheckbox>
+                                                        <label  class="{!IF(isMine == false,'subHeader_Other','subHeader')}" style="display: table;">{!$Label.Man_MDFs}</label>
+                                                        
+                                                        <!-- create radio buttons-->
+                                                        
+                                                       
+                                                        <div id="manageMDFPanel">
+                                                        <apex:outputPanel rendered="{!IF(manageMDFEnable == false,true,false)}">
+                                                            <ul>
+                                                                <li class="{!IF(isMine == false,'emailAlert_Sty_Other','emailAlert_Sty')}"><input id="claimMDF" type="radio" onclick="setMDFClaimPermission();" style="box-sizing: border-box;margin-left: 3px !important;margin-right: 10px !important;padding: 0px;margin-top: 0px !important; height:16px;" name="MDF_Permission" />Request/Claim MDFs</li>
+                                                                <apex:actionFunction action="{!setMDFClaimPermission}" name="setMDFClaimPermission" reRender="OutputPanel2,permissionBtPanel,savePermissionBtPanel" status="loading" oncomplete="fetchAndSetMDFAction();enableSaveFromAdminPanel();"/>  
+                                                                <li class="{!IF(isMine == false,'emailAlert_Sty_Other','emailAlert_Sty')}"><input id="readOnly" type="radio" onclick="setMDFReadOnlyPermission();" style="box-sizing: border-box;margin-left: 3px !important;margin-right: 10px !important;padding: 0px;margin-top: 0px !important; height:16px;" name="MDF_Permission" />Read-Only Access</li>
+                                                                <apex:actionFunction action="{!setMDFReadOnlyPermission}" name="setMDFReadOnlyPermission" reRender="OutputPanel2,permissionBtPanel,savePermissionBtPanel" status="loading" oncomplete="fetchAndSetMDFAction();enableSaveFromAdminPanel();"/>
+                                                            </ul>
+                                                       </apex:outputPanel>
+                                                     </div>
+                                                       
+                                                    </div>
+                                                     <div class="check-label ML15" >
+                                                         <!--<div >
+                                                            <div style="margin-top:20px;">
+                                                            <apex:inputCheckbox id="checkboxProviderDirectory" styleClass="css-checkbox1" value="{!contactDetails.Provider_Directory__c}" disabled="{!isAdminPanelDisabled}" >
+                                                                <apex:actionSupport event="onchange" action="{!updatePermissionCheckBox}" reRender="OutputPanel2,permissionBtPanel,savePermissionBtPanel" status="loading" oncomplete="fetchAndSetMDFAction();enableSaveFromAdminPanel();"/>
+                                                            </apex:inputCheckbox>
+                                                            </div>
+                                                            <div >
+                                                            <label for="checkboxProviderDirectory" class="{!IF(isMine == false,'subHeader_Other','subHeader')}" >Provider Directory</label>
+                                                            </div>
+                                                        </div>-->
+                                                     
+                                                           <div style="margin-top:14px;">
+                                                            <div >
+                                                            <apex:inputCheckbox id="checkboxServiceAssurance" styleClass="css-checkbox1" value="{!contactDetails.Service_Assurance__c}" disabled="{!isAdminPanelDisabled}" >
+                                                                <apex:actionSupport event="onchange" action="{!updatePermissionCheckBox}" reRender="OutputPanel2,permissionBtPanel,savePermissionBtPanel" status="loading" oncomplete="fetchAndSetMDFAction();enableSaveFromAdminPanel();"/>
+                                                            </apex:inputCheckbox>
+                                                            </div>
+                                                            <div >
+                                                            <label for="checkboxServiceAssurance"  class="{!IF(isMine == false,'subHeader_Other','subHeader')}">Manage Service Assurance</label>
+                                                            </div>
+                                                        </div >
+                                                         <div style="margin-top:14px;">
+                                                            <div >
+                                                                <apex:inputCheckbox id="checkboxManageBilling" value="{!contactDetails.Manage_Billing__c}" disabled="{!isAdminPanelDisabled}" >
+                                                                    <apex:actionSupport event="onchange" action="{!updatePermissionCheckBox}" reRender="OutputPanel2,permissionBtPanel,savePermissionBtPanel" status="loading" oncomplete="fetchAndSetMDFAction();enableSaveFromAdminPanel();"/>
+                                                                </apex:inputCheckbox>
+                                                            </div>
+                                                            <div >
+                                                                <label  for="checkboxManageBilling" class="{!IF(isMine == false,'subHeader_Other','subHeader')}">{!$Label.Mng_Bill}</label>
+                                                                 <apex:outputpanel rendered="{!isMine}">
+                                                                  <li class="{!IF(isMine == false,'emailAlert_Sty_Other','emailAlert_Sty')}" >{!$Label.Confirmation} </li>
+                                                                 </apex:outputpanel>
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                </td>                                          
+                                            </tr>
+                                       <!-- </thead> -->
+                                    </table>
+                                    
+                                </apex:outputPanel>
+                            </apex:form>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:pageBlock>
+            <hr class="section-dividerHr" style="margin-top: 0px;border-color: #056fab;margin-bottom:0px !important"/>
+             <apex:outputPanel id="saveWrapper" rendered="{!isAdmin && !isMine}">
+                 
+                  <div class="container pull-right p0">
+                        
+                            <input type="button" value="Save" id="saveByAdminBtnDisabled" style="cursor :initial;display:block;float:right;width: 175px;margin-top:40px"/>
+                        
+                    </div>
+                  
+
+                    <div class="container pull-right p0">
+                        <input type="button" value="Save" Class="createUserButton" id="saveByAdminBtn" onclick="updateUserDetails();return false;" style="display:none;width: 175px;float:right;margin-top:40px"/>
+                    </div>
+            </apex:outputPanel>
+             </div>
+             <div id="temporaryHolderDiv">
+                <img src="" id="temporaryHolder" />
+            </div>
+           </div>
+           
+           <script>
+           
+            /* Open and close tooltip */
+            $('body').on('shown.bs.popover', '.profileWarningPopover', function(e) {
+                var _this = this;
+                $('.closePopOver').on('click.hidePopover', function(e) {
+                    if (!$(e.target).hasClass('popover-content')) {
+                        hidePopover(_this);
+                    }
+                });
+                
+            });
+            /* to open tooltip if aia is selected first time */
+            function showPopOver(portalAdminCheck,portalUserActiveCheck) {
+            console.log('val >>> '+portalAdminCheck +' portalUserActiveCheck '+portalUserActiveCheck);
+                
+                if(portalAdminCheck == 'true' || portalUserActiveCheck == 'true')
+                {   
+            
+                    //$("#ActiveCheckDiv").focus();
+                    $('html, body').animate({ scrollTop: 0 }, 'fast');
+                    setTimeout(function(){
+                        if(!($('.popover').hasClass('in'))){
+                            $('.profileWarningPopover').trigger('click');
+                        }
+                    }, 300);
+                    
+                }
+                else{
+                    $('.closePopOver').trigger('click');
+                }
+            }
+            
+            var hidePopover = function(popover) {
+                
+                 $(popover).popover('toggle');
+                
+            };
+           </script>
+           <div id="dialogForm" title="Upload profile photo" style="display:none;">
+            <div style="padding-left: 12px;">
+            <p style="padding-left: 8px;">You can upload a JPG, GIF, or PNG file. Maximum file size is 8 MB.</p>
+            <div style="clear:both;"></div>
+            <br /><br />
+            <apex:form id="formUpload" >
+                
+                <apex:actionFunction action="{!doUpload}" name="execUpload" status="loading" >
+                </apex:actionFunction>
+                <!--<input type="file" id="inptUploadPhoto" value="{!myProfilePic}" onchange="doUploadChatterPhoto();return false;" style="border:0px !important;webkit-border-radius: 0px !important;width:auto;"/>-->
+                <apex:inputFile id="inptUploadPhoto" value="{!myProfilePic}" onchange="doUploadChatterPhoto();return false;" style="border:0px !important;webkit-border-radius: 0px !important;width:auto;"></apex:inputFile>
+            </apex:form>
+        </div>
+        <div style="clear:both;"></div>
+        <div id="previewWrapper">
+            <div style="padding-left: 18px;border-top: solid 2px #CCC;padding-top: 20px;">
+                <div style="float:left;font-weight: bold;">Your Profile Photo</div>
+                <div style="float:left;padding-left:30px; display: inline-block; width: 208px;height: 208px;position: relative;">
+                    <img src="" id="croppingWindow" style="max-width:208px;max-height:208px;width:auto;height:auto;border: 0;position: absolute;top: 0; right: 0; bottom: 0; left: 0;margin: auto;"/>
+                </div>
+                <div id="photoUploadError" style="margin-top: 230px;margin-left: 160px;color: red;"></div>
+            </div>
+            <div style="clear:both;"></div>
+            <br />
+            <div style="padding-left: 90px;border-top: solid 2px #CCC;padding-top: 20px;">
+                <div style="float:left;font-weight: bold;padding-right:30px;">Preview</div>
+                <div id="previewBox" style="height:100px;width:100px;overflow: hidden;float:left">
+                    
+                    <div style="float:left;">
+                        <img src="" id="previewWindow" height="100px" width="100px"/>
+                    </div>
+                    
+                </div>
+                <div style="padding-left: 24px;padding-top: 5px; float:left; width:570px;">
+                    <span style="color: #333333;font-family: omnesatt_iiregular;font-size: 12px;">    Please create your thumbnail image by adjusting the dotted lines within your profile photo above.<br />
+                        <i>This thumbnail image will be used in various locations within the AT&amp;T Partner Exchange portal.</i>
+                    </span>
+                </div>
+            </div>
+            <div style="padding: 15px 0px 25px 205px;float: left;">
+                <input type="button" value="Upload" Class="createUserButton" id="uploadProfilePhotoBtn" onclick="uploadProfilePhoto();return false;"/>
+                <div style="width: 610px;padding-left: 137px;padding-top: 40px;font-size: 12px;font-family: omnesatt_iiregular;">
+                    Once you upload your photo, it may take our system a few moments to finish processing.
+                </div>
+            </div>
+        </div>
+    
+    </div>
+
+    <div style="clear: both;"></div>
+</div>        
+           <div style="z-index:-4;padding-left:0%;">
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+</div>
+
+</apex:page>

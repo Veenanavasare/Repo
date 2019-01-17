@@ -1,0 +1,675 @@
+<apex:page controller="CreateUserController" docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader" />
+    <style>
+        .textBoxWidth {
+            width: 250px;
+            margin-right: 14px;
+            margin-top: 5px;
+        }
+        
+        .textBoxErrorWidth {
+            width: 250px;
+            margin-top: 5px;
+            border: 1px solid #cf2a2a;
+            margin-right: 40px;
+            background- color: #fef3f1;
+        }
+        
+        .txtLabel {
+            margin-right: 188px;
+            font-size: 15px;
+            font-family: omnes_light;
+            color: #333333;
+            font-style: Medium;
+            text-align: left;
+            letter-spacing: 0em;
+            effect: none;
+        }
+        
+        .txtLabelEmail {
+            margin-right: 161px;
+            margin-left: 3px;
+            font-size: 15px;
+            font-family: omnes_light;
+            color: #333333;
+            font-style: Medium;
+            text-align: left;
+            letter-spacing: 0em;
+            effect: none;
+        }
+        
+        .txtErrorLabel {
+            margin-left: 3px;
+            font-family: Arial !important;
+            font-weight: bold;
+            color: #cf2a2a;
+            font-style: normal;
+            text-align: left;
+            letter-spacing: 0.01em;
+            line-height: 20px;
+            effect: none;
+            font-size: 14px;
+        }
+        
+        .txtErrorSty {
+            font-family: Arial MT;
+            font-size: 12px;
+            color: #cf2a2a;
+            font-style: normal;
+            text-align: left;
+            letter- spacing: 0.01em;
+            effect: none;
+            float: right;
+            margin-left: 529px;
+            line-height: 40px;
+            position: absolute;
+        }
+        
+        .manage_content {
+            margin: 0px auto 60px;
+            padding: 40px;
+            max-width: 1168px;
+        }
+        
+        .sub_navigation {
+            margin-top: 33px;
+        }
+        
+        .createUserHeading {
+            font-size: 32px;
+            color: #666666;
+            font-style: Medium;
+            text-align: left;
+            letter-spacing: 0em;
+            effect: none;
+        }
+        
+        .accinfo {
+            font-size: 24px;
+            color: #666666;
+            font-style: Light;
+            text-align: left;
+            letter-spacing: 0em;
+            effect: none;
+            margin-bottom: 25px
+        }
+        
+        .createUserButton {
+            width: 16%;
+            display: block;
+            padding: 7px 40px;
+            font-family: clearviewattregular;
+            color: #fff;
+            background: #056fab;
+            border: 0;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+            width: auto;
+        }
+        
+        #createUserButtonDisable {
+            width: 16%;
+            display: block;
+            padding: 7px 40px;
+            font-family: clearviewattregular;
+            color: #ccc;
+            background: #eee;
+            border: 0;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+            width: auto;
+            cursor: none;
+        }
+        
+        .MT15 {
+            margin-top: 0px;
+        }
+        
+        .styDisc {
+            list-style-type: disc;
+            margin-left: 17px;
+            margin-top: 5px;
+        }
+        
+        .MT40 {
+            margin-top: 35px;
+            margin-bottom: 35px;
+        }
+        
+        .MT20 {
+            margin-top: 15px;
+        }
+        
+        .MT35 {
+            margin-top: 35px;
+        }
+        
+        .MB15 {
+            margin-bottom: 15px;
+            margin-top: 15px;
+        }
+        
+        .MB16 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            font-family: omnes_light;
+            color: #333333;
+            font-style: Medium;
+            text-align: left;
+            letter-spacing: 0em;
+            effect: none;
+        }
+        
+        .styBorder {
+            border: 1px solid #cccccc;
+            background-color: #ffffff;
+            margin-bottom: 40px;
+        }
+        
+        .ML10 {
+            margin-left: 15px;
+        }
+        
+        .optionalSty {
+            margin-left: 20px;
+            margin-top: 12px;
+            font-weight: bolder;
+            float: left;
+            margin-right: 20px;
+            color: #333333;
+            font-size: 20px;
+            font-style: normal;
+            text-align: left;
+            letter-spacing: 0em;
+            line-height: 30px;
+        }
+        
+        .dash_borderSty {
+            border-bottom: 1px solid #DDD;
+            width: 100%;
+            
+        }
+        
+        .font_per {
+            font-size: 11px;
+            margin-left: 28px;
+        }
+        
+        .emailAlert_Sty {
+            font-size: 14px;
+            font-style: normal;
+            text-align: left;
+            line-height: 16px;
+            letter-spacing: 0.01em;
+            effect: none;
+            margin-left: 23px;
+            font-family: omnes_light;
+            display: block;
+        }
+        
+        .emailAlertMess_Sty {
+            font-size: 12px;
+            font-style: normal;
+            float: right;
+            margin-top: 10px;
+        }
+        
+        input[type="radio"] {
+            box-sizing: border-box;
+            margin-left: -86px !important;
+            margin-right: -74px !important;
+            padding: 0;
+            margin-top: 10px !important;
+        }
+        
+        label.css-label {
+            background-image: none;
+            -moz-user-select: none;
+        }
+        
+        #manageMDFID {
+            margin-left: 38px;
+            margin-top: -10px;
+        }
+        
+        #selectedRadioButt {
+            margin-top: -5px;
+            width: 17px;
+        }
+        
+        .createUserButton:hover {
+            background-color: #3BC1F4;
+        }
+        
+        .errorText {
+            color: #a94442;
+            font-size: 18px;
+            margin-top: 50px;
+            position: absolute;
+        }
+        
+        .MT11 {
+            margin-top: 15px;
+            color: #056fab;
+            font-weight: bolder;
+            font-style: normal;
+            text-align: left;
+            letter-spacing: 0em;
+            font-size: 18px;
+            line-height: 30px;
+        }
+        
+        .hero_manage {
+            height: 99px;
+            background-image: url('/resource/1415363516000/portalDesignImg/heros/products.jpg') ! important;
+        }
+        
+        #hero_banner {
+            margin: 0px;
+            padding: 0px;
+            width: 100%;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            margin-top: 37px;
+        }
+        
+        .sub_links_container {
+            margin: 0px auto;
+            padding: 0px;
+            max-width: 70%;
+            margin-top: 37px;
+        }
+        /*-- corrected by Rommel 
+
+*/
+        
+        .col-sm-8 {
+            width: 66.6667%;
+            margin-top: 37px;
+        }
+        
+        #checkboxPortalAdmin {
+            left: 0;
+            top: 2px;
+            width: 17px;
+            height: 17px;
+            border: 1px solid #aaa;
+            background: #f8f8f8;
+            border-radius: 3px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, .3)
+        }
+        
+        #verticalLine {
+            border-right: 1px solid #CFCFCF;
+            border-left: 1px solid #CFCFCF;
+            -moz-border-top-colors: none;
+            -moz- border-right-colors: none;
+            -moz-border-bottom-colors: none;
+            -moz-border-left-colors: none;
+            border-image: none;
+            height: 225px;
+            border-width: medium 1px;
+            border-style: none solid;
+            border-color: -moz-use-text-color #CFCFCF;
+            float: left;
+            position: absolute;
+            opacity: 0.3;
+        }
+        
+        .invalidEmailAlertSty {
+            font-family: ArialMT !important;
+            color: #CF2A2A;
+            font-style: normal;
+            text-align: left;
+            letter- spacing: 0.01em;
+            float: right;
+            margin-left: 529px;
+            line-height: 40px;
+            position: absolute;
+        }
+        
+        .table {
+            margin-bottom: 0px;
+        }
+        
+        .blueHr {
+            width: 100%;
+            clear: both;
+            margin: 25px 0px 34px 0px;
+            float: left;
+            border-bottom: 1px solid #d3d3d3;
+        }
+        
+        .section-dividerHr {
+            width: 100%;
+            clear: both;
+            margin: 35px 0px 34px 0px;
+            float: left;
+            border-bottom: 1px solid #d3d3d3;
+        }
+        .p0{
+        padding:0px !important;
+        }
+    </style>
+    <script>
+        if ('{!isAdmin}' == 'false') {
+            window.location.href = '/apex/Profile?id=' + '{!thisUserId}';
+        }
+        // Redirecting to Insufficient Privilages page in create and modify permission is false
+        if ('{!$User.Create_Modify_Profile__c}' == 'false') {
+            window.location.href = '/apex/basic_manage_template';
+        }
+
+        function fetchAndSetMDFAction() {
+            var isReadOnly = document.getElementById("hdnReadOnly").value;
+            var isMDFClaim = document.getElementById("hdnClaimMDF").value;
+            var isShowMDFPermission = document.getElementById("hdnMDFPermission").value;
+            var isErrorEmail
+            if (isShowMDFPermission == 'true') {
+
+                document.getElementById("manageMDFPanel").style.display = "block";
+                var btnReadonly;
+                var btnMDFClaim;
+                if (isReadOnly == 'true') {
+                    btnReadonly = document.getElementById("readOnly");
+                    btnReadonly.checked = true;
+                    btnMDFClaim.checked = false;
+                } else if (isMDFClaim == 'true') {
+                    btnMDFClaim = document.getElementById("claimMDF");
+                    btnMDFClaim.checked = true;
+                    btnReadonly.checked = false;
+                }
+            } else {
+                document.getElementById("manageMDFPanel").style.display = "none";
+            }
+        }
+        $(document).ready(function() {
+            $('[id$=createUserButtonId]').hide();
+            //$('[id$=createUserButtonDisable]').show();
+            $('[id$=createUserButtonId]').click(function(inputField) {
+                $('[id$=createUserButtonId]').hide();
+                $('[id$=createUserButtonDisable]').show();
+            });
+        });
+        var isError = false;
+
+        function removeRedAlertMess(redMess) {
+            $('[id$=errorEmailDetailrem]').css('border', '1px solid #cccccc');
+            $('[id$=txtErroEmailAdd]').css('color', '#333333');
+            $('[id$=alertEmailTestStyl]').css('color', '#f7f7f7');
+            $('[id$=alertInvalidEmailTestStyl]').css('color', '#f7f7f7');
+            $('[id$=errorEmailDetailrem]').val('');
+            $('[id$=createUserButtonId]').show();
+            //$('[id$=createUserButtonDisable]').hide();
+            var isValid = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(redMess.value);
+            if (isValid && inputField.value != '') {
+                $('[id$=createUserButtonId]').hide();
+            } else {
+                $('[id$=createUserButtonId]').show();
+            }
+        }
+
+        function enableBlueButton(buttonId) {
+            var fn = $('[id$=fname]').val();
+            var ln = $('[id$=lname]').val();
+            var email = $('[id$=emailTextBox]').val();
+            if (email.length > 0 && fn.length > 0 && ln.length > 0) {
+                $('[id$=createUserButtonId]').show();
+                $('[id$=createUserButtonDisable]').hide();
+            } else {
+                submitEnableFun();
+            }
+        }
+
+        function enableBlueButtonFirstName(buttonFnId) {
+            var fn = $('[id$=fname]').val();
+            var ln = $('[id$=lname]').val();
+            var email = $('[id$=emailTextBox]').val();
+            if (email.length > 0 && fn.length > 0 && ln.length > 0) {
+                $('[id$=createUserButtonId]').show();
+                $('[id$=createUserButtonDisable]').hide();
+            } else {
+                submitEnableFun();
+            }
+        }
+
+        function enableBlueButtonLastName(buttonLnId) {
+            var fn = $('[id$=fname]').val();
+            var ln = $('[id$=lname]').val();
+            var email = $('[id$=emailTextBox]').val();
+            if (email.length > 0 && fn.length > 0 && ln.length > 0) {
+                $('[id$=createUserButtonId]').show();
+                $('[id$=createUserButtonDisable]').hide();
+            } else {
+                submitEnableFun();
+            }
+        }
+
+        function submitEnableFun() {
+            $('[id$=createUserButtonId]').hide();
+            $('[id$=createUserButtonDisable]').show();
+        }
+
+        function enableBlueButtonClick() {
+            $('[id$=createUserButtonErrorId]').show();
+            $('[id$=createUserButtonDisable]').hide();
+        }
+    </script>
+
+    <body>
+        <!-- HERO MODULE -->
+        <div id="hero_banner" class="hero_manage jumbotronContainer">
+            <div class="row">
+                <div class="col-sm-12"></div>
+            </div>
+        </div>
+
+        <apex:form id="valForm" styleClass="manage_content">
+
+            <div class="createUserHeading"> Create User </div>
+
+            <hr class="section-dividerHr" style="border-color: #056fab;"/>
+            <div class="accinfo">Account Information</div>
+            <div class="row" style=" margin-bottom: 5px; ">
+                <div class="col-xs-3">
+                <div class="form-group">
+                    <apex:outputLabel style=" font-weight: normal; " value="First Name"></apex:outputLabel>
+                    <apex:inputText value="{!contactDetails.FirstName}" id="fname" styleClass="textBoxWidth" onChange="enableBlueButtonFirstName(this);" />
+                    </div>
+                    </div>
+                    <div class="col-xs-3">
+                <div class="form-group">
+                    <apex:outputLabel style=" font-weight: normal; " value="Last Name" />
+                   <apex:inputText value="{!contactDetails.LastName}" id="lname" styleClass="textBoxWidth" onkeyup="validateContactFirstName(this, 'lastName')" onChange="enableBlueButtonLastName(this);" />
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <div class="form-group">
+                    <apex:outputLabel style=" font-weight: normal; " value="Email Address" />
+                   <apex:outputPanel >
+                        <apex:inputText value="{!contactDetails.Email}" id="emailTextBox" styleClass="textBoxWidth" rendered="{!dispEmailErrMsg=false&&invalidEmailAddress=false}" onkeyup="validateContactFirstName(this, 'email')" onChange="enableBlueButton(this);" />
+                    </apex:outputPanel>
+                    <apex:outputPanel >
+                        <apex:inputText value="{!contactDetails.Email}" styleClass="textBoxErrorWidth" style="margin-right:40px;" rendered="{!dispEmailErrMsg=true||invalidEmailAddress=true}" id="errorEmailDetailrem" onclick="removeRedAlertMess(this);" onchange="enableBlueButtonClick();" />
+                    </apex:outputPanel>
+                </div>
+            </div>
+                     </div>
+                    <!--<div class="col-xs-3">
+                    <apex:outputText value="Last Name" styleClass="txtLabel MT15"></apex:outputText>
+                    </div>-->
+                   <!-- <apex:outputPanel >
+                        <apex:outputText value="Email Address" styleClass="txtLabelEmail" rendered="{!dispEmailErrMsg=false&&invalidEmailAddress=false}" id="txtLabelEmailAdd"></apex:outputText>
+                    </apex:outputPanel>
+                    <apex:outputPanel >
+                        <apex:outputText value="Email Address" styleClass="txtErrorLabel" rendered="{!dispEmailErrMsg=true||
+
+invalidEmailAddress=true}" id="txtErroEmailAdd"></apex:outputText>
+                    </apex:outputPanel>-->
+                
+                   <!-- <apex:inputText value="{!contactDetails.FirstName}" id="fname1" styleClass="textBoxWidth" onChange="enableBlueButtonFirstName(this);" />
+                    <apex:inputText value="{!contactDetails.LastName}" id="lname1" styleClass="textBoxWidth" onkeyup="validateContactFirstName(this, 'lastName')" onChange="enableBlueButtonLastName(this);" />-->
+                   <!-- <apex:outputPanel >
+                        <apex:inputText value="{!contactDetails.Email}" id="emailTextBox1" styleClass="textBoxWidth" rendered="{!dispEmailErrMsg=false&&invalidEmailAddress=false}" onkeyup="validateContactFirstName(this, 'email')" onChange="enableBlueButton(this);" />
+                    </apex:outputPanel>
+                    <apex:outputPanel >
+                        <apex:inputText value="{!contactDetails.Email}" styleClass="textBoxErrorWidth" style="margin-right:40px;" rendered="{!dispEmailErrMsg=true||invalidEmailAddress=true}" id="errorEmailDetailrem1" onclick="removeRedAlertMess(this);" onchange="enableBlueButtonClick();" /><br/>
+                    </apex:outputPanel>-->
+                
+            
+            <apex:outputText value="Email Address is already in use. Please enter a different email." style="font-family:Arial !important; font-family: ArialMT;font-size:12px; color:#cf2a2a; font-style:normal; text-align:left; letter-spacing:0.01em; effect:none; float:right; margin-left: 529px;line-height: 40px;position: absolute; margin-top:-15px;" rendered="{!dispEmailErrMsg=true}" id="alertEmailTestStyl"></apex:outputText>
+            <apex:outputText value="Please enter a valid email." style="font-family: Arial !important; font-family: Arial;font-size: 12px; color:#cf2a2a; font-style:normal; text-align:left; letter-spacing:0.01em; effect:none; float:right;margin-left: 529px;line-height: 40px;position: absolute; margin-top:-15px;" rendered="{!invalidEmailAddress=true&&dispEmailErrMsg=false}" id="alertInvalidEmailTestStyl"></apex:outputText>
+            <hr class="section-dividerHr" />
+            <div class="row">
+                <div class="col-xs-12 col-md-12 col-lg-12">
+                    <div class="accinfo" style="margin-bottom:34px">Permissions Settings</div>
+                    <div class="MB16">Basic User Permissions (Basic portal access)</div>
+                    <ul>
+                        <li class="styDisc">{!$Label.ViewGen_Cus}</li>
+                        <li class="styDisc">{!$Label.ATT_Prod}</li>
+                        <li class="styDisc">{!$Label.Acc_Pro_Builder}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="MB16 MT35" style="margin-bottom: 10px;">Optional User Permissions</div>
+           <div style="font-size:14px;font-family:omnes_light"><p>{!$Label.Opt_Perm}</p></div>
+            <apex:pageBlock id="page2">
+                <div class="row">
+                    <div class="col-xs-12 col-md-12" style="margin-top: 20px; width:1119px;">
+                        <div class="manage_users_table_container">
+                            <div id="site_table_wrapper" class="dataTables_wrapper styBorder" role="grid">
+                                <apex:outputPanel id="OutputPanel2">
+                                    <input type="hidden" id="hdnClaimMDF" value="{!isClaimMDF}" />
+                                    <input type="hidden" id="hdnReadOnly" value="{!isReadOnlyAccess}" />
+                                    <input type="hidden" id="hdnMDFPermission" value="{!showMDFPermissions}" />
+                                    <div class="check-label ML10">
+                                        <apex:inputCheckbox id="checkboxPortalAdmin" styleClass="css-checkbox1" value="{!contactDetails.Primary_Contact__c}" style="width:17px; margin-right:5px; margin-top:16px;">
+                                            <apex:actionSupport event="onchange" action="{!portalAdminAction}" reRender="OutputPanel2" status="loading" Oncomplete="fetchAndSetMDFAction();" />
+                                        </apex:inputCheckbox>
+                                        <label for="checkboxAll" class="css-label radGroup1 clr" style="margin-top:12px;font-size: 14px;font-family: omnes_light;">{!$Label.Assign_Add_inform}</label>
+                                    </div>
+                                    <div class="dash_borderSty"></div>
+                                    <table id="add_site_table" class="table manage_users_table" style=" border-top:none;">
+                                        <!--<thead>-->
+                                        <tr>
+                                            <td style="border-top:none; float:left;padding:0px;">
+                                                <div class="ML10 MT11">Profile Management</div>
+                                                <div class="check-label ML10" style="width:190px;">
+                                                    <apex:inputCheckbox id="checkboxCreateModifyProfile" styleClass="css-checkbox1" value="{!contactDetails.Create_Modify_Profile__c}" style="width:17px;margin-right:5px; margin-top: 7px;">
+                                                        <apex:actionSupport event="onchange" action="{!updatePermissionCheckBox}" reRender="checkboxCreateModifyProfile,checkboxPortalAdmin" status="loading" />
+                                                    </apex:inputCheckbox>
+                                                    <label class="css-label radGroup1 clr" style="font-size:16px !important;font-size: 14px !important;font-weight: normal;font-family: omnes_light;margin-top: 3px;">{!$Label.Cre_Mod_prof}</label>
+                                                    <ul>
+                                                        <li class="emailAlert_Sty">{! $Label.Add_Mod_User}
+
+                                                        </li>
+                                                        <li class="emailAlert_Sty">{! $Label.Add_Mod_Perm}
+
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                             </td>
+                                              
+                                            <td style="border-top:none;padding:0px;">
+                                              <div id="verticalLine" style="{!IF(showMDFPermissions,'height:265px','height:225px')}"></div>
+                                                <div class="ML10 MT11">{!$Label.Quotes_Orders}</div>
+                                                <div class="check-label ML10 ">
+                                                    <apex:inputCheckbox id="checkboxBeginQuotes" styleClass="css-checkbox1" value="{!contactDetails.Begin_Quote__c}" style="width:17px;margin-right:5px; margin-top: 7px;">
+                                                        <apex:actionSupport event="onchange" action="{!updatePermissionCheckBox}" reRender="checkboxPortalAdmin,checkboxBeginQuotes" status="loading" />
+                                                    </apex:inputCheckbox>
+                                                    <label class="css-label radGroup1 clr" style="font-size: 14px !important;font-weight: normal;font-family: omnes_light;margin-top: 3px;">Begin Quote</label>
+                                                    <li class="emailAlert_Sty" >{! $Label.Cre_Mod_Quotes}
+                                                    </li>
+                                                    <li class="emailAlert_Sty" >{! $Label.view_pric_promo}
+                                                    </li>
+                                                    <li class="emailAlert_Sty" >{! $Label.Make_Changes}
+                                                    </li>
+                                                </div>
+                                                <div class="check-label ML10 ">
+                                                    <apex:inputCheckbox id="checkboxApproveContracts" styleClass="css-checkbox1" value="{!contactDetails.Approve_Contracts__c}" style="width:17px;margin-right:5px; margin-top: 7px;">
+                                                        <apex:actionSupport event="onchange" action="{!updatePermissionCheckBox}" reRender="checkboxPortalAdmin,checkboxApproveContracts,checkboxBeginQuotes" status="loading" />
+                                                    </apex:inputCheckbox>
+                                                    <label class="css-label radGroup1 clr" style=" font-size: 14px !important; font-weight: normal; font-family: omnes_light; margin-top: 3px; ">{!$Label.Appr_Cont}</label>
+                                                    <li class="emailAlert_Sty" >{!$Label.Approve_and_Sign}
+
+                                                    </li>
+                                                </div>
+                                            </td>
+                                            <td style="border-top:none;padding:0px;">
+                                               <div id="verticalLine" style="{!IF(showMDFPermissions,'height:265px','height:225px')}"></div>
+                                                <div class="ML10 MT11">{!$Label.Tools_pro}</div>
+                                                <div class="check-label ML10" style="width: 240px;display: block;" id="mdfPermissiondisp">
+                                            <apex:inputCheckbox id="manageMDFLabelId" disabled="{!manageMDFEnable}" styleClass="css-checkbox1" value="{!contactDetails.Manage_MDF__c}" style="width:17px;margin-right:5px; margin-top: 5px;">
+                                                <apex:actionSupport event="onchange" action="{!manageMDFCheckBox}" reRender="OutputPanel2,manageMDF" status="loading" Oncomplete="fetchAndSetMDFAction();" />
+                                                    </apex:inputCheckbox>
+                                                    <label class="css-label" style="font-size:16px !important;display: table;font-size: 14px !important;font-weight: normal;font-family: omnes_light;margin-top: 10px;">{!$Label.Man_MDFs}</label>
+                                                    <!-- create radio buttons-->
+                                                    <apex:outputPanel rendered="{!showMDFPermissions=true}" id="manageMDF">
+                                                          <li class="emailAlert_Sty">
+                                                            <div id="manageMDFPanel" class="css-checkbox1">
+                                                                <ul>
+                                                                    <li class="emailAlert_Sty" ><input id="claimMDF" type="radio" style="margin: 0 10px 0 0 !important;" name="MDF_Permission" onclick="setMDFClaimPermission();"></input>Request/Claim MDFs</li>
+                                                                    <apex:actionFunction action="{!setMDFClaimPermission}" name="setMDFClaimPermission" reRender="checkboxPortalAdmin" status="loading" />
+                                                                    <li class="emailAlert_Sty"><input id="readOnly" type="radio" style="margin: 0 10px 0 0 !important;" name="MDF_Permission" onclick="setMDFReadOnlyPermission();"></input>Read-Only Access</li>
+                                                                    <apex:actionFunction action="{!setMDFReadOnlyPermission}" name="setMDFReadOnlyPermission" reRender="checkboxPortalAdmin" status="loading" />
+                                                                </ul>
+                                                            </div>
+                                                        </li>
+                                                    </apex:outputPanel>
+                                                   <!-- <apex:outputPanel rendered="{!showMDFPermissions=false}">
+                                                        <div style="border-right: 1px solid #CFCFCF;border-left: 1px solid #CFCFCF;-moz-border-top-colors: none;-moz-border-right-colors: none;-moz-border-bottom-colors: none;-moz-border-left-colors: none;border-image: none;height: 115px;border-width: medium 1px;border-style: none solid;border-color: -moz-use-text-color #CFCFCF;float: left;margin-top: -68px; margin-left:-21px;position: absolute;opacity:0.3;"></div>
+                                                    </apex:outputPanel> -->
+                                                </div>
+
+                                                <div class="check-label ML10">
+                                                  <!--
+                                                    <div>
+                                                        <apex:inputCheckbox id="checkboxProviderDirectory" styleClass="css-checkbox1" value="{!contactDetails.Provider_Directory__c}" style="width:17px;height:17px;margin-right:5px;">
+                                                            <apex:actionSupport event="onchange" action="{!updatePermissionCheckBox}" reRender="checkboxPortalAdmin,checkboxProviderDirectory" status="loading" />
+                                                        </apex:inputCheckbox>
+                                                        <label class="css-label radGroup1 clr" style="font-size:16px !important;font-size: 14px !important;font-weight: normal;font-family: omnes_light;margin-top: 0px;">Provider Directory</label>
+                                                    </div>
+                                                    -->
+                                                     <div>
+                                                        <apex:inputCheckbox id="checkboxServiceAssurance" styleClass="css-checkbox1" value="{!contactDetails.Service_Assurance__c}" style="width:17px;height:17px;margin-right:5px;">
+                                                            <apex:actionSupport event="onchange" action="{!updatePermissionCheckBox}" reRender="checkboxPortalAdmin,checkboxServiceAssurance" status="loading" />
+                                                        </apex:inputCheckbox>
+                                                        <label class="css-label radGroup1 clr" style="margin-top:-2px;font-size:16px !important;font-size: 14px !important;font-weight: normal;font-family: omnes_light;/* margin-top: 3px; */">Manage Service Assurance</label>
+                                                    </div>
+                                                    <div>
+                                                        <apex:inputCheckbox id="checkboxManageBilling" styleClass="css-checkbox1" value="{!contactDetails.Manage_Billing__c}" style="width:17px; height:17px;margin-right:5px;">
+                                                            <apex:actionSupport event="onchange" action="{!updatePermissionCheckBox}" reRender="checkboxPortalAdmin,checkboxManageBilling" status="loading" />
+                                                        </apex:inputCheckbox>
+                                                        <label class="css-label radGroup1 clr" style="margin-top:-2px;font-size:16px !important;font-size: 14px !important;font-weight: normal;font-family: omnes_light;/* margin-top: 3px; */">{!$Label.Mng_Bill}</label>
+                                                    </div>
+                                                   
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <!-- </thead> -->
+                                    </table>
+                                </apex:outputPanel>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:pageBlock>
+             <hr class="section-dividerHr" style="margin-top: 0px;border-color: #056fab;margin-bottom:40px"/>
+            <apex:commandButton action="{!createPartnerUser}" value="Create User" styleClass="createUserButton" id="createUserButtonId" reRender="valForm" style="display:block;float:right;" rendered="{!errorDisableButton=true}" status="loading" />
+            <apex:commandButton action="{!createPartnerUser}" value="Create User" styleClass="createUserButton" id="createUserButtonErrorId" reRender="valForm" style="display:none;float:right;" rendered="{!errorDisableButton=false}" status="loading" />
+            <apex:outputPanel >
+              <div class="container pull-right p0">
+                <input type="button" value="Create User" id="createUserButtonDisable" style="cursor :initial; display:block;float:right;" />
+           </div>
+           <div class="container pull-right p0">
+                 <apex:outputText styleClass="emailAlertMess_Sty" value="{!$Label.Email_Alert}"></apex:outputText>
+            </div>
+            </apex:outputPanel>
+                
+           
+            <!-- <apex:pagemessages id="message" rendered="{!dispPageErrMsg=true}"  ></apex:pagemessages> -->
+        </apex:form>
+    </body>
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+</apex:page>

@@ -1,0 +1,383 @@
+<apex:page controller="QuotesAndOrdersDashboardController" docType="html-5.0"  standardStylesheets="false" sidebar="false" showHeader="false" id="thePage">
+<apex:includeScript value="{!$Resource.jQueryMin}" /> 
+<apex:includeScript value="{!URLFOR($Resource.bootstrapMin, 'js/bootstrap.min.js')}" /> 
+<apex:includeScript value="{!$Resource.atomjqueryjs}" />
+<!--<apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" />  -->      
+<apex:stylesheet value="{!$Resource.ATTPortalExchangeCSS}"/>
+    <style>
+    table a {
+        cursor: pointer;
+    }
+    .dataTables_length {
+        display: none;
+    }
+    .dataTables_info {
+        bottom: 22px;
+        position: absolute;
+        right: 180px;
+    }
+    .manage_user_name {
+        width: 17% !important;
+    }
+    #manage_content .pagination > a {
+        padding: 5px 10px;
+        font-family: omnes_att_iimedium;
+        line-height: 1.125em;
+        color: #056fab;
+        margin-left: 5px;
+        background: #fff;
+        border: 1px solid #ccc;
+    }
+    .paginate_enabled_previous, .paginate_enabled_next {
+        cursor: pointer;
+    }
+    .paginate_disabled_previous, .paginate_disabled_next {
+        cursor: no-drop;
+    }
+    .adjust-select-small{
+        width:230px;
+    }
+    .adjust-select-small select{
+        padding: 0 5px;
+        line-height: 17px;
+    }
+   h1 { font-family: omnesatt_iiregular; }   
+    #headerNav3,#headerNav4,#headerNav5 { background: #edf8fd; }
+    
+    .tHeadNavType ul {        
+        padding-left: 10px;
+        min-width: 300px;
+    }
+    .tHeadNavStatus ul {
+        /*-webkit-column-count: 2;*/
+        padding-left: 10px;
+        min-width: 300px;
+    }
+    .tHeadNavProduct ul {
+        /*-webkit-column-count: 2;*/
+        padding-left: 10px;
+        min-width: 300px;
+    }
+    </style>
+    <script>
+    function showSelectedRecords(val)
+    {
+     var selctdVal=val;
+    //alert(selctdVal);
+     showSelectedRecords1(selctdVal);
+    
+    }
+    </script>
+<div class="bootstrap">  
+    <div class="content_container">    
+        <apex:form id="frmNew">
+        <!--  <apex:outputPanel id="productOutput">
+                 <apex:repeat value="{!productsMap}" var="key">
+                    <apex:pageBlock >
+                        <apex:pageBlockTable value="{!productsMap[key]}" var="listItem">
+                            <apex:column value="{!listItem.prodName}"/>
+                             <apex:column value="{!listItem.prodQuantity}"/> 
+                        </apex:pageBlockTable>
+                    </apex:pageBlock>
+                </apex:repeat>
+         </apex:outputPanel> -->
+         <!-- <apex:commandButton value="Get status Count" action="{!StatusCount}" reRender="frmNew" /> 
+          <apex:outputPanel id="statusOutput">
+                 <apex:repeat value="{!statusMap}" var="key">
+                    <apex:pageBlock >
+                        <apex:pageBlockTable value="{!statusMap[key]}" var="listItem">
+                            <apex:column value="{!listItem.statName}"/>
+                             <apex:column value="{!listItem.statQuantity}"/> 
+                        </apex:pageBlockTable>
+                    </apex:pageBlock>
+                </apex:repeat>
+         </apex:outputPanel> -->
+         <!-- <apex:commandButton value="Get Type Count" action="{!TypeCount}" reRender="frmNew" /> 
+          <apex:outputPanel id="typeOutput">
+                 <apex:repeat value="{!TypeMap}" var="key">
+                    <apex:pageBlock >
+                        <apex:pageBlockTable value="{!TypeMap[key]}" var="listItem">
+                            <apex:column value="{!listItem.typeName}"/>
+                             <apex:column value="{!listItem.typeQuantity}"/> 
+                        </apex:pageBlockTable>
+                    </apex:pageBlock>
+                </apex:repeat>
+         </apex:outputPanel>           
+             <apex:commandButton value="Get Product Count" action="{!ProductCount}" reRender="frmNew" />  
+              -->
+        <div id="manage_content" class="page">
+            <!-- <div class="row" style="margin: 40px 0 20px 0;">
+                <div class="col-xs-12 col-md-12">
+                <div class="styled-select-small adjust-select-small">   
+                <ul class="dropdown-menu" style="width: 350px; padding: 10px; margin-top: 10px;">
+                <apex:selectList multiselect="false" size="1" value="">
+                    <apex:selectOptions value="{!items}" />
+                     <apex:actionSupport event="onchange" action="{!ToggleManagepicklist}" reRender="quoteBlock"/>
+                    </apex:selectList>
+              </div> 
+                </div>
+            </div>-->
+            
+            <div class="dropdown styled-select-small" style="height: auto; overflow: visible; width: 520px; border: none; background-color: transparent !important;">
+                <h1 class="dropdown-toggle" data-toggle="dropdown">Manage Quotes &amp; Orders</h1>
+                <ul class="dropdown-menu" style="width: 350px; padding: 10px; margin-top: 10px;">
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" style="font-size: 22px; border-bottom: 1px solid #ddd; padding: 5px;"  onClick="showSelectedRecords('2'); return false;">My Approvals</a></li>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="#" style="font-size: 22px; padding: 5px;"  onClick="showSelectedRecords('3')">My Networks</a></li>
+                </ul>
+                
+            </div> 
+                      
+            <div class="row"><div class="col-xs-12"><hr class="blue_hr" /></div></div>                           
+            
+           <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <div class="manage_user_search_row">
+                        <form action="" method="get" id="search_users_form" class="">
+                            <div class="search_user_container">
+                                <div class="search_button"></div>
+                            </div>
+                        </form>
+                    </div>
+                </div> 
+            </div>
+        
+            <div class="row">
+                <apex:pageBlock id="quoteBlock">
+                    <apex:outputPanel id="thePanel">
+                   <!--  <apex:outputText value="">test</apex:outputText> -->
+
+                    <!-- <div class="row"> -->
+                        <div class="col-xs-12 col-md-12">
+                             <div class="manage_quotes_table">
+                                <div id="manage_users_table_wrapper" class="dataTables_wrapper" role="grid">
+                                   <!-- <div id="manage_users_table_wrapper" class="dataTables_wrapper" role="grid"> -->
+                                    <!-- <apex:pageBlock id="table" > -->
+                                    <apex:pageBlockTable id="manage_quotes_table" value="{!quoteDetails}" var="qo" rendered="{!(quoteDetails.size != 0)}" styleClass=" list dataTable table table-bordered table-striped" style="font-size: 15px !important; min-width: 935px; background: #fff; font-family: 'omnes_att_iimedium';" width="100%" >
+                                       <!--  <apex:column headerValue="Order #" styleClass="manage_user_name sorting" value="{!qo.Name}"/> 
+                                        <apex:column headerValue="Customer" styleClass="manage_user_name sorting" value="{!qo.End_Customer__c}"/>
+                                        <apex:column headerValue="Product" value="{!qo.Product__c}" styleClass="manage_user_name"/>
+                                        <apex:column headerValue="Last Modified" styleClass="manage_user_name sorting" value="{!qo.LastModifiedBy.Name}" >
+                                        </apex:column>
+                                        <apex:column headerValue="Action"  styleClass="manage_user_name">
+                                           <apex:selectList multiselect="false" size="1"  id="selList" value="{!selectedVal}">
+                                               <apex:selectOption itemLabel="Register Deal" itemValue="1" />
+                                               <apex:selectOption itemLabel="Duplicate" itemValue="2" />
+                                               <apex:selectOption itemLabel="Delete" itemValue="3"   />
+                                            </apex:selectList>
+                                        </apex:column> -->
+
+                                          <apex:column headerValue="Order #" style="width: 125px !important;"> 
+                                           <apex:commandLink action="{!checkBuyFlowStatusAndRedirect}" target="_blank" rendered="{!IF(qo.SP_Status__c !='Deleted',True,False)}"> {!qo.name}<apex:param name="quotID" value="{!qo.id}" /></apex:commandLink>
+                                           <apex:outputText value="{!qo.name}" rendered="{!IF(qo.SP_Status__c =='Deleted',True,False)}" />
+                                        </apex:column>
+                                        <apex:column headerValue="Customer" value="{!qo.End_Customer__c}" style="width: 225px" /> 
+                                        <apex:column id="headerNav3" style="width: 125px" >
+                                            <apex:facet name="header">                                            
+                                              <a class="dropdown-toggle">Type</a>
+                                            </apex:facet>                                                                                  
+                                             <apex:outputText value="{!qo.Quote_Type__c}"/>
+                                        </apex:column>
+                                        <apex:column id="headerNav4" headerValue="Status" value="{!qo.SP_Status__c}" style="width: 250px" />
+                                        <td role="columnheader" rowspan="1" colspan="1" class="no-sort sorting_disabled" aria-label="Type">
+    
+</td>
+                                        <apex:column id="headerNav5" headerValue="Product" value="{!qo.Product__c}" style="width: 280px" />
+                                        <apex:column headerValue="Last Modified" value="{!qo.LastModifiedBy.Name}" style="width: 250px" >
+                                           <!--<apex:outputField value="{!qo.LastModifiedBy.Name}"/>-->
+                                        </apex:column>
+                                        <apex:column headerValue="Action" style="width: 125px" >
+                                           <apex:selectList multiselect="false" size="1"  id="selList" >
+                                               <apex:selectOptions value="{!actionOptns}" />
+                                            </apex:selectList>
+                                        </apex:column>
+                                    </apex:pageBlockTable>
+                                    <!-- HIde content for showing thead labels-->
+                                    <div class="dropdown tHeadNavType">
+                                      <a id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Type
+                                       <span class="caret"></span>
+                                      </a>
+                                      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                        <apex:repeat value="{!TypeMap}" var="key">
+                                            <li>                   
+                                                <apex:repeat value="{!TypeMap[key]}" var="listItem">                        
+                                                    <apex:commandLink action="{!quoteFilterByType}" rerender="quoteBlock" oncomplete="callDatatable();"><span>{!listItem.typeName}</span><span>({!listItem.typeQuantity})</span>
+                                                    <apex:param assignTo="{!selectedType}" name="selectedType" value="{!listItem.typeName}" ></apex:param>
+                                                    </apex:commandLink>                         
+                                                </apex:repeat>                
+                                            </li>
+                                        </apex:repeat>
+                                       </ul>
+                                    </div>
+                                    <div class="dropdown tHeadNavStatus">
+                                      <a id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Status
+                                       <span class="caret"></span>
+                                      </a>
+                                      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                        <apex:repeat value="{!statusMap}" var="key">
+                                            <li>                   
+                                                <apex:repeat value="{!statusMap[key]}" var="listItem">                        
+                                                    <apex:commandLink action="{!quoteFilterByStatus}" rerender="quoteBlock" oncomplete="callDatatable();" ><span>{!listItem.statName}</span><span> ({!listItem.statQuantity})</span>
+                                                <apex:param assignTo="{!selectedStatus}" name="selectedStatus" value="{!listItem.statName}" ></apex:param>
+                                                </apex:commandLink>
+                                                </apex:repeat>                
+                                            </li>
+                                        </apex:repeat>
+                                       </ul>
+                                    </div>
+                                    <div class="dropdown tHeadNavProduct">
+                                      <a id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Product
+                                       <span class="caret"></span>
+                                      </a>
+                                      <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                                        <apex:repeat value="{!productsMap}" var="key">
+                                            <li>                   
+                                                <apex:repeat value="{!productsMap[key]}" var="listItem">                        
+                                                    <apex:commandLink action="{!quoteFilterByProduct}" rerender="quoteBlock" oncomplete="callDatatable();" ><span>{!listItem.prodName}</span><span> ({!listItem.prodQuantity})</span> 
+                                                    <apex:param assignTo="{!selectedProduct}" name="selectedProduct" value="{!listItem.prodName}" ></apex:param>
+                                                    </apex:commandLink>
+                                                </apex:repeat>                
+                                            </li>
+                                        </apex:repeat>
+                                       </ul>
+                                    </div>
+                                    <!-- </apex:pageBlock>   -->
+                                    <!-- </div> -->
+                                </div>
+                            </div>
+                         </div>
+                    <!-- </div> -->
+                      <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                             <div class="manage_users_table">
+                                <div id="manage_users_table_wrapper_2" class="dataTables_wrapper" role="grid">
+
+                                                     <apex:pageBlockTable id="manage_quote_table_2" value="{!quoteDetails}" rendered="{!(quoteDetails.size = 0)}" var="qoo" styleClass=" manage_quote_table_2list dataTable table table-bordered" style="font-size: 15px !important; min-width: 935px; background: #fff; font-family: 'omnes_att_iimedium';" width="100%">
+                                                        <apex:column headerValue="Order #" value="{!qoo.Name}"/> 
+                                                        <apex:column headerValue="Customer" value="{!qoo.End_Customer__c}"/>
+                                                        <apex:column headerValue="Product" value="{!qoo.Product__c}"/>
+                                                        <apex:column headerValue="Last Modified" >
+                                                        <!--<apex:outputField value="{!qoo.LastModifiedBy.Name}"/>-->
+                                                            <apex:outputText value="{!qoo.LastModifiedBy.Name}" /><br></br>
+                                                           <apex:outputText value="{0,date,MM/dd/yyyy}">
+                                                               <apex:param value="{!qoo.LastModifiedDate}" />
+                                                           </apex:outputText>
+                                                        </apex:column>
+                                                    </apex:pageBlockTable>                                   
+
+                                </div>
+                            </div>
+                         </div>
+                    </div>
+                    <apex:outputText rendered="{!(quoteDetails.size = 0)}" value="Click Begin Quote to start a quote." style="text-align:center;"></apex:outputText>                               
+                    </apex:outputPanel>
+                </apex:pageBlock>                                
+            </div>   
+            </div>   
+            <apex:actionFunction action="{!ToggleManagepicklist}" reRender="quoteBlock" name="showSelectedRecords1" oncomplete="console.log('this called');callDatatable();">
+               <apex:param value="" assignTo="{!selectedVal1}" name="selectedvalue"></apex:param>
+            </apex:actionFunction>                 
+        </apex:form>
+    </div> 
+</div> 
+      <script type="text/javascript">
+            function doSearch() {
+                searchServer(document.getElementById("firstName").value);
+                isCustomerSelected();
+            }
+        
+            function getSelectedContact() {
+                var $radio = $('input[name=group1]:checked');
+                var updateDay = $radio.val();
+                var id = $radio.attr('id');
+                if (customerId != null && customerId != '') {
+                    CreateQuote(customerId);
+                } else {
+                }
+            }
+            
+            
+            function isCustomerSelected(){
+                if (!$("input[name='group1']:checked").val()) {
+                  $('input[value="Create Quote"]').addClass('disabled');
+                } else {
+                   $('input[value="Create Quote"]').removeClass('disabled');
+                }
+                $('#addCustTrigger').on('click', function(){
+                    $('#addCustomerModal').modal('show');
+                });
+                recheckIsCustomerSel();
+            }
+            
+            function recheckIsCustomerSel(){
+            $('input[name=group1]:radio').change(function () {
+                customerId = $('input[type=radio][name=group1]:checked').attr('id');
+                //console.log(customerId);
+            });
+                $("input[name='group1']").on('click',function(){
+                    if (!$("input[name='group1']:checked").val()) {
+                      $('input[value="Create Quote"]').addClass('disabled');
+                    } else {
+                       $('input[value="Create Quote"]').removeClass('disabled');
+                    }
+                  
+                    
+                });
+            }
+            $(document).ready(function(){            
+                isCustomerSelected();
+                callDatatable();
+            
+                
+            });
+            function callDatatable() {
+                $('#search_input, .dataTables_info, .pagination').remove();
+                /** datatable script **/
+                $('.dataTable th.headerRow').each(function() {
+                    var thText = $(this).text();
+                    var newHeadTd = '<td role="columnheader" rowspan="1" colspan="1"><a>'+thText+'</a><div class="reorder_btn"></div></td>';             
+                    $(this).replaceWith(newHeadTd);
+                    //$('#headerNav3').text().replaceWith('<div class="dropdown"><button class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">Type</button><ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1"><li role="presentation"><a role="menuitem" tabindex="-1" href="#">Action</a></li><li role="presentation"><a role="menuitem" tabindex="-1" href="#">Another action</a></li><li role="presentation"><a role="menuitem" tabindex="-1" href="#">Something else here</a></li><li role="presentation" class="divider"></li><li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li></ul></div>');
+                });
+                $('.dataTable thead tr td:eq(2), .dataTable thead tr td:eq(3), .dataTable thead tr td:eq(4), .dataTable thead tr td:eq(6)').addClass('no-sort').children('.reorder_btn').remove();
+                
+                $('.dataTable thead td:eq(2),.dataTable thead td:eq(3),.dataTable thead td:eq(4)').html('');
+                $('.tHeadNavType').prependTo('table thead td:eq(2)');
+                $('.tHeadNavStatus').prependTo('table thead td:eq(3)');
+                $('.tHeadNavProduct').prependTo('table thead td:eq(4)');
+                    $('.dataTable').DataTable({
+                        "oLanguage": {
+                        "sInfo": "_START_ - _END_ of _TOTAL_",
+                        "sZeroRecords": "Click Begin Quote to start a quote"                   
+                    }, "aoColumnDefs": [
+                          { 
+                          "bSortable": false,
+                          "aTargets" : [ "no-sort" ]
+                          }
+                      ],       
+                   "oPaginate": {
+                       "sNext": ">",
+                       "sPrevious": "<",
+                       "First" :'1',
+                       "Next":'2'
+                   }
+                 });
+                 
+                 var searchBTN = $('.dataTables_filter > label > input[type="text"]').attr({'id':'search_input', 'name':'search_users', 'placeholder':'Search by Name or Location'});
+                 $(searchBTN).prependTo('.search_user_container');
+                 $('.dataTables_filter').hide();
+                 $('.dataTables_paginate').addClass('pagination');
+                }
+            </script>  
+
+   <!-- JavaScript
+    ================================================== -->
+    <!-- PRODUCTION -->
+
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/libs/jquery.dataTables.js')}"/>        
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/modernizr.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/bootstrap.min.js')}"/>  
+
+</apex:page>

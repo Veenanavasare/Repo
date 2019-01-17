@@ -1,0 +1,359 @@
+<apex:page controller="quoteInexcelController" showHeader="false" sidebar="false" standardStylesheets="false" contentType="application/vnd.ms-excel#QuoteExport.xls" >
+<script>
+alert('test');
+self.close();
+</script>   
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<apex:outputPanel id="container" style="font-family: Arial;">
+
+<table>
+<tr>
+<td>
+
+<apex:panelGrid columns="1" width="50%" border="1" bgcolor="#CCCCFF">
+    <apex:panelGroup layout="block"  style="width:50%;background-color:black !important;">
+        <b><apex:outputLabel value="Order Number"/></b>
+    </apex:panelGroup>
+    <apex:panelGroup layout="block" style="width:50%" >
+        <b><apex:outputLabel value="Quote Creation Date"/></b>
+    </apex:panelGroup>
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="Solution Provider"/></b>
+    </apex:panelGroup>
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="End Customer"/></b>
+    </apex:panelGroup>
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="Quote Export date"/></b>
+    </apex:panelGroup>
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="Product Type"/></b>
+    </apex:panelGroup>
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="Product Name"/></b>
+    </apex:panelGroup>
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="Network Friendly Name"/></b>
+    </apex:panelGroup>
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="Term Length"/></b>
+    </apex:panelGroup>
+     <apex:panelGroup layout="block" style="width:50%" rendered="{!isQuoteExpDatePopulated}">
+        <b><apex:outputLabel value="Quote Expiration Date"/></b>
+    </apex:panelGroup>
+</apex:panelGrid>
+</td>
+
+<td>
+<apex:panelGrid columns="1" width="50%" border="1" bgcolor="#E4DFEC" >
+    <apex:panelGroup layout="block" style="width:50%">
+        <apex:outputLabel value="{!proposal.Name}"/>
+    </apex:panelGroup>
+    <apex:panelGroup layout="block" style="width:50%;text-align:left">
+        <apex:outputLabel value="{!quoteCreationDate }"/>
+    </apex:panelGroup>
+   <apex:panelGroup layout="block" style="width:50%">
+        <apex:outputLabel value="{!proposal.Apttus_Proposal__Account__r.Name}"/>
+    </apex:panelGroup>
+   <apex:panelGroup layout="block" style="width:50%">
+        <apex:outputLabel value="{!proposal.End_Customer__r.Name}"/>
+    </apex:panelGroup>
+   <apex:panelGroup layout="block" style="width:50%;text-align:left">
+        <apex:outputLabel value="{!quoteExportDate}"/>
+    </apex:panelGroup>
+   <apex:panelGroup layout="block" style="width:50%">
+        <apex:outputLabel value="{!proposal.Product__r.Category__c}"/>
+    </apex:panelGroup>
+   <apex:panelGroup layout="block" style="width:50%">
+        <apex:outputLabel value="{!proposal.Product_New_Name__c}"/>
+    </apex:panelGroup>
+   <apex:panelGroup layout="block" style="width:50%">
+        <apex:outputLabel value="{!proposal.Apttus_Proposal__Proposal_Name__c}"/>
+    </apex:panelGroup>
+   <apex:panelGroup layout="block" style="width:50%">
+        <apex:outputLabel value="{!proposal.Apttus_Proposal__Payment_Term__c}"/>
+    </apex:panelGroup> 
+    <apex:panelGroup layout="block" style="width:50%;text-align:left" rendered="{!isQuoteExpDatePopulated}">
+        <apex:outputLabel value="{!quoteExpirationDate }"/>
+    </apex:panelGroup> 
+</apex:panelGrid>     
+</td>
+</tr>
+</table>   
+
+<br/>  
+<div style="margin-bottom:15px;margin-top:4px;"><br/><br/>
+  <table  border="1" column='25' width='100%'>
+        <tr>
+         <apex:outputPanel rendered="{!proCode =='AVPN' || proCode =='AMIS'}">
+             <td style="font-weight:bold" colspan='6' align="center" bgcolor="#C4D79B">Site Information</td>
+         </apex:outputPanel>
+         <apex:outputPanel rendered="{!proCode =='ASE'}">
+             <td style="font-weight:bold" colspan='7' align="center" bgcolor="#C4D79B">Site Information</td>
+         </apex:outputPanel>
+         <apex:outputPanel rendered="{!proCode =='AVPN'}">
+              <td style="font-weight:bold" colspan='8' align="center" bgcolor="#CCC0DA">Transport Service Information</td>
+         </apex:outputPanel> 
+         <apex:outputPanel rendered="{!proCode =='AMIS'}">
+              <td style="font-weight:bold" colspan='9' align="center" bgcolor="#CCC0DA">Transport Service Information</td>
+         </apex:outputPanel>
+          <apex:outputPanel rendered="{!proCode =='ASE'}">
+              <td style="font-weight:bold" colspan='14' align="center" bgcolor="#CCC0DA">Service Information</td>
+         </apex:outputPanel>
+         <apex:outputPanel rendered="{!proCode =='AVPN' || proCode =='AMIS'}">
+             <td style="font-weight:bold" colspan = '6' align="center" bgcolor="#CCC0DA">IPFlex Service Information</td>
+         </apex:outputPanel>
+         <apex:outputPanel rendered="{!proCode == 'AVPN' || proCode =='AMIS'}">
+             <td style="font-weight:bold" colspan = '12' align="Center" bgcolor="#B7DEE8">Pricing</td>
+         </apex:outputPanel>
+         <apex:outputPanel rendered="{!proCode =='ASE'}">
+             <td style="font-weight:bold" colspan = '4' align="Center" bgcolor="#B7DEE8">Pricing</td>
+         </apex:outputPanel>     
+        </tr>
+  </table>   
+                    
+         <apex:dataTable value="{!lineitems}" var="item" border="1" width="100%" style="text-align:center;">
+         <apex:column headerValue="Site#" value="{!item.sitenumber}" style="text-align:center;"/>
+         <apex:column headerValue="Street" value="{!item.sitestreet}" style="text-align:center;"/>
+         <apex:column headerValue="City" value="{!item.sitecity}" style="text-align:center;"/>
+         <apex:column headerValue="State" value="{!item.sitestate}" style="text-align:center;"/>
+         <apex:column headerValue="Zip" value="{!item.sitezip}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="Phone Number" value="{!item.PhoneNumber}" style="text-align:center;"/>
+         <apex:column headerValue="Fiber Lit Building" value="{!item.FiberLitBuilding}" style="text-align:center;"/>    
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" headerValue="Port Type" value="{!item.PortType}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="CNUM" value="{!item.CNUM}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="Service Type" value="{!item.serviceType}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="Tier" value="{!item.aseTier}" style="text-align:center;"/>
+         <apex:column headerValue="Port Speed" value="{!item.PortSpeed}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" headerValue="Minimum Bandwidth Commitment" value="{!item.MBCSpeed}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" headerValue="Access Speed" value="{!item.AccessSpeed}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" headerValue="Installation Option" value="{!item.InstallationonOption}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AVPN'}" headerValue="VLAN(s)/Logical Channels" value="{!item.VLANLogicalChannel}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AMIS'}" headerValue="Additional DNS" value="{!item.AdditionalDNS}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AMIS'}" headerValue="Managed Router" value="{!item.managedRouter}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" headerValue="Class of Service" value="{!item.ClassofService}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" headerValue="Hi-Cap Flex" value="{!item.UsageBasedBilling}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" headerValue="IPFlex Plan" value="{!item.IPFlexPlan}"  style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" headerValue="# of Ported Phone Numbers" value="{!item.portedPhNumbersCount}"  style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" headerValue="# of Telephone Numbers" value="{!item.telePhNumbersCount}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" headerValue="# Virtual Telephone Numbers" value="{!item.VTNCount}"  style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" headerValue="# Concurrent Calls" value="{!item.ConcurrentCounts}"  style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" headerValue="Enhanced Features" value="{!item.enhancedFeatures}"  style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="Interface Type" value="{!item.aseInterfaceType}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="Committed Information Rate (CIR)" value="{!item.CIR}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="Class of Service (CoS) Type" value="{!item.cosTypeAse}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="Class of Service (CoS)" value="{!item.cosAse}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="Network Type" value="{!item.nwTypeAse}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="LATA" value="{!item.lataAse}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="Config Type" value="{!item.configTypeAse}" style="text-align:center;"/>      
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="Site Designation" value="{!item.siteDesignationAse}" style="text-align:center;"/>      
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="Port/VLAN Based" value="{!item.portVlanBasedAse}" style="text-align:center;"/>
+         <apex:column rendered="{!proCode =='ASE'}" headerValue="MAC Addressess" value="{!item.macAddressesAse}" style="text-align:center;"/>
+         
+         <apex:column style="text-align:center;" >
+             <apex:facet name="header">Port Cost</apex:facet>     
+                 <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.PortCost != null && item.PortCost != 0.00}">
+                     <apex:param value="{!item.PortCost}"/>
+                 </apex:outputText>
+                 <apex:repeat value="{!item.portPromoNameSet}" var="promoName" rendered="{!AND(!item.MBCApplied,NOT(isSpecialPricingApproved))}">
+                    <apex:outputText value="{!promoName} - {!item.portPromoNameDiscountMap[promoName]}% Savings {!item.PortCost}"/><br/>
+                 </apex:repeat>
+         </apex:column>
+          <apex:column style="text-align:center;" rendered="{!proCode =='ASE'}">
+             <apex:facet name="header">CIR Cost</apex:facet>                     
+             <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.cirCost!=null && item.cirCost!=0.00}">
+                 <apex:param value="{!item.cirCost}"/>
+             </apex:outputText>
+         </apex:column>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" style="text-align:center;">
+             <apex:facet name="header">MBC Cost</apex:facet>                     
+                 <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.MBCCost!=null && item.MBCCost!=0.00}">
+                     <apex:param value="{!item.MBCCost}"/>
+                 </apex:outputText>
+                 <apex:repeat value="{!item.portPromoNameSet}" var="promoName" rendered="{!item.MBCApplied}">
+                    <apex:outputText value="{!promoName} - {!item.portPromoNameDiscountMap[promoName]}% Savings"/><br/>
+                 </apex:repeat>
+         </apex:column>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" style="text-align:center;" >
+             <apex:facet name="header">Access Cost</apex:facet>                     
+             <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.AccessCost != null && item.AccessCost != 0.00}">
+                 <apex:param value="{!item.AccessCost}"/>
+             </apex:outputText>
+             <apex:repeat value="{!item.accessPromoNameSet}" var="promoName" rendered="{!item.showAccessPromo}">
+                <apex:outputText value="{!promoName} - {!item.accessPromoNameDiscountMap[promoName]}% Savings"/><br/>
+            </apex:repeat>
+
+         </apex:column>
+         <apex:column rendered="{!proCode =='AVPN' || proCode =='AMIS'}" style="text-align:center;" >
+             <apex:facet name="header">Installation Cost</apex:facet>                     
+             <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.InstallationCost != null && item.InstallationCost != 0.00}">
+                 <apex:param value="{!item.InstallationCost}"/>
+             </apex:outputText>
+         </apex:column>
+         <apex:column style="width:50%;text-align:center;" rendered="{!proCode =='AVPN'}">
+         <apex:facet name="header">VLAN(s)/Logical Channels Cost</apex:facet>                     
+          <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.VLANLogicalChannel == 'Yes'}">
+                 <apex:param value="{!item.VLANLogicalchannelscost}"/>
+          </apex:outputText>
+          <apex:repeat value="{!item.vlanPromoNameSet}" var="promoName" rendered="{!item.showVLANPromo}">
+              <apex:outputText value="{!promoName} - {!item.vlanPromoNameDiscountMap[promoName]}% Savings"/><br/>
+          </apex:repeat>
+         </apex:column>
+         <apex:column rendered="{!proCode =='AMIS'}" style="text-align:center;">
+             <apex:facet name="header">Additional DNS Cost</apex:facet>                     
+                 <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.AdditionalDNS != null}">
+                     <apex:param value="{!item.AdditionalDNScost}"/>
+                 </apex:outputText>
+                <apex:repeat value="{!item.dnsPromoNameSet}" var="promoName" rendered="{!item.showDNSPromo}">
+                  <apex:outputText value="{!promoName} - {!item.dnsPromoNameDiscountMap[promoName]}% Savings"/><br/>
+               </apex:repeat>      
+         </apex:column>
+         <apex:column style="text-align:center;" rendered="{!proCode =='AVPN' || proCode =='AMIS'}">
+         <apex:facet name="header">Class of Service Cost</apex:facet>                     
+          <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.ClassofService == 'Yes'}">
+            <apex:param value="{!item.ClassofServiceCost}"/>
+          </apex:outputText>
+          <apex:repeat value="{!item.cosPromoNameSet}" var="promoName" rendered="{!item.showCosPromo}">
+                <apex:outputText value="{!promoName} - {!item.cosPromoNameDiscountMap[promoName]}% Savings"/><br/>
+          </apex:repeat>
+         </apex:column>
+        <apex:column style="text-align:center;" rendered="{!proCode =='AVPN' || proCode =='AMIS'}">
+             <apex:facet name="header">IPFlex Plan Cost</apex:facet>                     
+                 <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.IPFlexPlan != null}">
+                     <apex:param value="{!item.IPFlexPlanCost}"/>
+             </apex:outputText>
+             <apex:repeat value="{!item.ipflexPromoNameSet}" var="promoName" rendered="{!item.showIPFlexPromo }">
+                <apex:outputText value="{!promoName} - {!item.ipflexPromoNameDiscountMap[promoName]}% Savings"/><br/>
+             </apex:repeat>
+         </apex:column>
+ 
+        <apex:column style="text-align:center;" rendered="{!proCode =='AVPN' || proCode =='AMIS'}">
+             <apex:facet name="header">Virtual Telephone Numbers Cost</apex:facet>                     
+             <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.VTNCount != null}">
+                 <apex:param value="{!item.VTNCost}"/>
+             </apex:outputText>
+         </apex:column>
+ 
+        <apex:column style="text-align:center;" rendered="{!proCode =='AVPN' || proCode =='AMIS'}">
+             <apex:facet name="header">Enhanced Features Cost</apex:facet>                     
+             <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.enhancedFeatures != null}">
+                 <apex:param value="{!item.enhancedFeatCost}"/>
+             </apex:outputText>
+         </apex:column>  
+         <apex:column style="text-align:center;" rendered="{!proCode =='AVPN' || proCode =='AMIS'}">
+             <apex:facet name="header">IPFlex Set-up Cost</apex:facet>                     
+             <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.IPFlexPlan != null}">
+                 <apex:param value="{!item.IPFlexSetUpCost}"/>
+             </apex:outputText>
+         </apex:column> 
+         <apex:column style="text-align:center;" rendered="{!proCode =='ASE'}" >
+             <apex:facet name="header">Non-Recurring Price for complete circuit</apex:facet>                     
+             <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.NonRecurringPriceforcompletecircuit != null && item.NonRecurringPriceforcompletecircuit != 0.00}">
+                 <apex:param value="{!item.NonRecurringPriceforcompletecircuit}"/>
+             </apex:outputText>
+         </apex:column>                 
+         <apex:column style="text-align:center;" >
+             <apex:facet name="header">Recurring Pricing for complete<br/>circuit</apex:facet>                     
+             <apex:outputText value="${0, number, ###,##0.00}" rendered="{!item.RecurringPricingforcompletecircuit != null && item.RecurringPricingforcompletecircuit != 0.00}">
+                 <apex:param value="{!item.RecurringPricingforcompletecircuit}"/>
+             </apex:outputText>
+         </apex:column>
+         <apex:column style="text-align:center;" rendered="{!proCode =='AVPN' || proCode =='AMIS'}">
+             <apex:facet name="header">Overage Rate</apex:facet> 
+                 <apex:outputText value="${0, number, ###,##0.00}/MB" rendered="{!item.overageMbcRate!=null && item.overageMbcRate!=0.00}" > 
+                     <apex:param value="{!item.overageMbcRate}"/>
+                 </apex:outputText>               
+       </apex:column>
+
+     </apex:dataTable> 
+     <apex:outputPanel rendered="{!proCode =='ASE'}" >
+         <br/><br/>
+         <apex:panelGrid border="1" columns="2">
+             <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Pricing Summary"/></b></apex:panelGroup>
+             <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+             <apex:panelGroup style="width:50%"><apex:outputLabel value="Total Non-Recurring Price"/></apex:panelGroup>
+             <apex:panelGroup style="width:50%"><apex:outputText value="{0, number,$###,###,##0.00}"><apex:param value="{!NonRecurringPricewithoutDiscount}"/></apex:outputText></apex:panelGroup>
+             <apex:panelGroup style="width:50%"><apex:outputLabel value="Total Recurring Price"/></apex:panelGroup>
+             <apex:panelGroup style="width:50%"><apex:outputText value="{0, number,$###,###,##0.00}"><apex:param value="{!RecurringPricewithoutDiscount}"/></apex:outputText></apex:panelGroup>
+        </apex:panelGrid>
+     </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!proCode =='AVPN' || proCode =='AMIS'}">
+         <br/><br/>
+         <apex:panelGrid border="1" columns="2">
+             <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Pricing Summary"/></b></apex:panelGroup>
+             <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+             <apex:panelGroup style="width:50%"><apex:outputLabel value="Monthly Subtotal (discounts applied)"/></apex:panelGroup>
+             <apex:panelGroup style="width:50%"><apex:outputText value="{0, number,$###,###,##0.00}"><apex:param value="{!recurringTotal}"/></apex:outputText></apex:panelGroup>
+             
+             <apex:panelGroup style="width:50%">
+                 <apex:outputLabel value="{!discountlabel}"/> 
+             </apex:panelGroup>
+             <apex:panelGroup style="width:50%">
+                 <apex:outputText value="{0, number,$###,###,##0.00}">
+                 <apex:param value="{!additionalDiscount}"/>
+             </apex:outputText></apex:panelGroup>
+             <apex:panelGroup style="width:50%"  rendered="{!isDealRegPromoApplied}"><apex:outputLabel value=""/></apex:panelGroup>
+             <apex:panelGroup style="width:50%" rendered="{!isDealRegPromoApplied}">
+                <apex:repeat value="{!dealLevelPromotionsList}" var="promoName">
+                        <apex:outputText value="{!promoName.Promotion_Name__c} - {!promoName.Discount_Percentage__c}%"/><br/>
+                    </apex:repeat>               
+             </apex:panelGroup>
+             <apex:panelGroup style="width:50%"><apex:outputLabel value="Monthly Total"/></apex:panelGroup>
+             <apex:panelGroup style="width:50%"><apex:outputText value="{0, number,$###,###,##0.00}"><apex:param value="{!additionalDiscountedPrice}"/></apex:outputText></apex:panelGroup>
+             <apex:panelGroup style="width:50%"><apex:outputLabel value="One-Time Total"/></apex:panelGroup>
+             <apex:panelGroup style="width:50%"><apex:outputText value="{0, number,$###,###,##0.00}"><apex:param value="{!NonRecurringPricewithoutDiscount}"/></apex:outputText></apex:panelGroup>
+
+         </apex:panelGrid>
+     </apex:outputPanel>
+     
+     <br/><br/>
+     
+     <apex:outputPanel rendered="{!TotaltDiscount != null && TotaltDiscount > 0 }">
+         
+         <apex:panelGrid border="1" columns="2" rendered="{!proCode =='ASE'}">
+             
+             <apex:panelGroup style="width:50%">
+                 <b><apex:outputLabel value="Discount Summary"/></b>
+             </apex:panelGroup>
+             <apex:panelGroup style="width:50%">
+                 <apex:outputLabel value=""/>
+             </apex:panelGroup>
+             
+             <apex:panelGroup style="width:50%" rendered="{!showAdditionaldiscSection=true}">
+                 <apex:outputLabel value="Additional Discount"/>
+             </apex:panelGroup>
+             <apex:panelGroup style="width:50%" rendered="{!showAdditionaldiscSection=true}">
+                 <apex:outputText value="{0, number,$###,###,##0.00}">
+                     <apex:param value="{!additionalSPAmount}"/>
+                 </apex:outputText>
+             </apex:panelGroup>
+             
+             <!--<apex:panelGroup style="width:50%" rendered="{!dealRegDiscount =true && DealRegistrationAmount!= null && DealRegistrationAmount> 0 && (proposal.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Deal_Approved || proposal.Apttus_Proposal__Approval_Stage__c = 'Special Pricing Denied' || proposal.Apttus_Proposal__Approval_Stage__c = 'Pricing Schedule Requested' || proposal.Apttus_Proposal__Approval_Stage__c = 'Pending Additional Site Details')}">-->
+             <apex:panelGroup style="width:50%" rendered="{!dealRegDiscount =true && DealRegistrationAmount!= null && DealRegistrationAmount> 0}">    
+                 <apex:outputLabel value="Deal Registration Discount"/>
+             </apex:panelGroup>
+             <!--<apex:panelGroup style="width:50%" rendered="{!dealRegDiscount =true && DealRegistrationAmount!= null && DealRegistrationAmount> 0 && (proposal.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Deal_Approved || proposal.Apttus_Proposal__Approval_Stage__c = 'Special Pricing Denied' || proposal.Apttus_Proposal__Approval_Stage__c = 'Pricing Schedule Requested' || proposal.Apttus_Proposal__Approval_Stage__c = 'Pending Additional Site Details')}">-->
+             <apex:panelGroup style="width:50%" rendered="{!dealRegDiscount =true && DealRegistrationAmount!= null && DealRegistrationAmount> 0}">    
+                 <apex:outputText value="{0, number,$###,###,##0.00}">
+                     <apex:param value="{!DealRegistrationAmount}"/>
+                 </apex:outputText>
+             </apex:panelGroup>
+               
+             <!--<apex:panelGroup style="width:50%" rendered="{!specialPricingDiscount =true && specialPricingAmount!= null && specialPricingAmount> 0 && (proposal.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Special_Pricing_Approved || proposal.Apttus_Proposal__Approval_Stage__c = 'Pricing Schedule Requested' || proposal.Apttus_Proposal__Approval_Stage__c = 'Pending Additional Site Details' || proposal.Apttus_Proposal__Approval_Stage__c = 'SP Approval Requested')}">-->
+             <apex:panelGroup style="width:50%" rendered="{!specialPricingDiscount =true && specialPricingAmount!= null && specialPricingAmount> 0 }">    
+                 <apex:outputLabel value="Special Pricing Discount"/>
+             </apex:panelGroup>
+             <!--<apex:panelGroup style="width:50%" rendered="{!specialPricingDiscount =true && specialPricingAmount!= null && specialPricingAmount> 0 && (proposal.Apttus_Proposal__Approval_Stage__c = $Label.Quote_Special_Pricing_Approved || proposal.Apttus_Proposal__Approval_Stage__c = 'Pricing Schedule Requested' || proposal.Apttus_Proposal__Approval_Stage__c = 'Pending Additional Site Details' || proposal.Apttus_Proposal__Approval_Stage__c = 'SP Approval Requested')}">-->
+             <apex:panelGroup style="width:50%" rendered="{!specialPricingDiscount =true && specialPricingAmount!= null && specialPricingAmount> 0 }">    
+                 <apex:outputText value="{0, number,$###,###,##0.00}">
+                     <apex:param value="{!specialPricingAmount}"/>
+                 </apex:outputText>
+             </apex:panelGroup>
+             
+         </apex:panelGrid>
+     </apex:outputPanel>     
+ </div>
+</apex:outputPanel>
+</apex:page>

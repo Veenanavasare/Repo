@@ -1,0 +1,2121 @@
+<apex:page controller="MACD_RDSMISController" cache="true" sidebar="false" showChat="false" showHeader="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" docType="html-5.0" id="test">
+    <style type="text/css">
+        .scrollToTop{ padding:10px; text-align:center; font-weight: bold; color: #444; text-decoration: none; position:fixed; top:80%; right:30px; display:none; .background: url(url('!$Resource.scrollTop') no-repeat center;) no-repeat 0px 20px; width:72px; height:106px; z-index: 9999; }    
+         .scrollToTop:hover{
+            text-decoration:none;
+        }
+       .tooltip-inner{color: #000; background-color: #fff;text-align:left;position: relative;   border-top: 1px solid #dcdcdc; border-right: 1px solid #dcdcdc;border-bottom: 1px solid #dcdcdc;min-width:200px;}
+       .tooltip.right .tooltip-arrow{
+            border-right-color:#fff;
+            border-width: 10px 10px 10px 0;
+            left: -5px;
+            left: -1%;
+            width: 25px;
+            top: 35%;
+            height: 25px;
+            border-width: 0px 0px 1px 1px;
+            background: #fff;
+            border-color: #dcdcdc;
+            -webkit-transform: rotate(45deg);
+            -moz-transform: rotate(45deg);
+        }
+        .lan-table .tooltip-inner{max-width: 170px;}
+        .lan-adr-type .tooltip-inner{max-width: 170px;}
+        .tooltip.in{width:300px;opacity:1}
+        .tooltip.bottom .tooltip-arrow{border-bottom-color:#fff !important;}
+        .styled-select-small{
+            background-size: contain;
+            width:100%;
+        }
+        .none-appearance{
+            -moz-appearance: none;
+            -webkit-appearance: none;
+        }
+        .additionalInfoCharLimit{
+            display: block;
+            margin-top: 6px !important;
+            text-align: right;
+            margin-bottom: 38px !important;
+            font-size: 12px;
+            color: #000;
+        }
+        .top-m-25{margin-top:25px;}
+        .noteData{font-family:omnes_light;font-size:12px;color:#000;margin-top:10px;} 
+        .darkDiv {
+            background: #E6E6E6;
+            margin: 10px;
+            padding: 20px;
+        }
+        
+        .tooltipTrigger {
+            cursor: pointer;
+        }
+        .radioSpacer label{padding-left: 10px;font-family: omnes_light !important;}
+        .form-group {font-family: omnes_light;}        
+        .validataionSelector {
+            height: 90px;
+        }        
+        .btn-default.disabled {
+            color: white;
+            background-color: #056fab;
+        }
+        
+        .btn-complete-parent-disabled {
+            cursor: not-allowed;
+        }
+        .container {
+            width: 98% !important;
+        }
+        .dataTables_length {
+            display: none;
+        }
+        
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+            cursor: pointer;
+        }
+        
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+            cursor: no-drop;
+        }
+        
+        div#footerDiv .btn {
+            text-align: left;
+        }
+        
+        h3.f-s-larger {
+            padding: 10px 0 !important;
+        }
+        
+        h3.f-s-large {
+            padding: 10px 0 !important;
+            font-size: 1.3em !important;
+        }
+        
+        h3 span {
+            font-size: 12px !important;
+        }
+        
+        hr.dashedHr {
+            width: 100% !important;
+            clear: both !important;
+        }
+        
+        .breather {
+            padding: 10px 0 !important;
+        }
+        /* End Addition of styles from the original RDSSiteConfig page */
+        /* Begin styles for MISRDS page*/
+        
+        div.errorMessages {
+            margin: 10px 0;
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .cosSliderLabelsProgress {
+            position: absolute;
+            top: 0;
+            left: 25px;
+            z-index: 2;
+            color: #000;
+            height: 32px;
+            font-weight: bold;
+            line-height: 1.8em;
+        }
+                    
+        .cosSliderLabelsMax {
+            position: absolute;
+            top: 6px;
+            right: 25px;
+            //z-index: 999999;
+            color: #4ca90c;
+            font-weight:bold;
+        }
+        /* Add a margin of 20px to the row container */
+        
+        .row-additional-spacing-top {
+            margin-top: 20px;
+        }
+        
+        .row-internal-additional-spacing-top {
+            margin-top: 10px;
+        }
+        /* Select dropdown for IPType */
+        
+        select.form-select-IPType {
+            width: 245px;
+            height: 30px;
+            border-radius: 2px;
+        }
+        /* Prevent the -30 from applying to the error message */
+        
+        .message.errorM3 {
+            margin-top: 0 !important;
+        }
+        .rowAligned {
+            margin-left: -30px !important;
+        }
+        /*Calendar related styles - Start*/
+        
+        span.calendarIcon,
+        span.calendarToolTip {
+            height: 100% !important;
+            font-size: 22px;
+            line-height: 1.33;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        
+        .ui-widget {
+            font-family: inherit !important;
+            font-size: inherit !important;
+        }
+        
+        .ui-widget-header {
+            border: 1px solid cornflowerblue !important;
+            background: cornflowerblue !important;
+            color: Black;
+            font-weight: bold;
+        }
+        /*Calendar related styles - End*/
+        
+        /* style added to target the slider background-color when selecting the real-time percentage  */
+        .ui-slider-range {
+            background-color: #4ca90c !important;
+            border: none !important;
+        }
+        
+        #progressbar {
+            height: 20px;
+        }
+        .siteInfoTxtSty{
+            color:#ef6f00;
+            font-size:16px;
+            line-height:1.1em;
+            margin:10px 0;
+        }
+        .ui-slider .ui-slider-handle {            
+            height: 2.5em;
+            width: 10px;
+            margin-left: 0px;
+        }
+        /* Developers Note Robyn 1/5/15: added style */
+        #manage_content #ipV4Criteria label {
+            margin: 5px !important;
+        }
+        #manage_content #ipV4Criteria input {
+            margin-top: 6px !important;
+        }
+        /* applies Omnes Regular Weight Font, used in a label with medium and regular omnes fonts */
+        .regular {
+            font-family: 'omnesatt_iiregular';
+        } 
+        input[type="radio"], input.radio, input.checkbox {
+            margin:10px 10px 0 0 !important;
+        } 
+        .lan-adr-type label {
+            margin:6px 20px 0 0 !important; /* Robyn 2/21: update margin */
+        }
+        .bg-slash {
+            background: #fff url({!$Resource.slash}) no-repeat 2px 5px;
+            background-size: 12px;
+            padding-left: 13px !important;
+        }
+        /* Robyn 2/21 fix new styles */
+        .lan-table { background: #fff; margin-bottom: 10px;}
+        #manage_content .lan-table label {margin: 5px 0 !important;}
+        #manage_content .lan-table th{padding-left: 5px;}
+        #manage_content .lan-adr-type th{padding-left: 5px;}
+        .table-bordered thead tr th, table thead tr {
+            background: #fff;
+            border-bottom: 1px dashed #ddd !important;
+        }
+        .dataTables_wrapper tbody td {
+            border-style: dashed !important;  
+        } 
+        .activeSite {
+            background-color: #f5f5f5;
+        }
+        .arrow_box {
+            position: relative;
+            border: 2px solid #70c4e8;
+            border-radius: 5px;
+            padding :15px 20px 15px 20px;
+            background: #fff;
+            margin-top:15px;
+        }
+        .arrow_box:after, .arrow_box:before {
+            bottom: 100%;
+            left: 30.6%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+        .arrow_box:after {
+            border-bottom-color: #f7f7f7;
+            border-width: 15px;
+            margin-left: -15px;
+        }
+        .arrow_box:before {
+            border-bottom-color: #70c4e8;
+            border-width: 18px;
+            margin-left: -18px;
+        }
+        .p20{
+            padding:20px;
+        }
+        .additionalInfoMsg_error{
+            display:inline;
+        }
+        
+        .errorFieldBorderColor {
+            border-color: #a94442 !important;
+        }
+        .errorText{
+            color:#cf2a2a !important;
+            font-weight:bold;
+            float:left
+        } 
+        .m-t-10{
+            margin-top:10px;
+        } 
+        .m-b-25{
+            margin-bottom:25px;
+        }
+        #manage_content label, .manage_content label{
+            font-family: omnesatt_iiregular !important;
+            font-size:16px;
+        }
+        fieldset label{
+            margin: 7px 0 !important;
+            font-weight:normal;
+        }        
+    </style>
+    
+    <script>
+        $(document).ready(function($){
+            //To trigger tooltip
+            initiateToolTip();
+        });
+        
+        function initiateToolTip(){
+            $("[rel='tooltip']").tooltip();
+            $(".tooltipTrigger").tooltip();        
+        }
+    
+        var flagmd5 = true;
+        var flagmd5V6 = true;
+        var ipFlag = false;
+        $(document).ready(function () {
+            var leftPanelOffSet;
+            var leftPanelWidth;
+            var leftPanelHeight;
+            var headerHeight;
+            var footerOffSet;
+            var panelPosition;
+            var scrollPos;
+            var leftPanelBottomOffset;
+            var constant;
+            
+            addLeftPanelScroll();
+            
+            //scroll site panel-heading
+            leftPanelOffSet=$("#leftPanelContainer").offset().top;
+            $(window).scroll(function(){
+                
+                leftPanelWidth=$("#leftPanelContainer").outerWidth();
+                leftPanelHeight=$("#leftPanelContainer").height();
+                headerHeight=$('#top_nav_bar').height();
+                footerOffSet=$('#panelFooter').offset().top;
+                panelPosition=footerOffSet-leftPanelOffSet;
+                scrollPos=$(window).scrollTop()+headerHeight; 
+                leftPanelBottomOffset= scrollPos + leftPanelHeight;
+                var WidthOfLeftPanel =  leftPanelWidth - 0.5; 
+                constant = 620 + $(".sub_navigation").height();                      
+                if(scrollPos >= constant){
+                    $("#pagePanel").css({'float':'right'});
+                    $("#leftPanelContainer").css({'position':'fixed','top':headerHeight+'px','width':WidthOfLeftPanel+'px'});  
+                }else{
+                    $("#leftPanelContainer").css({"position":"relative","top":"0px"});
+                }
+                      
+                      
+                if(leftPanelBottomOffset >= footerOffSet){
+                    panelPosition=2000;
+                    $("#leftPanelContainer").css({"position":"absolute","top":panelPosition+'px'});
+                } 
+                if ($(this).scrollTop() > 100) {
+                    $('.scrollToTop').fadeIn();
+                } else {
+                    $('.scrollToTop').fadeOut();
+                } 
+            });
+            
+            $('.scrollToTop').click(function(){
+                $('html, body').animate({scrollTop : 0},500);
+                return false;
+            });
+            
+            //end of scroll
+        });        
+        function addLeftPanelScroll(){
+            //Get height
+            var tableHeight=0;
+            var leftPanelRowLength = $("#finalSites tbody").children('tr').length;
+            if(leftPanelRowLength != null && leftPanelRowLength>8){
+                for(var i=0; i<8; i++){
+                    tableHeight = tableHeight +$("#finalSites").children('div.panel-heading').eq(i).outerHeight();
+                }
+                $('#finalSites').css('max-height',tableHeight);   
+            }
+        }
+    </script>
+    
+    <div class="m-t-20">
+        <apex:form >
+            <apex:inputHidden value="{!ciMD5Error}" id="ciError"/>
+            <!-- Customer Details -->
+            <table id="customerDetailsTable" class="table" style="width:100%">
+                <tr>
+                    <td class="first-cell" colspan="3"><h3>Complete Required Data Set (RDS)</h3></td>
+                </tr>
+                <tr>
+                    <td class="col-xs-3 first-cell"><strong>Quote Name</strong> {!quoteObj[0].Apttus_Proposal__Proposal_Name__c}</td>
+                    <td class="col-xs-3"><strong>Quote ID</strong> {!quoteObj[0].Name}</td>
+                    <td class="col-xs-4"><strong>Product</strong> {!quoteObj[0].Product_New_Name__c}</td>
+                    <td align="right" class="col-xs-4 last-cell"><strong>Term</strong> {!quoteObj[0].Apttus_Proposal__Payment_Term__c}</td>
+                </tr>
+            </table>
+            <!-- End Customer Details -->
+            <hr class="blue_hr " id="top_nav_bar" />    
+            <div id="dispCIMsgId" style="position:relative;bottom:10px;color:#a94442;"></div>
+            <!-- remove overall completion bar -->
+        </apex:form>
+        
+        <!-- RDS Configuration Details -->
+        <div class="container-full">
+            <div class="row">
+                <!-- Site List -->
+                <apex:form id="leftPanelContainerForm">
+                    <div class="col-xs-3" id="leftPanelContainer" >
+                        <h3 style="margin-bottom: 25px;">Site List</h3>
+                        <div id="siteCountsDiv1" style="color: orange; font-weight: bold;float:left;">{!noOfConfigedSites} of {!TotalSitesCount} {!$Label.Sites_Completed}</div>
+                        <!-- <div class="styled-select-small adjust-select-small" style="width:100%;float: left;">
+                            <apex:selectList id="optgrp" styleClass="form-control" style="width: 100%;margin-top:-4px;-moz-appearance: none;" value="{!selectedFilter}" size="1" rendered="true">
+                                <apex:selectOptions value="{!FilterOptions}"/>
+                                <apex:actionsupport action="{!handlefilterSites}" event="onchange" reRender="leftPanelContainerForm,MISRDSPage1" status="loading"/>
+                            </apex:selectList>
+                        </div> -->
+                        <div id="finalSites">
+                            <apex:repeat value="{!Sites}" var="item">
+                                <div class="panel-heading p10 {!IF(item.Id == siteselected,'activeSite','')}">
+                                    <table>
+                                        <tr>
+                                            <td style="width:210px;">
+                                                <apex:commandLink value="{!item.Site_Name__c}" onclick="checkPageStatus('onSiteListClick','{!item.Id}');return false;" />
+                                                <div class="siteAddress">{!item.Address_Line__c}, {!item.City__c}, {!item.State__c} {!item.Zip_Code__c}</div>                                        
+                                            </td>
+                                            <td style="vertical-align:middle;">
+                                                <apex:outputPanel rendered="{!item.RDS_Submitted__c}">
+                                                    <apex:image url="{!URLFOR($Resource.legendicons,'icon_circle_check.png')}" style="width: 25px; height: 25px;margin-top: 5px;margin-left:2px;" />
+                                                </apex:outputPanel>
+                                            </td>
+                                        </tr>
+                                    </table>                                
+                                </div>
+                            </apex:repeat>
+                        </div>
+                    </div>
+                </apex:form>
+                <!-- End Site List -->
+
+                <apex:form id="MISRDSPage1" styleClass="MISRDSPage1">
+                    <div class="col-xs-9" id="pagePanel">
+                        <!-- Begin Site Information -->
+                        <h3>Site Information</h3>                        
+                        <apex:outputPanel id="pagecontainer">
+                            <script>
+                               function displaycrddoverlay()
+                               {
+                                   if ( "{!CRDDPopUp}" == 'true')
+                                          document.getElementById(crddoverlaycontainerid).style.display = 'block';        
+                               }
+                            </script>
+                            <apex:outputPanel id="pagemessages">
+                                <div class="errorMessages">
+                                    <apex:pageMessages escape="true"></apex:pageMessages>
+                                </div>
+                            </apex:outputPanel>
+                            
+                            <div class="container-full">
+                                <apex:outputLabel value="Site Name: {!SiteNameSelected}" /> 
+                                <p>{!SelectedSiteAddress}</p>
+                                <p class="siteInfoTxtSty">Please make sure you enter all the address information correctly, including Building, Floor and Room number. Any missing information may delay your order.</p>
+                                <div class="row">
+                                    <div class="form-group col-md-4">
+                                        <apex:outputLabel value="Building" />
+                                        <apex:inputText id="buildingID" styleClass="form-control" Label="Building" maxlength="10" html-placeholder="Ex: Main if only one building" value="{!inpBuilding}" />
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <apex:outputLabel value="Floor" />
+                                        <apex:inputText id="floorID" styleClass="form-control" label="Floor" maxlength="9" html-placeholder="Ex: 1 if only one floor" value="{!inpFloor}" onchange="validatePage2Submit();"/>
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <apex:outputLabel value="Room" />
+                                        <apex:inputText id="roomID" styleClass="form-control" label="Room" maxlength="9" html-placeholder="Ex: Telco if no room available" value="{!inpRoom}" onchange="validatePage2Submit();"/>
+                                    </div>
+                                    <div class="form-group col-md-4" id="siteLandLinePhnNum">
+                                        <label>Site Phone Number</label>
+                                        <apex:inputText styleClass="form-control requiredInputField" html-placeholder="0000000000" value="{!sitephonenumber}" onkeyup="fieldValidationForFirstPage(event,this,'siteLandLinePhnNum');" onblur="fieldValidationForFirstPage(event,this,'siteLandLinePhnNum');"/>
+                                    </div>        
+                                </div>
+                                
+                                <hr class="dashedHr" />
+                                <!-- Begin Site Contact -->
+                                <!-- Primary Contact -->
+                                <label>Primary Contact</label> <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Tell us about the primary local contact for this site."></span>                                   
+                                <div class="row">
+                                    <div class="form-group col-md-4" id="firstName">
+                                        <apex:outputLabel value="First Name" />
+                                        <apex:inputText styleClass="form-control requiredInputField" value="{!sitecontactfirstname}" id="FirstName" label="First Name" onkeyup="fieldValidationForFirstPage(event,this,'primaryFirstName');" onblur="fieldValidationForFirstPage(event,this,'primaryFirstName');"/>
+                                    </div>
+                                    <div class="form-group col-md-4" id="lastName">
+                                        <apex:outputLabel value="Last Name" />
+                                        <apex:inputText styleClass="form-control requiredInputField" value="{!sitecontactlastname}" label="Last Name" onkeyup="fieldValidationForFirstPage(event,this,'primaryLastName');" onblur="fieldValidationForFirstPage(event,this,'primaryLastName');"/>
+                                    </div>
+                                    <div class="form-group col-md-4" id="email">
+                                        <apex:outputLabel value="Email Address" />
+                                        <apex:inputtext styleClass="form-control requiredInputField" value="{!sitecontactemailaddress}" label="Email Address" title="Please enter an valid email address" onkeyup="fieldValidationForFirstPage(event,this,'primaryEmail');" onblur="fieldValidationForFirstPage(event,this,'primaryEmail');"/>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-md-4" id="phoneNumber">
+                                        <label>Business Phone Number</label>
+                                        <apex:input styleClass="form-control requiredInputField" value="{!sitecontactphonenumber}" label="Phone Number" type="tel" onkeyup="fieldValidationForFirstPage(event,this,'primaryBussinessPhoneNumber');" onblur="fieldValidationForFirstPage(event,this,'primaryBussinessPhoneNumber');"/>
+                                    </div>
+                                    <div class="form-group col-md-4" id="mobileNumber">
+                                        <apex:outputLabel value="Mobile Phone Number" />
+                                        <apex:inputText styleClass="form-control requiredInputField" value="{!sitecontactmobile}" label="Mobile Phone Number" onkeyup="fieldValidationForFirstPage(event,this,'primaryMobilePhoneNumber');" onblur="fieldValidationForFirstPage(event,this,'primaryMobilePhoneNumber');"/>
+                                    </div>
+                                </div>  
+                                <!-- Alternate Contact -->
+                                <label>Alternate Contact </label> <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Enter a backup local contact for this site."></span>
+                                <div class="row ">
+                                    <div class="form-group col-md-4" id="firstName">
+                                        <apex:outputLabel value="First Name" />
+                                        <apex:inputText styleClass="form-control requiredInputField" value="{!sitealtcontactfirstname}" label="First Name" onkeyup="fieldValidationForFirstPage(event,this,'secondaryFirstName');" onblur="fieldValidationForFirstPage(event,this,'secondaryFirstName');"/>
+                                    </div>
+                                    <div class="form-group col-md-4" id="lastName">
+                                        <apex:outputLabel value="Last Name" />
+                                        <apex:inputText styleClass="form-control requiredInputField" value="{!sitealtcontactlastname}" label="Last Name" onkeyup="fieldValidationForFirstPage(event,this,'secondaryLastName');" onblur="fieldValidationForFirstPage(event,this,'secondaryLastName');"/>
+                                    </div>
+                                    <div class="form-group col-md-4" id="email">
+                                        <apex:outputLabel value="Email Address" />
+                                        <apex:inputText styleClass="form-control requiredInputField" value="{!sitealtcontactemailaddress}" label="Email Address" onkeyup="fieldValidationForFirstPage(event,this,'secondaryEmail');" onblur="fieldValidationForFirstPage(event,this,'secondaryEmail');"/>
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <div class="form-group col-md-4" id="phoneNumber">
+                                        <apex:outputLabel value="Business Phone Number" />
+                                        <apex:inputText styleClass="form-control requiredInputField" value="{!sitealtcontactphonenumber}" label="Phone Number" onkeyup="fieldValidationForFirstPage(event,this,'secondaryBussinessPhoneNumber');" onblur="fieldValidationForFirstPage(event,this,'secondaryBussinessPhoneNumber');"/>
+                                    </div>
+                                    <div class="form-group col-md-4" id="mobileNumber">
+                                        <apex:outputLabel value="Mobile Phone Number" />
+                                        <apex:inputText styleClass="form-control requiredInputField" value="{!sitealtcontactmobile}" label="Mobile Phone Number" onkeyup="fieldValidationForFirstPage(event,this,'secondaryMobilePhoneNumber');" onblur="fieldValidationForFirstPage(event,this,'secondaryMobilePhoneNumber');"/>
+                                    </div>
+                                </div>    
+                            </div>
+                            
+                            <hr class="dashedHr" />
+                            
+                            <apex:pageBlock >
+                                <!-- Begin Port Information -->
+                                 <h3>Port Information</h3>
+                                <!-- Type -->
+                                <p><label>Type:</label>&nbsp;<apex:outputText value="{!porttypeselected}" /></p>
+                                <!-- Speed -->
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <label>Speed:</label>&nbsp;<apex:outputText value="{!portspeedselected}" />
+                                    </div>
+                                    <apex:outputPanel rendered="{!IF(ubbSpeed !=null,true,false)}">
+                                        <div class="col-xs-8">
+                                            <label>Minimum Bandwidth Commitment(MBC):</label>&nbsp;<apex:outputText value="{!ubbSpeed}" />
+                                        </div>
+                                    </apex:outputPanel>
+                                </div>
+                     
+                                <!-- Class of Service -->
+                                <p><label>Class of Service:</label>&nbsp;<apex:outputText value="{!CosSelected}" /></p>
+
+                                <!-- Existing POTS for Testing Router -->
+                                <!-- <div class="row">
+                                    <div class="col-xs-12">
+                                        <apex:outputPanel rendered="{!ismanaged}">
+                                            <label>Existing POTS for Testing Router</label>
+                                            <apex:selectRadio value="{!selectedId1}">
+                                                <apex:selectOptions value="{!pickList1}" />
+                                                <apex:actionSupport event="onchange" reRender="ExistingPOTSText" oncomplete="validatePage2Submit();" status="loading"/>
+                                            </apex:selectRadio>
+                                            <apex:outputPanel id="ExistingPOTSText">
+                                                <apex:inputText value="{!ExistingPOTSText}" rendered="{!IF(selectedId1 == 'No',true,false)}" onchange="validatePage2Submit();"/>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </div>
+                                </div> -->
+
+                                <!-- AT&T Hosted DNS -->
+                                <div class="row">
+                                    <div class="col-md-8" id="hostedDNS">
+                                        <label>Would you like AT&amp;T to host your DNS?</label>
+                                        <apex:selectRadio value="{!ATTHostedDNSSeleted}" styleClass="col-md-4">
+                                            <apex:selectOptions value="{!pickList1}" />
+                                            <apex:actionSupport event="onchange" action="{!resetDoamin}" reRender="DomainURL" oncomplete="validatePage2Submit();" status="loading"/>
+                                        </apex:selectRadio>
+                                    </div>
+                                    <div class="col-md-4 validataionSelector">
+                                        <!-- Domain URL -->
+                                        <apex:outputPanel id="DomainURL">
+                                            <apex:outputPanel styleClass="DomainURL" rendered="{!IF(ATTHostedDNSSeleted = 'Yes',true,false)}">
+                                                <label>Domain URL</label>
+                                                <apex:inputText value="{!DomainURL}" styleClass="form-control requiredInputField" onkeyup="fieldValidationForFirstPage(event,this,'DomainURL');" onblur="fieldValidationForFirstPage(event,this,'DomainURL');"/>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </div>
+                                </div>
+
+                                <!-- Interface Type -->
+                                <div class="row">
+                                    <apex:outputPanel rendered="{!IF(porttypeselected == 'Switched Ethernet',true,false)}">
+                                        <div class="col-md-4 validataionSelector">
+                                            <label>Interface Type </label> <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-toggle="tooltip" data-container="body" data-placement="right" title="Distance Limitations on 100BaseT = 100 Meters. (So a 50M service more than 100 Meters from the Demarcation must be Optical."></span>
+                                                 <apex:selectList id="iTSEDisable" value="{!selectedInterfaceType}" size="1" multiselect="false" disabled="{!IF(VASARegion =='Out of region',true,false)}" styleClass="form-control  {!IF(VASARegion =='Out of region','disable none-appearance' ,'styled-select-small')}" style="padding-right:42px;">
+                                                    <apex:selectOptions value="{!InterfaceTypeOptions}"/>
+                                                </apex:selectList>
+                                            <div class="m-t-10 m-b-10" style="font-size: 12px;position: absolute;"> Option from Configuration page can be changed.</div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                    <!-- Jack Type -->
+                                    <div class="col-md-4 validataionSelector">
+                                        <label>Jack Type </label>
+                                        <apex:selectList id="JackType" size="1" value="{!selectedJackType}" multiselect="false" styleClass="form-control requiredInputField styled-select-small" onblur="fieldValidationForFirstPage(event,this,'dropDownSelection');" onchange="fieldValidationForFirstPage(event,this,'dropDownSelection');">
+                                            <apex:selectOptions value="{!JackTypeOptions}" />
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                                <div style="font-size: 12px;" class="col-xs-12 p0 m-t-10">
+                                    <span style="font-family: omnes_att_iimedium;color: #000;"><b>Note: Dual Stack is the recommended IP Type.</b></span>
+                                    <span> Dual Stack = Unnumbered IPv4 (1 LAN, 0 WAN); IPv6 (/56 LAN and /64 WAN)</span>                                
+                                </div>
+                                
+                                <!-- IP Type -->
+                                <div class="row IPType">
+                                    <div class="col-md-12">
+                                        <label>IP Type </label> <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Dual Stack supports both IPv4 and IPv6"></span>
+                                        <apex:selectRadio value="{!selectedId2}" styleClass="col-xs-5">
+                                            <apex:selectOptions value="{!IpTypePicklistOptions}" />
+                                            <apex:actionSupport event="onchange" action="{!renderipv4blocks}" reRender="ipv4block,ipv6block,ipv4Criteriablock" oncomplete="validatePage2Submit();initiateToolTip();" status="loading"/>
+                                        </apex:selectRadio>
+                                    </div>
+                                </div>
+
+                                <apex:outputPanel id="ipv4Criteriablock">
+                                    <apex:outputPanel rendered="{!IF(selectedId2 == 'IPv4',true,false)}">
+                                        <div class="arrow_box" id="ipV4Criteria"> 
+                                            <label><b>Select the criteria that applies to your needs to proceed with the RDS.</b></label>
+                                            <apex:selectRadio id="ipV4CriteriaRadio" layout="pageDirection" styleClass="{!IF(selectedIpV4Criteria == null,'requiredInputField','')}"  value="{!selectedIpV4Criteria}">
+                                                <apex:selectOptions value="{!IpV4CriteriaListOptions}" />
+                                                <apex:actionSupport event="onchange" action="{!renderipv4blocks}" reRender="ipv4block,ipv6block,ipv4Criteriablock" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';validateRadio('IpV4Criteria','{!selectedIpV4Criteria}'); validatePage2Submit();" />
+                                            </apex:selectRadio>
+                                        </div>
+                                        <apex:outputPanel rendered="{!IF(selectedIpV4Criteria == '',true,false)}">
+                                            <div class="errorText m-t-10 m-b-25"><b>Selection Required</b></div>
+                                        </apex:outputPanel>
+                                     </apex:outputPanel>
+                                 </apex:outputPanel>
+                                <!--IPV4 INFORMATION STARTS HERE -->
+                                <apex:outputPanel id="ipv4block">
+                                    <apex:outputPanel rendered="{!IF((selectedIpV4Criteria != '' || selectedId2 == 'Dual Stack'),true,false)}">
+                                        <section id="section1Id">
+                                            <hr class="dashedHr" />
+                                            <!-- IPV4 Information -->
+                                            <div class="col-xs-12 p0 m-b-10">
+                                                <h3>IPv4 Information</h3>
+                                            </div>
+                                            <!-- LAN Block Address Table -->                                        
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <apex:outputPanel id="LANBlockDisplay1">
+                                                        <div class="dataTables_wrapper"><!-- Robyn 2/21: fix, add div.dataTables_wrapper -->
+                                                            <table class="lan-table table table-condensed table-striped table-bordered"><!-- Robyn 2/21: fix, add class name lan-table -->
+                                                                <tr>
+                                                                    <th width="25%"><label>LAN Address Type</label></th>
+                                                                    <th width="30%"><label>Public IP Address</label></th>
+                                                                    <th width="30%"><label>LAN IP Length</label><apex:outputLabel rendered="{!IF(selectedId2 == 'IPv4',true,false)}">*</apex:outputLabel><apex:outputPanel rendered="{!!IF(selectedId2 == 'IPv4',true,false)}"><span class="tooltipTrigger glyphicon glyphicon-question-sign" data-placement="right" data-toggle="tooltip" title="" data-original-title="IP Length is /32 When AT&T assigns the IP Address"></span></apex:outputPanel></th>
+                                                                </tr>
+                                                                <apex:repeat value="{!LANSBlocksWrapper1}" var="lan">
+                                                                    <tr>
+                                                                        <td>ATT</td>
+                                                                        <td>            
+                                                                            <apex:outputPanel id="lanidaddress">
+                                                                                <apex:outputPanel id="ipv4PanelId2">
+                                                                                    <apex:inputText styleClass="form-control" disabled="true" html-placeholder="N/A" />
+                                                                                </apex:outputPanel>
+                                                                            </apex:outputPanel>
+                                                                        </td>
+                                                                        <td>
+                                                                            <apex:outputPanel rendered="{!!showipv6block}">
+                                                                                <apex:selectList id="ipLength" value="{!selectedIPLength}" size="1" multiselect="false" styleClass="form-select-IPType  styled-select-small">
+                                                                                    <apex:selectOptions value="{!lanIPLengthListOptions}" />
+                                                                                </apex:selectList>
+                                                                            </apex:outputPanel>
+                                                                            <apex:outputPanel rendered="{!showipv6block}">
+                                                                                <apex:inputText styleClass="form-control" disabled="true" html-placeholder="/32" />
+                                                                            </apex:outputPanel> 
+                                                                        </td>  
+                                                                    </tr>
+                                                                </apex:repeat>
+                                                            </table>
+                                                        </div><!-- Robyn 2/21: end div.dataTables_wrapper -->
+                                                        <apex:outputPanel rendered="{!!showipv6block}">
+                                                            <p class="noteData">
+                                                                *If you need LAN IP Length of /25 (126 Usable IP), /26 (62 Usable IP) or /27 (30 Usable IP), please call your Channel Account Manager (CAM).
+                                                            </p>
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </div>
+                                            <div class="row top-m-25">
+                                                <!-- Routing Protocol -->
+                                                <div class="col-md-4">
+                                                    <apex:outputLabel value="Routing Protocol" />
+                                                    <apex:selectRadio styleClass="col-xs-8" value="{!DefaultBGP}">
+                                                        <apex:selectOption itemLabel="Static" itemValue="STATICROUTING"></apex:selectOption>
+                                                        <apex:selectOption itemLabel="BGP" itemValue="BGP4"></apex:selectOption>
+                                                        <apex:actionSupport event="onchange" action="{!ResetBGPStaticValues4}" reRender="BGPdisplay0,BGPdisplay1,BGPdisplay,CIRData,CIRData2" oncomplete="initiateToolTip();validatePage2Submit();" status="loading"/>
+                                                    </apex:selectRadio>
+                                                </div>  
+                                                <!-- Autonomous System Number, only displays if BGP is selected -->
+                                                <div class="col-md-4">
+                                                    <apex:outputPanel id="BGPdisplay0">
+                                                        <apex:outputPanel rendered="{!DefaultBGP='BGP4'}">
+                                                            <apex:outputLabel value="Who Provides your ASN?" />
+                                                            <apex:selectRadio styleClass="col-xs-12" value="{!asnProviderV4}" >
+                                                                <apex:selectOption itemLabel="AT&T" itemValue="attASNProvider"></apex:selectOption>
+                                                                <apex:selectOption itemLabel="Public Registered" itemValue="publicASNProvider"></apex:selectOption>
+                                                                <apex:actionSupport event="onchange" reRender="BGPdisplay1" oncomplete="validatePage2Submit();" status="loading"/>
+                                                            </apex:selectRadio>   
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <apex:outputPanel id="BGPdisplay1">
+                                                        <apex:outputPanel rendered="{!DefaultBGP='BGP4'}" styleClass="ASNField">
+                                                            <apex:outputLabel value="Autonomous System Number" /><br />
+                                                            <apex:inputText rendered="{!IF(asnProviderV4 == 'attASNProvider',true,false)}" styleClass="form-control" disabled="true" html-placeholder="2386" />
+                                                            <apex:inputText value="{!AutonomousSystemNumber}" rendered="{!IF(asnProviderV4 == 'publicASNProvider',true,false)}" styleClass="form-control requiredInputField" onkeyup="fieldValidationForFirstPage(event,this,'ASNForIP');" onblur="fieldValidationForFirstPage(event,this,'ASNForIP');"/>
+                                                            <apex:outputText rendered="{!IF(asnProviderV4 == 'publicASNProvider',true,false)}"><span class="col-md-12 p0 noteData">Range 64512 to 65534</span></apex:outputText>
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </div>
+                                        </section>
+
+                                        <!-- Begin BGP Display -->
+                                        <apex:outputPanel id="BGPdisplay">
+                                            <apex:outputPanel rendered="{!DefaultBGP='BGP4'}">
+                                                
+                                                <!-- Routing Row -->
+                                                <div class="row">
+                                                    <!-- Default Routing -->
+                                                    <div class="col-md-4">
+                                                        <apex:outputLabel value="Default Route" />
+                                                        <apex:selectRadio styleClass="col-xs-8" value="{!RestrictiveRouting4}">
+                                                            <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                            <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                                            <apex:actionSupport event="onchange" reRender="RouteAdvertisementPanel" oncomplete="initiateToolTip();validatePage2Submit();" status="loading"/>
+                                                        </apex:selectRadio>
+                                                    </div>
+                                                    <!-- Preferred Routing Option -->
+                                                    <div class="col-md-8">
+                                                        <apex:outputPanel id="RouteAdvertisementPanel">
+                                                            <apex:outputPanel rendered="{!RestrictiveRouting4='false'}" styleClass="container-full">
+                                                                <div class="row">
+                                                                    <div class="col-xs-12">
+                                                                        <label>Preferred Route Option<span class="tooltipTrigger glyphicon glyphicon-question-sign" data-placement="right" data-toggle="tooltip" title="" data-original-title="AT&T Routes Includes Default Candidate Routes, Full Internet Routes Includes AT&T Routes and Default Candidate Routes. In general, the more BGP routes, the larger the memory the router must have. Check with the router vendor In order to determine the exact router configuration required to support the chosen BGP routing configuration."></span></label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-xs-6">
+                                                                        <apex:selectList styleClass="form-control requiredInputField styled-select-small" multiselect="false" size="1" value="{!Routevalue4}" onblur="fieldValidationForFirstPage(event,this,'dropDownSelection');" onchange="fieldValidationForFirstPage(event,this,'dropDownSelection');">
+                                                                            <apex:selectOptions value="{!RouteTypeOptions}" />
+                                                                        </apex:selectList>
+                                                                    </div>
+                                                                </div>
+                                                            </apex:outputPanel>
+                                                        </apex:outputPanel>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- MD5 Row -->    
+                                                <div class="row">
+                                                    <!-- MD5 Authentication -->
+                                                    <div class="col-md-4">
+                                                        <apex:outputLabel value="MD5 Authentication" />
+                                                        <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="If your routers use MD5 Authentication,
+                                                        denote here. If you are unsure, check with your technical
+                                                        team."></span>
+                                                        <apex:selectRadio styleClass="col-xs-8" value="{!ipv4MD5Flag}">
+                                                            <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                            <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                                            <apex:actionSupport event="onchange" action="{!togglePwd}" reRender="ipv4MD5PwdPanel,ipv4MD5PwdPanel2" oncomplete="validatePage2Submit();" status="loading"/>
+                                                        </apex:selectRadio>
+                                                    </div>
+                                                    
+                                                    <!-- MD5 Password -->
+                                                    <div class="col-md-4">
+                                                        <apex:outputPanel id="ipv4MD5PwdPanel">
+                                                            <apex:outputPanel rendered="{!ipv4MD5Flag}" styleClass="container-full">
+                                                                <div class="row">
+                                                                    <div class="col-xs-12">
+                                                                        <apex:outputLabel >MD5 Password</apex:outputLabel>
+                                                                        <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-placement="right" data-toggle="tooltip" title="" data-original-title="Passwords must be at least 8 characters, no more than 16 characters and contain at least 1 number and 1 uppercase letter."></span>                                                                                                                                      
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-xs-12">
+                                                                        <div class="ipv4Md5PasswordField" style="float:left;width:100%;">
+                                                                            <apex:inputSecret html-type="password" id="pwdv4" styleClass="form-control requiredInputField passwordFieldSelectorMD5" html-placeholder="Password" value="{!MD5Authenticationpassword1}" maxlength="16" onkeypress="return checkSpaceOnly(event);" onkeyup="validateMD5PasswordField();confirmPassMD5();" onblur="validateMD5PasswordField();confirmPassMD5();"/>
+                                                                        </div>
+                                                                        <script>
+                                                                            flagmd5 = false;
+                                                                            function confirmPassMD5() {
+                                                                                var passMd5 = document.getElementById('{!$Component.pwdv4}').value;
+                                                                                var confPassMd5 = document.getElementById('{!$Component.pwdv4conf}').value;
+                                                                                var messageMd5 = document.getElementById('confirmMessage');
+                                                                                var txtmsgMd5 = document.getElementById('textMsg');
+                                                                                var lenOfPass = passMd5.length;
+                                                                                var lenOfconfPass = confPassMd5.length;
+                                                                                var tempPass = confPassMd5.substring(0, lenOfconfPass);
+
+                                                                                if (lenOfconfPass > 0) {
+                                                                                    if ((passMd5.length == confPassMd5.length) && (passMd5 == tempPass)) {
+                                                                                        flagmd5 = true;
+                                                                                        messageMd5.innerHTML = '<img src="{!$Resource.GreenCheck}" width="25" height="25">';
+                                                                                        txtmsgMd5.innerHTML = 'Passwords match.';
+                                                                                        $('.reEnterMD5IP4').find('.errorText').remove();
+                                                                                    } else {
+                                                                                        flagmd5 = false;
+                                                                                        messageMd5.innerHTML = '<img src="{!URLFOR($Resource.legendicons,'icon_circle_close.png')}" width="25" height="25">';
+                                                                                        txtmsgMd5.innerHTML = 'Passwords don&#39;t match. Try again.';
+                                                                                        if($('.reEnterMD5IP4').find('span.errorText').length == 0){
+                                                                                            $('.reEnterMD5IP4').append("<span class='errorText'></span>");
+                                                                                        }                           
+                                                                                    }
+                                                                                }else{
+                                                                                    if($('.reEnterMD5IP4').find('span.errorText').length == 0){
+                                                                                        $('.reEnterMD5IP4').append("<span class='errorText'></span>");
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        </script>
+                                                                    </div>
+                                                                </div>
+                                                            </apex:outputPanel>
+                                                        </apex:outputPanel>
+                                                    </div>
+                                                    <!-- MD5 Confirm Password -->
+                                                    <div class="col-md-4">
+                                                        <apex:outputPanel id="ipv4MD5PwdPanel2">
+                                                            <!-- Re-enter Password-->
+                                                            <apex:outputPanel rendered="{!ipv4MD5Flag}" styleClass="reEnterMD5IP4">
+                                                                <apex:outputLabel >Re-enter MD5 Password</apex:outputLabel>
+                                                                <span id="confirmMessage"></span>
+                                                                <apex:inputSecret html-type="password" id="pwdv4conf" styleClass="form-control requiredInputField"  html-placeholder="Re-enter Password" onkeyup="confirmPass();" onblur="confirmPass();"/>
+                                                                <span id="textMsg"></span>
+                                                                <script>
+                                                                    document.getElementById('{!$Component.pwdv4}').value = '';
+                                                                    document.getElementById('{!$Component.pwdv4conf}').value = '';
+                                                                    jQuery('[id$=pwdv4conf]').prop('disabled', true);
+                                                                    function confirmPass() {
+                                                                        var pass = document.getElementById('{!$Component.pwdv4}').value;
+                                                                        var confPass = document.getElementById('{!$Component.pwdv4conf}').value;
+                                                                        var message = document.getElementById('confirmMessage');
+                                                                        var txtmsg = document.getElementById('textMsg');
+                                                                        var lenconfPass = confPass.length;
+                                                                        var partialPass = pass.substring(0, lenconfPass);
+                                                                        if((pass.length == confPass.length) && (confPass == partialPass)){
+                                                                            flagmd5 = true;
+                                                                            message.innerHTML = '<img src="{!$Resource.GreenCheck}"  width="25" height="25">';
+                                                                            txtmsg.innerHTML = 'Passwords match.';
+                                                                            $('.reEnterMD5IP4').find('.errorText').remove();
+                                                                        }else{
+                                                                            flagmd5 = false;
+                                                                            message.innerHTML = '<img src="{!URLFOR($Resource.legendicons,'icon_circle_close.png')}"  width="25" height="25">';
+                                                                            txtmsg.innerHTML = 'Passwords don&#39;t match. Try again.';
+                                                                            if($('.reEnterMD5IP4').find('span.errorText').length == 0){
+                                                                                $('.reEnterMD5IP4').append("<span class='errorText'></span>");
+                                                                            }
+                                                                        }
+                                                                        validatePage2Submit();
+                                                                    }
+                                                                </script>
+                                                            </apex:outputPanel>
+                                                        </apex:outputPanel>
+                                                    </div>
+                                                </div> 
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                <!----ENDS IPV4 INFORMATION HERE ---->
+
+                                <!----IPV6 INFORMATION STARTS HERE ---->
+                                <apex:outputPanel id="ipv6block">
+                                    <apex:outputPanel rendered="{!IF((selectedId2 == 'IPv6' || selectedId2 == 'Dual Stack'),true,false)}">
+                                        <section id="dualstackdisplay">
+                                            <hr class="dashedHr" />
+                                            <!-- IPV6 Information -->
+                                            <div class="col-xs-12 p0 m-b-10">
+                                                <h3>IPv6 Information</h3>
+                                            </div>
+                                            <!-- LAN Block Address Table -->                                        
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <apex:outputPanel id="LANBlockDisplay2">
+                                                        <table class="lan-adr-type table table-condensed table-striped table-bordered">
+                                                            <tr>
+                                                                <th width="25%"><label>LAN Address Type</label></th>
+                                                                <th width="30%"><label>Public IP Address</label></th>
+                                                                <th width="30%"><label>LAN IP Length<span class="tooltipTrigger glyphicon glyphicon-question-sign" data-placement="right" data-toggle="tooltip" title="" data-original-title="IP Length is /56 when AT&T assigns the IP Address"></span></label> <!-- <span style="margin-top:15px;" class="noteData pull-right">Range /49 to /128</span> --></th>
+                                                            </tr>
+                                                            <apex:repeat value="{!LANSBlocksWrapper2}" var="lan2">
+                                                                <tr>
+                                                                    <td>ATT</td>
+                                                                    <td>       
+                                                                        <apex:outputPanel id="lanidaddress2">
+                                                                            <apex:inputText styleClass="form-control" disabled="true" html-placeholder="/64" />
+                                                                        </apex:outputPanel>
+                                                                    </td>
+                                                                    <td>
+                                                                        <apex:inputText styleClass="form-control" disabled="true" html-placeholder="/56" />
+                                                                    </td>
+                                                                </tr>
+                                                            </apex:repeat>
+                                                        </table>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <!-- Routing Protocol -->
+                                                <div class="col-md-4">
+                                                    <apex:outputLabel value="Routing Protocol" />                                            
+                                                    <apex:selectRadio styleClass="col-xs-8" value="{!DefaultBGP1}">
+
+                                                        <apex:selectOption itemLabel="Static" itemValue="STATICROUTING"></apex:selectOption>
+                                                        <apex:selectOption itemLabel="BGP" itemValue="BGP4"></apex:selectOption>
+                                                        <apex:actionSupport event="onchange" action="{!ResetBGPStaticValues6}" reRender="BGPdisplay2,BGPdisplay3,BGPdisplay4,Staticdisplay2" oncomplete="initiateToolTip();validatePage2Submit();" status="loading"/>
+                                                    </apex:selectRadio>                                            
+                                                </div>
+                                                <!-- Autonomous System Number, only displays if BGP is selected -->
+                                                <div class="col-md-4">
+                                                    <apex:outputPanel id="BGPdisplay4">
+                                                        <apex:outputPanel rendered="{!DefaultBGP1='BGP4'}">
+                                                            <apex:outputLabel value="Who Provides your ASN?" />
+                                                            <apex:selectRadio styleClass="col-xs-12" value="{!asnProviderV6}">
+                                                                <apex:selectOption itemLabel="AT&T" itemValue="attASNProvider"></apex:selectOption>
+                                                                <apex:selectOption itemLabel="Public Registered" itemValue="publicASNProvider"></apex:selectOption>
+                                                                <apex:actionSupport event="onchange" reRender="BGPdisplay2" oncomplete="validatePage2Submit();" status="loading"/>
+                                                            </apex:selectRadio>   
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <apex:outputPanel id="BGPdisplay2">
+                                                        <apex:outputPanel rendered="{!DefaultBGP1='BGP4'}" styleClass="ASNField">
+                                                            <apex:outputLabel value="Autonomous System Number" /><br />
+                                                            <apex:inputText rendered="{!IF(asnProviderV6 == 'attASNProvider',true,false)}" styleClass="form-control" disabled="true" html-placeholder="2386" />
+                                                            <apex:inputText value="{!AutonomousSystemNumber2}" rendered="{!IF(asnProviderV6 == 'publicASNProvider',true,false)}" styleClass="form-control requiredInputField" onkeyup="fieldValidationForFirstPage(event,this,'ASNForIP');" onblur="fieldValidationForFirstPage(event,this,'ASNForIP');"/>
+                                                            <apex:outputText rendered="{!IF(asnProviderV6 == 'publicASNProvider',true,false)}"><span class="col-md-12 p0 noteData">Range 64512 to 65534</span></apex:outputText>
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </div>
+                                        </section>
+                                                
+                                        <!---BGP INFO STARTS-->
+                                        <apex:outputPanel id="BGPdisplay3">
+                                            <apex:outputPanel rendered="{!DefaultBGP1='BGP4'}">
+                                                <!-- Routing Row -->
+                                                <div class="row">
+                                                    <!-- Default Routing -->
+                                                    <div class="col-md-4">
+                                                        <apex:outputLabel value="Default Route" />
+                                                        <apex:selectRadio styleClass="col-xs-8" value="{!RestrictiveRouting6}">
+                                                            <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                            <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                                             <apex:actionSupport event="onchange" reRender="RouteAdvertisementPanel2" oncomplete="initiateToolTip();validatePage2Submit();" status="loading"/>
+                                                        </apex:selectRadio>
+                                                    </div>
+                                                    <!-- Preferred Routing Option -->
+                                                    <div class="col-md-8">
+                                                        <apex:outputPanel id="RouteAdvertisementPanel2">
+                                                            <apex:outputPanel rendered="{!RestrictiveRouting6='false'}" styleClass="container-full">
+                                                                <div class="row">
+                                                                    <div class="col-xs-12">
+                                                                        <label>Preferred Route Option<span class="tooltipTrigger glyphicon glyphicon-question-sign" data-placement="right" data-toggle="tooltip" title="" data-original-title="AT&T Routes Includes Default Candidate Routes, Full Internet Routes Includes AT&T Routes and Default Candidate Routes. In general, the more BGP routes, the larger the memory the router must have. Check with the router vendor In order to determine the exact router configuration required to support the chosen BGP routing configuration."></span></label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-xs-6">
+                                                                        <apex:selectList styleClass="form-control requiredInputField styled-select-small" multiselect="false" size="1" value="{!Routevalue6}" onblur="fieldValidationForFirstPage(event,this,'dropDownSelection');" onchange="fieldValidationForFirstPage(event,this,'dropDownSelection');">
+                                                                            <apex:selectOptions value="{!RouteTypeOptions}"/>
+                                                                        </apex:selectList>
+                                                                    </div>
+                                                                </div>
+                                                            </apex:outputPanel>
+                                                        </apex:outputPanel>
+                                                    </div>
+                                                </div>
+
+                                                <!-- MD5 Row -->    
+                                                <div class="row">
+                                                    <!-- MD5 Authentication -->
+                                                    <div class="col-md-4">
+                                                        <apex:outputLabel value="MD5 Authentication" />
+                                                        <!-- Developers Note Robyn 12/30/15: add tooltip -->
+                                                        <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="If your routers use MD5 Authentication, denote here. If you are unsure, check with your technical team."></span>
+                                                        <apex:selectRadio styleClass="col-xs-8" value="{!ipv6MD5Flag}">
+                                                            <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                            <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                                            <apex:actionSupport event="onchange" action="{!togglePwd}" reRender="ipv6MD5PwdPanel, ipv6MD5PwdPanel2" oncomplete="validatePage2Submit();" status="loading"/>
+                                                        </apex:selectRadio>
+                                                    </div>
+                                                    <!-- MD5 Password -->
+                                                    <div class="col-md-4">                                                    
+                                                        <apex:outputPanel id="ipv6MD5PwdPanel">
+                                                            <apex:outputPanel rendered="{!ipv6MD5Flag}" styleClass="container-full">
+                                                                <div class="row">
+                                                                    <div class="col-xs-12">
+                                                                        <apex:outputLabel >MD5 Password</apex:outputLabel>
+                                                                        <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-placement="right" data-toggle="tooltip" title="" data-original-title="Passwords must be at least 8 characters, no more than 16 characters and contain at least 1 number and 1 uppercase letter."></span>                                                                                                                                     
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <div class="col-xs-12">
+                                                                        <div class="ipv6Md5PasswordField" style="float:left;width:100%;">
+                                                                            <apex:inputSecret html-type="password" id="pwdv6" styleClass="form-control requiredInputField passwordFieldSelectorMD5V6" html-placeholder="Password" value="{!MD5Authenticationpassword2}" maxlength="16" onkeypress="return checkSpaceOnly(event);" onkeyup="validateMD5PasswordFieldV6();confirmPassMD5V6();"  onblur="validateMD5PasswordFieldV6();confirmPassMD5V6();"/>
+                                                                        </div>
+                                                                        <script>
+                                                                            flagmd5V6 = false;
+                                                                            function confirmPassMD5V6(){
+                                                                                var passMd5V6 = document.getElementById('{!$Component.pwdv6}').value; 
+                                                                                var confPassMd5V6 = document.getElementById('{!$Component.pwdv6conf}').value;
+                                                                                var messageMd5V6 = document.getElementById('confirmMsgIP6');
+                                                                                var txtmsgMd5V6 = document.getElementById('textMsgIP6');
+                                                                                var lenOfPassV6 = passMd5V6.length;
+                                                                                var lenOfconfPassV6 = confPassMd5V6.length;
+                                                                                var tempPassV6 = confPassMd5V6.substring(0,lenOfconfPassV6);
+                                                                                if(lenOfconfPassV6>0){
+                                                                                    if((passMd5V6.length == confPassMd5V6.length) && (passMd5V6 == tempPassV6)){
+                                                                                        flagmd5V6 = true;
+                                                                                        messageMd5V6.innerHTML = '<img src="{!$Resource.GreenCheck}" width="25" height="25">';
+                                                                                        txtmsgMd5V6.innerHTML = 'Passwords match.';
+                                                                                        $('.reEnterMD5IP6').find('.errorText').remove();
+                                                                                    }else{
+                                                                                        flagmd5V6 = false;
+                                                                                        messageMd5V6.innerHTML = '<img src="{!URLFOR($Resource.legendicons,'icon_circle_close.png')}" width="25" height="25">';
+                                                                                        txtmsgMd5V6.innerHTML = 'Passwords don&#39;t match. Try again.';
+                                                                                        if($('.reEnterMD5IP6').find('span.errorText').length == 0){
+                                                                                            $('.reEnterMD5IP6').append("<span class='errorText'></span>");
+                                                                                        }
+                                                                                    }
+                                                                                }else{
+                                                                                    if($('.reEnterMD5IP6').find('span.errorText').length == 0){
+                                                                                        $('.reEnterMD5IP6').append("<span class='errorText'></span>");
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        </script>
+                                                                    </div>
+                                                                </div>
+                                                            </apex:outputPanel>
+                                                        </apex:outputPanel>
+                                                    </div>
+                                                    <!-- MD5 Confirm Password -->
+                                                    <div class="col-md-4">
+                                                        <apex:outputPanel id="ipv6MD5PwdPanel2">
+                                                            <!-- Re-enter Password-->
+                                                            <apex:outputPanel rendered="{!ipv6MD5Flag}" styleClass="reEnterMD5IP6">
+                                                                <apex:outputLabel >Re-enter MD5 Password</apex:outputLabel>
+                                                                <span id="confirmMsgIP6"></span>
+                                                                <apex:inputSecret html-type="password" id="pwdv6conf" styleClass="form-control requiredInputField" html-placeholder="Re-enter Password" onkeyup="confirmPassV6();" onblur="confirmPassV6();"/>
+                                                                <span id="textMsgIP6"></span>
+                                                                <script>
+                                                                    document.getElementById('{!$Component.pwdv6}').value='';
+                                                                    document.getElementById('{!$Component.pwdv6conf}').value='';
+                                                                    jQuery('[id$=pwdv6conf]').prop('disabled', true);
+                                                                    function confirmPassV6(){
+                                                                        var passV6 = document.getElementById('{!$Component.pwdv6}').value; 
+                                                                        var confPassV6 = document.getElementById('{!$Component.pwdv6conf}').value;
+                                                                        var messageV6 = document.getElementById('confirmMsgIP6');
+                                                                        var txtmsgV6 = document.getElementById('textMsgIP6');
+                                                                        var lenconfPass = confPassV6.length;
+                                                                        var partialPass = passV6.substring(0,lenconfPass);
+                                                                        if((passV6.length == confPassV6.length) && (confPassV6 == partialPass)){
+                                                                            flagmd5V6 = true;
+                                                                            messageV6.innerHTML = '<img src="{!$Resource.GreenCheck}"  width="25" height="25">';
+                                                                            txtmsgV6.innerHTML = 'Passwords match.';
+                                                                            $('.reEnterMD5IP6').find('.errorText').remove();
+                                                                        }else{
+                                                                            
+                                                                            flagmd5V6 = false;
+                                                                            messageV6.innerHTML = '<img src="{!URLFOR($Resource.legendicons,'icon_circle_close.png')}"  width="25" height="25">';
+                                                                            txtmsgV6.innerHTML = 'Passwords don&#39;t match. Try again.';
+                                                                            if($('.reEnterMD5IP6').find('span.errorText').length == 0){
+                                                                                $('.reEnterMD5IP6').append("<span class='errorText'></span>");
+                                                                            }
+                                                                        }
+                                                                        validatePage2Submit();
+                                                                      }             
+                                                                </script>                                                                          
+                                                            </apex:outputPanel>
+                                                        </apex:outputPanel>
+                                                    </div>
+                                                </div>                                           
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                        <!---ENDS BGP INFO-->                                                           
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                <!-- ENDS IPV6 INFORMATION HERE -->
+                            </apex:pageBlock>
+                            
+                            <hr class="dashedHr" />
+                            <!-- MACD doesn't have SHipping Information, so commenting it -->
+                            <!-- <apex:outputPanel id="ManagedRouterInfo" rendered="{!ismanaged}">
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <h3 class="f-s-large">Managed Router Shipping Information</h3>
+                                    </div>
+                                </div>
+                                <section>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-12">
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    <apex:outputLabel value="First Name" />
+                                                    <apex:inputText styleClass="form-control requiredInputField" label="First Name" onchange="validatePage2Submit();"/>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <apex:outputLabel value="Last Name" />
+                                                    <apex:inputText styleClass="form-control requiredInputField" label="Last Name" onchange="validatePage2Submit();"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    <apex:outputLabel value="Address" />
+                                                    <apex:inputtext styleClass="form-control requiredInputField" label="Address" onchange="validatePage2Submit();"/>
+                                                </div>
+                                                <div class="form-group col-md-4" id="floorNumber">
+                                                    <apex:outputLabel value="Floor Number" />
+                                                    <apex:input styleClass="form-control requiredInputField" label="Floor Number" />
+                                                </div>
+                                                <div class="form-group col-md-4" id="roomNumber">
+                                                    <apex:outputLabel value="Room Number" />
+                                                    <apex:input styleClass="form-control requiredInputField" label="Room Number" />
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="form-group col-md-4">
+                                                    <apex:outputLabel value="City" />
+                                                    <apex:input styleClass="form-control requiredInputField" label="City" />
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6">
+                                                            <apex:outputLabel value="State" />
+                                                            <apex:selectList id="state" value="{!state}" size="1" multiselect="false" styleClass="form-control">
+                                                                <apex:selectOptions value="{!StatePickList}" />
+                                                            </apex:selectList>
+                                                            <select class="form-control"></select>
+                                                        </div>
+                                                        <div class="form-group col-md-6">
+                                                            <apex:outputLabel value="Zip Code" />
+                                                            <apex:input styleClass="form-control requiredInputField" label="Zip Code" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-md-4">
+                                                    <apex:outputLabel value="Phone Number" />
+                                                    <apex:input styleClass="form-control requiredInputField" label="Phone Number" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                            </apex:outputPanel> -->
+
+                            <!-- CoS Panel -->
+                            <apex:outputPanel id="CoSBlock" rendered="{!classofserviceflag}">
+                                <h3>Class of Service</h3>
+                                <p>Class of Service allows the network to prioritize different types of internet traffic. Select a percentage for each Class of Service (CoS).</p>  
+                                <br />
+                                <div class="container-full">
+                                    <!-- Step 1: Select Real-Time Percentage -->
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <label class="portlabel" style="margin-top: 20px !important;"><b>Step 1:</b> <span class="regular">Select Real-Time Percentage</span></label>
+                                            <div class="container-full">
+                                                <div class="row">
+                                                    <div class="col-xs-12">
+                                                        <div id="cosSlider" style="height:32px;">
+                                                            <div class="cosSliderLabelsProgress">
+                                                                <span id="cosSliderPrgs"><apex:outputLabel rendered="true"/>{!SelectedSliderValue}%</span>
+                                                            </div>
+                                                            <div class="cosSliderLabelsMax">
+                                                                <span id="cosSliderMax">100%</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <span class="col-xs-1" style="padding-left: 40px;">|</span>
+                                                    <span class="col-xs-10" style="text-align:right;padding-right: 354px;">|</span>
+                                                    <span class="col-xs-1" style="text-align:right;padding-right: 35px;">|</span>                                        
+                                                </div>
+                                                
+                                                <div class="row">
+                                                    <span style="padding-left:37px;font-weight:bold;" class="col-xs-1">0</span>
+                                                    <span class="col-xs-10" style="text-align:right;font-weight:bold;padding-right: 346px;">50</span>
+                                                    <span class="col-xs-1" style="padding-right:20px; text-align:right;font-weight:bold;">100</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br />
+                                    <!-- Step 2: Select Profile ID  -->                            
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <label class="portlabel"><b>Step 2:</b> <span class="regular">Select Profile ID</span></label>
+                                            <apex:outputPanel id="misprofileSelect">
+                                                <apex:selectList id="profileSelect" value="{!selectedmisprofile}" onblur="fieldValidationForFirstPage(event,this,'dropDownSelection');" onchange="fieldValidationForFirstPage(event,this,'dropDownSelection');" styleclass="container-full form-control requiredInputField styled-select-small" multiselect="false" size="1" style="-moz-appearance: none;-webkit-appearance: none;font-size:16px; width:100%;">
+                                                    <apex:selectOptions value="{!misprofileoptions}" />
+                                                    <apex:actionSupport event="onchange" action="{!getcoschartvalues}" reRender="updatecoschart" oncomplete="validatePage2Submit();confirmPassMD5();confirmPassMD5V6();"/>
+                                                </apex:selectList>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </div>
+                                    <br /><br />
+                                    <apex:actionFunction name="getmisprofiles" action="{!getmisprofiles}" reRender="misprofileSelect" status="loading" oncomplete="validatePage2Submit();">
+                                        <apex:param name="slidervalue" value="" assignTo="{!SelectedSliderValue}" />
+                                    </apex:actionFunction>
+                                    <script type="text/javascript">
+                                        function updateSlider() {
+                                            $("#cosSlider").slider({
+                                                value: {!SelectedSliderValue},
+                                                range: "min",
+                                                animate: true,
+                                                step: 10,
+                                                change: function (event, ui) {
+                                                $("span#cosSliderPrgs").text(ui.value + ' %');
+                                                    getmisprofiles(ui.value);
+                                                    if(ui.value == 70){
+                                  
+                                                      ui.value = ui.value -10;
+                                                      getmisprofiles(ui.value);  
+                                                      $("#cosSlider").slider({
+                                                          value: 60,
+                                                      });    
+                                                      $("span#cosSliderPrgs").text(ui.value + ' %');    
+                                                      } 
+                                                  else if(ui.value == 100){
+                                                       ui.value = ui.value -10;
+                                                       getmisprofiles(ui.value);  
+                                                       $("#cosSlider").slider({
+                                                          value: 90,
+                                                       });     
+                                                       $("span#cosSliderPrgs").text(ui.value + ' %');   
+                                                       }
+                                                       else if(ui.value == 30){
+                                                       ui.value = ui.value -10;
+                                                       getmisprofiles(ui.value);  
+                                                       $("#cosSlider").slider({
+                                                          value: 20,
+                                                       });  
+                                                       $("span#cosSliderPrgs").text(ui.value + ' %');      
+                                                       }
+                                                       else if(ui.value == 15){
+                                                       ui.value = ui.value -5;
+                                                       getmisprofiles(ui.value);  
+                                                       $("#cosSlider").slider({
+                                                          value: 10,
+                                                       });  
+                                                       $("span#cosSliderPrgs").text(ui.value + ' %');      
+                                                       }
+                                                       else{
+                                                       }
+                                                }
+                                            });
+                                        }
+                                        updateSlider();
+                                    </script>
+                                </div>
+                                <hr class="dashedHr" />
+                            </apex:outputPanel>
+                            
+                            <!-- Installation Information -->
+                            <div class="container-full">
+                                <h3>Installation Information</h3>
+                                <p><apex:outputLabel value="Installation Type:" />&nbsp;<apex:outputText value="Tele Install" /></p>
+                                <p><apex:outputLabel value="Purchase Decision Date:" />&nbsp;<apex:outputText value="{!PurchaseDecisionDate}" /></p>
+                                <div class="row">
+                                    <!-- Activation Date -->
+                                    <div class="col-md-6">
+
+                                        <apex:outputLabel value="Customer Requested Due Date (CRDD)" />                        
+                                        <div class="container-full">
+                                            <div class="row">
+                                                <div class="col-xs-12" id="dateField">   
+                                                    <apex:input styleClass="col-xs-5 dPicker requiredInputField" html-readonly="readonly" style="width:68% !important;" value="{!RequestedServiceActivationDate}" label="Requested Service Activation Date" type="text" onblur="fieldValidationForFirstPage(event,this,'dateField');" onchange="fieldValidationForFirstPage(event,this,'dateField');"/>
+                                                    <span class="pull-left glyphicon glyphicon-calendar calendarIcon"></span>
+                                                    <span class="pull-left tooltipTrigger glyphicon glyphicon-question-sign calendarToolTip" data-toggle="tooltip" data-placement="right" title="Select the date on which your customer requests their AT&T Managed Internet Service to be installed and activated."></span>
+                                                    <br style="clear:both;" />
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
+                                        <p class="col-xs-12 noteData p0 m-t-10">
+                                                Note: Requested delivery date is not guaranteed.
+                                        </p>
+                                    </div>
+                                    <!-- Early Service & Provision -->
+                                    <div class="col-md-6 earlyServiceDueDate">
+                                       <apex:outputLabel value="Decline Early Service and Provision on Due Date?" />
+                                        <apex:selectRadio styleClass="col-xs-4" value="{!EarlyServiceTurnuponDueDate}" label="Decline Early Service and Provision on Due Date?">
+                                             <apex:selectOption itemLabel="Yes" itemValue="true" />
+                                             <apex:selectOption itemLabel="No" itemValue="false" />
+                                        </apex:selectRadio>
+                                    </div>
+                                </div>                
+                            </div>
+                            
+                            <hr class="dashedHr" />
+
+                            <div class="conatiner-full">
+                                <h3>Additional Information</h3>
+                                <div class="row">
+                                    <div class="col-xs-12">
+                                        <apex:outputLabel value="Tell us anything else we need to know about this site. (Optional)" />
+                                        <apex:inputTextarea value="{!siteadditionalinfo}" html-maxlength="68" rows="5" cols="90" style="height: 65px;" styleClass="w100p additionalInfoMsg form-control addInfoClass" html-placeholder="No special characters allowed. Max 68 characters." onkeyup="CharLimit(this, '68');fieldValidationForFirstPage(event,this,'FeedBackField');"/>
+                                        <div class="additionalInfoCharLimit col-xs-6 pull-right"></div>
+                                    </div>                                
+                                </div>
+                            </div>
+
+                        </apex:outputPanel>                        
+                        <div style="margin-left: 115%;margin-left;margin-top: -82%;">
+                            <a href="#" class="scrollToTop arrowImageDim"> <apex:image value="{!($Resource.TopArrow)}" styleClass="arrowImageDim"/></a>
+                        </div>
+                        
+                        <hr class="blue_hr" id="panelFooter" style="margin-left: -34.5%;width: 134.5%;clear:both;" />
+                        <div id="mainId" class="pull-right">
+                            <apex:commandButton value="Save & Exit" styleClass="btn btn-primary" style="background: #FFFFFF !important; color: #595959;border: 1px solid #595959 !important; margin-right:20px; font-family:omnes_att_iimedium !important; padding-top:9px !important;Font-Size:16px ! important; line-Height:16px ! important; Letter-Spacing:0.01em ! important; height:36px ! important;width:150px !important;"  onclick="clearTextArea()" onComplete="checkPageStatus('onSaveExit','')" status="loading"/>
+                            <apex:actionFunction name="SaveAndExit" action="{!SaveandExit}" reRender="" status="loading">
+                                <apex:param assignTo="{!pageStatus}" name="pageStatus" value="" />
+                            </apex:actionFunction>
+                            <apex:commandButton id="NextSiteBtnId" styleClass="btn btn-primary m-r-10" style="font-family:omnes_att_iimedium !important; font-size:16px;line-Height:16px ! important;width:150px !important;margin: 0;" rendered="{!IF(SubmitButtonLabel == 'Next Site',true,false)}" value="{!SubmitButtonLabel}" onclick="checkPageStatus('onNextSiteBtn','');return false;" />
+                            <apex:actionFunction name="navigateToNextSite" action="{!nextSiteToggle}" reRender="" status="loading">
+                                <apex:param assignTo="{!pageStatus}" name="pageStatus" value="" />
+                            </apex:actionFunction>
+                            <apex:commandButton id="lastsubmitButtonId" styleClass="btn btn-primary m-r-10 btnContinuePage2 btnContinue" style="font-family:omnes_att_iimedium !important; font-size:16px;line-Height:16px ! important;width:150px !important;margin: 0;" rendered="{!IF(SubmitButtonLabel == 'Submit',true,false)}" value="{!SubmitButtonLabel}" onclick="SubmitRDS();return false;" />
+                            <apex:actionFunction name="SubmitRDS" action="{!SubmitRDS}" reRender="pagecontainer,ciError,crddoverlaycontainer" oncomplete="checkCIError();displaycrddoverlay();" status="loading" />
+                            <apex:actionFunction name="togglesites" action="{!togglesites}" reRender="" status="loading">
+                                <apex:param assignTo="{!pageStatus}" name="pageStatus" value="" />
+                                <apex:param assignTo="{!siteSelectedOnSiteListPanel}" name="siteSelectedOnSiteListPanel" value="" />
+                            </apex:actionFunction>
+                        </div>
+                    
+                    </div>
+                    <apex:actionFunction name="setBestAvailDate" action="{!setBestAvailDate}" rerender="">
+                        <apex:param name="BestAvailDate" value="" assignTo="{!BestAvailDate}"/>
+                    </apex:actionFunction>
+                </apex:form>
+            </div>
+        </div>
+        <!-- End RDS Configuration Details -->
+    </div>
+    <script>
+        var pageStatus = '{!pageStatus}';
+        var validation;
+        var primaryFirstName;
+        var secondaryFirstName;
+        var primaryLastName;
+        var secondaryLastName;
+        var primaryBussinessPhoneNumber;
+        var secondaryBussinessPhoneNumber;
+        var primaryMobilePhoneNumber;
+        var secondaryMobilePhoneNumber;
+        var primaryEmail;
+        var secondaryEmail;
+        var urlRegex = /^(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/i;
+        var emailReg = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+        var specialCharsWithNumbers = "0123456789<>@!#$%^&*()_+[]{}?:;|'\"\\,./~`-="
+        var specialChars = "<>@!#$%^&*()_+[]{}?:;|'\"\\,./~`-="
+        var onlyNumRegex = /^[0-9]+$/;
+        
+        $(document).ready(function () {
+            if($('.addInfoClass').val().length > 0){
+                    $('.addInfoClass').trigger('keyup');
+             }
+        });
+        
+        function isValidURL(value) {
+            return urlRegex.test(value);
+        } 
+        
+        function checkNames(string){
+            for(i = 0; i < specialCharsWithNumbers.length;i++){
+                if(string.indexOf(specialCharsWithNumbers[i]) > -1){
+                    return true
+                }
+            }
+            return false;
+        }
+
+        function checkspecialChar(string){
+            for(i = 0; i < specialChars.length;i++){
+                if(string.indexOf(specialChars[i]) > -1){
+                    return true
+                }
+            }
+            return false;
+        }
+                                               
+        function validateEmail($email) {
+            return emailReg.test( $email );
+        }
+                        
+        if(pageStatus == 'completelyFilled' || pageStatus == 'partiallyFilled'){
+            doFirstPageValidation('initialLoad','MISRDSPage1');
+        }
+        function doFirstPageValidation(event,classNameOFPage){
+            validation = true;
+            var errorMsg = "<div class='m-t-10 errorText'></div>";
+            
+            //validations for input fields
+            $('.'+classNameOFPage+' input.requiredInputField').each(function() {
+                if($(this).parent().children('.errorText').length > 0){
+                    validation = false;
+                }else{
+                    if(!$(this).val()){
+                        $(this).parent().append(errorMsg);
+                        $(this).addClass('errorFieldBorderColor');
+                        if($(this).parent().attr("id") == 'siteLandLinePhnNum'){
+                            $(this).parent().find('.errorText').text('Site Phone Number cannot be blank'); 
+                        }else if($(this).parent().attr("id") == 'firstName'){
+                            $(this).parent().find('.errorText').text('First Name cannot be blank');
+                        }else if($(this).parent().attr("id") == 'lastName'){
+                            $(this).parent().find('.errorText').text('Last Name cannot be blank');
+                        }else if($(this).parent().attr("id") == 'email'){
+                            $(this).parent().find('.errorText').text('Email Address cannot be blank');
+                        }else if($(this).parent().attr("id") == 'phoneNumber'){
+                            $(this).parent().find('.errorText').text('Phone number cannot be blank');
+                        }else if($(this).parent().attr("id") == 'mobileNumber'){
+                            $(this).parent().find('.errorText').text('Mobile number cannot be blank');
+                        }else if($(this).parent().attr("class") == 'DomainURL'){
+                            $(this).parent().find('.errorText').text('URL value cannot be blank');
+                        }else if($(this).parent().attr("class") == 'ipv4Md5PasswordField' || $(this).parent().attr("class") == 'ipv6Md5PasswordField'){
+                            $(this).parent().find('.errorText').text('Password cannot be blank');
+                        }else if($(this).parent().attr("class") == 'reEnterMD5IP4' || $(this).parent().attr("class") == 'reEnterMD5IP6'){
+                            $(this).parent().find('.errorText').remove();
+                            $(this).removeClass('errorFieldBorderColor');
+                        }else if($(this).parent().attr("id") == 'dateField'){
+                            $(this).parent().find('.errorText').text('Select a Customer Requested Due Date (CRDD)');
+                        }else{
+                            $(this).parent().find('.errorText').text('Cannot be blank');
+                        }
+                        validation = false;
+                    }else{
+                        $(this).trigger("keyup");
+                    }    
+                }
+            });
+            //validation for radio buttons
+            $('.'+classNameOFPage+' fieldset table.requiredInputField').each(function() {
+                if($(this).parent().parent().attr("id") != 'ipV4Criteria'){
+                    if($(this).parent().children('.errorText').length > 0){
+                        validation = false;
+                    }else{
+                        if ($(this).find('input:radio:checked').length === 0){
+                            $(this).parent().append(errorMsg);
+                            $(this).parent().find('.errorText').text('Selection required');                        
+                            $(this).addClass('errorFieldBorderColor');
+                            validation = false;
+                        }                
+                    }               
+                }   
+            });  
+            // validation for Dropdowns
+            $('.'+classNameOFPage+' select.requiredInputField').each(function() {
+                if($(this).parent().children('.errorText').length > 0){
+                    validation = false;
+                }else{
+                   if(!$(this).val()){
+                        $(this).parent().append(errorMsg);
+                        $(this).parent().find('.errorText').text('Selection required');
+                        $(this).addClass('errorFieldBorderColor');
+                        validation = false;
+                    }               
+                }                 
+            });
+        };
+
+        function fieldValidationForFirstPage(event,currentField,typeOfField){
+            if(event.keyCode != 9){
+                var enteredValue = currentField.value;
+                var elementName = currentField.name;
+                var currentElement = $('input[name="' + elementName + '"]');
+                var parentElement = currentElement.parent();
+                var errorMsg = "<div class='m-t-10 errorText'></div>";
+                parentElement.find('.errorText').remove();
+                currentElement.removeClass('errorFieldBorderColor');
+                if(typeOfField == 'siteLandLinePhnNum'){
+                    if(enteredValue.length > 0){
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Site Phone Number should not begin with a space');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else if(!onlyNumRegex.test(enteredValue) || enteredValue.indexOf(' ') >= 0){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Invalid Site Phone Number');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else if(enteredValue.length < 10 || enteredValue.length > 10){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Site Phone Number must be ten digits');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else{
+                            parentElement.find('.errorText').remove();
+                            currentElement.removeClass('errorFieldBorderColor');
+                        }                
+                    }else{
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Site Phone Number cannot be blank');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }                 
+                }else if(typeOfField == 'firstName' || typeOfField == 'primaryFirstName' || typeOfField == 'secondaryFirstName'){
+                    if(enteredValue.length > 0){
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            currentElement.addClass('errorFieldBorderColor');
+                            parentElement.find('.errorText').text('First Name should not begin with a space');
+                        }else if(checkNames(enteredValue)){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Numbers or special characters are not allowed');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else{
+                            if(typeOfField == 'primaryFirstName'){
+                                primaryFirstName = enteredValue;
+                                if(primaryFirstName == secondaryFirstName){
+                                    parentElement.append(errorMsg);
+                                    parentElement.find('.errorText').text('Primary and alternate contacts cannot be the same');
+                                    currentElement.addClass('errorFieldBorderColor');
+                                }else{
+                            parentElement.find('.errorText').remove();
+                            currentElement.removeClass('errorFieldBorderColor');
+                                }
+                            }else if(typeOfField == 'secondaryFirstName'){
+                                secondaryFirstName = enteredValue;
+                                if(secondaryFirstName == primaryFirstName){
+                                    parentElement.append(errorMsg);
+                                    parentElement.find('.errorText').text('Primary and alternate contacts cannot be the same');
+                                    currentElement.addClass('errorFieldBorderColor');
+                                }else{
+                                    parentElement.find('.errorText').remove();
+                                    currentElement.removeClass('errorFieldBorderColor');
+                                }
+                            }else{
+                                parentElement.find('.errorText').remove();
+                                currentElement.removeClass('errorFieldBorderColor');
+                            }
+                        }                
+                    }else{
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('First Name cannot be blank');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }                
+                }else if(typeOfField == 'lastName' || typeOfField == 'primaryLastName' || typeOfField == 'secondaryLastName'){
+                    if(enteredValue.length > 0){
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            currentElement.addClass('errorFieldBorderColor');
+                            parentElement.find('.errorText').text('Last Name should not begin with a space');
+                        }else if(checkNames(enteredValue)){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Numbers or special characters are not allowed');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else{
+                            if(typeOfField == 'primaryLastName'){
+                                primaryLastName = enteredValue;
+                                if(primaryLastName == secondaryLastName){
+                                    parentElement.append(errorMsg);
+                                    parentElement.find('.errorText').text('Primary and alternate contacts cannot be the same');
+                                    currentElement.addClass('errorFieldBorderColor');
+                                }else{
+                            parentElement.find('.errorText').remove();
+                            currentElement.removeClass('errorFieldBorderColor');
+                                }
+                            }else if(typeOfField == 'secondaryLastName'){
+                                secondaryLastName = enteredValue;
+                                if(secondaryLastName == primaryLastName){
+                                    parentElement.append(errorMsg);
+                                    parentElement.find('.errorText').text('Primary and alternate contacts cannot be the same');
+                                    currentElement.addClass('errorFieldBorderColor');
+                                }else{
+                                    parentElement.find('.errorText').remove();
+                                    currentElement.removeClass('errorFieldBorderColor');
+                                }
+                            }else{
+                                parentElement.find('.errorText').remove();
+                                currentElement.removeClass('errorFieldBorderColor');
+                            }
+                        }                
+                    }else{
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Last Name cannot be blank');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }                 
+                }else if(typeOfField == 'primaryEmail' || typeOfField == 'secondaryEmail'){
+                   if(enteredValue.length > 0){
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Email Address should not begin with a space');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else{
+                            if($.isNumeric(enteredValue) || !validateEmail(enteredValue)){
+                                parentElement.append(errorMsg);
+                                parentElement.find('.errorText').text('Invalid Email');
+                                currentElement.addClass('errorFieldBorderColor');
+                            }else{
+                                if(typeOfField == 'primaryEmail'){
+                                    primaryEmail = enteredValue;
+                                    if(primaryEmail == secondaryEmail){
+                                        parentElement.append(errorMsg);
+                                        parentElement.find('.errorText').text('Primary and alternate emails cannot be the same');
+                                        currentElement.addClass('errorFieldBorderColor');
+                                    }else{
+                                parentElement.find('.errorText').remove();
+                                currentElement.removeClass('errorFieldBorderColor');
+                                    }                                
+                                }else if(typeOfField == 'secondaryEmail'){
+                                    secondaryEmail = enteredValue;
+                                    if(secondaryEmail == primaryEmail){
+                                        parentElement.append(errorMsg);
+                                        parentElement.find('.errorText').text('Primary and alternate emails cannot be the same');
+                                        currentElement.addClass('errorFieldBorderColor');
+                                    }else{
+                                        parentElement.find('.errorText').remove();
+                                        currentElement.removeClass('errorFieldBorderColor');
+                                    }                                
+                                }else{
+                                    parentElement.find('.errorText').remove();
+                                    currentElement.removeClass('errorFieldBorderColor');
+                                }
+                            }
+                        }                
+                    }else{
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Email Address cannot be blank');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }                
+                }else if(typeOfField == 'primaryBussinessPhoneNumber' || typeOfField == 'secondaryBussinessPhoneNumber'){
+                    if(enteredValue.length > 0){
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Phone Number should not begin with a space');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else if(!onlyNumRegex.test(enteredValue) || enteredValue.indexOf(' ') >= 0){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Invalid Phone Number');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else if(enteredValue.length < 10 || enteredValue.length > 10){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Phone number must be ten digits');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else{
+                            if(typeOfField == 'primaryBussinessPhoneNumber'){
+                            primaryBussinessPhoneNumber = enteredValue;
+                            if(primaryBussinessPhoneNumber == secondaryBussinessPhoneNumber){
+                                parentElement.append(errorMsg);
+                                parentElement.find('.errorText').text('Primary and alternate phone numbers cannot be the same');
+                                currentElement.addClass('errorFieldBorderColor');
+                                }else{
+                                    parentElement.find('.errorText').remove();
+                                    currentElement.removeClass('errorFieldBorderColor');                            
+                                }                            
+                            }else if(typeOfField == 'secondaryBussinessPhoneNumber'){
+                                secondaryBussinessPhoneNumber = enteredValue;
+                                if(secondaryBussinessPhoneNumber == primaryBussinessPhoneNumber){
+                                    parentElement.append(errorMsg);
+                                    parentElement.find('.errorText').text('Primary and alternate phone numbers cannot be the same');
+                                    currentElement.addClass('errorFieldBorderColor');
+                                }else{
+                                    parentElement.find('.errorText').remove();
+                                    currentElement.removeClass('errorFieldBorderColor');                            
+                                }                            
+                            }else{
+                                parentElement.find('.errorText').remove();
+                                currentElement.removeClass('errorFieldBorderColor');                            
+                            }
+                        }                
+                    }else{
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Phone number cannot be blank');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }                
+                }else if(typeOfField == 'primaryMobilePhoneNumber' || typeOfField == 'secondaryMobilePhoneNumber'){
+                   if(enteredValue.length > 0){
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Mobile Number should not begin with a space');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else if(!onlyNumRegex.test(enteredValue) || enteredValue.indexOf(' ') >= 0){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Invalid Mobile Number');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else if(enteredValue.length < 10 || enteredValue.length > 10){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Mobile number must be ten digits');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else{
+                            if(typeOfField == 'primaryMobilePhoneNumber'){
+                            primaryMobilePhoneNumber = enteredValue;
+                            if(primaryMobilePhoneNumber == secondaryMobilePhoneNumber){
+                                parentElement.append(errorMsg);
+                                    parentElement.find('.errorText').text('Primary and alternate mobile numbers cannot be the same');
+                                currentElement.addClass('errorFieldBorderColor');
+                            }else{
+                                parentElement.find('.errorText').remove();
+                                currentElement.removeClass('errorFieldBorderColor');                            
+                            }
+                            }else if(typeOfField == 'secondaryMobilePhoneNumber'){
+                                secondaryMobilePhoneNumber = enteredValue;
+                                if(secondaryMobilePhoneNumber == primaryMobilePhoneNumber){
+                                parentElement.append(errorMsg);
+                                    parentElement.find('.errorText').text('Primary and alternate mobile numbers cannot be the same');
+                                currentElement.addClass('errorFieldBorderColor');
+                            }else{
+                                parentElement.find('.errorText').remove();
+                                currentElement.removeClass('errorFieldBorderColor');                            
+                            }
+                            }else{
+                                parentElement.find('.errorText').remove();
+                                currentElement.removeClass('errorFieldBorderColor');                            
+                            }
+                        }                
+                    }else{
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Mobile Number cannot be blank');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }                
+                }else if(typeOfField == 'dateField'){
+                    if(enteredValue.length > 0){
+                        parentElement.find('.errorText').remove();
+                        currentElement.removeClass('errorFieldBorderColor'); 
+                    }else{
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Select a Customer Requested Due Date (CRDD)');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }
+                }else if(typeOfField == 'POTSPhoneNumber'){
+                    if(enteredValue.length > 0){
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Phone Number should not begin with a space');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else if(!onlyNumRegex.test(enteredValue) || enteredValue.indexOf(' ') >= 0){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Invalid Phone Number');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else if(enteredValue.length < 10 || enteredValue.length > 10){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Phone number must be ten digits');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else{
+                            parentElement.find('.errorText').remove();
+                            currentElement.removeClass('errorFieldBorderColor'); 
+                        }                
+                    }else{
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Cannot be blank');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }                
+                }else if(typeOfField == 'DomainURL'){
+                    if(enteredValue.length > 0){
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('URL value should not begin with a space');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else{
+                            if(!isValidURL(enteredValue)){
+                                parentElement.append(errorMsg);
+                                parentElement.find('.errorText').text('Invalid URL');
+                                currentElement.addClass('errorFieldBorderColor');
+                            }else{
+                                parentElement.find('.errorText').remove();
+                                currentElement.removeClass('errorFieldBorderColor');
+                            }
+                        }                
+                    }else{
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('URL value cannot be blank');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }
+                }else if(typeOfField == 'FeedBackField'){
+                    if(enteredValue.charAt(0) === ' '){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Should not begin with a space');
+                        parentElement.find('.errorText').addClass("additionalField");
+                        currentElement.addClass('errorFieldBorderColor');
+                    }else if(checkspecialChar(enteredValue)){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('No special characters allowed');
+                        parentElement.find('.errorText').addClass("additionalField");
+                        currentElement.addClass('errorFieldBorderColor');
+                    }else{
+                        parentElement.find('.errorText').remove();
+                        currentElement.removeClass('errorFieldBorderColor'); 
+                    } 
+                }else if(typeOfField == 'ASNForIP'){
+                    if(enteredValue.length > 0){
+                        if(enteredValue.charAt(0) === ' ' || !onlyNumRegex.test(enteredValue) || enteredValue.indexOf(' ') >= 0 || enteredValue < 64512 || enteredValue > 65534){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Invalid Entry');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else{
+                            parentElement.find('.errorText').remove();
+                            currentElement.removeClass('errorFieldBorderColor'); 
+                        }                
+                    }else{
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Cannot be blank');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }                   
+                }else if(typeOfField == 'dropDownSelection'){
+                    var currentElement = $('select[name="' + elementName + '"]');
+                    var parentElement = currentElement.parent();
+                    parentElement.find('.errorText').remove();
+                    currentElement.removeClass('errorFieldBorderColor');
+                    if((enteredValue == 'Select') || (enteredValue == '')){
+                       parentElement.append(errorMsg);
+                       parentElement.find('.errorText').text('Selection required');
+                       currentElement.addClass('errorFieldBorderColor');
+                    }else{
+                       parentElement.find('.errorText').remove();
+                       currentElement.removeClass('errorFieldBorderColor');
+                    }
+                }
+               validatePage2Submit();                   
+            }
+        }
+                              
+        function validateRadio(idName,selectedIpV4Criteria){
+            if(selectedIpV4Criteria.length > 0){
+                    $("#"+idName).find('.requiredInputField').removeClass('requiredInputField');
+            }    
+        }
+        
+        function clearTextArea(){
+            var alphaNumRegex = /^[a-zA-Z0-9 ]+$/;
+            if(alphaNumRegex.test($('.additionalInfoMsg').val()) == false) {
+                $('.additionalInfoMsg').val('');
+            }    
+                
+            
+        }
+        
+        charLimit('.additionalInfoCharLimit', 68);
+        $(".addInfoClass").on('input propertychange', function() {
+                charLimit(this, 68);
+        });
+       
+        function charLimit(input,maxChar) {
+            $('.additionalInfoCharLimit').css('display','block');
+            if($(input).val() !=null)
+                $('.additionalInfoCharLimit').text(maxChar - $(input).val().length + ' characters remaining');
+        }
+        
+        function disableButton(sClassName, disable) {
+            sClassName = '.' + sClassName;
+            if (disable) {
+                $(sClassName).addClass('disabled');
+                $(sClassName).prop('disabled', true);
+            } else {
+                $(sClassName).removeClass('disabled');
+                $(sClassName).removeAttr('disabled');
+            }
+        }
+  
+        function validatePage2Submit(){
+            var arrRequiredFields = $(".requiredInputField"),
+                boolIsValid = true;
+            if(arrRequiredFields.length > 1){
+                arrRequiredFields.each(function () {
+                    var oRequiredField = $(this);
+                    if (oRequiredField[0]) {
+                        if (oRequiredField.val() == 'Select' || oRequiredField.val().length == 0) {
+                            if(oRequiredField.hasClass('.dPicker')) {
+                            }else{
+                                boolIsValid = false;
+                                return false;
+                            }
+                        }else{
+                            //special check for MD5 confirmation password field
+                            if(oRequiredField.parents('.reEnterMD5IP4').is(":visible")){
+                                if($('.reEnterMD5IP4 #textMsg').html() != 'Passwords match.'){
+                                    boolIsValid = false;
+                                    return false;
+                                }
+                            }else if(oRequiredField.parents('.reEnterMD5IP6').is(":visible")){
+                                if($('.reEnterMD5IP6 #textMsgIP6').html() != 'Passwords match.'){
+                                    boolIsValid = false;
+                                    return false;
+                                }
+                            }
+                        }
+                    }
+                });
+                disableButton('btnContinuePage2',!(boolIsValid));
+            }
+            else{
+                disableButton('btnContinuePage2',true);
+            }
+        }
+
+        function checkPageStatus(action,siteId) {
+            var arrRequiredFields = $(".requiredInputField"),
+                boolIsValid = true;
+            if(arrRequiredFields.length > 1){
+                arrRequiredFields.each(function () {
+                    var oRequiredField = $(this);
+                    if (oRequiredField[0]) {
+                        if(oRequiredField.val() != 'Select' && oRequiredField.val().length > 0){
+                            if($('div.errorText').length > 0 || $('span.errorText').length > 0){
+                                boolIsValid = false;
+                                return false;                            
+                            }                           
+                        }else{
+                            if(oRequiredField.hasClass('.dPicker')) {}
+                            else if(oRequiredField.parent().attr('class') == 'ASNField'){}
+                            else{
+                                boolIsValid = false;
+                                return false;
+                            }                           
+                        }
+                    }
+                });
+                var pageStatus = boolIsValid?'completelyFilled':'partiallyFilled';
+                if(action == 'onSaveExit'){
+                    SaveAndExit(pageStatus);
+                }else if(action == 'onNextSiteBtn'){
+                    navigateToNextSite(pageStatus);
+                }else if(action == 'onSiteListClick'){
+                    togglesites(pageStatus,siteId);
+                }
+            }
+        }
+        
+        function highlightCurrentSite(){
+            var winURL=window.location.href;
+            if(winURL.indexOf("siteid=") < 0){
+                document.getElementById("pagePanel").style.display="none";
+                if(winURL.indexOf("quoteid=") < 0){
+                    winURL=winURL.replace(/&.*&/, '&')+ '?quoteid='+"{!ATTquoteid}"+ '&siteid='+"{!siteselected}";
+                }
+                else{
+                    winURL=winURL.replace(/&.*&/, '&')+ '&siteid='+"{!siteselected}";
+                }
+                window.location.href=winURL;
+            }
+        }
+        highlightCurrentSite();                 
+    </script>
+    
+    <script type="text/javascript">
+        // Function to enable trimLeft in IE
+        String.prototype.trimLeft = function () {
+            return this.replace(/^\s+/, "");
+        }
+
+        var $ = jQuery.noConflict();
+        var region = '{!VASARegion}';
+        var maxDateValue = 0;
+        var progressbar = $("#progressbar"),
+            progressLabel = $(".progress-label");
+            
+        //var attHolidays = [[5, 25, 2015, 'Memorial Day'], [7, 4, 2015, 'Independence Day'], [9, 7, 2015, 'Labor day'], [11, 26, 2015, 'Thanks Giving'], [12, 25, 2015, 'Christmas'], [1, 1, 2016, 'New year']];
+        var attHolidays = {!Holidays};
+        var attHolidaysLength = attHolidays.length;
+
+        function holidays(date) {
+            for (i = 0; i < attHolidaysLength; i++) {
+                if (date.getMonth() == attHolidays[i][0] - 1 && date.getDate() == attHolidays[i][1] && date.getFullYear() == attHolidays[i][2]) {
+                    return [false, '', attHolidays[i][3]];
+                }
+            }
+            return [true, ''];
+        }
+
+        function isHoliday(date) {
+            for (i = 0; i < attHolidaysLength; i++) {
+                if (date.getMonth() == attHolidays[i][0] - 1 && date.getDate() == attHolidays[i][1] && date.getFullYear() == attHolidays[i][2]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function noWeekendsOrHolidays(date) {
+            var noWeekend = $.datepicker.noWeekends(date);
+            if (noWeekend[0]) {
+                return holidays(date);
+            } else {
+                return noWeekend;
+            }
+        }
+
+        progressbar.progressbar({
+            value: {!OverallCompletion},
+            change: function () {
+                progressLabel.text(progressbar.progressbar("value") + "%");
+            }
+        });
+
+        if (region === 'In Region')
+            maxDateValue = 19;
+        else 
+            maxDateValue = 24; 
+
+        function findMaxDate() {
+            var today = new Date();
+            var weekends = [0, 6];
+            var maximumDays = maxDateValue;
+            var i = 0;
+            while (i < maximumDays) {
+                today.setDate(today.getDate() + 1);
+                var todayWeekday = today.getDay();
+                if (jQuery.inArray(todayWeekday, weekends) < 0 && isHoliday(today) )
+                    i++;
+            }
+            return today;
+        }
+
+        $(".dPicker").datepicker({
+            numberOfMonths: 2,
+            beforeShowDay: noWeekendsOrHolidays,
+            showOtherMonths: true,
+            minDate: "{!minDate}",
+            maxDate: "{!maxDate}"
+        });
+        
+        var BDD = findMaxDate();
+        var BDDStr = BDD.getMonth()+1+'/'+BDD.getDate()+'/'+BDD.getFullYear();
+        setBestAvailDate(BDDStr);
+        
+        $(".calendarIcon").on("click", function () {
+            $('.dPicker').focus();
+        });
+        
+        function validateMD5PasswordField(){    
+            var errorMsg = "<div class='m-t-10 errorText'></div>";
+            var currentElement = $('.passwordFieldSelectorMD5');
+            var parentElement = currentElement.parent();
+            
+            var pValue = currentElement.val();
+            parentElement.find('.errorText').remove();
+            
+            if(typeof pValue != 'undefined'){
+                if ("" === pValue) {
+                    parentElement.append(errorMsg);
+                    parentElement.find('.errorText').text('Password cannot be blank');
+                    jQuery('[id$=pwdv4conf]').prop('disabled', true);
+                }else if(pValue.length<8 || pValue.search(/[A-Z]/) < 0 || pValue.search(/[0-9]/) < 0){
+                    parentElement.append(errorMsg);
+                    parentElement.find('.errorText').text('Must be 8 - 16 characters, contain 1 number and 1 uppercase letter.');
+                    jQuery('[id$=pwdv4conf]').prop('disabled', true);
+                }else{
+                    parentElement.find('.errorText').remove();
+                    jQuery('[id$=pwdv4conf]').prop('disabled', false);
+                }            
+                validatePage2Submit();
+            }
+        }
+
+        function validateMD5PasswordFieldV6(){
+            var errorMsg = "<div class='m-t-10 errorText'></div>";
+            var currentElement = $('.passwordFieldSelectorMD5V6');
+            var parentElement = currentElement.parent();
+            var sValue = currentElement.val();
+            parentElement.find('.errorText').remove();
+            
+            if(typeof sValue != 'undefined'){
+                if ("" === sValue) {
+                    parentElement.append(errorMsg);
+                    parentElement.find('.errorText').text('Password cannot be blank');
+                    jQuery('[id$=pwdv6conf]').prop('disabled', true);
+                }else if(sValue.length<8 || sValue.search(/[A-Z]/) < 0 || sValue.search(/[0-9]/) < 0){
+                    parentElement.append(errorMsg);
+                    parentElement.find('.errorText').text('Must be 8 - 16 characters, contain 1 number and 1 uppercase letter.');
+                    jQuery('[id$=pwdv6conf]').prop('disabled', true);
+                }else{
+                    parentElement.find('.errorText').remove();
+                    jQuery('[id$=pwdv6conf]').prop('disabled', false);
+                }            
+                validatePage2Submit();
+            }
+        }
+        
+        function checkCIError(){
+            var errorMsgCI = jQuery('[id$=ciError]').val();
+            var ciErrMsg = document.getElementById("dispCIMsgId");
+            if(errorMsgCI != ''){    
+                ciErrMsg.innerHTML = '<h style="color:red;font-weight:bold;">'+errorMsgCI+'</h>';
+                 $('html, body').animate({
+                     scrollTop: $('#customerDetailsTable').offset().top
+                 },1000);
+                
+                 var md5v4 = jQuery('[id$=pwdv4]').val();
+                 var md5v4re = jQuery('[id$=pwdv4conf]').val();
+                 if((md5v4!='') || (md5v4!=null)){
+                     jQuery('[id$=pwdv4]').val('');
+                     jQuery('[id$=pwdv4conf]').val('');
+                 }
+                 
+                 var md5v6 = jQuery('[id$=pwdv6]').val();
+                 var md5v6re = jQuery('[id$=pwdv6conf]').val();
+                 if((md5v6!='') || (md5v6!=null)){
+                     jQuery('[id$=pwdv4]').val('');
+                     jQuery('[id$=pwdv4conf]').val('');
+                 }
+                 
+            }else{
+                ciErrMsg.innerHTML="";
+            }
+        } 
+
+        function checkSpaceOnly(e){
+            var unicode=e.charCode? e.charCode : e.keyCode
+            if (unicode!=8){ //if the key isn't the backspace key (which we should allow)
+                if (unicode==32) //if not a number
+                    return false; //disable key press
+            }
+        }
+      //Ends MD5 password validation
+    </script>
+</apex:page>

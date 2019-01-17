@@ -1,0 +1,290 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    <style>
+    @font-face {
+        font-family: 'Portal-Fonts';
+        src:    url('{!URLFOR($Resource.icon_fonts,"/Portal-Fonts.eot?ho7d1w")}');
+        src:    url('{!URLFOR($Resource.icon_fonts,"/Portal-Fonts.eot?ho7d1w#iefix")}') format('embedded-opentype'),
+                url('{!URLFOR($Resource.icon_fonts,"/Portal-Fonts.ttf?ho7d1w")}') format('truetype'),
+                url('{!URLFOR($Resource.icon_fonts,"/Portal-Fonts.woff?ho7d1w")}') format('woff'),
+                url('{!URLFOR($Resource.icon_fonts,"/Portal-Fonts.svg?ho7d1w#Portal-Fonts")}') format('svg');
+        font-weight: normal;
+        font-style: normal;
+    }
+
+    i {
+        /* use !important to prevent issues with browser extensions that change fonts */
+        font-family: 'Portal-Fonts' !important;
+        speak: none;
+        font-style: normal;
+        font-weight: normal;
+        font-variant: normal;
+        text-transform: none;
+        line-height: 1;
+
+        /* Better Font Rendering =========== */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    .grow-body .promo h4,
+    .products-body .promo h4 {
+        font-size: 22px !important; 
+    }
+
+
+    .att-icon-bi-fold:before {
+    content: "\e905";
+    }
+
+        content: "\e903";
+    }
+    .att-icon-one-page:before {
+        content: "\e908";
+    }
+    
+    .updateCustomer {
+        cursor: default;
+    }
+
+    .updateCustomer {
+        cursor: default;
+    }
+    .updateCustomer h4,
+    .updateCustomer .file-png {
+        cursor: pointer;
+    }
+    .updateCustomer h4 {
+        display: inline-block;
+    }
+
+    .document-file {
+        position: relative;
+    }
+    /*.details {
+        width: 65% !important;
+        float: left !important;
+    }*/
+
+    .product-promo-content,
+    .template-promo-content {
+        display: none;
+    }
+
+    .promo-link {
+        position: relative;
+        padding-bottom: 47px !important; 
+        text-align: left !important;
+    }
+
+    .promo-link span {
+        position: absolute; 
+        bottom: 0px; 
+        width: 100%;
+    }
+    .promo-link img {
+        left: 20px;
+        position: absolute;
+        top: 25%;
+    }
+
+    .promo-link-text {
+        position: absolute;
+        left: 160px;
+        top: 25% !important; 
+        width: 65%;
+    }
+
+    .promo-link.active:after {
+        position: absolute;
+        bottom: -12px; 
+        left: 50%;
+        margin-left: -20px; 
+        content: "";
+        width: 0; 
+        height: 0; 
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-top: 20px solid #00688f;
+        z-index: -1;
+    }
+
+    .transp-bg {
+        background-color: rgba(0,0,0,0.3);
+    }
+
+    .learn-more {
+        text-align: center !important;
+        padding-top: 7px !important; 
+        padding-bottom: 7px !important; 
+    }
+
+    .promo-divider {
+        background-color: #fff;
+        height: 84%;
+        left: 122px;
+        position: absolute;
+        top: 0;
+        width: 2px;
+    }
+
+    .att-icon {
+        color: #fff;
+        font-size: 64px;
+        left: 35px;
+        position: absolute;
+        top: 24%;
+    }
+
+    @media only screen and (max-width: 1170px) {
+        .promo-divider {
+            height: 79%;
+        }
+    }
+
+    
+
+    </style>
+    <!-- GLOBAL HEADER INCLUDE -->
+    <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" /> 
+    <!-- ADDITIONAL INCLUDES FOR HEADER -->
+    <apex:stylesheet value="{!$Resource.products_css}"/>
+    <apex:form >
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="hero-grow-campaign jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                    <h1 class="hero_badge_1">{!$Label.Ad_Builder}</h1>
+                    <h2 class="hero_badge_2">Create customized marketing materials.</h2>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+
+    <!-- BODY SLICE -->
+    <div class="grow-body col-sm-12">
+        <div class="row">         
+            <div class="contentCol body-load-content" style="margin:0 6%;">
+                <!-- Tab panes -->
+              
+                
+
+                <!-- FIXME: need to show/hide correct tabs, Tab: Oveview; Tab: Bi-fold; Tab: One-page --> 
+              
+                <!-- Tab: Overview, active tabbed conent when user visits Campaign Builder from the Grow subnav -->
+                <div class="tab-content">
+                    <!-- Intro -->
+                    <h2>How {!$Label.Ad_Builder} works for you.</h2>
+                    <p class="mb-40">Develop promotional materials with co-branding tools from AT&amp;T. {!$Label.Ad_Builder} creates attractive sales materials that help your business standout. Use pre-approved templates to create PDFs featuring the AT&amp;T brand and your logo and customize your call-to-action through an easy-to-use, automated interface.</p>
+                    <h3>With {!$Label.Ad_Builder}, you can:</h3>
+                    <ul class="has_bullets">
+                        <li>Customize ad collateral for your customers</li>
+                        <li>Choose from co-branded and pre-approved materials</li>
+                        <li>Select from pre-formatted text and a variety of options</li>
+                        <li>Create print-quality, high-resolution PDFs</li>
+                    </ul>
+
+                    <hr class="blue_hr mt-40 mb-40" />
+                    
+                    <div class="section-indent template-promo">
+                        <h2>Collateral templates available for you:</h2>
+                        <p class="mb-40">Create attractive sales materials to help your buisness standout.</p>
+                        <div class="row">
+
+                            <div class="col-lg-6">
+                                <a href="/apex/Campaign_Builder_biFold" class="promo promo-link text-center bg-blue">
+                                    <i class="att-icon att-icon-bi-fold"></i>
+                                    <div class="promo-divider"></div>
+                                    <div class="promo-link-text">
+                                        <h4>Bi-fold Sales Brochure</h4>
+                                        <p>Showcase your AT&amp;T solution set with a 4-sided brochure.</p>   
+                                    </div>
+                                    <span class="transp-bg learn-more">Learn More</span>
+                                </a>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <a href="/apex/Campaign_Builder_onePage" class="promo promo-link text-center bg-lt-blue">
+                                    <i class="att-icon att-icon-one-page"></i>
+                                    <div class="promo-divider"></div>    
+                                    <div class="promo-link-text">
+                                        <h4>One-page Product Sheets</h4>
+                                        <p>Share quick insights on your product offerings and services powered by AT&amp;T.</p>
+                                    </div>
+                                    <span class="transp-bg learn-more">Learn More</span>
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END Tab: Overview -->
+
+
+                <!-- Content that shows throughout all the Campaign Builder views -->
+                <hr class="blue_hr mt-40" />
+
+                <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-resources.png')}" />Additional resources to help with your campaign&nbsp;needs</h3>
+                <!-- Document List: Resources -->
+                <apex:outputPanel >   
+                     <apex:repeat value="{!DocMapCampaignResources}" var="docMap"> 
+                        <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}"  target="_blank" styleClass="document-file">                        
+                            <div class="document-row mb-30">
+                                <div class="file-type file-{!docMap.type}"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!docMap.Name}"/></h4>                            
+                                    <p><apex:outputText value="{!docMap.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>         
+                    </apex:repeat>   
+                </apex:outputPanel>
+            </div>
+        </div>
+    </div>
+    </apex:form>
+    <!-- END BODY SLICE -->
+    
+    <!-- GLOBAL FOOTER INCLUDE -->
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+
+    <script>
+        $(".updateCustomer h4, .updateCustomer .file-png").on("click", function () {
+             $('#IRU_RegisterCustomer').modal('show');
+        });
+        $(".mobileService h4, .mobileService .file-png").on("click", function () {
+             $('#mobileService').modal('show');
+        });
+        hostingService
+         $(".hostingService h4, .hostingService .file-png").on("click", function () {
+             $('#hostingService').modal('show');
+        });
+
+
+         $(".promo-link").on("click", function () {
+            $(this).addClass("active");
+            $(".promo-link").not(this).removeClass("active");
+         });
+
+        $(".product-promo .promo-link").on("click", function () {
+            var myContent = $(this).attr("data-content");
+            $(".product-promo-content").hide();
+            $("."+myContent+"").show();
+        });
+
+        $(".template-promo .promo-link").on("click", function () {
+            var myContent = $(this).attr("data-content");
+            $(".template-promo-content").hide();
+            $("."+myContent+"").show();
+        });
+
+        $("[data-js='modal']").click( function (e) {
+            e.preventDefault()
+            var myAsset = $(this).attr("href");
+            $("body").append("<div class='global-modal-container' style='position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; background-color: rgba(0,0,0,0.5);'><div class='global-modal-content' style='color: #fff;'></div></div>");
+            $(".global-modal-content").load(""+myAsset+"");
+        });     
+    </script>
+</apex:page>

@@ -1,0 +1,35 @@
+<apex:page controller="OffCartDealController" showHeader="false" sidebar="false" tabStyle="Opportunity" standardStylesheets="true" >
+<script>
+function saveandCloseChildWindow(){
+    window.close(); 
+}
+window.onunload = function (e) {
+        window.opener.reloadParentWindow();
+};   
+</script>
+    <apex:form >
+        <apex:pageBlock >
+            <apex:pageBlockSection title="Enter the site details">
+                <apex:inputField value="{!createSite.SPProduct__c}"/>
+                <apex:inputField value="{!createSite.Address__c}"/>
+                <apex:inputField value="{!createSite.City__c}"/>
+                <apex:inputField value="{!createSite.State__c}"/>
+                <apex:inputField value="{!createSite.Country__c}"/>
+                <apex:inputField value="{!createSite.Zip__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <center>
+            <apex:commandButton value="Save" action="{!insertSite}" oncomplete="{javascript:window.close();}" status="loader"/>
+            <apex:commandButton value="Close" onclick="{javascript:window.close();}" />
+        </center>
+        <center>
+            <apex:actionstatus id="loader">
+                <apex:facet name="start">
+                    <div class="processingDiv" id="loaderContainer" > 
+                        <img src="{!$Resource.pleasewait_loader}" />
+                    </div>
+                </apex:facet> 
+             </apex:actionstatus>
+         </center>
+    </apex:form>
+</apex:page>

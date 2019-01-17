@@ -1,0 +1,345 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="ContactPrototypeController">
+    <style type="text/css">
+    </style>
+    <apex:form styleClass="escalations-form">
+        <apex:inputText value="{!Topic}" styleClass="topic-field internal hidden" />
+        <apex:inputText value="{!Category}" styleClass="category-field internal hidden" />    
+        <apex:inputText value="{!Subject}" styleClass="subject-field internal hidden"/>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-back-link">Back</div>
+                <div class="row">
+                    <div class="col-md-12 additional-links">
+                        <h1>Helpful Links</h1>
+                        <ol>
+                            <apex:outputPanel >   
+                                <apex:repeat value="{!DocMapSDRDSAssistance}" var="docMap"> 
+                                    <li>
+                                        <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                                            <apex:outputText value="{!docMap.Name}"/>
+                                        </apex:outputLink>        
+                                    </li>
+                                </apex:repeat>    
+                            </apex:outputPanel>
+                        </ol> 
+                    </div>
+                </div>
+            </div>  
+            <div class="col-md-8">
+                <h1 class="topic-form-title"></h1>
+                <div class="form-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label>Product</label>
+                            <apex:selectList styleClass="product-felement required" size="1" value="{!Product}">
+                                <apex:selectoption itemValue="none" itemLabel="Select"></apex:selectoption>
+                                <apex:selectoption itemValue="AIA" itemLabel="AIA - AT&T Internet Access (DSL, Broadband)"></apex:selectoption>
+                                <apex:selectoption itemValue="ANIRA with AVPN" itemLabel="ANIRA with AVPN (AT&T Network-Based IP VPN Remote Access)"></apex:selectoption>
+                                <apex:selectoption itemValue="ANIRA with PNT" itemLabel="ANIRA with PNT (AT&T Network-Based IP VPN Remote Access)"></apex:selectoption>
+                                <apex:selectoption itemValue="ASE" itemLabel="ASE - AT&T Switched Ethernet"></apex:selectoption>
+                                <apex:selectoption itemValue="AVPN" itemLabel="AVPN - AT&T Virtual Private Network"></apex:selectoption>
+                                <apex:selectoption itemValue="IPFLEX" itemLabel="IPFLEX - IP Flexible Reach (VOIP)"></apex:selectoption>
+                                <apex:selectoption itemValue="MIS/PNT" itemLabel="MIS/PNT -  Managed Internet Service / Private Network Transport"></apex:selectoption>
+                                <apex:selectoption itemValue="NBFW" itemLabel="NBFW - Network Based Firewall"></apex:selectoption>
+                            </apex:selectList>
+                        </div>
+                        <div class="col-md-6"></div>
+                    </div>
+                    <div class="mobility-takeout">
+                        <div class="row opportunity-id-container">
+                            <div class="col-md-6">
+                                <label>Opportunity ID</label>
+                                <apex:inputText value="{!Opportunity_ID}" styleClass="required"/> 
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Issue Type</label>
+                                 <apex:selectList value="{!Issue_Type}" size="1" styleClass="issue-type required">
+                                    <apex:selectoption itemLabel="Select" itemValue="none"></apex:selectoption>
+                                    <apex:selectoption itemLabel="General RDS Question" itemValue="General RDS Question"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Technical RDS Question" itemValue="Technical RDS Question"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Network Design" itemValue="Network Design"></apex:selectoption>
+                                </apex:selectList>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>End Customer</label>
+                                <apex:inputText value="{!End_Customer_Company_Name}" maxlength="255" styleClass="" />
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Customer PON</label>
+                                <apex:inputText value="{!SP_Internal_Ticket_Number}" maxlength="255" styleClass=""/>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Street</label>
+                                <apex:inputText value="{!Service_Address_Street}" maxlength="255" styleClass="required" />
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>City</label>
+                                <apex:inputText value="{!Service_Address_City}" maxlength="255" styleClass="required" />
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>State</label>
+                                <apex:selectList size="1" value="{!Service_Address_State}" styleClass="required">
+                                    <apex:selectoption itemLabel="Select" itemValue="none"></apex:selectoption>
+                                    <apex:selectoption itemLabel="AL" itemValue="AL"></apex:selectoption>
+                                    <apex:selectoption itemLabel="AK" itemValue="AK"></apex:selectoption>
+                                    <apex:selectoption itemLabel="AZ" itemValue="AZ"></apex:selectoption>
+                                    <apex:selectoption itemLabel="AR" itemValue="AR"></apex:selectoption>
+                                    <apex:selectoption itemLabel="CA" itemValue="CA"></apex:selectoption>
+                                    <apex:selectoption itemLabel="CO" itemValue="CO"></apex:selectoption>
+                                    <apex:selectoption itemLabel="CT" itemValue="CT"></apex:selectoption>
+                                    <apex:selectoption itemLabel="DE" itemValue="DE"></apex:selectoption>
+                                    <apex:selectoption itemLabel="FL" itemValue="FL"></apex:selectoption>
+                                    <apex:selectoption itemLabel="GA" itemValue="GA"></apex:selectoption>
+                                    <apex:selectoption itemLabel="HI" itemValue="HI"></apex:selectoption>
+                                    <apex:selectoption itemLabel="ID" itemValue="ID"></apex:selectoption>
+                                    <apex:selectoption itemLabel="IL" itemValue="IL"></apex:selectoption>
+                                    <apex:selectoption itemLabel="IN" itemValue="IN"></apex:selectoption>
+                                    <apex:selectoption itemLabel="IA" itemValue="IA"></apex:selectoption>
+                                    <apex:selectoption itemLabel="KS" itemValue="KS"></apex:selectoption>
+                                    <apex:selectoption itemLabel="KY" itemValue="KY"></apex:selectoption>
+                                    <apex:selectoption itemLabel="LA" itemValue="LA"></apex:selectoption>
+                                    <apex:selectoption itemLabel="ME" itemValue="ME"></apex:selectoption>
+                                    <apex:selectoption itemLabel="MD" itemValue="MD"></apex:selectoption>
+                                    <apex:selectoption itemLabel="MA" itemValue="MA"></apex:selectoption>
+                                    <apex:selectoption itemLabel="MI" itemValue="MI"></apex:selectoption>
+                                    <apex:selectoption itemLabel="MN" itemValue="MN"></apex:selectoption>
+                                    <apex:selectoption itemLabel="MS" itemValue="MS"></apex:selectoption>
+                                    <apex:selectoption itemLabel="MO" itemValue="MO"></apex:selectoption>
+                                    <apex:selectoption itemLabel="MT" itemValue="MT"></apex:selectoption>
+                                    <apex:selectoption itemLabel="NE" itemValue="NE"></apex:selectoption>
+                                    <apex:selectoption itemLabel="NV" itemValue="NV"></apex:selectoption>
+                                    <apex:selectoption itemLabel="NH" itemValue="NH"></apex:selectoption>
+                                    <apex:selectoption itemLabel="NJ" itemValue="NJ"></apex:selectoption>
+                                    <apex:selectoption itemLabel="NM" itemValue="NM"></apex:selectoption>
+                                    <apex:selectoption itemLabel="NY" itemValue="NY"></apex:selectoption>
+                                    <apex:selectoption itemLabel="NC" itemValue="NC"></apex:selectoption>
+                                    <apex:selectoption itemLabel="ND" itemValue="ND"></apex:selectoption>
+                                    <apex:selectoption itemLabel="OH" itemValue="OH"></apex:selectoption>
+                                    <apex:selectoption itemLabel="OK" itemValue="OK"></apex:selectoption>
+                                    <apex:selectoption itemLabel="OR" itemValue="OR"></apex:selectoption>
+                                    <apex:selectoption itemLabel="PA" itemValue="PA"></apex:selectoption>
+                                    <apex:selectoption itemLabel="RI" itemValue="RI"></apex:selectoption>
+                                    <apex:selectoption itemLabel="SC" itemValue="SC"></apex:selectoption>
+                                    <apex:selectoption itemLabel="SD" itemValue="SD"></apex:selectoption>
+                                    <apex:selectoption itemLabel="TN" itemValue="TN"></apex:selectoption>
+                                    <apex:selectoption itemLabel="TX" itemValue="TX"></apex:selectoption>
+                                    <apex:selectoption itemLabel="UT" itemValue="UT"></apex:selectoption>
+                                    <apex:selectoption itemLabel="VT" itemValue="VT"></apex:selectoption>
+                                    <apex:selectoption itemLabel="VA" itemValue="VA"></apex:selectoption>
+                                    <apex:selectoption itemLabel="WA" itemValue="WA"></apex:selectoption>
+                                    <apex:selectoption itemLabel="WV" itemValue="WV"></apex:selectoption>
+                                    <apex:selectoption itemLabel="WI" itemValue="WI"></apex:selectoption>
+                                    <apex:selectoption itemLabel="WY" itemValue="WY"></apex:selectoption>
+                                </apex:selectList>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Zip</label>
+                                <apex:inputText value="{!Service_Address_Zip}" maxlength="255" styleClass="required" />
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Country</label>
+                                 <apex:selectList value="{!Service_Address_Country}" size="1" styleClass="country-felement required">
+                                    <apex:selectoption itemLabel="Select" itemValue="none"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Canada" itemValue="Canada"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Mexico" itemValue="Mexico"></apex:selectoption>
+                                    <apex:selectoption itemLabel="United States" itemValue="USA"></apex:selectoption>
+                                    <apex:selectoption itemLabel="other" itemValue="other"></apex:selectoption>
+                                  </apex:selectList>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row country-other">
+                            <div class="col-md-6">
+                                <label>Country (Other)</label>
+                                <apex:selectList value="{!Service_Address_Country_Other}" styleClass="country-other required" size="1">
+                                    <apex:selectoption itemLabel="Select" itemValue="none"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Argentina" itemValue="Argentina"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Australia" itemValue="Australia"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Austria" itemValue="Austria"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Belgium" itemValue="Belgium"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Brazil" itemValue="Brazil"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Bulgaria" itemValue="Bulgaria"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Canada" itemValue="Canada"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Chile" itemValue="Chile"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Colombia" itemValue="Colombia"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Costa Rica" itemValue="Costa Rica"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Croatia" itemValue="Croatia"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Cyprus" itemValue="Cyprus"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Czech Republic" itemValue="Czech Republic"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Denmark" itemValue="Denmark"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Dominican Republic" itemValue="Dominican Republic"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Ecuador" itemValue="Ecuador"></apex:selectoption>
+                                    <apex:selectoption itemLabel="El Salvador" itemValue="El Salvador"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Finland" itemValue="Finland"></apex:selectoption>
+                                    <apex:selectoption itemLabel="France" itemValue="France"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Germany" itemValue="Germany"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Greece" itemValue="Greece"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Guatemala" itemValue="Guatemala"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Honduras" itemValue="Honduras"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Hong Kong" itemValue="Hong Kong"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Hungary" itemValue="Hungary"></apex:selectoption>
+                                    <apex:selectoption itemLabel="India" itemValue="India"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Indonesia" itemValue="Indonesia"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Italy" itemValue="Italy"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Japan" itemValue="Japan"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Korea (Republic of)" itemValue="Korea (Republic of)"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Latvia" itemValue="Latvia"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Lithuania" itemValue="Lithuania"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Luxembourg" itemValue="Luxembourg"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Malaysia" itemValue="Malaysia"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Mexico" itemValue="Mexico"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Netherlands" itemValue="Netherlands"></apex:selectoption>
+                                    <apex:selectoption itemLabel="New Zealand" itemValue="Iceland"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Nicaragua" itemValue="Nicaragua"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Norway" itemValue="Iceland"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Pakistan" itemValue="Pakistan"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Panama" itemValue="Panama"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Peru" itemValue="Peru"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Philippines" itemValue="Philippines"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Portugal" itemValue="Portugal"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Puerto Rico" itemValue="Puerto Rico"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Romania" itemValue="Romania"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Singapore" itemValue="Singapore"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Slovakia (Slovak Republic)" itemValue="Poland"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Slovenia" itemValue="Poland"></apex:selectoption>
+                                    <apex:selectoption itemLabel="South Africa" itemValue="South Africa"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Switzerland" itemValue="Switzerland"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Sweden" itemValue="Sweden"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Taiwan, Province Of China" itemValue="Taiwan, Province Of China"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Thailand" itemValue="Thailand"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Turkey" itemValue="Turkey"></apex:selectoption>
+                                    <apex:selectoption itemLabel="United Kingdom" itemValue="United Kingdom"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Uruguay" itemValue="Uruguay"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Venezuela" itemValue="Venezuela"></apex:selectoption>
+                                </apex:selectList>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Access Type</label>
+                               <apex:selectList value="{!Access_Type}" size="1" styleClass="access-type required">
+                                    <apex:selectoption itemValue="none"  itemLabel="Select"></apex:selectoption>
+                                    <apex:selectoption itemValue="T1"  itemLabel="T1"></apex:selectoption>
+                                    <apex:selectoption itemValue="Ethernet"  itemLabel="Ethernet"></apex:selectoption>
+                                </apex:selectList>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Access Speed</label>
+                                <apex:selectList value="{!Access_Speed}" styleClass="access-speed required" size="1">
+                                    <apex:selectoption itemValue="none"  itemLabel="Select"></apex:selectoption>
+                                    <apex:selectoption itemValue="T1"  itemLabel="T1"></apex:selectoption>
+                                    <apex:selectoption itemValue="2xT1"  itemLabel="2xT1"></apex:selectoption>
+                                    <apex:selectoption itemValue="3xT1"  itemLabel="3xT1"></apex:selectoption>
+                                    <apex:selectoption itemValue="4xT1"  itemLabel="4xT1"></apex:selectoption>
+                                    <apex:selectoption itemValue="5xT1"  itemLabel="5xT1"></apex:selectoption>
+                                    <apex:selectoption itemValue="6xT1"  itemLabel="6xT1"></apex:selectoption>
+                                    <apex:selectoption itemValue="7xT1"  itemLabel="7xT1"></apex:selectoption>
+                                    <apex:selectoption itemValue="8xT1"  itemLabel="8xT1"></apex:selectoption>
+                                </apex:selectList>
+                                <apex:selectList value="{!Access_Speed_1}" styleClass="Ethernet-Speed required" size="1">
+                                    <apex:selectoption itemValue="none"  itemLabel="Select"></apex:selectoption>
+                                    <apex:selectoption itemValue="5 Mbps"  itemLabel="5Mbps"></apex:selectoption>
+                                    <apex:selectoption itemValue="10 Mbps"  itemLabel="10Mbps"></apex:selectoption>
+                                    <apex:selectoption itemValue="20 Mbps"  itemLabel="20Mbps"></apex:selectoption>
+                                    <apex:selectoption itemValue="50 Mbps"  itemLabel="50Mbps"></apex:selectoption>
+                                    <apex:selectoption itemValue="100 Mbps"  itemLabel="100Mbps"></apex:selectoption>
+                                    <apex:selectoption itemValue="250 Mbps"  itemLabel="250Mbps"></apex:selectoption>
+                                    <apex:selectoption itemValue="500 Mbps"  itemLabel="500Mbps"></apex:selectoption>
+                                    <apex:selectoption itemValue="600 Mbps"  itemLabel="600Mbps"></apex:selectoption>
+                                    <apex:selectoption itemValue="1 Gbps"  itemLabel="1Gbps"></apex:selectoption>
+                                    <apex:selectoption itemValue="10 Gbps"  itemLabel="10Gbps"></apex:selectoption>                                     
+                                </apex:selectList>                                
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row description-container">
+                            <div class="col-sm-7">
+                                <label>Description</label>
+                                <apex:inputTextarea styleClass="required" value="{!Description}" style="width: 260px; border-radius: 4px; height: 100px; padding: 0px; padding:10px; border: 1px solid #939393;"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mobility-selected">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Phone Number/CTN</label>
+                                <apex:inputText styleClass="required" value="{!Phone_Number_CTN}" maxlength="40"/>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Trouble Report</label>
+                                 <apex:inputTextarea styleClass="required" value="{!Trouble_Report}" style="width: 260px; border-radius: 4px; height: 100px; padding: 0px; padding:10px; border: 1px solid #939393;"/>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Contact's Name For This Case </label>
+                                <apex:inputText styleClass="required" value="{!Point_of_Contact_Name}" maxlength="255"/>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Contact's Telephone Number For This Case</label>
+                                <apex:inputText styleClass="required" value="{!Point_of_Contact_Telephone_Number}" maxlength="255"/>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>IMEI</label>
+                                <apex:inputText styleClass="required" value="{!IMEI}" maxlength="255"/>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>    
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-buttons">
+                        <div class="btn btn-default">Cancel</div>
+                        <input type="hidden"  id="external" name="external" value="1" />
+                        <div class="btn btn-primary submitToConfirm-button">Confirm</div>
+                        <apex:commandButton action="{!onSubmit}" styleClass="btn btn-primary submit-button" value="Quick Submit" reRender="true" />
+                    </div>
+                </div>
+            </div>  
+        </div>
+    </apex:form>
+
+<script type="text/javascript">
+    $(document).ready( function () {
+    });
+</script>
+
+</apex:page>

@@ -1,0 +1,125 @@
+<apex:page standardController="Promotion_Engine__c" extensions="CreateAutoRuleController"  action="{!LoadDataforEdit}" tabStyle="Promotion_Engine__c" >
+ <script>
+    function addFilterJS()
+    {
+    
+    addFilterLogicFunction();
+    }
+</script>
+
+<apex:sectionHeader subtitle="Edit {!$ObjectType.Promotion_Engine__c.label}" title="{!$ObjectType.Promotion_Engine__c.label}" />
+<apex:pagemessages ></apex:pagemessages>
+ 
+    <apex:form >
+    <apex:pageBlock mode="edit" >
+    <apex:actionFunction name="addFilterLogicFunction" action="{!addFilterLogicFunction}" reRender="filters" status="counterStatus"/>
+        <apex:pageblockButtons >
+            <apex:commandButton value="Save" action="{!FilterIface.Save}"  />
+            <apex:commandButton value="Cancel" action="{! CustomCancel}"     />
+        </apex:pageblockButtons>
+
+        <apex:pageBlockSection title="Please fill the promotion engine details" collapsible="false">
+                 
+                <apex:inputField value="{!FilterIface.view.Promotion_Name__c}" label="Rule Name *" />
+                <apex:inputField value="{!FilterIface.view.Promotion_Description__c}" />
+                <apex:inputField value="{!FilterIface.view.Activation_Date__c}" label="Rule Start Date *"/>
+                <apex:inputField value="{!FilterIface.view.Expiration_Date__c}" label="Rule End Date *"/>
+                <apex:inputField value="{!FilterIface.view.Currently_Active__c}" />
+                <apex:inputField value="{!FilterIface.view.Discount_Percentage__c}" label="Discount Percentage *"/>
+                <apex:inputField value="{!FilterIface.view.BCC_Code__c}" label="BCC Code *"/>
+                <apex:inputField value="{!FilterIface.view.Valid_For_Product__c}"/>
+                <apex:inputField value="{!FilterIface.view.Rank__c}" label="Rank *"/>
+                
+                <apex:inputField value="{!FilterIface.view.Deal_Reg_Discount_On_Success__c}"  />
+                <apex:inputField value="{!FilterIface.view.Deal_Reg_Discount_On_Failure__c}"/>
+                <apex:inputField value="{!FilterIface.view.Also_Apply_on_Failure__c}"  />
+                
+               <!--  <apex:inputField value="{!FilterIface.view.Category_Order__c}" label="Category order *"/> 
+                <apex:inputField value="{!FilterIface.view.Rule_Category__c}" label="Rule Category *"/> -->
+                
+             
+                
+            
+
+        </apex:pageblockSection>
+       
+        
+           
+        <apex:pageBlockSection id="filters"  collapsible="false" title="Please set the criteria"  columns="1" >
+            
+            
+        
+            
+            
+            <apex:pageblockSectionItem >
+                <apex:outputPanel >
+                    <apex:dataTable value="{!FilterIface.filters}" var="filter" >
+                         <apex:column style="font-weight: bold;padding: .25em;" rendered="{!(FilterIface.view.Is_Custom_Boolean_Logic__c)}">
+                           {!filter.filter.CriteriaNumber__c }. 
+                          
+                        </apex:column>
+                        <apex:column headerValue="Criteria Name" >
+                            <apex:inputText value="{!filter.CriteriaName}" />
+                        </apex:column>
+                        
+                        <apex:column style="padding: .25em;" headerValue="Field" >
+                            
+                             <apex:selectList value="{!filter.field}"   multiselect="false" size="1">
+                                 <apex:actionSupport event="onchange" action="{!filter.EventChange}" rerender="filters"/>
+                                <apex:selectOptions value="{!FilterIface.FieldList}"/>
+                            </apex:selectList> 
+                        </apex:column>
+                        <apex:column style="padding: .25em;width:140px;" headerValue="Operator"  >
+                             <apex:selectList style="width:100%" value="{!filter.Comparison}" multiselect="false" size="1">
+                                <apex:selectOptions value="{!filter.ComparisonsOptions}"/>
+                            </apex:selectList> 
+                        </apex:column>
+                        
+                         <apex:column id="dynamicValue" style="padding: .25em;width:140px;" headerValue="Value"  >
+                              
+                                  <apex:inputText rendered="{! if(filter.VisibleField = 'text' || filter.VisibleField = 'lookup'  || filter.VisibleField = 'Date'   ,true,false)}" value="{!filter.value}" />
+                                  <apex:inputText html-type="number" html-min="0" html-max="999999999999999" rendered="{! if(filter.VisibleField = 'decimal'   ,true,false)}" value="{!filter.value}" />
+                                  
+                                  <apex:selectList rendered="{! if(filter.VisibleField = 'picklist' ,true,false)}"   style="width:100%" value="{!filter.value}" multiselect="false" size="1">
+                                      <apex:selectOptions value="{!filter.SelOptions}"/>
+                                  </apex:selectList> 
+                                  <apex:selectList rendered="{! if(filter.VisibleField = 'boolean' ,true,false)}"   style="width:100%" value="{!filter.value}" multiselect="false" size="1">
+                                      <apex:selectOptions value="{!filter.BooleanOptions}"/>
+                                  </apex:selectList> 
+                         </apex:column>
+                         
+                      <!--  <apex:column headerValue="Deal Reg Discount(Sum of all Passed Rules)"  >
+                            <apex:inputText value="{!filter.filter.Deal_Reg_Discount__c}"/>
+                        </apex:column> -->
+                    </apex:dataTable>
+                </apex:outputPanel>
+            </apex:pageblockSectionItem>
+                
+           <apex:pageBlockSectionItem rendered="{!NOT(FilterIface.view.Is_Custom_Boolean_Logic__c)}"  >
+            
+             <a onclick="addFilterJS();" ><b>Add Filter Logic...</b></a> 
+            
+           
+               
+            </apex:pageblockSectionItem>
+            <apex:pageblockSectionItem rendered="{! (FilterIface.view.Is_Custom_Boolean_Logic__c)}" >
+                <a onclick="addFilterJS();" ><b>Clear Filter Logic...</b></a>
+               
+            </apex:pageblockSectionItem>                 
+             <apex:actionStatus startText="Processing..." stopText="" id="counterStatus"/>
+            <apex:pageBlockSectionItem rendered="{! (FilterIface.view.Is_Custom_Boolean_Logic__c)}">
+             
+             <apex:inputText value="{!FilterIface.view.Boolean_Logic__c}" style="width:500px" />
+             
+            </apex:pageBlockSectionItem>
+           
+            
+     
+        </apex:pageblockSection>
+        
+        
+    
+    </apex:pageblock>
+</apex:form>
+ 
+</apex:page>

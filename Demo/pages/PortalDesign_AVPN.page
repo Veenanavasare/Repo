@@ -1,0 +1,149 @@
+<apex:page docType="html-5.0" controller="PortalDesignController" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />
+    <apex:stylesheet value="{!$Resource.products_css}"/>
+    <apex:includeScript value="{!URLFOR($Resource.productMobileMenuJS)}" />
+    <apex:stylesheet value="{!$Resource.peCustom}" />
+    <style type="text/css">
+        .video-cont {
+            display: none;
+        }
+    </style>
+     <!-- REDIRECTION LOGIC FOR UNAUTHORIZED ACCESS -->
+    <script>
+            redirectToUnauthorizedAccessPage();
+    
+            function redirectToUnauthorizedAccessPage() {
+                // for maintenance page redirection
+                var byPassFreeze = "{!isAVPN}";            
+                if (byPassFreeze == 'false') {
+                    window.location="/apex/UnauthorizedAccess";
+                }
+            }
+        
+    </script>
+    <!-- END REDIRECTION LOGIC FOR UNAUTHORIZED ACCESS --> 
+    <script type="text/javascript"  src="{!URLFOR($Resource.newsroomplayer2, 'amp/amp.min.js')}?amp-defaults={!$Resource.prodVideoXML3}"></script>             
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="avpn jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                    <h1 class="hero_badge_1">{!$Label.Virtual_Private_Network}</h1>
+                    <h2 class="hero_badge_2">Stay connected virtually anytime, anywhere on nearly any device.</h2>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+    
+    <!-- BODY SLICE -->
+    <div class="products-body col-sm-12 product-page AVPN">
+        <div class="row">
+            <div class="leftNavCol col-sm-3">
+                <div class="leftNav">
+                    <ul class="" role="tablist">
+                        <li class="active" data-page="PortalDesign_AVPN_Overview"><a class="btn btn-link" href="#PortalDesign_AVPN_Overview" role="tab" data-toggle="tab">Overview</a></li>
+                        <li class="" data-page="PortalDesign_AVPN_Learn"><a class="btn btn-link" href="#PortalDesign_AVPN_Learn" role="tab" data-toggle="tab">Learn More</a></li>
+                        <li class="" data-page="PortalDesign_AVPN_Start"><a class="btn btn-link" href="#PortalDesign_AVPN_Start" role="tab" data-toggle="tab">Get Started</a></li>
+                        <li class="" data-page="PortalDesign_AVPN_Pricing"><a class="btn btn-link" href="#PortalDesign_AVPN_Pricing" role="tab" data-toggle="tab">Pricing</a></li>
+                    </ul><!-- Nav tabs -->
+                </div>
+
+                <div class="mobile-content-menu">
+                    <div class="dropdown-label" data-status="closed">
+                        Overview 
+                        <span class="ionicons ion-ios7-arrow-down" style="position: relative; top: 3px; left: 7px; "></span>
+                    </div>
+                    <ul class="mobile-dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                        <a data-page="PortalDesign_AVPN_Overview" role="menuitem" href="#PortalDesign_AVPN_Overview" ><li role="presentation">Overview</li></a>
+                        <a data-page="PortalDesign_AVPN_Learn" role="menuitem" href="#PortalDesign_AVPN_Learn" ><li role="presentation">Learn More</li></a>
+                        <a data-page="PortalDesign_AVPN_Start" role="menuitem" href="#PortalDesign_AVPN_Start"><li role="presentation">Get Started</li></a>
+                        <a data-page="PortalDesign_AVPN_Pricing" role="menuitem" href="#PortalDesign_AVPN_Pricing"><li role="presentation">Pricing</li></a>            
+                    </ul>
+                </div>
+            </div>            
+            <div class="contentCol col-sm-8 body-load-content">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div class="tab-pane active" id="overview">
+                        <div class="page-include PortalDesign_AVPN_Overview"><apex:include pageName="PortalDesign_AVPN_Overview" id="PortalDesign_AVPN_Overview" />  </div>
+                        <div class="page-include PortalDesign_AVPN_Learn"><apex:include pageName="PortalDesign_AVPN_Learn" id="PortalDesign_AVPN_Learn" /> </div>
+                        <div class="page-include PortalDesign_AVPN_Start"><apex:include pageName="PortalDesign_AVPN_Start" id="PortalDesign_AVPN_Start" /> </div>
+                        <div class="page-include PortalDesign_AVPN_Pricing"><apex:include pageName="PortalDesign_AVPN_Pricing" id="PortalDesign_AVPN_Pricing" />  </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="{!URLFOR($Resource.ProductVideos_JSON)}"></script>
+
+
+    <!-- Script for Akamai Video -->
+    <script type="text/javascript">
+    
+      // VIDEO LIST CONTROLLER
+        $(".video-cont:eq(0)").show();
+        var videoLink = $("[data-video]");
+        var videoCont = $(".video-cont");
+        videoLink.on("click", function() {
+            var myVid = $(this).attr("data-video");
+            videoCont.hide();
+            $("."+myVid).show();
+
+        });
+        
+        
+        // $.each(ProductVideos, function (property, value) {
+        //     if(value.product == "avpn"){
+        //         var vidLink = '<li><a class="video-link" data-description="'+value.description+'" data-hls="'+value.hls+'" data-hds="'+value.hds+'">'+value.title+'</a></li>'
+        //        $(".video-list").append(vidLink);
+        //     }
+        // });
+
+        // $(document).delegate(".poster","click", function () {
+        //   vidContainer = $(this).parents(".video-container").attr("id");
+        //   HLS = $(this).attr("data-hls");
+        //   HDS = $(this).attr("data-hds");
+
+        //   vidPlayer(vidContainer, HLS, HDS);
+        //   $(this).fadeOut(200);
+        // });
+
+        // $(document).delegate(".video-link","click", function () {
+        //   vidContainer = $(".video-container:visible").attr("id");
+        //   var description  = $(this).attr("data-description");
+        //   HLS = $(this).attr("data-hls");
+        //   HDS = $(this).attr("data-hds");
+
+        //   $(".video-desc").html(description);
+        //   $(".akamai-video-layer:visible, .akamai-overlays-layer:visible").remove();
+
+        //   vidPlayer(vidContainer, HLS, HDS);
+        //   $(".poster:visible").fadeOut(200);
+        // });
+
+        // function vidPlayer(vidContainer, HLS, HDS){   
+        //     var config_overrides = 
+        //     {
+        //         autoplay: true,
+        //         media: 
+        //         {
+        //             source: 
+        //             [
+        //                {src: HDS, type: "video/f4m"},
+        //                {src: HLS, type: "application/x-mpegURL"}
+        //             ] 
+        //         }
+        //     };
+        //     amp = new akamai.amp.AMP(""+vidContainer+"", config_overrides);    
+        //     console.log("ampOBJ");
+        //     console.log(amp);
+        //     // amp.controls.player.play();          
+        // }
+    </script>
+    <apex:includescript value="{!$Resource.LeftNav_Controller}" />
+    <!-- END BODY SLICE -->
+    
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+</apex:page>

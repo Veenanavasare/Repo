@@ -1,0 +1,34 @@
+<apex:page StandardController="Opportunity" extensions="SIDealExtensionPageController" Id="DealExtensionPage"  showHeader="true" sidebar="true" >   
+    
+    <style>     
+        .classNameForPageBlockSection
+        {     
+            bgcolor: yourcolorcode !important;        
+        }
+    </style>
+    
+  <apex:form id="DealExtensionForm" >  
+      <apex:pageMessages ></apex:pageMessages>
+      <apex:outputPanel id="DealExtensionOutPutPanel">
+          <h1> Deal Extension Page </h1>
+          <apex:pageBlock id="DealExtensionPageblock">
+             <apex:pageBlockSection title="Deal Extension" id="DealExtensionPageBlockSection" >                  
+                  <apex:outputText label="Current Deal Status" value="{!opty.StageName}" id="StageDisplay"  /> 
+                  <apex:outputText label="Current Quote Expiration Date" value="{!currentDate}" id="ExpirationDate"/>
+                  <br></br>
+              </apex:pageBlockSection> 
+              <b>
+             <div align="center">
+                 <apex:outputLabel >Do you want to extend the expiration date by 3 months? The Quote Expiration date will be updated to {!updatedDate}</apex:outputLabel>
+             </div>
+             </b>
+             <br></br>
+              </apex:pageBlock>
+              <div align="center">
+              <apex:commandButton value="Yes" action="{!approveDealExtension}"/>  
+              <apex:commandButton value="No" action="{!denyDealExtension}"/> 
+              <apex:commandButton value="Cancel" action="{!goBackToOpty}"/>   
+              </div>                                                                     
+      </apex:outputPanel>
+  </apex:form>
+</apex:page>

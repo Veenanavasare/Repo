@@ -1,0 +1,204 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+ 
+    <style>
+    .updateCustomer {
+        cursor: default;
+    }
+    .updateCustomer h4,
+    .updateCustomer .file-png {
+        cursor: pointer;
+    }
+    .updateCustomer h4 {
+        display: inline-block;
+    }
+
+    .body-load-content h2, 
+    .sub-h2 {
+        margin-bottom: 40px !important; 
+    }
+
+    .document-file {
+        position: relative;
+    }
+    /*.details {
+        width: 65% !important;
+        float: left !important;
+    }*/
+    .linkedButton {
+       position: absolute;
+       right: 30px; 
+       top: 50%;
+       margin-top: -17px;
+        padding: 10px 20px;
+        font-family: clearviewattregular;
+        color: #FFF;
+        background: #056FAB none repeat scroll 0% 0%;
+        border: 0px none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .linkedButton:hover {
+        background-color: #3BC1F4;
+    }
+
+    .product-promo-content,
+    .template-promo-content {
+        display: none;
+    }
+
+    .promo-link {
+        position: relative;
+        padding-bottom: 40px;
+    }
+
+    .promo-link span {
+        position: absolute; 
+        bottom: 0px; 
+        width: 100%;
+    }
+
+    .promo-link.active:after {
+        position: absolute;
+        bottom: -12px; 
+        left: 50%;
+        margin-left: -20px; 
+        content: "";
+        width: 0; 
+        height: 0; 
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-top: 20px solid #00688f;
+        z-index: -1;
+    }
+    .contentCol {
+        padding-top: 20px !important; 
+    } 
+
+
+    </style>
+    <!-- GLOBAL HEADER INCLUDE -->
+    <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" /> 
+    <!-- ADDITIONAL INCLUDES FOR HEADER -->
+    <apex:stylesheet value="{!$Resource.products_css}"/>
+    <apex:form >
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="hero-grow-campaign jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                    <h1 class="hero_badge_1">{!$Label.Ad_Builder}</h1>
+                    <h2 class="hero_badge_2">Make your message count.</h2>
+                </div>
+            </div>  
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+
+    <!-- BODY SLICE -->
+    <div class="grow-body col-sm-12">
+        <div class="row">         
+            <div class="contentCol body-load-content" style="margin:0 6%;">
+                <!-- Tab panes -->
+                  <div class="tab-content bi-fold-sales-brochure">
+                    <a href="/apex/Campaign_Builder">&lt; Back to {!$Label.Ad_Builder} Overview</a> <BR /><BR /><BR />
+                    <h2>Bi-fold Sales Brochure</h2>
+                    <p class="sub-h2">Introduce your relationship with AT&amp;T Partner Exchange to your end-customers, and highlight the integrated solutions that you offer to help solve their business needs.</p>
+                    <apex:outputPanel styleClass=" ">   
+                         <apex:repeat value="{!DocMapCampaignBiFold}" var="docMap"> 
+                           <apex:outputLink styleClass="document-file BiFold"  value="javascript:void(0)">                             
+                              <div class="document-row mb-30">
+                                    <div class="file-type file-{!docMap.type}" BiFold-id="{!docMap.id}"></div>
+                                    <div class="details">
+                                        <h4 BiFold-id="{!docMap.id}"><apex:outputText value="{!docMap.Name}"/></h4>  
+                                        <p><apex:outputText value="{!docMap.description}"/></p> 
+                                        <span onclick="submitFormMethod('{!keyMapBiFoldURL[docMap.DeveloperName]}')" class="linkedButton">Customize</span>                                                                                                       
+                                    </div>                                     
+                                </div>                                
+                            </apex:outputLink> 
+                               <div id="BiFold_{!docMap.id}"  class="modal fade" aria-hidden="true">
+                                  <div class="modal-dialog modal-lg">   
+                                        <div class="modal-content"><button type="button" class="close" data-dismiss="modal">&times;</button>                                        
+                                             <apex:image url="{!fileURL}+{!docMap.id}" styleClass="infographic mb-30" width="100%" />                                                                                      
+                                        </div>
+                                  </div>
+                             </div> 
+                        </apex:repeat>   
+                    </apex:outputPanel>    
+                </div>
+
+
+                <!-- Content that shows throughout all the Campaign Builder views -->
+                <hr class="blue_hr mt-40" />
+
+                <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-resources.png')}" />Additional resources to help with your campaign&nbsp;needs</h3>
+                <!-- Document List: Resources -->
+                <apex:outputPanel >   
+                     <apex:repeat value="{!DocMapCampaignResources}" var="docMap"> 
+                        <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}"  target="_blank" styleClass="document-file">                        
+                            <div class="document-row mb-30">
+                                <div class="file-type file-{!docMap.type}"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!docMap.Name}"/></h4>                            
+                                    <p><apex:outputText value="{!docMap.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>         
+                    </apex:repeat>   
+                </apex:outputPanel>
+            </div>
+        </div>
+    </div>
+    </apex:form>
+    <!-- END BODY SLICE -->
+    
+    <!-- GLOBAL FOOTER INCLUDE -->
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+
+    <script>
+        
+         $(".BiFold h4, .BiFold .file-jpg").on("click", function () {
+             var BiFoldId = $(this).attr("BiFold-id");
+             $('#BiFold_'+BiFoldId+'').modal('show');             
+        });
+
+         $(".promo-link").on("click", function () {
+            $(this).addClass("active");
+            $(".promo-link").not(this).removeClass("active");
+         });
+
+        $(".product-promo .promo-link").on("click", function () {
+            var myContent = $(this).attr("data-content");
+            $(".product-promo-content").hide();
+            $("."+myContent+"").show();
+        });
+
+        $(".template-promo .promo-link").on("click", function () {
+            var myContent = $(this).attr("data-content");
+            $(".template-promo-content").hide();
+            $("."+myContent+"").show();
+        });
+    
+        $("[data-js='modal']").click( function (e) {
+            e.preventDefault()
+            var myAsset = $(this).attr("href");
+            $("body").append("<div class='global-modal-container' style='position: absolute; top: 0px; left: 0px; height: 100%; width: 100%; background-color: rgba(0,0,0,0.5);'><div class='global-modal-content' style='color: #fff;'></div></div>");
+            $(".global-modal-content").load(""+myAsset+"");
+        });
+
+        function submitFormMethod(url){
+            $( "#poster" ).remove();
+            var parts = url.split('?');
+            var url = parts[0];
+            var params = parts[1].split('&');
+            var pp, inputs = '';
+            for(var i = 0, n = params.length; i < n; i++) {
+                pp = params[i].split('=');
+                inputs += '<input type="hidden" name="' + pp[0] + '" value="' + pp[1] + '" />';
+            }
+            $("body").append('<form action="'+url+'" method="post" id="poster" target="_blank">'+inputs+'</form>');
+            $("#poster").submit();        
+        }       
+    </script>
+</apex:page>

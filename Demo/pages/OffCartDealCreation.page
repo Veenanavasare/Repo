@@ -1,0 +1,350 @@
+<!----------------------------------------------------------------------------------------------------------------------------------
+@Author : Accenture IDC
+@Email : smarjit.debata@accenture.com
+@CreatedDate : 4th Nov 2014
+@Description : Visualforce page for Offcart Deal manual creation.
+------------------------------------------------------------------------------------------------------------------------------------>
+
+<apex:page controller="OffCartDealController" showHeader="false" sidebar="false" tabStyle="Opportunity" standardStylesheets="true" >
+<style>
+    .processingDiv{
+        width:190px;
+        height:52px;
+        background-color: rgba (255, 0, 0, 0.4);
+        position:fixed;
+        opacity:0.5;
+        top:50%;
+        left:50%;
+        margin-top:-150px; /* negative half the size of height */
+        margin-left:-150px; /* negative half the size of width */
+    }
+    
+    .opportunityTab .tertiaryPalette, .individualPalette .opportunityBlock .tertiaryPalette, .layoutEdit .individualPalette .opportunityBlock .tertiaryPalette {
+        background-color: #1797C0;
+        border-color: #1797C0;
+    }
+    .opportunityTab .secondaryPalette, .individualPalette .opportunityBlock .secondaryPalette {
+        background-color: #1797C0;
+        border-color: #1797C0;
+    }
+</style>
+
+<script>
+/**
+    <!-- Collapseble PageBlockSection on Page Load-->
+    **/
+
+    function addLoadEvent(func) {
+      var oldonload = window.onload;
+      if (typeof window.onload != 'function') {
+        window.onload = func;
+      } else {
+        window.onload = function() {
+          if (oldonload) {
+            oldonload();
+          }
+          func();
+        }
+      }
+    }
+
+    function dotwist() {
+         var pricingCounter = document.getElementById("pricingCounter").value;
+        //alert(pricingCounter);
+        //alert('Hi'+document.getElementById("{!$Component.pbMain.formProdPricing.pbsecProdPricing.pricingRepeater}"+':'+i+':'+"pbsecProdPricing").childNodes[0]);
+        for( var i = 0; i < pricingCounter; i++){
+            if(document.getElementById("{!$Component.pbMain.formProdPricing.pbsecProdPricing.pricingRepeater}"+':'+i+':'+"pbsecProdPricing") != null){
+                twistSection(document.getElementById("{!$Component.pbMain.formProdPricing.pbsecProdPricing.pricingRepeater}"+':'+i+':'+"pbsecProdPricing").childNodes[0].childNodes[0]);
+                document.getElementById("{!$Component.pbMain.formProdPricing.pbsecProdPricing.pricingRepeater}"+':'+i+':'+"pbsecProdPricing").style.backgroundColor = '#CDE8F0';
+                document.getElementById("{!$Component.pbMain.formProdPricing.pbsecProdPricing.pricingRepeater}"+':'+i+':'+"pbsecProdPricing").childNodes[0].style.backgroundColor = '#35B4E9';
+//                document.getElementById("{!$Component.pbMain.formProdPricing.pbsecProdPricing.pricingRepeater}"+':'+i+':'+"pbsecProdPricing").childNodes[0].childNodes[2].style.backgroundColor = '#35B4E9';
+            }
+        }
+    }
+
+    addLoadEvent(dotwist);
+</script>​
+
+<script>
+    var globalPoller = false;
+    var editWindow;
+    var editWindowURL;
+    var globalPollerPricing = false;
+    var editWindowPricing;
+    
+    function displayActionWindow(){
+        if( document.getElementById("radioNewOpptyOption").checked ){
+            //if( confirm('Are you sure that you want to go with new opportunity ?\n"Existing" option will be disabled.') ){
+                document.getElementById("newDealSection").style.display = 'block';
+                document.getElementById("existingDealSection").style.display = 'none';
+                document.getElementById("radioExistingOpptyOption").disabled = true;
+            //}else{
+             //   document.getElementById("radioNewOpptyOption").checked = false;
+            //}
+            //setActionMode('new');
+        }else if( document.getElementById("radioExistingOpptyOption").checked ){
+            //if( confirm('Are you sure that you want to go with existing opportunity ?\n"New" option will be disabled.') ){
+                document.getElementById("existingDealSection").style.display = 'block';
+                document.getElementById("newDealSection").style.display = 'none';
+                document.getElementById("radioNewOpptyOption").disabled = true;
+            //}else{
+              //  document.getElementById("radioExistingOpptyOption").checked = false;
+            //}
+            //setActionMode('existing');
+        }
+    }
+    
+    function openCreateProductWindow(){
+    
+        var childWindow = window.open('apex/SICreateNewProduct?lkid={!opptyId}','Create new product','width=1024,height=800,toolbar=0,menubar=0,location=0,status=1,scrollbars=1,resizable=0,left=0,top=0');
+        
+    }
+    
+    function openCreatePricingWindow(prodId){
+        var childWindow = window.open('apex/SICreateNewPricing?lkid='+prodId,'Create new product pricing','width=1024,height=800,toolbar=0,menubar=0,location=0,status=1,scrollbars=1,resizable=0,left=0,top=0');
+    }
+    
+    function reloadParentWindow(){
+        callBackAjaxMethod();
+    }
+    
+    function createViewAddressWindow(cmd, Ids){
+        if( cmd == 'c' ){
+        
+            var childWindow = window.open('apex/newaddresscreationpage?apid='+Ids,'Create new Address','width=1024,height=500,toolbar=0,menubar=0,location=0,status=1,scrollbars=1,resizable=0,left=0,top=0');
+        }else if( cmd == 'v' ){
+        
+            var childWindow = window.open('apex/addressdetailpage?proadd='+Ids,'View Address','width=1024,height=500,toolbar=0,menubar=0,location=0,status=1,scrollbars=1,resizable=0,left=0,top=0');
+        }
+    }
+    
+    function editSpProduct(cmd, Ids){
+        if( cmd == 'e' ){
+            globalPoller = true;
+            editWindow = window.open('apex/EditDetailPage?lkid='+Ids,'Create new product','width=1024,height=500,toolbar=0,menubar=0,location=0,status=1,scrollbars=1,resizable=0,left=0,top=0');
+            startPolling();
+        }else if( cmd == 'd' ){
+        //alert('IN'+Ids);
+            deleteThisProduct(Ids);
+        }
+    }
+    function callBackAjaxMethod(){
+        refreshSPProductList();
+        //refreshProductPricing();
+    }
+    
+    function reloadCurrentLocation(){
+        window.location.reload();
+    }
+    
+    function startPolling(){
+        alert("Please close the window after modifying the Product Details.");
+        var timer = setInterval(function(){
+            
+            if( globalPoller && editWindow.closed ){ 
+                globalPoller = false;
+                clearInterval(timer);
+                callBackAjaxMethod();
+            }
+        
+        }, 1000);
+    }
+    
+    function editPricing(cmd, Ids){
+        if( cmd == 'e' ){
+            globalPollerPricing = true;
+            editWindowPricing = window.open('apex/EditDetailPage?lkid='+Ids,'Create new product','width=1024,height=500,toolbar=0,menubar=0,location=0,status=1,scrollbars=1,resizable=0,left=0,top=0');
+            startPollingPricing();
+        }else if ( cmd == 'd' ){
+        
+            deleteThisPricing(Ids);
+        }
+    }
+    
+    function startPollingPricing(){
+        alert("Please close the window after modifying the Product Details.");
+        var timer = setInterval(function(){
+            
+            if( globalPollerPricing && editWindowPricing.closed ){ 
+                globalPollerPricing = false;
+                clearInterval(timer);
+                callBackAjaxMethod();
+            }
+        
+        }, 1000);
+    }
+    
+    function resetToHomePageCheck()
+    {
+        if( confirm( 'Are you sure that you want to go back to first page?\nAny unsaved item will be lost.' ) ){
+        
+            resetToHomePage();
+        }
+    }
+</script>
+    <apex:pageBlock id="pbMain" >
+        <apex:form >
+            <apex:actionFunction name="refreshSPProductList" action="{!fetchAndRefreshSPProductList}" rerender="pbtSPProductCreated,opProductPanel,pbtProdPricingCreated,opPricingPanel,parentProd" status="loader" oncomplete="dotwist();"/>
+            <apex:actionFunction name="deleteThisProduct" action="{!deleteSpProduct}" rerender="" oncomplete="refreshSPProductList()" status="loader" >
+                <apex:param assignTo="{!tobeDeletedProduct}" id="prodId" value="Ids" name="prod" />
+            </apex:actionFunction>
+            <apex:actionFunction name="deleteThisPricing" action="{!deleteProductPricing}" rerender="" oncomplete="refreshSPProductList()" status="loader" >
+                <apex:param assignTo="{!tobeDeletedPricing}" id="prodPricingId" value="Ids" name="prodPricing" />
+            </apex:actionFunction>
+            <apex:actionFunction name="resetToHomePage" action="{!resetToHomePage}" rerender="" status="loader"/>
+            <!--<apex:actionFunction name="refreshProductPricing" action="{!fetchAndRefreshPricingList}" rerender="" status="loader"/>-->
+        </apex:form>
+                 <apex:actionstatus id="loader">
+                    <apex:facet name="start">
+                        <div class="processingDiv" id="loaderContainer" > 
+                            <img src="{!$Resource.pleasewait_loader}" />
+                        </div>
+                    </apex:facet> 
+                 </apex:actionstatus>
+            <div style="padding-left:98%;width:100%;"><div style="width:5%;" onclick="resetToHomePageCheck();"> <img src="{!$Resource.turnoff}" title="Return to first page" alt="Turn Off" height="20px" width="20px"/></div> </div>     
+            <apex:outputPanel id="opOptionContainer" rendered="{!showPanel}">
+                    <input type="radio" name="checkOption" id="radioNewOpptyOption" onclick = "displayActionWindow();" /> &nbsp; New &nbsp;&nbsp; | &nbsp;&nbsp;
+                    <input type="radio" name="checkOption" id="radioExistingOpptyOption" onclick = "displayActionWindow();" /> &nbsp; Existing
+            </apex:outputPanel>
+                    <br />
+            <apex:form >
+                    <div id="newDealSection" style="display:none;" >
+                    <!--<apex:outPutPanel id="newDealSectionOP" title="New Opportunity">-->
+                        <table>
+                            <tr>
+                                <td><b>Opportunity Type</b><br /><apex:inputField value="{!oppty.RecordTypeId}" /></td>
+                                
+                                <td><b>Opportunity Name</b><apex:inputField value="{!oppty.Name}"/></td>
+                           
+                                <td><b>Stage</b><apex:inputField value="{!oppty.StageName}" /></td>
+                 
+                                <td><b>Close Date</b><apex:inputField value="{!oppty.CloseDate}" /></td>
+                                
+                                <td><b>List Price</b><br /><apex:inputField value="{!oppty.Amount}" /></td>
+                                
+                                <td><b>Account</b><br /><apex:inputField value="{!oppty.AccountId}" /></td>
+                                
+                                <td><b>Lead Source</b><br /><apex:inputField value="{!oppty.LeadSource}" /></td>
+                                
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="text-align:center"><apex:commandButton id="saveNewOpty" action="{!saveNewOpportunity}" value="Save"/></td>
+                            </tr>
+                        </table>
+                   <!-- </apex:outPutPanel>-->
+                    </div>
+                </apex:form>
+                <apex:form >
+                    <div id="existingDealSection" style="display:none;">
+                        <b>Enter Opportunity Name : </b><apex:inputText id="searchInput" label="Enter Opportunity Name" value="{!searchCard}"/>
+                        <apex:commandButton value="Search" action="{!searchOpportunity}" id="btnSearch"/>
+                   </div>
+                    <apex:pageBlockTable id="pbtOppty" value="{!listOpptyWrapper}" var="eachOppty" rendered="{!isOpptyFound}" width="100%" >
+                        <apex:column headerValue="Select" >
+                            <apex:inputCheckbox value="{!eachOppty.isSelected}" >
+                                <apex:actionSupport event="onchange" action="{!checkOutWithTheSelectedOppty}" status="loader" oncomplete="reloadCurrentLocation();"/>
+                            </apex:inputCheckbox>
+                        </apex:column>
+                        <apex:column headerValue="Opportunity Name">
+                            <apex:outputLink value="/{!eachOppty.oppty.Id}" target="_blank"><apex:outputField value="{!eachOppty.oppty.Name}"/></apex:outputLink>
+                        </apex:column>
+                        <apex:column headerValue="Stage Name" value="{!eachOppty.oppty.StageName}" />
+                        <apex:column headerValue="List Price" value="{!eachOppty.oppty.Amount}"/>
+                    </apex:pageBlockTable>
+                    <div style="float:left">
+                     <apex:selectList label="Selected Page" value="{!selectedPage}" size="1" id="slPaging" multiselect="false" rendered="{!isOpptyFound}">
+                         <apex:selectOptions value="{!pagesOfOppty}" >
+                             
+                         </apex:selectOptions>
+                         <apex:actionSupport event="onchange" action="{!recordTheSelection}" status="loader" rerender="pbtOppty,slPaging,opSup" />
+                     </apex:selectList> <apex:outputPanel id="opSup" rendered="{!isOpptyFound}"><b><sup>{!posRank}</sup></b></apex:outputPanel>&nbsp;
+                     <apex:selectList label="Selected Page" value="{!maxPageSize}" size="1" id="slPerPaging" multiselect="false" rendered="{!isOpptyFound}">
+                         <apex:selectOptions value="{!sizePerPage}" >
+                             
+                         </apex:selectOptions>
+                         <apex:actionSupport event="onchange" action="{!paginateOpportunitySearchResult}" status="loader" rerender="pbtOppty,slPaging,opSup,slPerPaging" />
+                     </apex:selectList><apex:outputPanel id="opSupPP" rendered="{!isOpptyFound}"><b>per page</b></apex:outputPanel>
+                    </div> 
+                    <div style="clear:both;"></div>
+                    <div style="clear:both;"></div>
+                </apex:form>
+                <apex:form id="formProdPricing">
+                <apex:pageBlockTable id="pbtOpptyData" value="{!listOpptyCreated}" var="eachOppty" rendered="{!isOpptyCreated}">
+                    <apex:column headerValue="Opportunity Type" value="{!eachOppty.RecordTypeId}" />
+                    <apex:column headerValue="Opportunity Name">
+                        <apex:outputLink value="/{!eachOppty.Id}" target="_blank"><apex:outputField value="{!eachOppty.Name}"/></apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Stage Name" value="{!eachOppty.StageName}" />
+                    <apex:column headerValue="List Price" value="{!eachOppty.Amount}" />
+                    <apex:column headerValue="Account" value="{!eachOppty.AccountId}" />
+                    <apex:column headerValue="Lead Source" value="{!eachOppty.LeadSource}" />
+                </apex:pageBlockTable>    
+                <apex:pageBlockSection collapsible="false" title="SP Products" id="pbsSPProduct">
+                    <div style="padding-left:45%;">
+                        <apex:commandButton id="cmdBtnAddSPProducts" rendered="{!isOpptyCreated}" value="Add Products" action="{!null}" onclick="openCreateProductWindow();" />
+                    </div>
+                </apex:pageBlockSection>
+                <apex:outputPanel id="opProductPanel">
+                    <apex:pageBlockTable id="pbtSPProductCreated" value="{!listWrprSpProds}" var="eachProd" rendered="{!isProductCreated}" width="100%" >
+                       
+                        <apex:column headerValue="Action" >
+                            
+                           <a href="javascript:void(0)" onclick="openCreatePricingWindow('{!eachProd.spProd.Id}');">Add Pricing</a>&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="editSpProduct('e','{!eachProd.spProd.Id}');">Edit</a>&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="editSpProduct('d','{!eachProd.spProd.Id}');">Delete</a>
+                        </apex:column>
+                        <apex:column headerValue="Product Name">
+                            <apex:outputLink value="/{!eachProd.spProd.Id}" target="_blank"><apex:outputField value="{!eachProd.spProd.Name}"/></apex:outputLink>
+                        </apex:column>
+                        <apex:column headerValue="Product Family" value="{!eachProd.spProd.RecordType.Name}"/>
+                        <apex:column headerValue="Opportunity Name">
+                            <apex:outputLink value="/{!eachProd.spProd.Deal__r.Id}" target="_blank"><apex:outputField value="{!eachProd.spProd.Deal__r.Name}"/></apex:outputLink>
+                        </apex:column>
+                        <apex:column headerValue="List Price" value="{!eachProd.spProd.List_Price__c}"/>
+                        <apex:column headerValue="Product Status" value="{!eachProd.spProd.Product_Status__c}" />
+                        <apex:column headerValue="Create / View Address" >
+                            <apex:outputPanel rendered="{!!eachProd.hasAddress}"><a href="javascript:void(0)" onclick="createViewAddressWindow('c','{!eachProd.spProd.Id}');">Create</a></apex:outputPanel><apex:outputpanel rendered="{!eachProd.hasAddress}"><a href="javascript:void(0)" onclick="createViewAddressWindow('v','{!eachProd.addressId}');">View</a></apex:outputpanel>
+                        </apex:column>
+                    </apex:pageBlockTable>
+                </apex:outputPanel>
+            <apex:pageBlockSection collapsible="true" title="List of Products and related pricing" id="pbsecProdPricing">
+
+
+            <apex:outputPanel id="opPricingPanel">
+                <input type="hidden" value="{!prodPricingCounter}" id="pricingCounter" />
+                <apex:repeat value="{!listProdWrpPricing}" var="eachPricingWrapper" id="pricingRepeater" >
+                    <!--<div style="width:100%;">
+                    <div style="padding-left:0;">-->
+                    <apex:pageBlockSection title="Product | {!eachPricingWrapper.prodPricing[0].Name} | {!eachPricingWrapper.siteAddress}" id="pbsecProdPricing" columns="1" >
+                       <!-- <apex:pageBlockTable value="{!eachPricingWrapper.prodPricing}" var="ppricing" id="parentProd" >
+                        
+                            <apex:column headerValue="Product Name" value="{!ppricing.Name}"/>
+                            <apex:column headerValue="Opportunity Name" value="{!ppricing.Deal__r.Name}"/>
+                            <apex:column headerValue="List Price" value="{!ppricing.List_Price__c}"/>
+                            <apex:column headerValue="Product Status" value="{!ppricing.Product_Status__c}"/>
+                        </apex:pageBlockTable>-->
+                        <apex:pageBlockSection title="Product Pricing" id="pbsecPricing" columns="1">
+                
+                            <apex:pageBlockTable id="pbtProdPricingCreated" value="{!eachPricingWrapper.listPricingPerProduct}" var="eachPrice" rendered="{!isPricingCreated}" width="100%" >
+                                <apex:column headerValue="Action" >
+                                    <a href="javascript:void(0)" onclick="editPricing('e','{!eachPrice.Id}');">Edit</a>&nbsp;|&nbsp;<a href="javascript:void(0)" onclick="editPricing('d','{!eachPrice.Id}');">Delete</a>
+                                </apex:column>
+                                <apex:column headerValue="Pricing Name">
+                                    <apex:outputLink value="/{!eachPrice.Id}" target="_blank"><apex:outputField value="{!eachPrice.Name}"/></apex:outputLink>
+                                </apex:column>
+                                <apex:column headerValue="List Price" value="{!eachPrice.list_price__c}"/>
+                            </apex:pageBlockTable>
+                        
+                        </apex:pageBlockSection>
+                    </apex:pageBlockSection>
+                    <!--</div>
+                    <div style="padding-left:2%;">-->
+
+                   <!-- </div>
+                    </div>-->
+                </apex:repeat>
+            </apex:outputPanel>
+            </apex:pageBlockSection>
+        </apex:form>
+    </apex:pageBlock>
+    
+
+</apex:page>

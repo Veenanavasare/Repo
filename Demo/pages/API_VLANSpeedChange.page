@@ -1,0 +1,2631 @@
+<apex:page standardController="RDS_Premise_Details__c" extensions="API_VLANSpeedChangeController">
+<head>
+        <apex:includeScript value="{!$Resource.Char_js}"/>
+</head>
+     <script src="/static/111213/js/perf/stub.js" type="text/javascript"></script> 
+    <!--<script src="/jslibrary/1429195372000/sfdc/SfdcCore.js"type="text/javascript"></script> -->
+    <script src="/resource/1423271036000/InputValidationClone" type="text/javascript"></script>
+    <apex:includeScript value="{!$Resource.RDS_AVPN_Page2JSCloneNew}"/>
+    <script src="/resource/1430813576000/jQueryUIMin1111/jquery-ui.min.js" type="text/javascript"></script> 
+    <script src="/resource/1422580294000/chartJSMin" type="text/javascript"></script>
+    <script src="/resource/1430622014000/validateInputTypeVLAN" type="text/javascript"></script>
+    <script src="/resource/1430813576000/PortalDesignJS/libs/jquery.dataTables.js" type="text/javascript"></script> 
+    <script src="/resource/1430813576000/PortalDesignJS/vendors/modernizr.js" type="text/javascript"></script> 
+     <script src="/static/111213/js/picklist.js" type="text/javascript"></script> 
+    <script src="/jslibrary/1427810574000/sfdc/VFState.js" type="text/javascript"></script> 
+       <link class="user" href="/resource/1433844949000/ATTPortalBuyflowCss" rel="stylesheet" type="text/css" />
+<link class="user" href="/resource/1422580292000/ATTPortalBuyflowCSSDetails" rel="stylesheet" type="text/css" />
+<link class="user" href="/resource/1422580293000/PortalDesignCSS" rel="stylesheet" type="text/css" />
+<link class="user" href="/resource/1430813576000/jQueryUIMin1111/jquery-ui.min.css" rel="stylesheet" type="text/css" /> 
+
+<style>
+
+.ui-slider-range-min {
+    background: #056FAB !important;
+}
+
+
+.vlanBeginLabel{
+    font-family: omnes_att_iimedium;
+    font-size: 18px !important;
+}
+.vlanreuest{
+    font-family: omnes_light;
+    font-size: 18px !important;
+}
+strong{
+font-weight:bold !important;
+}
+.footer_logo {      
+        margin-top: 0px !important;     
+    }
+
+
+</style>   
+
+ <script>
+    var timeflag=false;
+    
+    function alpha(e) {
+     var k;
+     document.all ? k = e.keyCode : k = e.which;
+     return ((k > 64 && k < 91) || (k > 96 && k < 123) || k == 8 || (k >= 48 && k <= 57));
+    } 
+   
+  
+   
+
+  
+  function loadPieData(p1,p2,p3,p4,pieLoc){
+    var pieData = [
+    {  value: p1,
+       color: "#066EAD",
+       highlight: "#4584af",
+       label: "Class of Service 1 - Real Time",
+       tipOffsetX: -25,
+       tipOffsetY: -65,
+       scaleFontSize: '8'
+    },
+    {
+       value: p2,
+       color: "#019BDB",
+       highlight: "#18a2e2",
+       label: "Class of Service 2 - Bursty High",
+       tipOffsetX: -25,
+       tipOffsetY: -65,
+       scaleFontSize: '8'
+     },
+     {
+       value:p3,
+       color: "#48C8EF",
+       highlight: "#65cfef",
+       label: "Class of Service 3 - Bursty Low",
+       tipOffsetX: -25,
+       tipOffsetY: -65,
+       scaleFontSize: '8'
+     },
+     {
+       value: p4,
+       color: "#ADEAFC",
+       highlight: "#65cfef",
+       label: "Class of Service 4 - Best Effort",
+       tipOffsetX: -25,
+       tipOffsetY: -85,
+       scaleFontSize: '8'
+     }
+     canvas.UtilizationPending{     
+        width:15px;     
+        height:15px;        
+        //border:1px solid #000000;                 
+        background-color:orange;        
+        }
+    ];
+    var strid=("#pieIdAdd").concat(pieLoc);
+    var ctx1 = $(strid).get(0).getContext("2d");
+    var myNewChart2 = new Chart(ctx1).Pie(pieData)
+   }
+   
+
+  </script>   
+  
+  <script type="text/javascript">
+     var countforslide = 0;
+   
+    function handleresetbuttontoggle()
+    {
+        var x1="false";
+        var x2="false";
+        var x3="false";
+        var x4="false";
+        var valueofname=$('.inputVPNName').val();
+        
+         if(valueofname=="" || valueofname==null || valueofname==" ")
+            {
+            x1="true";
+            }
+        var valueofIP=$('.inputIPType').val();
+         if(valueofIP=="Select" || valueofIP==null || valueofIP==" " || valueofIP=="")
+           {
+           x2="true";
+           }
+         if($('.speedselectedaddvlan')!=null)
+          {
+           var valuespeed = $('.speedselectedaddvlan').html();
+         if(valuespeed=="" || valuespeed==null || valuespeed=="0" || valuespeed==" ")
+            {
+            x3="true";
+            }
+          }
+        var valueofPIDs=$('.ProfileIDAddvlan').val();
+         if(valueofPIDs=="Select" || valueofPIDs==null || valueofPIDs==" " || valueofPIDs=="")
+         {
+         x4="true";
+         }
+         
+        oAddCustomerButtonreset=$(".btnRestpageaddvlan");
+        
+         if(x1=="true" && x2=="true" && x3=="true" && x4=="true")
+         {
+           if (oAddCustomerButtonreset[0]) {
+               oAddCustomerButtonreset.parent().addClass("btn-complete-parent-disabled");
+               oAddCustomerButtonreset.addClass("disabled");
+            }
+         }
+         else
+         {
+           if (oAddCustomerButtonreset[0]) {
+               oAddCustomerButtonreset.parent().removeClass("btn-complete-parent-disabled");
+               oAddCustomerButtonreset.removeClass("disabled");
+            }
+         }
+         return true;
+        }
+        
+     function expandjustdisp(count)
+      {
+        var imageSrc=document.getElementById("Image"+ count).src;
+    
+        if(imageSrc.indexOf("Navigate_down")> -1)
+        {
+         document.getElementById("Image"+ count).src="{!$Resource.Navigate_Up}";
+        }
+       if(imageSrc.indexOf("Navigate_Up")> -1)
+       {
+        document.getElementById("Image"+ count).src="{!$Resource.Navigate_down}";
+       }
+       collExpand('vlanPieTableId'+count);
+     }
+     
+    function expandjustdispspd(count)
+     {
+      var imageSrc=document.getElementById("Imagespd"+ count).src;
+      if(imageSrc.indexOf("Navigate_down")> -1)
+      {
+      document.getElementById("Imagespd"+ count).src="{!$Resource.Navigate_Up}";
+      }
+      if(imageSrc.indexOf("Navigate_Up")> -1)
+      {
+       document.getElementById("Imagespd"+ count).src="{!$Resource.Navigate_down}";
+      }
+      collExpandspd('vlanPieTableIdspd'+count);
+     }
+     
+    function collExpandspd(id) {
+     var strId = id.replace(/\D/g, '');
+     $("#vlanPieTableIdspd" + strId).slideToggle(1000);
+    }
+     var uniqueIPVals =  [];
+     
+    function updateIPs(){
+     console.log('uniqueIPVals Previous: '+uniqueIPVals);
+     var str=$('.ipVlauesSelector').text();
+     console.log('str: '+str);
+     str=str.replace(' ','');
+     str=str.replace(/^\s+|\s+$/gm,'')
+     str=str.replace('[','');
+     str=str.replace(']','');
+     var find = ' ';
+     var re = new RegExp(find, 'g');
+     str = str.replace(re, '');
+     uniqueIPVals = str.split(',');
+     console.log('uniqueIPVals New: '+uniqueIPVals);
+    }
+    
+    function expandforreconfig(id)
+    {
+      $('#vlanPieTableId84').slideToggle(1000);
+      $('#loadingpagesubmitvlan').hide();
+      return false;
+    }
+    
+    function checkForErrorsPage2() {
+     $('.btnSave, .btnContinue').addClass('disabled');
+     // Iterate through all fields and check if there are any invalid entries. If yes, then return false    
+     var arrRequiredFields = $(".requiredInputField"),
+     boolIsNumberValid = true,
+     boolIsValid = true,
+     oAddCustomerButton = $('.btnContinuePage2');
+     arrRequiredFields.each(function () {
+     oRequiredField = $(this);
+     if (oRequiredField[0]) {
+      if (0 === oRequiredField.val().length) {
+        boolIsValid = false;
+        return false;
+      }
+     }
+    });
+    // If there is any error message present, do not enable the button
+    if (0 < $(".errorText").length) {
+     boolIsNumberValid = false;
+    }
+    if (boolIsValid && boolIsNumberValid) {
+    // Add customer button enabled
+     if (oAddCustomerButton[0]) {
+      oAddCustomerButton.parent().removeClass("btn-complete-parent-disabled");
+      oAddCustomerButton.removeClass("disabled");
+     }
+    } else {
+    // Add customer button disabled
+      if(oAddCustomerButton[0]) {
+         oAddCustomerButton.parent().addClass("btn-complete-parent-disabled");
+         oAddCustomerButton.addClass("disabled");
+      }
+    }
+    //for slider start
+    if($('.speedselectedaddvlan')!=null)
+     {
+       var valuespeed = $('.speedselectedaddvlan').html();
+        if(valuespeed=="" || valuespeed==null || valuespeed=="0" || valuespeed==" ")
+         {
+           if(oAddCustomerButton[0]) {
+             oAddCustomerButton.parent().addClass("btn-complete-parent-disabled");
+             oAddCustomerButton.addClass("disabled");
+            }
+          }
+     }
+       handleresetbuttontoggle();
+        //for slider end    
+    }
+    
+    function validateTextFieldsPage2(sClassName, sErrorMessage, sBlankMessage, boolIsRequired) {
+        var sValue = "",
+        oField = $("." + sClassName),
+        oParent = oField.parent();
+        if (oField[0]) {
+        // Check if the field contains blank value as the first character
+         sValue = oField.val();
+         // Handle dropdown value as well
+          if ((boolIsRequired) && ("" === sValue || "None(ARPA)" === sValue)) {
+          // Append the error message in case the field is not filled
+           if (oParent[0]) {
+          // Remove all spaces and () from the string
+             $(".errorText." + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error").remove();
+              oParent.addClass("has-error").append("<p class='errorText " + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error'>" + sBlankMessage + "</p>");
+            }
+           } else if ((" " === sValue) || (sValue !== sValue.trimLeft())) {
+             // Append the error message in case the field is wrongly filled
+              if (oParent[0]) {
+              // Remove all spaces and () from the string
+               $(".errorText." + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error").remove();
+               oParent.addClass("has-error").append("<p class='errorText " + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error'>" + sErrorMessage + "</p>");
+              }
+            }
+          // Check if this is a valid number
+            else if (("requiredInputFieldNumber" === sClassName || "requiredInputFieldNumberipv6" === sClassName) && isNaN(sValue)) {
+             if (oParent[0]) {
+              // Remove all spaces and () from the string
+              $(".errorText." + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error").remove();
+              oParent.addClass("has-error").append("<p class='errorText " + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error'>Invalid Entry</p>");
+             }
+           }
+          // Number fields - ASN Number
+         //else if ("requiredInputFieldNumber" === sClassName && ( parseInt(sValue,10)<64512 || parseInt(sValue,10)>65534))
+         else if (("requiredInputFieldNumber" === sClassName || "requiredInputFieldNumberipv6" === sClassName) && (parseInt(sValue, 10) < 64512 || parseInt(sValue, 10) > 64999) && (parseInt(sValue, 10) < 65005 || parseInt(sValue, 10) > 65534)) {
+       // Append the error message in case the field is wrongly filled
+          if (oParent[0]) {
+       // Remove all spaces and () from the string
+            $(".errorText." + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error").remove();
+            oParent.addClass("has-error").append("<p class='errorText " + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error'>Invalid Entry</p>");
+           }
+          } else {
+         // Remove the error message
+            if (oParent[0]) {
+                oParent.removeClass("has-error");
+         // Remove all spaces and () from the string
+                $(".errorText." + sClassName.replace(/\s/g, "_").replace(/[""()]/g, "") + "_error").remove();
+               }
+           }
+         }
+        // All Field Check
+        checkForErrorsPage2();
+      }
+    function resetAllFields()
+    {
+     $(".inputVPNName").val('');
+     $(".inputIPType").val(null);
+     $(".requiredInputFieldNumber").val('');
+     $(".requiredInputFieldNumberipv6").val('');
+     $(".profileId").val('--None--');
+     $(".egressProfileId").val('');
+     $(".ipV4Addr").val('');
+     $(".ipV4AddrATT").val('');
+    }
+   function initializeFieldValidationsPage2() {
+    $(".inputVPNName").on("change", function () {
+    validateTextFieldsPage2("inputVPNName", "Please enter VPN Name", "Please enter VPN Name", true);
+   });
+      $(".inputIPType").on("change", function () {
+         handleresetbuttontoggle();
+         validateTextFieldsPage2("inputIPType", "Please select a value for IP Type", "Please select a value for IP Type", true);
+        });
+      $(".inputRouteAd").on("change", function () {
+         validateTextFieldsPage2("inputRouteAd", "Please Select Route Advertisement", "Please Select Route Advertisement", true);
+       });
+      $(".inputRouteAd1").on("change", function () {
+         validateTextFieldsPage2("inputRouteAd1", "Please Select Route Advertisement", "Please Select Route Advertisement", true);
+       });
+      $(".requiredInputFieldNumber").on({
+         "keyup": function () {
+           validateTextFieldsPage2("requiredInputFieldNumber", "Autonomous System Number cannot begin with a space", "Please select a value for Autonomous System Number", true)
+          },
+          "blur": function () {
+           validateTextFieldsPage2("requiredInputFieldNumber", "Autonomous System Number cannot begin with a space", "Please select a value for Autonomous System Number", true)
+          }
+        });
+       $(".requiredInputFieldNumberipv6").on({
+         "keyup": function () {
+          validateTextFieldsPage2("requiredInputFieldNumberipv6", "Autonomous System Number cannot begin with a space", "Please select a value for Autonomous System Number", true)
+          },
+         "blur": function () {
+          validateTextFieldsPage2("requiredInputFieldNumberipv6", "Autonomous System Number cannot begin with a space", "Please select a value for Autonomous System Number", true)
+          }
+         });
+      }
+    
+    function scrolltoADDVLAN(){
+       $('html, body').animate({
+         scrollTop: $('#vlanPieHeader84').offset().top
+         },1000);
+    }    
+    
+    function GetURLParameter(sParam) {
+      var sPageURL = window.location.search.substring(1);
+      var sURLVariables = sPageURL.split('&');
+       for (var i = 0; i < sURLVariables.length; i++) {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) {
+             return sParameterName[1];
+             }
+          }
+      }    
+         
+    function progressBar(alreadyused,available, $element,changed,spdchangeindicator) {
+        
+        
+        
+        //alert("g"+alreadyused+"h");
+        if(alreadyused==null || alreadyused=="" || alreadyused=="undefined")
+        {
+        return true;
+        }
+     
+     //alert(alreadyused +" = "+available+" = "+ changed+" = "+spdchangeindicator);
+
+    //total speed
+     var pSpeed = "{!listDisplayValidationRecords.Port_Speed__c}";
+    
+     var alreadyusedint = parseInt(alreadyused);
+     
+     var availableintwithsign = parseInt(available);
+     
+     var changedintwithsign =  parseInt(changed);
+     
+     var availableintwithoutsign =  Math.abs(availableintwithsign);
+ 
+     var changedintwithoutsign =   Math.abs(changedintwithsign);
+     
+     var totaltemp=0;
+     
+     
+
+     
+     
+     
+     if(spdchangeindicator=="Positive")
+         {
+         
+         
+       
+         
+         var exceeded = (alreadyusedint+changedintwithoutsign)-pSpeed;
+         
+        
+         
+         if(exceeded>0)
+             {
+             
+             
+               totaltemp=alreadyusedint+changedintwithoutsign//+exceeded;
+               //for already used bar - dark grey
+               var progressBarWidth = alreadyusedint * 800 / totaltemp;
+               $('#addvlanprogbardiv1').animate({width:progressBarWidth}, totaltemp).html();
+               $('#Usedvlanspd').html(alreadyusedint+" Mbps");
+
+              
+               
+              
+               
+             
+               //changed speed - Orange
+               var progressBarchangedWidth = changedintwithoutsign * 800 / totaltemp;
+               $('#addvlanprogbardiv2').animate({width:progressBarchangedWidth}, totaltemp).html();
+               $('#PendVlanSpd').html(changedintwithoutsign+" Mbps");
+               $('#penddivtd').show();
+               $('#pendtd').show();
+               
+               
+               
+               //alert("1 "+changedintwithoutsign);
+               
+               
+              
+                 //Exceeded - Red
+                $element.find('span').css("background-color", "#b30a3c");
+                 var progressBarWidthSpan = (exceeded) * 800 / totaltemp - 1;
+                $element.find('span').animate({ width:50}, totaltemp).html();
+                
+                
+                
+                
+                
+                
+                
+                $('#availtd').hide();
+                $('#availdivtd').hide();
+                
+                $('#exceededtd').show();
+                $('#exceeddivtd').show();
+                //$('#Availablevlanspd').css("background","#EF0C0C");
+                $('#Exceededspd').html(exceeded+" Mbps");
+                //$('#avflagkey').html("Exceeded:");
+                $('.applynsaveforspdchange').addClass("disabled");
+        
+                
+                return;
+             
+             }
+         
+         }
+
+     
+     
+      
+    totaltemp=alreadyusedint+availableintwithoutsign+changedintwithoutsign;
+     
+     //for already used bar - dark grey
+     
+       var progressBarWidth = alreadyusedint * 800 / totaltemp;
+       $('#addvlanprogbardiv1').animate({width:progressBarWidth}, totaltemp).html();
+       $('#Usedvlanspd').html(alreadyusedint+" Mbps");
+     
+     
+    //changed speed - Green
+    var progressBarchangedWidth = changedintwithoutsign * 800 / totaltemp;
+    
+    if(spdchangeindicator=="Positive")
+        {
+        if(changedintwithoutsign!=0){
+        $('#addvlanprogbardiv2').animate({width:progressBarchangedWidth}, totaltemp).html();
+        $('#PendVlanSpd').html(changedintwithoutsign+" Mbps");
+        $('#penddivtd').show();
+        $('#pendtd').show();
+        //alert("2 "+changedintwithoutsign);
+        
+        }
+        }
+    else
+        {
+        if(changedintwithoutsign!=0){
+        $('#addvlanprogbardiv2').animate({width:progressBarchangedWidth}, totaltemp).html();
+        $('#PendVlanSpd').html(changedintwithoutsign+" Mbps");
+        $('#penddivtd').show();
+        $('#pendtd').show();
+        //alert("3 "+changedintwithoutsign);
+        
+        }
+        }
+    
+    
+    
+    
+    //Available - light grey
+    var progressBarWidthSpan = (availableintwithoutsign) * 800 / totaltemp - 1;
+    $element.find('span').animate({ width:progressBarWidthSpan}, totaltemp).html();
+    $('#Availablevlanspd').html(availableintwithoutsign+" Mbps");
+    $('#availtd').show();
+    $('#availdivtd').show();
+    $('#exceededtd').hide();
+    $('#exceeddivtd').hide();
+    
+    
+    
+    
+    
+    
+
+/*       if((pSpeed-percent)==0){
+    document.getElementById("avlblId").style.display="none";
+  }else{
+    document.getElementById("avlblId").style.display="block";
+  } */
+  
+  
+  
+  
+ }
+     
+     
+    function showthankyoupanel()
+     {
+         $("#thankyoupagesubmitspdchange").show();
+         $("#reviewforvlanspdchange").hide();
+         $("#displaysliderforvlnaspdchangeID").hide();
+    }
+     
+    
+       function showreviewpanelspd()
+        {
+          $("#reviewforvlanspdchange").show();
+          $("#displaysliderforvlnaspdchangeID").hide();
+          $("#thankyoupagesubmitspdchange").hide();
+        }
+     
+     function showsliderpage()
+     {
+         
+         $("#displaysliderforvlnaspdchangeID").show();
+         $("#reviewforvlanspdchange").hide();
+         $("#thankyoupagesubmitspdchange").hide();
+     $('.applynsaveforspdchange').removeClass("disabled");
+     $('.resetvlanspdchange').removeClass("disabled");
+         
+     }
+
+
+
+function resetshow()
+{
+$("#displaysliderforvlnaspdchangeID").show();
+$("#reviewforvlanspdchange").hide();
+ $("#thankyoupagesubmitspdchange").hide();
+
+}
+     
+     
+   </script>   
+ 
+  <style>
+        .errorText {
+            color: #a94442;
+            font-size: 18px;
+        }
+        .errorMess{
+            color: #a94442;
+            font-size: 18px;
+            display: none;
+            position:absolute;
+            margin-top:32px;
+        }
+       .passwordFieldSelector1_error{
+             width: 350px;
+             margin-left: -14px;
+            }
+       .greenText {color: green !important; padding: 10px 15px 0 0px;}
+            #contentWrapper { min-width: 1024px !important; }
+            button.close {font-size: 200%;}
+            .active > a, .active_tab > a { color: #fff; }
+            .active > a, .active_tab > a, .tabbed_menu .mainnav li.active::after { cursor: default; /* Added to ensure the cursor is default for the active tab */ }        
+            .dataTables_length { display: none; }
+            .dataTables_info { bottom: 22px;  position: absolute; right: 180px;}
+            .manage_user_name { width: 17% !important;}
+            .manage_user_contact_name { width: 10% !important;}
+            .manage_user_address { width: 10% !important;}
+            .manage_user_city { width: 10% !important; }
+            .manage_user_state { width: 10% !important; }
+            .manage_user_zip { width: 10% !important; }
+            #manage_content .pagination > a {padding: 5px 10px; font-family: omnes_att_iimedium;line-height: 1.125em; color: #056fab; margin-left: 5px; background: #fff; border: 1px solid #ccc;}
+            .paginate_enabled_previous, .paginate_enabled_next { cursor: pointer; }
+            .paginate_disabled_previous, .paginate_disabled_next { cursor: no-drop; }
+            .btn { padding: 10px 20px !important; }
+            .btn:hover { background: #fff !important; color: #333;}
+            h1 {font-family: omnesatt_iiregular; margin: 40px 0 20px 0; }
+            .mainnav a:hover { color: #428bca !important; }
+            .mainnav .active a { color: #fff !important;cursor: default !important; }
+            .tabbed_menu .active {background: #056fab; }
+            .tabbed_menu .mainnav li {padding:25px 0 0 0; min-width: 25%; position:relative !important; height:70px; border-right:solid 1px #cccccc;} 
+            .tabbed_menu .mainnav li:last-child {border-right:none;}   
+            .tabbed_menu .mainnav li a { padding: 0px; }
+            .tabbed_menu .mainnav li.active  {color: #ffffff; }
+            .tabbed_menu .mainnav li.active::after { text-align: center;
+            content: ' ';
+            display: inline;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            position: absolute;
+            border-top: 14px solid #056fab;
+            bottom: -12px;
+            /* left: 9%;*/
+            margin-left: -15% !important; 
+            z-index: 99999;
+            }
+            .circlenum {margin-right:5px;}
+            .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+            background-size: 900px 900px !important;
+            }
+            .manage_content-header { font-family: omnes_light; }
+            ul.mainnav li.disabled a, ul.mainnav li.disabled a:hover { cursor: default !important; color: #356fab !important; }
+            li.ng-isolate-scope.active::after { cursor: default;}        
+            .nscustomer_details{ margin-top: 50px;}        
+            .nscustomer_details li{display:inline;}
+            .adjust-select-small {
+            width: 256px;
+            }
+           #manage_content label, .manage_content label {
+           margin-left: 15px !important;
+           margin-bottom :10 px;
+           }
+          label {
+          font-family: omnes_att_iimedium;
+          color:#010101;
+          letter-spacing:0 em;
+          font-style:normal;
+          text-align:left;
+          line-height :0.36em;
+          font-size: 1.25em;
+          effect:none;
+          }
+        #vlantable {
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+         border-radius: 10px;
+         border-width: thin;
+         border-spacing: 2px;
+         border-style: none;
+         border-color: black;
+        } 
+        #vlanlabel {
+        margin-left: 50px !important;
+        margin-bottom :10 px;
+        } 
+        .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+        background-size: 900px 900px !important;
+         }
+       #manage_content label, .manage_content label {
+       margin-bottom :10 px;
+       }
+       label {
+       font-family: omnes_att_iimedium;
+       color:#010101;
+       letter-spacing:0 em;
+       font-style:normal;
+       text-align:left;
+       line-height :0.36em;
+       font-size: 1.25em;
+       effect:none;
+       }
+       #vlantable {
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+         border-radius: 10px;
+         border-width: thin;
+         border-spacing: 2px;
+         border-style: none;
+         border-color: black;
+        } 
+        #vlanlabel {
+        margin-left: 50px !important;
+        margin-bottom :10 px;
+        } 
+       .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+        background-size: 900px 900px !important;
+        }
+       label {
+       font-family: omnes_att_iimedium;
+       color:#010101;
+       letter-spacing:0 em;
+       font-style:normal;
+       text-align:left;
+       line-height :0.36em;
+       font-size: 1.25em;
+       effect:none;
+       }
+      #vlanlabel {
+      margin-left: 50px !important;
+      margin-bottom :10 px;   
+      } 
+                #SiteDetails {
+                 font-family: omnes_light;
+                 font-weight: bold;
+                    color:#040404;
+                    padding-top:23px;
+                    padding-bottom:25px; 
+                    letter-spacing:0 em;
+                    font-style:bold;
+                    text-align:left;
+                    line-height :1.71em;
+                    font-size: 2em;
+                    effect:none;   
+                }          
+                #Customer {
+                    font-family: omnes_att_iimedium;
+                    color:#010101;
+                    padding-top:0px;
+                    padding-bottom:10px; 
+                    letter-spacing:0 em;
+                    font-style:normal;
+                    text-align:left;
+                    line-height :0.36em;
+                    font-size: 1.25em;
+                    effect:none;   
+                } 
+                #SubaccountNumber {
+                    font-family: omnes_att_iimedium;
+                    color:#010101;
+                    padding-top:0px;
+                    padding-bottom:24px; 
+                    letter-spacing:0 em;
+                    font-style:normal;
+                    text-align:left;
+                    font-size: 0.94em;
+                    effect:none;   
+                }
+                table.SubaccountNumber{
+                    font-family: omnes_att_iimedium;
+                    color:#010101;
+                    font-style:normal;
+                    text-align:left;
+                    font-size: 0.94em;
+                    effect:none;   
+                    width:100%;
+                    table-layout : fixed;    
+                }
+                #SiteName{
+                    font-family: omnes_att_iimedium;
+                    color:#010101;
+                    padding-top:7px;
+                    padding-bottom:10px; 
+                    padding-left:25px;    
+                    letter-spacing:0 em;
+                    font-style:normal;
+                    text-align:left;
+                    line-height :0.36em;
+                    font-size: 1.25em;
+                    effect:none; 
+                    background-color: #F0F0F0;   
+                }
+                #SiteNameBGColor{
+                    background-color: #F0F0F0;
+                } 
+                table.SiteStatus{
+                    font-family: omnes_att_iimedium;
+                    color:#010101;
+                    margin-top:2px;
+                    margin-bottom:21px;  
+                    margin-left:25px; 
+                    margin-right:25px;    
+                    font-style:normal;
+                    text-align:left;
+                    font-size: 0.94em;
+                    effect:none;
+                    width:1175px;  
+                }
+                table.JumpTo{
+                    font-family: omnes_att_iimedium;
+                    color:#010101;
+                    margin-top:23px;
+                    margin-bottom:18px;
+                    font-style:bold;
+                    text-align:left;
+                    font-size: 1.13em;
+                    effect:none;
+                    width: 100%;
+                }
+                ModifySite{
+                    width:20px;
+                    height:10px;
+                    align:right; 
+                }
+                table.SiteContact{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-left:25px;    
+                    margin-top:30px;
+                    margin-bottom:14px; 
+                    font-style:bold;
+                    text-align:left;
+                    line-height:1.18em;
+                    font-size: 1.38em;
+                    effect:none; 
+                    
+                }
+                table.vlantable {
+                     border: 1px solid #a8a8a8;          
+                     margin-bottom:10px;  
+                }
+                td.PrimaryContact{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-left:50px;    
+                    margin-top:24px;
+                    margin-bottom:1.07em; 
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:1.07em;
+                    font-size: 1.13em;
+                    effect:none; 
+                    width: 1150px;
+                    margin-left:50px;
+
+                    white-space: -o-pre-wrap; 
+                    word-wrap: break-word;
+                    white-space: pre-wrap; 
+                    white-space: -moz-pre-wrap; 
+                    white-space: -pre-wrap; 
+                }        
+                hr.BlackHr{ 
+                    border: 0; 
+                    height: 1px; 
+                    background: #a8a8a8;
+                    margin-top:36px;      
+                    margin-bottom:1px;
+                }
+                table.progressBarLayout{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:1.07em;
+                    font-size: 1.13em;
+                    effect:none;
+                    margin-left:50px;
+                    margin-top:37px;
+                    margin-bottom:30px;
+                    width:1100px;          
+                 }
+                table.progressBar{
+                    height:20px;
+                    margin-left:150px;
+                    margin-top:12px;
+                    margin-bottom:12px;
+                }
+                canvas.UtilizationUsed{
+                    width:15px;
+                    height:15px;
+                    background-color:#066EAD;
+                }
+                canvas.UtilizationChanged{
+                    width:15px;
+                    height:15px;
+                    background-color:#FFA500;
+                }
+                canvas.UtilizationAvailable{
+                    width:15px;
+                    height:15px;
+                    background-color:#626667;
+                }
+               canvas.UtilizationExceeded{
+                    width:15px;
+                    height:15px;
+                    background-color:#EF0C0C;
+                }
+                
+                
+                canvas.RealTime{
+                    width:20px;
+                    height:20px;
+                    border:1px solid #000000;
+                    background-color:#2466a8;
+                    font-family:omnes_att_iimedium;
+                    font-style:bold;
+                    line-height:1.07em;
+                    letter-spacing:0em;
+                    font-size: 1.13em;
+                    color:#000000;
+                    text-align:left;
+                    effect:none;
+                }
+                canvas.BurstyHigh{
+                    width:20px;
+                    height:20px;
+                    border:1px solid #000000;
+                    background-color:#32a2e4;
+                    font-family:omnes_att_iimedium;
+                    font-style:bold;
+                    line-height:1.07em;
+                    letter-spacing:0em;
+                    font-size: 1.13em;
+                    color:#000000;
+                    text-align:left;
+                    effect:none;
+                }
+                canvas.BurstyLow{
+                    width:20px;
+                    height:20px;
+                    border:1px solid #000000;
+                    background-color:#64caf0;
+                    font-family:omnes_att_iimedium;
+                    font-style:bold;
+                    line-height:1.07em;
+                    letter-spacing:0em;
+                    font-size: 1.13em;
+                    color:#000000;
+                    text-align:left;
+                    effect:none;
+                }
+                canvas.BurstyEffort{
+                    width:20px;
+                    height:20px;
+                    border:1px solid #000000;
+                    background-color:#c8eefd;
+                    font-family:omnes_att_iimedium;
+                    font-style:bold;
+                    line-height:1.07em;
+                    letter-spacing:0em;
+                    font-size: 1.13em;
+                    color:#000000;
+                    text-align:left;
+                    effect:none;
+               }
+               /*
+                table td{
+                    border: 1px solid black;
+                  }
+                */
+                td.IPInformation{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-left:50px;    
+                    margin-top:24px;
+                    margin-bottom:1.07em; 
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:0.96em;
+                    font-size: 1.13em;
+                    effect:none; 
+                    width: 500px;
+                    margin-left:50px;
+                }
+                table.IPv4Information{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-left:0px;    
+                    margin-top:1px;
+                    margin-bottom:19px; 
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:0.96em;
+                    font-size: 1.13em;
+                    effect:none; 
+                    width: 1150px;
+                }
+               table.IPv4VLANInformation{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-left:0px;    
+                    margin-top:1px;
+                    margin-bottom:19px; 
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:0.96em;
+                    font-size: 1.13em;
+                    effect:none; 
+                    width: 350px;
+                 }
+                td.LogicalChannelSpeed{
+                    font-family: omnes_att_iimedium;
+                    font-size: 1.13em;
+                    color:#0077b4;
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:1.07em;
+                    effect:none;
+                    vertical-align:middle;
+                 }
+                 table.LogicalChannelInfo{
+                      margin-left:50px;
+                      width:1100px;
+                      border: 1px solid #a8a8a8;
+                      margin-top:10px;
+                 }
+                 td.LogicalChannelInfo{
+                    font-family: omnes_att_iimedium;
+                    font-size: 1.13em;
+                    color:#000000;
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:1.07em;
+                    effect:none;
+                    height:40px;
+                    padding-left:25px;
+                    height:35px;
+                    width:920px;
+                    vertical-align:middle;
+                }
+                 td.arrowStyle{
+                     height:30px;
+                     width:45px;
+                     padding-top:10px;
+                     padding-left:0px;
+                     text-align:center;
+                 }
+                 td.arrowStyleNew{
+                     height:30px;
+                     width:78px;
+                     padding-top:10px;
+                     padding-left:0px;
+                     text-align:center;
+                 }
+                 td.arrowStyleForAdd{
+                     height:30px;
+                     width:65px;
+                     padding-top:10px;
+                     padding-left:0px;
+                     text-align:center;
+                 }          
+                 table.vlanPieTable{
+                     width:1100px;
+                     margin-left:50px;
+                     height:450px;
+                     border: 1px solid #a8a8a8;
+                     overflow:hidden !important;
+                 }
+                td.PieChart{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-bottom:1.07em; 
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:0.96em;
+                    font-size: 1.13em;
+                    effect:none; 
+                }
+                td.InnerPieChart{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-bottom:1.07em; 
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:0.96em;
+                    font-size: 1.13em;
+                    effect:none;
+                    margin-left:50px; 
+                }
+                td.InnerPieChartLayout{
+                    padding-left:50px;
+                    width:300px;
+                    height:250px;
+                    
+                }
+                td.PieChartLayout{
+                    padding-top:10px; 
+                    padding-bottom:39px;
+                    vertical-align:top;
+                }
+                td.ShowLevel{
+                    padding-top:70px;
+                    vertical-align:top;
+                }
+                table.InnerShowLevel{
+                    padding-top:70px;
+                    vertical-align:top;
+                    margin-left:50px;
+                    vertical-align:top;
+                }
+                select {
+                    width:290px; 
+                    height:39px;
+                    overflow:hidden; 
+                    white-space:nowrap; 
+                    text-overflow:ellipsis;
+                }
+                body {overflow-x:scroll;}
+                #pageBody{
+                    width: 1200px; 
+                    background-color: F7F7F7;
+                }
+                #pageFull{
+                    width: 1292px; 
+                }
+                .scrollToTop{ cursor:pointer; padding:10px; text-align:center; font-weight: bold; color: #444; text-decoration: none; position:fixed; top:80%; right:30px; display:none; .background: url(url('!$Resource.scrollTop') no-repeat center;) no-repeat 0px 20px; width:72px; height:106px; }
+                .scrollToTop:hover{ text-decoration:none; }
+                .switchImage{ padding-top:30px; position:static;}
+                #progressBarvlanspeedchange {
+                   width: 850px;
+                   height: 22px;
+                   background-color: #8f8f8f;
+                }  
+                
+                
+                
+                
+                
+                 
+                #addvlanprogbardiv1 {
+             
+                height: 100%;
+                color: #fff;
+                text-align: center;
+                line-height: 20px;
+                width: auto;
+                background-color: #067ab4;
+                float:left;
+             }
+                #addvlanprogbardiv2 {
+                 padding-top:10px;
+                height: 100%;
+                color: #fff;
+                text-align: center;
+                line-height: 20px;
+                width: auto;
+                background-color: #ef6f00;
+                float:left;
+             }
+                #progressBarvlanspeedchange span {
+                height: 100%;
+                color: #fff;
+                text-align: center;
+                line-height: 20px;
+                width: auto;
+                //background-color: #E0E0E0;         
+                background-color: #666666;
+                float:right;
+             }
+             
+             
+             
+             
+             
+          .progressBarVlanClass{
+                height: 100%;
+                color: #fff;
+                text-align: center;
+                line-height: 20px;
+                width: auto;
+                background-color: #8f8f8f;
+                float:right;
+                margin-top:-40px;
+               
+             }
+             .removeBold{
+                font-weight:normal;
+            }
+            
+            .vlanProgressBarCssClass{
+                width: 742px;
+                height: 22px;
+                border: 1px solid #111;
+                background-color: #8f8f8f;
+                margin-top:40px;
+                margin-bottom:20px;
+            }
+           
+            .vlanProgressBarCssClassDiv{
+                color: #fff;
+                text-align: center;
+                line-height: 22px;
+                width: 742px;
+                height: 20px;
+                background-color: #32a2e4;
+                margin-top:0px;
+                margin-bottom:20px;
+            }
+
+           .requiredInputFieldNumberipv6_error{
+               width: 810px;
+               margin-left: -14px;
+            }
+           .passwordFieldSelector2_error{
+               width: 359px;
+               margin-left: -11px;
+            }
+        
+          .ci-m-b label{padding-top:15px;}
+      </style>
+    <script>
+     function copyValueToEgress() {
+      copyValueAF();
+     }
+    
+     function enableDisable(cb){  
+      $("input:checkbox[id*=looped]").removeAttr('checked');
+      $(cb).attr('checked', 'checked');
+     }
+    </script>
+    <script> 
+       function initializeIPValidationFor(sClassName) {
+        var comp = $("." + sClassName);
+         comp.on({
+         "keyup": function () {
+         validateIP(sClassName);
+         checkForErrorsPage2();
+          },
+        "blur": function () {
+         validateIP(sClassName);
+         checkForErrorsPage2();
+          }
+         });
+        }
+      
+       function initializeCustomIPValidationFor(sClassName,arrayofips) {
+        var comp = $("." + sClassName);
+         comp.on({
+          "focus": function () {
+          setValidValues(sClassName);
+          },
+         "keyup": function () {
+          validateCustomIP(sClassName, 'IP range should not begin with a space', 'IP range cannot be blank', true,arrayofips);
+          checkForErrorsPage2();
+          },
+          "blur": function () {
+           validateCustomIP(sClassName, 'IP range should not begin with a space', 'IP range cannot be blank', true,arrayofips);
+           checkForErrorsPage2();
+          }
+         });
+        }    
+      
+        function initializeCustomIPValidationForCERI(sClassName,arrayofips) {
+         var comp = $("." + sClassName);
+          comp.on({
+           "focus": function () {
+            setValidValues(sClassName);
+             },
+           "keyup": function () {
+            validateCustomIP(sClassName, 'IP range should not begin with a space', 'IP range cannot be blank', true,arrayofips);
+            checkForErrorsPage2();
+            },
+           "blur": function () {
+            validateCustomIP(sClassName, 'IP range should not begin with a space', 'IP range cannot be blank', true,arrayofips);
+            checkForErrorsPage2();
+            }
+           });
+          }
+                
+        function initializeCustomIPValidationForPERI(sClassName,arrayofips1) {
+          var comp = $("." + sClassName);
+           comp.on({
+            "focus": function () {
+             setValidValues(sClassName);
+           },
+           "keyup": function () {
+           validateCustomIP(sClassName, 'IP range should not begin with a space', 'IP range cannot be blank', true,arrayofips1);
+           checkForErrorsPage2();
+           },
+           "blur": function () {
+           validateCustomIP(sClassName, 'IP range should not begin with a space', 'IP range cannot be blank', true,arrayofips1);
+           checkForErrorsPage2();
+           }
+          });
+         }
+      </script>
+
+
+
+<apex:form id="VLANADDMACD">
+ <apex:outputPanel id="reload">
+  <table> 
+    <tr>
+      <td colspan="2">
+        <table class="SiteContact">
+          <tr><td> <a id="vlanSpeedBar"></a>VLAN Logical Channel Information</td></tr> <!--Sonam Code-->
+        </table>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <table style="margin-left:50px">
+          <tr><td class="PrimaryContact"><font style="font-weight: 400;">You can have <span style="font-weight: bold;">a minimum of 2</span> but not more than <span style="font-weight: bold;">12 VLANs</span>, but your total bandwidth usage can't exceed your port speed. Contact your <span style="font-weight: bold;">Channel Account Manager (CAM)</span> if you want to increase your port speed or add more than <span style="font-weight: bold;">12 VLANs.</span></font>
+          </td></tr>
+        </table>
+       </td>
+    </tr>
+    <tr class="createdForExapnd">
+       <td>
+        <apex:outputPanel id="progressbarpanel">
+           <!-- PROGRESS BAR START -->
+          <table class="progressBarLayout">
+            <tr style="background-color: #D3D3D3;">
+              <td>
+                  <table class="progressBar" >
+
+                                            <tr>
+                                                
+                                                    <td colspan="1" style="width: 40px;">Used:</td>
+                                                    <td colspan="1" id="pendtd" style="width: 40px;display:none;">Pending:</td>
+                                                    <td colspan="1" id="availtd" style="width: 40px;">Available:</td>
+                                                    <td colspan="1" id="exceededtd" style="width: 40px;display:none;">Exceeded:</td>
+                                                    <td colspan="1" style="width: 40px;"></td>
+                                                
+                                                    
+
+                                                
+                                            </tr>
+                                            
+            <tr>
+                     
+                             <td style="width:115px !important"><div id="Usedvlanspd" style="width:100px;height:25px;background:#067ab4;color:white;text-align:center">&nbsp;</div></td>                             
+                             <td id="penddivtd" style="width:115px !important;display:none;"><div id="PendVlanSpd" style="width:100px;height:25px;background:#ef6f00;color:white;text-align:center;">&nbsp;</div></td>
+                             <td id="availdivtd" style="width:115px"><div id="Availablevlanspd" style="width:100px;height:25px;background:#666666;color:white;text-align:center">&nbsp;</div></td>
+                             <td id="exceeddivtd" style="width:90px;display:none;"><div id="Exceededspd" style="width:100px;height:25px;background:#b30a3c;color:white;text-align:center;">&nbsp;</div></td>
+                             <td colspan="2" style="text-align:right;width:290px !important; font-weight:bold;padding-right:50px;"> Total Port Speed: {!listDisplayValidationRecords.Port_Speed__c} Mbps </td> 
+                         
+            </tr> 
+
+
+
+
+                    <tr style="height:20px;">
+                    <td colspan="5" style="padding-top:5px"></td>
+                    </tr>
+                    <tr>
+                      <td colspan="5" style="height: 20px">
+                        <!-- GIR PROG -->
+
+                        
+                        <div id="progressBarvlanspeedchange" style="height: 50px;background-color:#D3D3D3;">
+                          <div id="addvlanprogbardiv1" data-toggle="tooltip" title="{!speedused}">
+                          </div>
+                          <div id="addvlanprogbardiv2" data-toggle="tooltip" title="{!speedchanged}">
+                          </div>
+                          <span id="avlblId" style="display: block;float:left;" data-toggle="tooltip" title="{!speedavaliable}">
+                          </span>
+                        </div> 
+                        <script>
+
+        
+                       
+                          var speedalreadyused = '{!speedused}';
+                              
+                          var speedavailable = '{!speedavaliable}';
+                       
+                          var speedchanged ='{!speedchanged}';
+                          var spdchangeindicator1 ='{!spdchangeindicator}';
+                        
+                          
+                           
+                          //alert("speedalreadyused"+ speedalreadyused+ "speedavailable"+ speedavailable + "speedchanged"+ speedchanged + "spdchangeindicator1"+ spdchangeindicator1);
+                          //progressBar('{!speedused}','{!speedavaliable}', $('#progressBarvlanspeedchange'),'{!speedchanged}','{!spdchangeindicator}');
+
+                         progressBar(speedalreadyused,speedavailable, $('#progressBarvlanspeedchange'),speedchanged,spdchangeindicator1);
+                           
+                        </script> 
+                        <!-- GIR PROG -->
+                      </td>
+                      
+                    </tr>
+                    
+                    
+                    <tr>
+                      <td colspan="2" style="font-weight: bold;">|</td>
+                      <td colspan="3" style="text-align: right; font-weight: bold; padding-left: 230px;padding-right:50px;">|
+                      </td>
+                     </tr>
+                    
+                    <tr>
+                      <td colspan="2" style="font-weight: bold;">0</td>
+                      <td colspan="3" style="text-align: right; font-weight: bold; padding-left: 230px;padding-right:40px;">{!listDisplayValidationRecords.Port_Speed__c}
+                      </td>
+                     </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3" style="padding-top: 38px"></td>
+                </tr>
+                <tr>
+                  <td colspan="4" style="font-family: omnes_att_iimedium; font-weight: normal;">You can add up to <span style="font-weight: bold;">
+                    {!12-listDisplayValidationRecords.No_of_VLANS__c} VLANs.</span> You have a total of <span style="font-weight: bold;">
+                     {!speedavaliable} Mbps </span>that you can use.
+                  </td>
+                </tr>
+              </table>
+            </apex:outputPanel>  
+ <!-- PROGRESS BAR END -->
+
+            <apex:outputPanel id="BeginPanel">
+                      <div id="BeginPanelID" style="height:307px;width:1100px;border:1px solid #a8a8a8;margin-left:50px;background-color: #F0F0F0;">
+                     <div style="margin-top: 16px;"> <font style="font-family: omnes_light; font-size: 15px; margin-top: 50px; margin-left: 25px; font-weight: 100;  Text-Align: center; Line-Height: 0.75em; Letter-Spacing: 0em; Effect: none">Order Number: {!listDisplayValidationRecords.RelatedQuote__r.Name} </font> </div>
+                     <hr class="BlackHr"  style="border-top:0px solid #a8a8a8 !important;margin-left: 0px;margin-right: 0px;height: 1px;margin-top: 16px !important;"/>
+
+                      <div style="font-size=135px; margin-top:36px; margin-left:20px; margin-bottom:3px" >
+                      
+                     <p class="vlanBeginLabel"><b><font color="#30BA28"> The total speed of all VLANs combined must remain equal to or less than the site port speed.</font></b></p> 
+                      <br /><br />
+                      
+                           <p class="vlanreuest">To change the speed of a VLAN, click <Strong>Continue. </Strong></p>
+                           <p class="vlanreuest">You can change your request at any time and the speeds will reset to pre-request speeds.</p>
+                           
+                       </div>              
+                                             
+                       <hr class="BlackHr"  style="border-top:0px solid #a8a8a8 !important;margin-left: 0px;margin-right: 0px;height: 1px;margin-top: 38px !important;"/>
+                     <div style="margin-top:45px">
+                      <apex:commandLink value="Cancel Request" style="margin-left:80px;" styleClass="pull-left" action="{!cancel}"/>
+                      <input type="button" value="Continue"  styleClass="btn btn-primary" style="float:right; width:172px !important; padding-top: 0px !important; margin-top: -7px; margin-right: 70px;"  onclick="redirectToconfigPanel();" />
+
+                      </div>       
+                      </div>
+           </apex:outputPanel>
+            
+           
+            <!--SLIDER -  NEW CODE FOR SPEED CHANGE  ADD START -->   
+            <apex:outputPanel id="displaysliderforvlnaspdchange">
+            <div id="displaysliderforvlnaspdchangeID" style="width:1100px;border:1px solid #a8a8a8;margin-left:50px;display:none;margin-top:40px;background-color: #F0F0F0;">
+            <div style="margin-top: 16px;"> <font style="font-family: omnes_light; font-size: 15px; margin-top: 50px; margin-left: 25px; font-weight: 100;  Text-Align: center; Line-Height: 0.75em; Letter-Spacing: 0em; Effect: none">Order Number: {!listDisplayValidationRecords.RelatedQuote__r.Name} </font> </div>
+             <hr class="BlackHr"  style="border-top:0px solid #a8a8a8 !important;margin-left: 0px;margin-right: 0px;height: 1px;margin-top: 16px !important;"/>
+              <br/>
+               <apex:variable var="countspd" value="{!0}"/> 
+               <apex:repeat value="{!vlanList}" var="vlanInfo" id="stringspd1">
+               <apex:variable var="countspd" value="{!countspd+1}"/>
+                <div style="margin-bottom:50px;margin-top:20px;">                   
+                 <p style="margin-top:10px;margin-left:90px;font-weight:900;font-family:omnes_att_iimedium;">VLAN {!countspd}</p>
+                 <div id="containersliderspd{!vlanInfo.VLAN_Speed_Change__c}{!countspd}" style="margin-left: 90px;margin-top:23px;position: relative;" onClick="activeEnableApplyButton();">
+                     <div style="height:24px;width: 90% !important;position: absolute;top: 0;left: 0;" class="col-xs-12 col-md-12" id="cosSliderspd{!vlanInfo.VLAN_Speed_Change__c}{!countspd}" onchange="activeEnableApplyButton();">
+                     </div>
+                     <div id="remainingleftdivspd{!vlanInfo.VLAN_Speed_Change__c}{!countspd}" style="margin-left: 820px;font-size: .8em;font-family: sans-serif;margin-top: 4.5px;font-weight: 700;width: 100%;height: 100%;position: absolute;top: 0;left: 0;z-index: 10;">
+                     </div>
+                     <div id="readvaluedivspd{!vlanInfo.VLAN_Speed_Change__c}{!countspd}" style="margin-left:31px;font-size: .8em;font-family: sans-serif;margin-top: 4.5px;font-weight:700;width: 100%;height: 100%;position: absolute;top: 0;left: 0;z-index: 10;">
+                     </div>
+                  <input type="hidden" id="readvaluedivspd_hidden{!countspd}" value="{!vlanInfo.VLAN_Speed__c}" />
+          <input type="hidden" id="readvaluedivspd_hidden_finalval{!countspd}" value="{!vlanInfo.VLAN_Speed_Change__c}"/>      
+                 
+                 </div>
+                 
+              <script>
+                function updateSliderspd{!vlanInfo.VLAN_Speed_Change__c}{!countspd}() {
+                    
+                  $("#cosSliderspd{!vlanInfo.VLAN_Speed_Change__c}{!countspd}").slider({
+                    range: "min",
+                    min :0,
+                    max : {!listDisplayValidationRecords.Port_Speed__c},
+                    animate: true,
+                    step:1,
+                    value:{!vlanInfo.VLAN_Speed_Change__c},
+                    change: function (event, ui) {
+                    
+                            var finalnameset="readvaluedivspd_hidden_finalval".concat({!countspd});
+                            document.getElementById(finalnameset).value=ui.value;
+                          
+
+
+
+
+                            
+                            
+                            var flag = false;
+                            for (var i = 1; i<= 12; i++ ){
+                
+
+
+                    
+
+
+
+
+                                var divnameHidden= "readvaluedivspd_hidden".concat(i);
+                                var finalnamesetretval="readvaluedivspd_hidden_finalval".concat(i);
+
+
+                //alert(i);
+                //alert(divnameHidden);
+                //alert("readvaluedivspd_hidden".concat(i));
+
+
+
+                                    console.log("loop is running: ");
+                                    if(document.getElementById(divnameHidden) !== null ){
+
+
+                                        var existingVal = document.getElementById(divnameHidden).value;
+                                        var newvalue=document.getElementById(finalnamesetretval).value;
+                                        //alert(existingVal);
+                                        //alert(newvalue);
+                                        if(existingVal != newvalue){
+                                            if(ui.value==0 || newvalue==0){
+                                                flag = false;
+                                                break;
+                                                }
+                                            else
+                                                flag = true;
+                                             
+                                        }
+                                    }
+
+
+                
+
+
+                           }
+                           
+                          
+                           if(!flag || ui.value==0){
+                                $('.applynsaveforspdchange').addClass("disabled"); 
+                                //$('.resetvlanspdchange ').addClass("disabled");
+
+                            }
+                            else{
+                                $('.applynsaveforspdchange').removeClass("disabled");
+                $('.resetvlanspdchange ').removeClass("disabled");
+                            }
+
+
+                        
+SpeedChange(ui.value,'{!vlanInfo.id}');
+
+                           
+                        
+
+
+
+
+                           
+                            },
+                    slide: function (event, ui) {
+                    
+                           var divname12= "#readvaluedivspd".concat("{!vlanInfo.VLAN_Speed_Change__c}").concat("{!countspd}");
+                           var finalval="";
+                           
+                           
+                            if (ui.value < 10) {
+                                  $("#cosSliderspd{!vlanInfo.VLAN_Speed_Change__c}{!countspd}").slider("option", "step", 1);
+                                 $(divname12).html("<font style=\"color: black;font-weight:700;\">"+ui.value+" Mbps</font>");
+                                 
+                                 
+                            } else if (ui.value >= 10 && ui.value < 100) {
+                                     ui.value = nearestValue(ui.value, 10);
+                                     $("#cosSliderspd{!vlanInfo.VLAN_Speed_Change__c}{!countspd}").slider("option", "step", 10);
+                                    $(divname12).html("<font style=\"color: black;font-weight:700;\">"+ui.value+" Mbps</font>");
+                                   
+                                        
+                            } else if (ui.value >= 100 && ui.value <500) {
+                                ui.value = nearestValue(ui.value, 50);
+                                 $("#cosSliderspd{!vlanInfo.VLAN_Speed_Change__c}{!countspd}").slider("option", "step", 50);
+                                 $(divname12).html("<font style=\"color: black;font-weight:700;\">"+ui.value+" Mbps</font>");
+                                
+                                  
+                            } else if (ui.value >= 500 && ui.value < 1000) {
+                                 ui.value = nearestValue(ui.value, 100);
+                                 $("#cosSliderspd{!vlanInfo.VLAN_Speed_Change__c}{!countspd}").slider("option", "step", 100);
+                                 $(divname12).html("<font style=\"color: black;font-weight:700;\">"+ui.value+" Mbps</font>");
+                                
+                                  
+                            }
+                           
+                        }
+                    });
+                }
+                  updateSliderspd{!vlanInfo.VLAN_Speed_Change__c}{!countspd}();  
+                  
+                  var divname1= "#readvaluedivspd".concat("{!vlanInfo.VLAN_Speed_Change__c}").concat("{!countspd}");
+                  var divname2= "#remainingleftdivspd".concat("{!vlanInfo.VLAN_Speed_Change__c}").concat("{!countspd}");
+                  $(divname1).html("<font style=\"color:black;font-weight:700;\">"+{!vlanInfo.VLAN_Speed_Change__c}+" Mbps</font>");
+                  $(divname2).html("<font style=\"color:#ef6f00 !important;font-weight:700;\">"+{!listDisplayValidationRecords.Port_Speed__c}+" Mbps</font>");
+
+                    function nearestValue(i, j) {
+                    return (Math.ceil(i / j) * j);
+                      }
+                      
+                      function assignStepsValue(selectedValue)
+                      {
+                           
+                             if (selectedValue < 11) {
+             
+                                            selectedValue=selectedValue;
+           
+                                 
+                            } else if (selectedValue > 10 && selectedValue < 101) {
+                                    selectedValue = nearestValue(selectedValue, 10);
+                                    
+                                    while(selectedValue%10>0)
+                                         {
+                                         
+                                            selectedValue=selectedValue+1;
+                                         
+                                         }
+
+                                      //alert("11--"+ui.value);
+                            } else if (selectedValue > 100 && selectedValue < 501) {
+                                 selectedValue= nearestValue(selectedValue, 50);
+                                 
+                                    while(selectedValue%50>0)
+                                         {
+                                         
+                                            selectedValue=selectedValue+1;
+                                         
+                                         }
+
+                                   //alert("11--"+ui.value);
+                            } else if (selectedValue > 500 && selectedValue < 1001) {
+                                  selectedValue = nearestValue(selectedValue, 100);
+                                  
+                                    while(selectedValue%100>0)
+                                         {
+                                         
+                                            selectedValue=selectedValue+1;
+                                         
+                                         }
+                                  alert("11--"+ui.value);
+                            }
+                        
+                        return selectedValue;
+                      }
+
+
+              </script>
+           </div>
+           <br/>                   
+         </apex:repeat>
+         
+         
+        <hr class="gray_hr" style="margin-top: 23px;margin-left: 0px;width: 1100px;border-top:1px solid #a8a8a8 !important"/>
+           <div style="height:75px;margin-top:40px;">
+             <apex:commandLink value="Cancel Request" style="margin-top:8px;margin-left:535px;" styleClass="pull-left" action="{!cancel}"/>
+             <apex:CommandButton style="height:35px !important;width:172px !important; margin-right:50px" action="{!UpdateVLANSpeed}" status="loading" rerender="cosdisplayforreviewpiechartspd,progressbarpanel,VLANs"  value="Apply & Continue" oncomplete="showreviewpanelspd();"  styleClass="btn btn-primary pull-right applynsaveforspdchange disabled"/>
+          <apex:CommandButton value="Reset" action="{!resetall}" rerender="progressbarpanel,cosdisplayforreviewpiechartspd,displaysliderforvlnaspdchange,VLANs" oncomplete="resetshow()"  status="loading"  styleClass="btn secondary pull-right resetvlanspdchange" style="font-size: 16px; margin-left: 10px !important; padding: 0px 10px !important; width:150px !important; height:35px !important; margin-right: 15px !important; background-color: #FFF !important; color:#666!important; border:1px #666 !important; border-style: solid !important;" />
+           </div>
+          </div>
+         </apex:outputPanel>
+         <!--SLIDER -  NEW CODE FOR SPEED CHANGE  ADD END -->  
+         
+         
+         
+         
+          
+         <!-- REVIEW PANEL START --> 
+         <div id="reviewforvlanspdchange"  style="width:1100px;background-color:#F0F0F0;margin-left:50px;display:none;">
+          <apex:outputPanel styleClass="displayclassforreview" id="cosdisplayforreviewpiechartspd">
+          <br/>
+          
+          <div style="margin-top: -16px;"><font style="font-family: omnes_light; font-size: 15px; margin-top: 50px; margin-left: 25px; font-weight: 100;  Text-Align: left; Line-Height: 0.75em; Letter-Spacing: 0em; Effect: none">Order Number: {!listDisplayValidationRecords.RelatedQuote__r.Name} </font> </div>
+                     <hr class="BlackHr"  style="border-top:0px solid #a8a8a8 !important;margin-left: 0px;margin-right: 0px;height: 1px;margin-top: 18px !important;"/>
+                     <div style="margin-left:350px;margin-top: 32px;">
+            <p style="color:black;font-size: 1.38em;font-family:omnes_att_iimedium;font-weight:600"><b>You have changed the speed on {!noOfchnagedvlans} VLANs.</b></p>
+          </div>
+          <br/>
+          <br/>
+          <div style="margin-left: 80px;margin-right: 50px;margin-bottom:6px;text-align:20px;">
+            <p style="margin-left:170px;color:black;font-size: 1.13em;font-family:omnes_att_iimedium;line-height:1.1">To change the speed on VLANs again before submitting, click <b style="font-weight:600;">Reconfigure</b>.</p><br/>
+            <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;line-height:1.1;margin-left:50px;"> To stop without the changes taking effect, click <b style="font-weight:600;">Cancel Request</b>. To complete your request, click <b style="font-weight:600;">Submit</b>.</p>
+          <br/>
+          </div>
+          <div style="display:inline-flex;margin-top: 7px;margin-bottom: 26px;">
+           <div style="margin-left: 100px;">
+             <p style="color:black;font-size: 22px;font-family:omnes_att_iimedium;margin-bottom:16px;"><b style="font-weight:600;font-weight: bold;">Current VLAN Speeds</b></p>
+              <br/>
+                <table style="width:350px;">
+                  <tr style="height:30px;">
+                    <td>
+                      <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b style="font-weight:600;">VLAN Number and Name</b></p>
+                    </td>
+                    <td>
+                       <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b style="font-weight:600;"> Speed</b></p>
+                    </td>
+                  </tr>
+          <apex:variable var="counterforreviewdisp1" value="{!0}"/> 
+          <apex:repeat value="{!vlanList}" var="vlanInfo_reviewdisplay" id="reviewlistdisplay1">
+          <apex:variable var="counterforreviewdisp1" value="{!counterforreviewdisp1 + 1}"/>
+                  <tr style="height:30px;">
+                    <td>
+                      <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;">VLAN {!counterforreviewdisp1} - {!vlanInfo_reviewdisplay.VPN_Name__c} </p>
+                    </td>
+                    <td>
+                       <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"> {!vlanInfo_reviewdisplay.VLAN_Speed__c}</p>
+                    </td>
+                  </tr>
+          </apex:repeat>
+         </table>
+        </div>
+        <div style="border-right: solid 1px #B9B7B7;margin-left: 100px;"></div>
+        <div style="margin-left:100px;">
+         <p style="color:black;font-size: 22px;font-family:omnes_att_iimedium;font-weight: bold;margin-bottom: 16px;">Proposed VLAN Speeds</p>
+         <br/>
+         <table style="width:350px;">
+          <tr style="height:30px;">
+           <td>
+            <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b style="font-weight:600;"> VLAN Number and Name</b></p>
+           </td>
+           <td>
+            <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b style="font-weight:600;"> Speed </b></p>
+           </td>
+          </tr>
+        <apex:variable var="counterforreviewdisp2" value="{!0}"/> 
+        <apex:repeat value="{!vlanList}" var="vlanInfo_reviewdisplay" id="reviewlistdisplay2">
+        <apex:variable var="counterforreviewdisp2" value="{!counterforreviewdisp2 + 1}"/>
+          <apex:outputPanel layout="none">
+           <tr style="height:30px;">
+            <td>
+             <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"> VLAN {!counterforreviewdisp2} - {!vlanInfo_reviewdisplay.VPN_Name__c}</p> 
+            </td>
+            <td>
+             <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"> {!vlanInfo_reviewdisplay.VLAN_Speed_Change__c}</p>
+            </td>
+           </tr>
+          </apex:outputPanel>
+        </apex:repeat>
+       </table>
+      </div>
+     </div>
+     <div class="row">
+      <div class="col-xs-12" style="margin-left:52px;width:1028px;margin-bottom: 31px;">
+        <hr class="gray_hr"  style="border-top:1px solid #a8a8a8 !important;margin-top: 0px;"/>
+      </div>
+     </div>
+     <div style="height:79px;width:1000px;margin-left:50px;">
+       <div class="col-xs-2 p0" style="margin-bottom: 20px;margin-left:407px;width:200px;">
+         <apex:commandLink value="Cancel Request" style="margin-top:10px;margin-left:80px !important;" styleClass="pull-left" action="{!cancel}"/>
+       </div>
+       <div class="pull-right text-right" style="margin-bottom: 20px;">
+        <apex:commandButton styleClass="btn secondary"  action="{!reconfigure}" rerender="progressbarpanel,displaysliderforvlnaspdchange,VLANs" status="loading" value="Reconfigure" oncomplete="showsliderpage();" style="font-size: 16px; margin-left: 10px !important; padding: 0px 10px !important; width:150px !important; height:40px !important;  background-color: #FFF !important; color:#666 !important; border:1px #666 !important; border-style: solid !important;">
+        </apex:commandButton>
+        <apex:commandButton styleClass="btn btn-primary"  style="height: 40px; width: 172px ! important;margin-left:15px;margin-right: 0px;" action="{!Submitrecord}" status="loading" value="Submit" rerender="progressbarpanel,VLANs,displaysliderforvlnaspdchange,thankyoupanelspfchange" oncomplete="showthankyoupanel();">
+         </apex:commandButton>
+       </div> 
+     </div>
+    </apex:outputPanel>
+   </div> 
+   <!--REVIEW PANEL END-->
+   
+   
+   <!-- Thrid  page - Thanks you page Start -->
+     <apex:outputPanel id="thankyoupanelspfchange">                       
+    <div id="thankyoupagesubmitspdchange" style="margin-left: 50px; margin-right: 48px; height: 348px; margin-top:36px; background:#F6F6F6 none repeat scroll 0% 0%; display:none;">
+    <br/> <br/> 
+     <div style="margin-top: -16px;"><font style="font-family: omnes_light; font-size: 15px; margin-top: 50px; margin-left: 25px; font-weight: 100;  Text-Align: left; Line-Height: 0.75em; Letter-Spacing: 0em; Effect: none">Order Number: {!listDisplayValidationRecords.RelatedQuote__r.Name} </font> </div>
+     <hr class="BlackHr"  style="border-top:0px solid #a8a8a8 !important;margin-left: 0px;margin-right: 0px;height: 1px;margin-top: 16px !important;margin-bottom: 35px;"/>
+    <font style="font-family: omnes_light; font-size: 32px; margin-top: 50px; margin-left: 25px; font-weight: 100; color: #30BA28; Text-Align: left; Line-Height: 32px; Letter-Spacing: 0em; Effect: none">Thank you!
+    </font> 
+    <br/> <br/>
+    
+    <div style="font-family: omnes_light; font-size: 18px; margin-left: 25px; font-weight: 100;margin-top: 16px;margin-bottom: 4px;">
+        We will confirm your Order Number {!listDisplayValidationRecords.RelatedQuote__r.Name} by
+        email.<br/>
+          <br/> To view the status of your order, go to My Dashboard and
+
+        check Manage Quotes &amp; Orders.
+    </div>
+    <br/>
+    <hr style="display: block; height: 1px; border: 0; border-top: 1px solid #ccc; margin: 1em 0; padding: 0;margin-bottom: 40px;margin-top: 15px;"/>
+    <div style="display: inline-flex; margin-left: 730px;">
+        <br/> <a href="/apex/PortalDashboard_UI" data-type="noSub" target="_top"  style="margin-top: 9px; display: inline-table;margin-left: -79px">Go
+            To My Dashboard</a> &nbsp; <apex:commandButton value="Close"  style="height: 37px; width: 172px ! important;margin-left: 47px;" action="{!Close}" styleClass="btn btn-primary" onclick="closeThankYou();return false;"/> 
+    </div>
+    <div style="display: inline;"></div>
+    </div>
+     </apex:outputPanel>
+     <!-- Thrid  page - Thanks you page END --> 
+      <apex:outputPanel id="VLANs">
+   <apex:variable var="count" value="{!0}"/>  
+   <apex:repeat value="{!vlanList}" var="vlanInfo" id="string1">
+   <apex:variable var="count" value="{!count+1}"/>
+      <div id="Addvlan"></div>
+      <div id="vlanPieHeaderDiv{!count}" class="demo">
+        <table id="vlanPieHeader1" class="LogicalChannelInfo">
+         <tr>
+          <td class="LogicalChannelInfo">VLAN {!count} - VPN Name:  <span class="removeBold">{!vlanInfo.VPN_Name__c}</span>
+          </td>
+          <td class="LogicalChannelSpeed" style="width:220px;text-align: right;padding-right: 8px;">
+           <apex:outputPanel rendered="{!IF(vlanInfo.Status_on_Validation__c != 'Pending',true,false)}">
+              {!vlanInfo.VLAN_Speed__c} Mbps
+           </apex:outputPanel>
+       
+           <apex:outputPanel rendered="{!IF(vlanInfo.Status_on_Validation__c == 'Pending',true,false)}">
+             <div id="pendingIDvlanspdchnge" style="margin-left: -12px;"><font style="color:#FFA500;">{!vlanInfo.VLAN_Speed_Change__c} Mbps - Pending...</font></div>
+           </apex:outputPanel>  
+
+          </td>
+          <td class="arrowStyleNew">
+            <a href="javascript:void(0)" onClick="expandjustdisp({!vlanInfo.Ingress_Profile_ID__c}{!count})" style="text-decoration: none;">
+              <img id="Image{!vlanInfo.Ingress_Profile_ID__c}{!count}" src="{!$Resource.Navigate_down}" height="15" width="15" />
+            </a>
+          </td>
+         </tr>
+        </table> 
+       </div>
+       <!-- Just show data START  GIR ***********************-->
+        <table id="vlanPieTableId{!vlanInfo.Ingress_Profile_ID__c}{!count}" style="display:none;overflow:hidden !important;" class="vlanPieTable">
+          <tr>
+           <td colspan="3" style="padding-left:150px;height:100px;">
+            <div id="progressBarVlanAdd{!vlanInfo.Ingress_Profile_ID__c}{!count}" class="vlanProgressBarCssClass" >
+             <div class="vlanProgressBarCssClassDiv"></div>
+             <span class="progressBarVlanClass"></span> 
+            </div>
+           </td>
+          </tr>
+          <tr>
+           <td class="InnerPieChartLayout"> 
+            <table>
+             <tr>
+              <td class="InnerPieChart">Class of Service (COS): <span class="removeBold">{!listDisplayValidationRecords.Current_Class_of_Service__c}</span>
+              </td>
+             </tr>
+             <tr>
+              <td class="InnerPieChart">Profile ID:<span class="removeBold">Profile {!vlanInfo.Ingress_Profile_ID__c} </span>
+              </td>
+             </tr>
+            <!-- <tr>
+              <td>
+               <canvas id="pieIdAdd{!vlanInfo.Ingress_Profile_ID__c}{!count}" style="margin-top: 10px;margin-left: -40px;"></canvas>
+              </td>
+             </tr> -->
+             
+             
+             
+             
+                 <tr style="margin-top:20px">    
+                      <td class="InnerPieChart">
+                           <!--{!CoSProfileLst[count-1]}-->
+                           <apex:outputPanel rendered="{!CoSProfileLst.size > 0}">
+                           <apex:repeat value="{!CoSProfileLst[count-1]}" var="cosInfo">
+                               
+                               <apex:variable var="cntrr" value="{!0}"/>
+                               <apex:repeat value="{!cosInfo}" var="CoSdata">
+                            
+                                   <apex:outputPanel >
+                                       {!CoSdata}%
+                                   </apex:outputPanel>
+                                   
+                                   <br />
+                                   <apex:variable var="cntrr" value="{!cntrr+1}"/>  
+                               </apex:repeat>
+                           </apex:repeat>  
+                           </apex:outputPanel>
+                                                                                   
+                       </td>
+                    </tr>
+            </table>
+           </td>
+           <td rowspan="2" style="width:397px">
+            <table class="IPv4VLANInformation">
+             <tr><td>IPv4 Information</td></tr>
+            </table>
+            <table>
+             <tr><td class="IPInformation">Routing Protocol:  <span class="removeBold">{!vlanInfo.V4_Routing_Protocol__c}</span></td></tr>
+             <tr><td class="IPInformation">Autonomous System Number:  <span class="removeBold">{!vlanInfo.V4_Routing_ASN__c}</span></td></tr>
+             <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V4_Send_Default_Indicator__c=='true'}">Restrictive Routing: Yes <span class="removeBold"></span></apex:outputPanel></td></tr>
+             <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V4_Send_Default_Indicator__c=='false'}">Restrictive Routing: No <span class="removeBold"></span></apex:outputPanel></td></tr>
+             <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V4_Send_Default_Indicator__c==''}">Restrictive Routing: <span class="removeBold"></span></apex:outputPanel></td></tr>
+             <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V4_ASN_Override_Indicator__c=='true'}">Autonomous System Number Override: Yes <span class="removeBold"></span></apex:outputPanel></td></tr>
+             <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V4_ASN_Override_Indicator__c=='false'}">Autonomous System Number Override: No <span class="removeBold"></span></apex:outputPanel></td></tr>
+             <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V4_ASN_Override_Indicator__c==''}">Autonomous System Number Override: <span class="removeBold"></span></apex:outputPanel></td></tr>
+             <tr><td class="IPInformation">MD5 Authentication:  <span class="removeBold">{!vlanInfo.V4_Encrypted_Password__c}</span></td></tr>
+             <tr><td class="IPInformation">Customer Edge IP Address:  <span class="removeBold">{!vlanInfo.Customer_IP_V4_Address__c}</span></td></tr>                                       
+             <tr><td class="IPInformation">AT&amp;T Edge IP Address:  <span class="removeBold">{!vlanInfo.ATT_IP_Address__c}</span></td></tr>
+             <tr><td class="IPInformation">Subnet Mask:  <span class="removeBold">{!vlanInfo.Subnet_Mask_V4__c}</span></td></tr>
+            </table>
+           </td>
+           <td rowspan="2">
+            <table class="IPv4VLANInformation">
+             <tr><td>IPv6 Features &amp; Options</td></tr>
+            </table>
+            <table>
+              <tr><td class="IPInformation">Routing Protocol:  <span class="removeBold">{!vlanInfo.V6_Routing_Protocol__c}</span></td></tr>
+              <tr><td class="IPInformation">Autonomous System Number:  <span class="removeBold">{!vlanInfo.V6_Routing_ASN__c}</span></td></tr>
+              <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V6_Send_Default_Indicator__c=='true'}">Restrictive Routing: Yes <span class="removeBold"></span></apex:outputPanel></td></tr>
+              <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V6_Send_Default_Indicator__c=='false'}">Restrictive Routing: No <span class="removeBold"></span></apex:outputPanel></td></tr>
+              <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V6_Send_Default_Indicator__c==''}">Restrictive Routing:  <span class="removeBold"></span></apex:outputPanel></td></tr>
+              <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V6_ASN_Override_Indicator__c=='true'}">Autonomous System Number Override: Yes <span class="removeBold"></span></apex:outputPanel></td></tr>
+              <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V6_ASN_Override_Indicator__c=='false'}">Autonomous System Number Override: No <span class="removeBold"></span></apex:outputPanel></td></tr>
+              <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V6_ASN_Override_Indicator__c==''}">Autonomous System Number Override: <span class="removeBold"></span></apex:outputPanel></td></tr> 
+              <tr><td class="IPInformation">MD5 Authentication:  <span class="removeBold">{!vlanInfo.V6_Encrypted_Password__c}</span></td></tr>
+            </table>
+           </td>
+          </tr>
+         <!--  <tr>
+          <td >
+            <table id="pieLegendId{!count}" class="InnerShowLevel">
+             <tr><td style="height:30px"><canvas class="RealTime"></canvas><span> Real Time <span id="rt{!vlanInfo.Ingress_Profile_ID__c}{!count}"></span> % </span></td></tr>
+             <tr><td style="height:30px"><canvas class="BurstyHigh"></canvas><span> Bursty High <span id="bh{!vlanInfo.Ingress_Profile_ID__c}{!count}"></span> % </span></td></tr>
+             <tr><td style="height:30px"><canvas class="BurstyLow"></canvas><span> Bursty Low <span id="bl{!vlanInfo.Ingress_Profile_ID__c}{!count}"></span> % </span></td></tr>
+             <tr><td style="height:30px"><canvas class="BurstyEffort"></canvas><span> Best Effort <span id="be{!vlanInfo.Ingress_Profile_ID__c}{!count}"></span> % </span></td></tr>
+            </table> 
+           </td>
+          </tr> -->
+        </table>
+        <!-- for temp shifting of reconfig -->
+        <div id="injectreconfigure{!vlanInfo.Ingress_Profile_ID__c}{!count}">
+        </div>
+        <script type="text/javascript">
+            var usedSpeed = "{!vlanInfo.VLAN_Speed__c}";
+            var totalSpeed = "{!listDisplayValidationRecords.Port_Speed__c}"; 
+             if({!count}==1){
+              tempUsedSpeed = usedSpeed;
+              var progressBarWidth = usedSpeed* $('#progressBarVlanAdd{!vlanInfo.Ingress_Profile_ID__c}{!count}').width() / totalSpeed;
+               $('#progressBarVlanAdd{!vlanInfo.Ingress_Profile_ID__c}{!count}').find('div').animate({ width: progressBarWidth }, totalSpeed).html("VPN {!count} - "+usedSpeed);
+              var prgresBarWidthSpan =  (totalSpeed-usedSpeed)* $('#progressBarVlanAdd{!vlanInfo.Ingress_Profile_ID__c}{!count}').width() / totalSpeed;
+               $('#progressBarVlanAdd{!vlanInfo.Ingress_Profile_ID__c}{!count}').find('span').animate({ width: prgresBarWidthSpan }, totalSpeed).html(totalSpeed-usedSpeed); 
+              }else{
+              tempUsedSpeed = parseInt(usedSpeed)+parseInt(tempUsedSpeed);
+              var progressBarWidth = tempUsedSpeed* $('#progressBarVlanAdd{!vlanInfo.Ingress_Profile_ID__c}{!count}').width() / totalSpeed;
+               $('#progressBarVlanAdd{!vlanInfo.Ingress_Profile_ID__c}{!count}').find('div').animate({ width: progressBarWidth }, totalSpeed).html("VPN {!count} - "+usedSpeed);
+              var prgresBarWidthSpan =  (totalSpeed-tempUsedSpeed)* $('#progressBarVlanAdd{!vlanInfo.Ingress_Profile_ID__c}{!count}').width() / totalSpeed;
+               $('#progressBarVlanAdd{!vlanInfo.Ingress_Profile_ID__c}{!count}').find('span').animate({ width: prgresBarWidthSpan }, totalSpeed).html(totalSpeed-tempUsedSpeed);  
+              }
+        </script>
+      </apex:repeat> 
+      <br/><br/>
+      <apex:actionFunction name="SpeedChange" action="{!performAddChangeonSpeedSelection}" rerender="progressbarpanel" status="loading" >
+         <apex:param name="changedspeed" assignTo="{!selectedSpeed}" value="" />
+         <apex:param name="changedid" assignTo="{!vlanspeedid}" value="" />
+      </apex:actionFunction> 
+        <script type="text/javascript">
+          function loadpiechartsforalready()
+          {
+        var ipProfileId =  "116";//single value for IP
+        var hashmap = {};
+        hashmap[''] = "0,0,0,0";
+        hashmap['1001'] = "90,80,10,5";
+        hashmap['1002'] = "90,80,5,10";
+        hashmap['1003'] = "90,80,5,5";
+        hashmap['1004'] = "90,80,5,5";
+        hashmap['7625'] = "50,80,10,5";
+        hashmap['7626'] = "50,80,5,10";
+        hashmap['7627'] = "50,80,5,5";
+        hashmap['7628'] = "50,80,5,5";
+        hashmap['24185'] = "0,0,80,15";
+        hashmap['24186'] = "0,0,80,10";
+        hashmap['24187'] = "0,0,80,10";
+        hashmap['24188'] = "0,0,80,5";
+        hashmap['24189'] = "0,0,80,5";
+        hashmap['24461'] = "0,0,5,10";
+        hashmap['24462'] = "0,0,5,10";
+        hashmap['24463'] = "0,0,5,5";
+        hashmap['24464'] = "0,0,5,5";
+        
+        hashmap['101'] = "90,0,0,100";
+        hashmap['102'] = "80,80,10,10";
+        hashmap['103'] = "80,60,30,10";
+        hashmap['104'] = "80,40,30,30";
+        hashmap['105'] = "60,80,10,10";
+        hashmap['106'] = "60,60,30,10";
+        hashmap['107'] = "60,40,30,30";
+        hashmap['108'] = "50,0,0,100";
+        hashmap['109'] = "40,80,10,10";
+        hashmap['110'] = "40,60,30,10";
+        hashmap['111'] = "40,40,30,30";
+        hashmap['112'] = "20,80,10,10";
+        hashmap['113'] = "20,60,30,10";
+        hashmap['114'] = "20,40,30,30";
+        hashmap['115'] = "10,80,10,10";
+        hashmap['116'] = "10,60,30,10";
+        hashmap['117'] = "10,40,30,30";
+        hashmap['118'] = "0,100,0,0";
+        hashmap['119'] = "0,80,10,10";
+        hashmap['120'] = "0,60,30,10";
+        hashmap['121'] = "0,40,30,30";
+        hashmap['122'] = "0,0,100,0";
+        hashmap['123'] = "0,0,90,10";
+        hashmap['124'] = "0,0,50,50";
+        hashmap['125'] ="0,0,0,0";
+        hashmap['160'] = "70,80,10,10";
+        hashmap['161'] = "70,60,30,10";
+        hashmap['162'] = "70,40,30,30";
+        hashmap['163'] = "50,80,10,10";
+        hashmap['164'] = "50,60,30,10";
+        hashmap['165'] = "50,40,30,30";
+        hashmap['166'] = "45,80,10,10";
+        hashmap['167'] = "45,60,30,10";
+        hashmap['168'] = "45,40,30,30";
+        hashmap['169'] = "35,80,10,10";
+        hashmap['170'] = "35,60,30,10";
+        hashmap['171'] = "35,40,30,30";
+        hashmap['172'] = "30,80,10,10";
+        hashmap['173'] = "30,60,30,10";
+        hashmap['174'] = "30,40,30,30";
+        hashmap['175'] = "25,80,10,10";
+        hashmap['176'] = "25,60,30,10";
+        hashmap['177'] = "25,40,30,30";
+        hashmap['178'] = "15,80,10,10";
+        hashmap['179'] = "15,60,30,10";
+        hashmap['180'] = "15,40,30,30";
+        hashmap['181'] = "5,80,10,10";
+        hashmap['182'] = "5,60,30,10";
+        hashmap['183'] = "5,40,30,30";
+        hashmap['0'] = "30,10,20,40";
+    
+    var profileArray = 0;
+          
+         if(profileArray.length>0){
+            //var tempIncrease = 0;
+            var increase = 0;
+            for(var i = 0; i < profileArray.length; i++){
+               //alert("pid:"+profileArray[i]);
+                increase = increase + 1;
+                var tempPieIdGlobal  = profileArray[i];
+                var pieIdGlobal = tempPieIdGlobal+""+increase; 
+              //  alert("pieIdGlobal::"+pieIdGlobal);
+                var pieValues = hashmap[tempPieIdGlobal];
+                //alert("pieValues::"+pieValues);
+               
+                if(typeof(pieValues)!='undefined'){
+                 
+                    var pieArray = pieValues.split(',');
+                        for(var k = 0; k < pieArray.length; k++){
+                         
+                           if(k==0){
+                               a = pieArray[k];
+                               var objrt=document.getElementById("rt"+pieIdGlobal).innerHTML = a;
+                           }
+                           else if(k==1){
+                                b = pieArray[k];
+                                var objbh=document.getElementById("bh"+pieIdGlobal).innerHTML = b;
+                           }
+                           else if(k==2){
+                                c = pieArray[k];
+                                var objbl=document.getElementById("bl"+pieIdGlobal).innerHTML = c;
+                           }
+                           else if(k==3){
+                                d = pieArray[k];
+                                var objbe=document.getElementById("be"+pieIdGlobal).innerHTML = d;
+                           }
+                           else{
+                           }
+                        }
+                        
+                         if(a==0 && b==0 && c==0 && d==0){
+                        // alert("if: "+a+"::"+b+"::"+c+"::"+d);
+                            document.getElementById("pieLegendId"+increase).style.display="none";
+                         }
+                }else{
+                     //alert(increase);
+                     if(document.getElementById("pieLegendId"+increase) != null){
+                        document.getElementById("pieLegendId"+increase).style.display="none";
+                     }
+                }
+                
+                //alert(a+"::"+b+"::"+c+"::"+d);
+                //alert("pieIdGlobal:"+pieIdGlobal);
+                
+                
+                loadPieData( parseInt(a) , parseInt(b) , parseInt(c) , parseInt(d) ,pieIdGlobal.toString());
+                //alert("pieIdGlobal:"+pieIdGlobal);
+                $("#vlanPieTableId"+pieIdGlobal).hide();
+                $("#progressBarVlanInc"+pieIdGlobal).hide();
+                   
+               
+                a = b = c = d = "";
+             
+            }  //closing for loop  
+            
+
+        }else if(typeof(ipProfileId)!="undefined"){
+            
+            
+        var pieValuesIp = hashmap[ipProfileId];
+            
+            
+         var pieArrayIP = pieValuesIp.split(',');
+            for(var t = 0; t < pieArrayIP.length; t++){
+            
+               if(t==0){
+                   p = pieArrayIP[t];
+                   
+               }
+               else if(t==1){
+                  
+                    q = pieArrayIP[t];
+                    
+               }
+               else if(t==2){
+                    r = pieArrayIP[t];
+                    
+               }
+               else if(t==3){
+                    s = pieArrayIP[t];
+                    
+               }
+               else{
+               }
+               
+              
+               
+            } 
+            loadPieDataForIP(p,q,r,s);
+
+            var objrtIP=document.getElementById("rtip").innerHTML = p;
+            var objbhIP=document.getElementById("bhip").innerHTML = q;
+            var objblIP=document.getElementById("blip").innerHTML = r;
+            var objbeIP=document.getElementById("beip").innerHTML = s;
+
+                if(p==0 && q==0 && r==0 && s==0){
+                  
+                    document.getElementById("ipPieLegendsID").style.display="none";
+                }
+
+            p = q = r = s = "";
+            
+
+        }else{
+            
+        }
+           
+    }
+    function loadPieDataForIP(pIP1,pIP2,pIP3,pIP4){
+        var pieChartData = [
+        {value: pIP1,color:"#32a2e4"},
+        {value: pIP2,color: "#2466a8"},
+        {value: pIP3,color: "#64caf0"},
+        {value: pIP4,color: "#c8eefd"}
+      ]
+    var myLineip = new Chart(document.getElementById("pieChartLocForIP").getContext("2d")).Pie(pieChartData);
+     }
+    loadpiechartsforalready();
+     </script>
+     </apex:outputPanel>
+     </td>
+    </tr>
+    <tr>
+      <td>
+      <!-- second page - submit vlan Start -->
+      <apex:outputPanel id="submitpanel">
+       <div id="loadingpagesubmitvlan" style="margin-left: 50px; margin-right: 48px; height: 250px; margin-top:10px;background: #F0F0F0 none repeat scroll 0% 0%;display:none;">
+       <br /> <br />
+        <div id="submitRemoveLink">
+         <center>
+          <font style="font-family: omnes_att_iimedium; font-size: 1.38em; font-weight: bold; Text-Align: center; line-height: 1.18; Letter-Spacing: 0em; Effect: none; margin-top: 50px;">You are using {!speedpending}Mbps of your port for your 1 additional VLAN.</font>
+         </center>
+        </div>
+        <br />
+         <center>
+          <font style="font-family: omnes_att_iimedium; font-size: 1.13em; font-style: bold; Text-Align: center; line-height: 0.8em; Letter-Spacing: 0em; Effect: none">To change or delete a VLAN before submitting ,click<span style="font-weight: 600"> Reconfigure</span>
+          or <span style="font-weight: 600">Remove.</span>
+          </font>
+         </center>
+         <br />
+         <center>
+           <font style="font-family: omnes_att_iimedium; font-size: 1.13em; font-style: bold; Text-Align: center; line-height: 0.8em; Letter-Spacing: 0em; Effect: none">To add your VLAN, click <span style="font-weight: 600">Submit.</span>
+           </font>
+         </center>
+          <br /> <br />
+       <div style="display: inline-flex; margin-left: 419px">
+        <apex:commandButton styleClass="btn btn-primary" status="loading" action="{!Submitrecord}" style="height: 40px; width: 172px ! important;"  reRender="updatevlans,updatereconfig,loadpiechart" value="Submit" onComplete="submitVLAN()"  rendered="{!IF(speedpending != 0,true,false)}"/>
+        <apex:commandButton styleClass="btn btn-primary disabled" status="loading" action="{!Submitrecord}" style="height: 40px; width: 172px ! important;" rendered="{!IF(speedpending == 0,true,false)}" reRender="updatevlans,updatereconfig,loadpiechart" value="Submit"/>
+        <apex:actionFunction name="submitVLAN" status="loading" reRender="updatevlans,loadpiechart" onComplete="showthankyou();return false;"/>
+       </div>
+      </div>
+     </apex:outputPanel>
+     
+     
+      <div id="removeAndCancelSubmitVlan" style="margin-left: 50px; margin-right: 48px; height: 250px; background: rgb(235, 235, 235);display:none;">
+       <br /> <br />
+       <br /> <br />
+       <br /> <br />
+       <center>
+        <font style="font-family: omnes_att_iimedium; font-size: 1.13em; font-style: bold; Text-Align: center; line-height: 0.8em; Letter-Spacing: 0em; Effect: none">To add your VLAN,click <span style="font-weight: 600">Add VLAN.</span>
+        </font>
+       </center>
+       <br /> <br />
+      <div style="display: inline-flex; margin-left: 600px">
+        <apex:actionFunction name="submitVLAN" status="loading" reRender="updatevlans,loadpiechart" onComplete="showthankyou();return false;" />
+      </div>
+     </div>
+    <!-- second page - submit vlan END -->
+    
+    
+ 
+    
+    
+    
+   </td>
+  </tr>
+ </table>            
+</apex:outputPanel>    
+  <apex:actionFunction action="{!initializeSpeedVLANChange}" name="initializeSpeedVLANChangeContent" rendered="true" reRender="VLANspeedChangePanel"/>      
+</apex:form>
+
+    <script>
+      checkForErrorsPage2();
+    </script>
+    <script>
+       var maskIpVal, LANIpVal, numLANBlockVal, messID, errorMessDiv, maskCount, lanIpAdd;
+
+                                    function validateMaskIpAddress(maskIp) {
+                                        maskIpVal = maskIp.value;
+                                        maskCount = maskIp.id;
+                                    }
+
+                                    function numberOfLANBlock(numLANBlock) {
+                                        numLANBlockVal = numLANBlock.value;
+                                    }
+                                    
+                                    function validateLANIpAddress(ipAddObj) {
+
+                                        LANIpVal = ipAddObj.value;
+                                        lanIpAdd = ipAddObj.id;
+
+                                        lanIndex = LANIpVal.split(".");
+                                        var z = lanIndex[lanIndex.length - 1];
+                                        //var z = lanIndex.substr(12,15);
+                                        var res = maskIpVal.substr(12, 15);
+                                        var maskCountVal = maskCount.substr(66);
+
+                                        if (res == '254') {
+                                            z = z % 2;
+                                        }
+
+                                        if (res == '252') {
+
+                                            z = z % 4;
+                                        }
+
+                                        if (res == '248') {
+
+                                            z = z % 8;
+                                        }
+
+                                        if (res == '240') {
+
+                                            z = z % 16;
+                                        }
+
+                                        if (res == '224') {
+
+                                            z = z % 32;
+                                        }
+
+                                        if (res == '192') {
+
+                                            z = z % 64;
+                                        }
+
+                                        if (res == '128') {
+
+                                            z = z % 128;
+
+                                        }
+                                        
+                                        
+                                        if(document
+                                                .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonId")!=null)
+                                            {
+                                        
+                                        if (z != 0) {
+
+                                            errorMessDiv = lanIpAdd.replace(
+                                                    'ipAddressId',
+                                                    'errorMessID');
+                                            document
+                                                    .getElementById(errorMessDiv).style.display = "block";
+                                            document
+                                                    .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonId").style.backgroundColor = "#428bca";
+                                            document
+                                                    .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonId").style.cursor = "default";
+                                            document
+                                                    .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonId").disabled = true;
+                                        }
+
+                                        else {
+
+                                            errorMessDiv = lanIpAdd.replace(
+                                                    'ipAddressId',
+                                                    'errorMessID');
+                                            document
+                                                    .getElementById(errorMessDiv).style.display = "none";
+                                            document
+                                                    .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonId").style.backgroundColor = "#056fab";
+                                            document
+                                                    .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonId").style.cursor = "pointer";
+                                            document
+                                                    .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonId").disabled = false;
+                                        }
+                                        
+                                            }
+                                        if(document
+                                                .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonIdupdate")!=null)
+                                            {
+                                        
+                                        if (z != 0) {
+
+                                            errorMessDiv = lanIpAdd.replace(
+                                                    'ipAddressId',
+                                                    'errorMessID');
+                                            document
+                                                    .getElementById(errorMessDiv).style.display = "block";
+                                            document
+                                                    .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonIdupdate").style.backgroundColor = "#428bca";
+                                            document
+                                                    .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonIdupdate").style.cursor = "default";
+                                            document
+                                                    .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonIdupdate").disabled = true;
+                                        }
+
+                                        else {
+
+                                            errorMessDiv = lanIpAdd.replace(
+                                                    'ipAddressId',
+                                                    'errorMessID');
+                                            document
+                                                    .getElementById(errorMessDiv).style.display = "none";
+                                            document
+                                                    .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonIdupdate").style.backgroundColor = "#056fab";
+                                            document
+                                                    .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonIdupdate").style.cursor = "pointer";
+                                            document
+                                                    .getElementById("pagecontainer:j_id31:test:j_id173:j_id174:j_id178:j_id205:submitButtonIdupdate").disabled = false;
+                                        }
+                                       
+                                            }
+                                        
+                                    }
+
+                                    function collExpand(id) {
+                                   
+                                    var strId = id.replace(/\D/g, '');
+                                   
+                                        $("#vlanPieTableId" + strId).slideToggle(1000);
+                                    }
+
+                                    function addVLAN() {
+
+                                        $('#loadingpagesubmitvlan').hide();
+                                        $('#thankyoupagesubmitvlan').hide();
+                                        $('#removeAndCancelSubmitVlan').hide();
+                                        $('#div1lan').hide();
+                                        $('#div3lan').hide();
+                                        $('#div1lantemp').hide();
+                                        $('#div2lan').show();
+                                        resetAllFields();
+                                        collExpand('vlanPieTableId84');
+                                        
+                                        $('.btnContinuePage2').addClass(
+                                                "disabled");
+                                        return false;
+
+                                    }
+
+                                    function showdiv() {
+                                        $('#vlanPieTableId84').hide();
+                                        $('#div1lan').hide();
+                                        //$('#div1lantemp').show();
+                                        //$('#div1lantemp').hide();
+                                        $('#div2lan').hide();
+                                        $('#loadingpagesubmitvlan').show();
+                                         $('#showspeedID').hide();
+                                        $('html, body')
+                                                .animate(
+                                                        {
+                                                            scrollTop : $(
+                                                                    '#loadingpagesubmitvlan')
+                                                                    .position().top
+                                                        }, 1000);
+                                        return false;
+
+                                    }
+
+                                    function showthankyou() {
+
+                                        $('#div1lan').hide();
+                                        $('#div2lan').hide();
+                                        $('#loadingpagesubmitvlan').hide();
+                                        $('#thankyoupagesubmitvlan').show();
+                                        $('#reconID').hide();
+                                        $('#pendingID').hide();
+                                      
+                                        resetAllFields();
+                                        $('html, body')
+                                                .animate(
+                                                        {
+                                                            scrollTop : $(
+                                                                    '#thankyoupagesubmitvlan')
+                                                                    .offset().top
+                                                        }, 1000);
+                                        return false;
+
+                                    }
+
+                                    function cancelPendingVLAN() {
+
+                                        $('#loadingpagesubmitvlan').hide();
+                                        $('#thankyoupagesubmitvlan').hide();
+                                        $('#div1lan').hide();
+                                        $('#div2lan').show();
+                                        $('#div3lan').hide();
+                                        resetAllFields();
+                                        
+                                        if(document.getElementByid('submitButtonId')!=null)
+                                            {
+                                             $('#submitButtonId').addClass(
+                                             'disabled');
+                                            
+                                            }
+                                       
+                                        
+                                        if(document.getElementByid('submitButtonIdupdate')!=null)
+                                        {
+                                         $('#submitButtonIdupdate').addClass(
+                                         'disabled');
+                                        
+                                        }
+                                     $('html, body').animate({
+                                            scrollTop : 0
+                                        }, 500);
+                                        $('.btnContinuePage2').addClass(
+                                                "disabled");
+                                        return false;
+
+                                    }
+
+                                    function closeThankYou() {
+
+                                        $('#loadingpagesubmitvlan').hide();
+                                        $('#thankyoupagesubmitvlan').hide();
+
+                                        $('#div1lan').hide();
+                                        $('#div2lan').show();
+                                        $('#div3lan').hide();
+                                        
+                                        if(document.getElementByid('submitButtonId')!=null)
+                                        {
+                                         $('#submitButtonId').addClass(
+                                         'disabled');
+                                        
+                                        }
+                                   
+                                    
+                                    if(document.getElementByid('submitButtonIdupdate')!=null)
+                                    {
+                                     $('#submitButtonIdupdate').addClass(
+                                     'disabled');
+                                    
+                                    }
+                                        
+                                        
+                                        
+                                        $('html, body').animate({
+                                            scrollTop : 0
+                                        }, 500);
+                                        $('.btnContinuePage2').addClass(
+                                                "disabled");
+                                        return false;
+
+                                    }
+
+                                    function reconfigure() {
+                                        $('#loadingpagesubmitvlan').hide();
+                                        $('#thankyoupagesubmitvlan').hide();
+                                        $('#div1lan').hide();
+                                        $('#div3lan').hide();
+                                        $('#div1lantemp').hide();
+                                        $('#div2lan').show();
+
+                                        collExpand('vlanPieTableId84');
+                                        
+                                        $('.btnContinuePage2').addClass(
+                                                "disabled");
+                                        return false;
+
+                                    }
+
+                                     function cancelVLAN()
+                                     {
+                                     $('#removeAndCancelSubmitVlan').show();
+                                      $('#loadingpagesubmitvlan').hide();  
+                                     }
+                                    
+                                    function remove() {
+                                        
+                                        
+                                        $('#thankyoupagesubmitvlan').hide();
+                                        $('#loadingpagesubmitvlan').show();  
+                    $('#submitRemoveLink').hide();                                  
+                                        
+                                        $('#div1lan').hide();
+                                        $('#div3lan').hide();
+                                        $('#div1lantemp').hide();
+                                        $('#div2lan').hide();
+                                        
+                                        resetAllFields();
+                                        return false;
+
+                                    }
+                                    
+                                    function canceladdvlan()
+                                    {
+                                    
+                                    $('#div2lan').show();
+                                    collExpand('vlanPieTableId84');   
+                                    return false;
+                                        
+                                        
+                                    }
+                                    
+                                    function redirectToconfigPanel()
+                                    {
+                                    
+                                   //alert("function c");
+                                   //alert({!$Component.BeginPanel});
+                                    document.getElementById("BeginPanelID").style.display="none";
+                                    document.getElementById("displaysliderforvlnaspdchangeID").style.display="block";
+                                    //$('#j_id0:j_id688:j_id689:VLANADDMACD:BeginPanel').hide();
+                                    
+                                    //$('#displaysliderforvlnaspdchange').show();
+                                    // $('#thankyoupagesubmitvlan').hide();
+                                     
+                                     //$('#loadingpagesubmitvlan').hide();
+                                     //$('#div1lan').hide();
+                                     //$('#div3lan').hide();
+                                     //$('#div1lantemp').hide();
+                                     //$('#div2lan').hide();
+                                    }
+                                    
+                                    if(!timeflag)
+                                    {
+                                
+                                    $('#vlanPieTableId84').slideToggle(1000);
+                                    $('html, body').animate({ scrollTop: $('#vlanPieHeader84').offset().top},1000); 
+                                 
+                                    }
+                                    
+                                    
+                                </script>
+                                
+                                
+                                       <style>
+                     table.vlanPieTable{
+                     width:1100px;
+                     margin-left:50px;
+                     height:450px;
+                     border: 1px solid #a8a8a8;
+                     overflow:hidden !important;
+                     border-collapse:separate !important;
+                         }       
+
+
+            .ui-slider-range-min
+            {
+            background:#ef6f00 !important;
+
+            }
+
+
+            .ui-slider-handle
+            {
+                height:30px !important;
+                width:12px !important;
+            }
+    
+
+#containerslider {
+  
+  position: relative;
+}
+#cosSlider1,#readvaluediv,
+#remainingleftdiv {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+#remainingleftdiv {
+  z-index: 10;
+}
+
+#readvaluediv {
+  z-index: 10;
+}
+</style>
+<style>
+.modal-content
+{
+height:250px !important;
+}
+.inputRouteAd_error
+{
+width:360px !important; 
+margin-left:-15px !important;
+}
+
+.inputRouteAd1_error
+{
+width:360px !important; 
+margin-left:-15px !important;
+}
+.inputIPType_error
+{
+margin-top:10px;
+margin-left:3px;
+}
+
+.vlanPieTable
+{
+overflow:hidden !important;
+border-collapse:separate !important;
+}
+     
+ </style>
+ <script>
+     function activeEnableApplyButton(){
+        //alert("ok");
+     }
+ </script>
+ </apex:page>

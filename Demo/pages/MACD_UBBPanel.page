@@ -1,0 +1,1138 @@
+<apex:page controller="MACD_UBBPanelController" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" title="BuyFlow" cache="false" >
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCss}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCSSDetails}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalExchangeCSS}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalExchangeCSS}" />
+    <apex:includeScript value="{!$Resource.jQueryMin}" />  
+    <apex:includeScript value="{!$Resource.atombootstrapminjs}"  />
+    <apex:stylesheet value="{!$Resource.ReviewRequestPanel_UI}" />
+    <apex:stylesheet value="{!$Resource.sitedetailsUBB_StyleSheet}" />  
+    
+    <script>
+        function toggleToViewConfirmationInfoPanel(){
+            $("a[data-name='configSitesDataName']").trigger("click");
+                var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+                $("#reviewCircleNumID").text('').append(okIcon);
+            $("#ReviewPanelDiv").hide();
+                $("#ReviewReqIDText").hide();        
+                $("#ConfirmInfoDiv").show();
+                $("#ViewConfId").css('background-color','#056FAB');
+                $("#ReviewReqId").css('background-color','#FFF');
+                $("#ReviewReqId").css('color','#056FAB');
+                $("#ViewConfId").css('color','#FFF');
+                $("#ReviewReqId").css('border','1px solid #ccc');
+                $(".caretIconInflightConfig").hide();
+                $(".caretIconInflightReview").show();
+            $("#revReqPanelText").css('color','#545454');
+                $("#reviewCircleNumID").css({'border-color':'#428BCA'});
+                $("#reviewCircleNumID").css({'color':'#428BCA'});
+                $("#confCircleNumID").css({'border-color':'#FFF'});
+                $("#confCircleNumID").css({'color':'#FFF'});  
+        }
+    </script>    
+    
+    <style>
+       
+        .ReviewLabelsHeading{line-height: 1.18em; font-size: 1.38em;font-family:omnes_att_iimedium !important;color: #000000 !important;}    
+       
+        .fonttxtSty{line-height: 0.36em; font-size: 18px;font-family:omnes_light !important;font-weight:500 !important;color:#000000}
+    
+        .cancelSiteList{
+            width:50%;
+            background-color:#056FAB;
+            text-color:white;
+        }
+        priceSchd{
+            content: ' ';
+              display: inline;
+              width: 0;
+              height: 0;
+              border-left: 20px solid transparent;
+              border-right: 20px solid transparent;
+              position: absolute;
+              border-top: 14px solid #056fab;
+              bottom: -12px;
+        }
+ 
+        .greenText {
+            color: green !important;
+            padding: 10px 15px 0 0px;
+        }
+        
+        #contentWrapper {
+            min-width: 1024px !important;
+        }
+        
+        button.close {
+            font-size: 200%;
+        }
+        .active > a,
+        .active_tab > a {
+            color: #fff;
+        }
+        .active > a,
+        .active_tab > a, .tabbed_menu .mainnav li.active::after {
+            cursor: default; /* Added to ensure the cursor is default for the active tab */
+        }
+        .tabbed_menu .active {
+            background: #056fab;
+        }
+        .tabbed_menu .mainnav li{
+            margin-left:0px;
+            pointer-events: none;
+        }
+        .tabbed_menu li {
+            padding: 0;
+            min-width: 25%;
+            height: 90px;
+        }
+        
+        .tabbed_menu li a {
+        padding: 20px;
+        display: block;
+        text-align: center;
+        }
+        .dataTables_length {
+        display: none;
+        }
+        .dataTables_info {
+        bottom: 22px;
+        position: absolute;
+        right: 180px;
+        }
+        .manage_user_name {
+        width: 17% !important;
+        }
+        .manage_user_contact_name {
+        width: 10% !important;
+        }
+        .manage_user_address {
+        width: 10% !important;
+        }
+        .manage_user_city {
+        width: 10% !important;
+        }
+        .manage_user_state {
+        width: 10% !important;
+        }
+        .manage_user_zip {
+        width: 10% !important;
+        }
+        #manage_content .pagination > a {
+        padding: 5px 10px;
+        font-family: omnes_att_iimedium;
+        line-height: 1.125em;
+        color: #056fab;
+        margin-left: 5px;
+        background: #fff;
+        border: 1px solid #ccc;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+        cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+        cursor: no-drop;
+        }
+        .btn {
+        padding: 10px 20px !important;
+        }
+        .btn:hover {
+        background: #fff !important;
+        color: #333;
+        }
+        h1 {
+        font-family: omnesatt_iiregular;
+        margin: 40px 0 20px 0;
+        }
+        .disabled{background-color:white}
+        .mainnav a:hover { color: #428bca !important; }
+        .mainnav .active a { color: #fff !important;cursor: default !important; }
+        
+        tabbed_menu .mainnav li.active::after {
+        content: ' ';
+        display: inline;
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        position: absolute;
+        border-top: 14px solid #056fab;
+        bottom: -12px;
+        /* left: 9%; */
+        margin-left: -15% !important;
+        z-index: 99999;
+        }
+        /*.tabbed_menu .mainnav li{border: none;}*/
+        .tabbed_menu .mainnav li.active::after {
+        content: ' ';
+        display: none;
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        position: absolute;
+        border-top: 14px solid #056fab;
+        bottom: -12px;
+        /* left: 9%; */
+        margin-left: 0% !important;
+        z-index: 99999;
+        }
+        .tabbed_menu_disabled .circlenum{
+            color: #494E53;
+            border: 1px solid #494E53;
+            background: #C9C9C9;
+            font-weight:bold;
+        }
+        .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+        background-size: 900px 900px !important;
+        }
+       /* .tabbed_menu li {
+        float: left !important;
+        } */
+        .manage_content-header {
+            font-family: omnes_light; padding:10px 0 10px 20px; font-size:18px; font-weight:bold;
+         }
+
+        ul.mainnav li.disabled a, ul.mainnav li.disabled a:hover
+        {
+        cursor: default !important;
+        /*color: black !important;*/
+        }
+        li.ng-isolate-scope.active::after
+        {
+        cursor: default;
+        }
+        
+        .nscustomer_details{
+        margin-top: 50px;
+        
+        }
+        .ConfigLabels{margin-left: 30px ;line-height: 1.3em; font-size: 1.13em;font-family:omnes_att_iimedium !important; }
+        .nscustomer_details li{
+        display:inline;
+        }
+        
+        .circlenumConfirm {
+          float: left;
+          margin: 4px 7px 0 0;
+          width: 25px;
+          height: 25px;
+          border-radius: 15px;
+          font-size: 10px;
+          color: #428bca;
+          line-height: 25px;
+          text-align: center;
+          border: 1px solid #428bca;
+        }
+        .currPortSpeedCss {color:#2E9AFE;}
+        .tabbed_menu li { background-color:#d7d7d7;}
+        tabbed_menu .mainnav li.Pric::after { margin-left: -40% !important; 
+        }
+        tabbed_menu .mainnav li.confCls::after {margin-left: -40% !important; }
+        .ConfigTableHeaders{height:25px; width:230px; background-color: white;}
+        .background-url(url('!$Resource.scrollTop') no-repeat center;) no-repeat 0px 20px; width:72px; height:106px;
+        .caretIconImg
+        {
+            width:50px;
+            height:50px;
+            background-image: url('!$Resource.caretIcon') no-repeat center; 
+        }
+        .tabbed_menu li:hover {
+          color: #505050;
+          cursor: default;
+        }
+        #confimID{
+        margin-left: 15px;
+        font-size: 28px;
+        color: #4DAB08;
+    }
+    .cancelcol{color: #3bc1f4 !important;font-family:omnes_att_iimedium !important;}
+        
+    </style>
+
+    <!-- Radhika changes for UBB -->
+   <div class="content_container subpage_main-container" >      
+   <div id="manage_content" style="padding: 0; margin-left:0; margin-right:0; background-color: #F0F0F0; " class="page ng-scope" ng-controller="QuoteController as beginQuote">
+      <apex:outputPanel id="configload" >  
+            <div style="background-color: #F0F0F0;margin-bottom: -30px;">                
+              <h4 class="manage_content-header">Order Number : {!orderNumber}</h4>                
+            </div>
+       </apex:outputPanel>   
+         <apex:outputPanel id="tabpanel">
+         
+            <apex:outputPanel rendered="{!isLoadComplete && !isUBBRemove}" id="addchangetab">
+                
+                <div id="main" class="row tabbed_menu" style="z-index: 0;">
+                    <div class="col-xs-12 col-md-12">
+                        
+                        <ul class="mainnav" role="tablist">
+                            <li class="active whiteBack" style="width: 220px; min-width:25%;">
+                                <a href="#selectCust" data-name="selectCust" data-tabName="Select Customer" role="tab" data-toggle="tab" style="width: 220px;"><div class="circlenum" style="margin-left: 84px;" id="circlenumconfRem">1</div> <p id="configTxtColr" style="margin-top: 0px !important;float:left;">Configure</p> </a>
+                            </li>
+                            <li class="revReq tabbed_menu_disabled" style="min-width:25%;">
+                                <a href="#selectProd" data-name="selectProd" data-tabName="Review Request" role="tab" data-toggle="tab"><div class="circlenum" style="margin-left: 62px;">2</div> <p id="revReqTxtColr" style="float:left;margin-top: 0px !important;">Review Request</p> </a>
+                            </li>
+                            <li class="Pric tabbed_menu_disabled" id="priceSchd" style="min-width:25%;">
+                                <a href="#enterAddress" data-name="enterAddress" data-tabName="Review Pricing Schedule" role="tab" data-toggle="tab"><div class="circlenum" id="cirId" style="margin-left: 32px;">3</div><apex:image id="tabActiveIconId" value="{!$Resource.tickMarkBlueIcon}" style="display:none;float: left;  margin-left: 10px;  margin-top: -8px;"/><p id="revReqPriSchd" style="margin-top: 0px !important;float:left;">Review Pricing Schedule</p> </a>
+                            </li>
+                            <li class="confirm tabbed_menu_disabled" id="confId" style="min-width:25%;">
+                                <div><a href="#configSites" data-name="configSites" data-tabName="View Confirmation Information" role="tab" data-toggle="tab" id="circlenumconfText"><div class="circlenum" style="margin-left: 10px;" id="circlenumconf">4</div> <div style="float: left;">View Confirmation Information</div> </a></div>
+                            </li>
+                        </ul>
+                    </div>
+                    <apex:image styleClass="caretIconConfig" value="{!$Resource.caretIcon}" style="margin-left: 120px; height: 20px; width: 56px;  margin-top: -5px;"/>
+                    <apex:image styleClass="caretIconReview" value="{!$Resource.caretIcon}" style="display:none;margin-left: 393px; height: 20px; width: 56px;   margin-top: -5px;"/>
+                    <apex:image styleClass="caretIconPricing" value="{!$Resource.caretIcon}" style="display:none;margin-left: 670px; height: 20px; width: 56px;   margin-top: -5px;"/>
+                    <apex:image styleClass="caretIconConfirm" value="{!$Resource.caretIcon}" style="display:none;margin-left: -180px; height: 18px; width: 56px;   top: 69px;position:absolute;"/>
+                </div>
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!isDocusignFlag}">
+                
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!isUBBRemove && !isDocusignFlag && !isInflightCancel}" id="removetab">
+                <div id="main" class="row tabbed_menu">
+                    <div class="col-xs-12 col-md-12">
+                        <ul class="mainnav" role="tablist">
+                            <li style="min-width:33%;" id="revReqRem">
+                                <a href="#selectProd" data-name="selectProd" data-tabName="Review Request" role="tab" data-toggle="tab" style="margin-right: 102px;"><div class="circlenum circlenmReview" style="margin-left: 106px;">1</div><apex:image id="tabActiveIconRemId" value="{!$Resource.tickMarkBlueIcon}" style="display:none;float: left;  margin-left: 10px;  margin-top: -8px;"/> Review Request </a>
+                            </li>
+                            <li style="min-width:33%;" id="PricRem">
+                                <a href="#enterAddress" data-name="enterAddress" data-tabName="Review Pricing Schedule" role="tab" data-toggle="tab" style="margin-right: 70px;"><div class="circlenum" style="margin-left: 76px;">2</div> Review Pricing Schedule </a>
+                            </li>
+                            <li style="min-width:34%;" id="confIdRem">
+                                <a href="#configSites" data-name="configSites" data-tabName="View Confirmation Information" role="tab" data-toggle="tab" style="margin-top: 0px;margin-right: 55px;"><div class="circlenum" style=" margin-left: 58px;">3</div> View Confirmation Information </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <apex:image styleClass="caretIconReview" value="{!$Resource.caretIcon}" style="margin-left: 163px; height: 20px; width: 56px;   margin-top: -5px;"/>
+                    <apex:image styleClass="caretIconPricing" id="caretIconPricingi" value="{!$Resource.caretIcon}" style="display:none;margin-left: 542px !important; height: 20px; width: 56px; margin-top: -5px;"/>
+                    <apex:image styleClass="caretIconConfirm" id="caretConfirmi" value="{!$Resource.caretIcon}" style="display:none;margin-left: 80%; height: 20px; width: 56px; margin-top: -1px; position:relative;"/>
+                </div>
+                <script>
+                    $("a[data-name='selectCust']").parent('li').removeClass("active");  
+                    $("a[data-name='enterAddress'], a[data-name='selectCust'], a[data-name='configSites']").parent('li').addClass("disabled tabbed_menu_disabled");
+                    $('.disabled a').removeAttr('data-toggle href');
+                    $("a[data-name='selectProd']").parent('li').removeClass("disabled");
+                    $("a[data-name='selectProd']").parent('li').addClass("active");
+                    $("a[data-name='selectProd']").removeAttr("href","#selectCust");
+                    $("a[data-name='selectProd']").attr("href","#selectProd");
+                    $("a[data-name='selectProd']").attr("data-tabname", "Review Request");
+                    $("a[data-name='selectProd']").attr("data-toggle","tab");
+                    $('.disabled a').removeAttr('data-toggle href');
+                    /*activeTabIcon();*/ //Function for adding tick mark in active tab
+                    $("#selectCust").removeClass("tab-pane fade in active");
+                    $("#selectCust").addClass("tab-pane fade");
+                    $("#selectProd").removeClass("tab-pane fade");
+                    $("#selectProd").addClass("tab-pane fade in active");
+                </script>
+            </apex:outputPanel>
+     <!-- -----------------------------Inflight Cancel -------------------------------------------- -->
+            <apex:outputPanel rendered="{!isInflightCancel}" id="inflighttab" >
+            <script>
+                document.getElementById("selectCust").style.display="none";
+            </script>
+                <div id="main" class="row tabbed_menu">
+                    <div class="col-xs-12 col-md-12">
+                        <ul class="mainnav" role="tablist">
+                            <li id="ReviewReqId" style="min-width:50%;background-color:#056FAB;color:#FFF;border: none;">
+                                <a href="#selectProd" data-name="selectProd" data-tabName="Review Request" role="tab" data-toggle="tab" id="selectProdID"><div id="reviewCircleNumID" class="circlenum" style="margin-left:210px;color:#FFF;border:1px solid #FFF">1</div><div id="revReqPanelText" style=""> Review Request </div></a>
+                            </li>
+                            <li id="ViewConfId" style="min-width:50%;border: none;">
+                                <div style="margin-top:-5px;"><a href="#configSitesID"  class="disable_anchor_tag" data-name="configSitesDataName" data-tabName="View Confirmation Information" role="tab" data-toggle="tab" id="circlenumconfText"><div class="circlenum" style="margin-left: 150px;color:#545454;border:1px solid #545454;" id="confCircleNumID">2</div> View Confirmation Information </a></div>
+                            </li>
+                        </ul>
+                    </div>
+                     <apex:image styleClass="caretIconInflightConfig" value="{!$Resource.caretIcon}" style="margin-left: 23%; height: 20px; width: 56px;  margin-top: -5px;"/>
+                    <apex:image styleClass="caretIconInflightReview" value="{!$Resource.caretIcon}" style="display:none;margin-left: 75%; height: 20px; width: 56px;   margin-top: -5px;"/>   
+                </div>
+    
+     <div class="container" style="width: 100% !important; margin-top: 0 !important; padding: 0 !important;">
+                    <div class="row" id="ReviewReqIDText">
+                          <div class="col-xs-12 col-md-12">
+                            <h3 class="ConfigLabels" style="margin-top:19px;font-size=2.3em; margin-left:39px;">Review Request</h3>
+                              <div><hr style="border-color: gray;width:100% ;margin-left:0px;"></hr>
+                              </div>    
+                          </div>  
+                    </div>
+     <apex:outputPanel id="ReviewPanel">
+                    <div id="ReviewPanelDiv" style="font-style:bold;font-size: 0.98em;">
+                        <div style="margin-left:40px;">
+                             <p><Strong>Caution!</Strong> You will permanently lose your site information if you click <Strong> Continue </Strong>.</p><br></br>
+                             <p>The monthly total for the site that you are requesting to Cancel is <apex:outputText value=" ${0,number,###,##0.00}"><apex:param value="{!listPrice}"/></apex:outputText>*<br></br></p><br></br>
+                        </div> 
+                             <p class="col-xs-3">*Cancellation fees may apply. <br /><br /></p>  
+                        <div class="row m0" style="margin-top: -18px;">
+                             <div class="m-t-20 m-b-20" style="margin-top:40px;"><hr style="border-color: gray;margin-left: 0px;width: 100%;clear:both;"/>
+                             </div>
+                        </div>
+                        <apex:form >
+                            <div class="row m0" style="height:60px;">
+                                 <apex:commandButton status="loading" value="Continue" action="{!cancelInflightlogic}" styleClass="btn secondary pull-right" style="padding: 0px 20px !important;" rerender="" oncomplete="toggleToViewConfirmationInfoPanel();scrolltomacd();" disabled="false"/>
+                                 <apex:commandButton value="Cancel Request" styleClass="btn secondary pull-right" style="padding: 0px 20px !important; color:#2E9AFE; background:#f0f0f0;" action="{!cancel}"/>
+                            </div>
+                        </apex:form>  
+                        </div>  
+                     </apex:outputPanel> 
+                        <!----------Inflight Thank You------------->
+                        <apex:outputPanel >
+                        <apex:form >
+                          <div id="ConfirmInfoDiv" style="display:none">                        
+                            <div id="configSitesID" style="margin-left:30px;">
+                                <div class="col-xs-12 col-md-12 greenText">
+                                    <h3 class="ConfigLabels" style="margin-top:10px; font-size=2.3em; margin-left:5px;"><strong>Thank you! </strong> </h3>
+                                </div>       
+                                <div class="row m0"><div class="col-xs-12"><hr style="border-color: gray; margin-left:-45px;width: 105.8%;" /></div></div>
+                                <p id="confirmPagePara">We have received your cancellation request.
+                                  <br></br><br></br>
+                                            To view the status of this request, go to <a href="apex/Inventorylookup_SiteInventory?id={!networkSId}">Network Sites</a>.
+                                            The status will appear as <strong>Pending</strong>.</P>We'll confirm this site cancellation request by email.
+                                        <br/> <br></br>
+     <P id="confirmPagePara">If you want to explore how other AT&amp;T products can help you expand your business opportunities,
+                                        go to the <a href="/PortalDesign_GettingStarted#PortalDesign_GettingStarted_Overview">Getting Started </a>section under the <strong>Grow </strong>Tab.</P>
+    <div class="row m0"><div class="col-xs-12 m-t-20 m-b-20"><hr style="border-color: gray; margin-left:-45px;width: 105.8%;" /></div></div> 
+                                <div class="row m0" style="height:60px;">
+                                                <apex:commandButton value="Close" action="{!close}" styleClass="btn secondary pull-right" style="padding: 0px 20px !important;" />
+                                                <!--<apex:commandLink value="Go to My Dashboard" action="{!Mydashboard}" styleClass="btn secondary pull-right" style="padding: 0px 20px !important; font-size:1.15 em;"/>-->
+                                                <a href="/apex/PortalDashboard_UI" Class="btn secondary pull-right" style="padding: 0px 20px !important; font-size:1.00em;">Go to My Dashboard</a>
+                                             </div>
+     </div>
+                            </div>
+                            </apex:form>
+                        </apex:outputPanel>
+    
+       </div> 
+            </apex:outputPanel> 
+     <!-- ----------------------------End Inflight Cancel -------------------------------------------- -->
+            </apex:outputPanel>
+            <div>
+            <apex:form id="configpanelform">
+
+            <apex:actionFunction id="ajaxUpdatePrices" name="doInitUpdatePricesOnUICallAjax" action="{!initializeMacdUBBReview}" status="loading" reRender="tabpanel,includesection,reviewPanel,inflightform" /> 
+                <apex:outputPanel id="includesection" rendered="{!!isDocusignFlag}" >
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="selectCust">
+                            <!--<apex:include pageName="MACD_UBBConfigPanel" id="manageCustomerPageId" />-->
+                               <apex:actionFunction id="fecthContentJSAJAX" name="doContentRefreshAJAX" action="{!InitConfigController}" reRender="configload,configpanelform,opConfigureAddUBB,tabpanel,addchangetab,removetab" status="loading" rendered="true" oncomplete="doInitUpdatePricesOnUICallAjax();" />
+                              <apex:outputPanel id="opConfigureAddUBB" rendered="{!isUBBAdd}" >
+                               
+                                    <div class="col-xs-12 col-md-12">
+                                        <h3 class="ConfigLabels" style="margin-top:30px; font-size=2.3em;margin-left:17px;">Select Minimum Bandwidth Commitment for Hi-Cap Flex</h3>
+                                    </div>  
+                                    <div class="row m0"><div class="col-xs-12 m-t-20"><hr style="border-color: gray;width: 102.8%;margin-left: -15px;;" /></div></div>
+                                     <P class="ConfigLabels" style="margin-top:15px;">Select a Minimum Bandwidth Commitment (MBC) per month from the dropdown menu to see the price per month for that MBC. Click <strong style="font-weight: bold;">Continue</strong> to proceed to add Hi-Cap Flex to this site. Click <strong style="font-weight: bold;">Cancel</strong> to return to Site Details.</P> <br/> 
+                                    <h4 style="margin-left:15px;"><strong><apex:outputLabel value="Current Port Speed :"  style="color:#2E9AFE; margin-left:20px; line-height: 1.07em; font-size: 1.13em;font-family:omnes_att_iimedium !important;"/></strong>
+                                        <strong><apex:outputText value="{!portspeed} Mbps" style="color:#2E9AFE; line-height: 1.07em; font-size: 1.13em;font-family:omnes_att_iimedium !important;"></apex:outputText><br/><br/></strong></h4>
+                                    <apex:outputPanel id="OverMBCConfigureAddPanel">
+                                        <table width="100%" class="ConfigLabels">
+                                            <th >Minimum Bandwidth Commitment</th>
+                                            <th width="33%">Monthly</th>
+                                            <th width="33%">Per Mbps Over MBC &nbsp;&nbsp;<apex:image url="{!$Resource.answerQIconArticle}" width="15" height="15" title="Overage billing may apply"/></th>
+                                            <tr>
+                                                <td>
+                                                    <apex:selectList style="width:290px;margin-top:8px;" id="selectlistAddMBC" multiselect="false" value="{!selectedMBC}" size="1" styleClass="styled-select-small">
+                                                        <apex:selectOptions value="{!optionsMBC}"></apex:selectOptions>
+                                                        <apex:actionSupport event="onchange" action="{!UpdateOverMBC}" reRender="opConfigureAddUBB,OverMBCConfigureAddPanel,ContinueToReview" status="loading"/>
+                                                    </apex:selectList>
+                                                    <!--<apex:outputLabel value="No available MBC speeds to perform this operation" style="color:red;" rendered="{!OptionsMBC.size==1}"></apex:outputLabel>-->
+
+                                                </td>
+                                                <td style="vertical-align: bottom;"><div class="ConfigTableHeaders"><apex:outputText value="{!monthlyAmount}"  /></div></td>
+                                                <td style="vertical-align: bottom;"><div class="ConfigTableHeaders"><apex:outputText value="{!overMBC}"/></div></td>
+                                                </tr>
+                                               <tr>
+                                                    <td colspan="2">
+                                                           <p class="fine-print" style="margin:0; font-size:13px;">All prices shown are pre-tax.</p> 
+                                                </td>
+                                               </tr>
+
+                                        </table>
+                                        
+                                        <!--     <apex:actionStatus startText="Getting.." stopText="" id="st1"></apex:actionStatus> -->
+                                        
+                                    </apex:outputPanel>
+                                     
+                                </apex:outputPanel>
+                                <!--<div class="row m0"><div class="col-xs-12 m-t-20 m-b-20"><hr style="border-color: gray;" /></div></div>  -->                                                              
+                                 <apex:outputPanel id="opConfigureChangeUBB" rendered="{!isUBBChange}" >
+                                    <div class="col-xs-12 col-md-12">
+                                        <h3 class="ConfigLabels" style="margin-top:30px; font-size=2.3em; margin-left:10px;">Change to new Minimum Bandwidth Commitment</h3>
+                                    </div>
+                                  <div class="row m0"><div class="col-xs-12 m-t-20 m-b-20"><hr style="border-color: gray;margin-left: -15px;margin-right: -15px;" /></div></div>
+                                    <P class="ConfigLabels">Change Minimum Bandwidth Commitment (MBC) per month to a new value from the dropdown menu to view the monthly price for that MBC. Click <strong style="font-weight:bold;">Apply &amp; Continue</strong> to change the MBC for this site. Click <strong style="font-weight:bold;">Cancel</strong> to return to <strong style="font-weight:bold;">Site Details.</strong></P> <br/> 
+                                    <h4 style="margin-left:20px;"><strong><apex:outputLabel value="Current Port Speed :" style=" margin-left:20px; color:#2E9AFE; line-height: 1.07em; font-size: 1.13em;font-family:omnes_att_iimedium !important;"/></strong>
+                                        <strong><apex:outputText value="{!portspeed} Mbps" style="color:#2E9AFE; line-height: 1.07em; font-size: 1.13em;font-family:omnes_att_iimedium !important;"></apex:outputText><br/><br/></strong></h4>
+                                    <apex:outputPanel id="OverMBCConfigureChangePanel">
+                                        <table width="100%" class="ConfigLabels">
+                                            <th >Minimum Bandwidth Commitment</th>
+                                            <th width="33%">Monthly</th>
+                                            <th width="33%">Per Minute Over MBC &nbsp;&nbsp;<apex:image url="{!$Resource.answerQIconArticle}" width="15" height="15" title="Overage billing may apply"/></th>
+                                            <tr>
+                                                <td>
+                                                    <apex:selectList style="width:290px; margin-top:12px;" id="selectlistChangeMBC" multiselect="false" value="{!selectedMBC}" size="1" styleClass="styled-select-small">
+                                                        <apex:selectOptions value="{!optionsMBC}"></apex:selectOptions>
+                                                        <apex:actionSupport event="onchange" action="{!UpdateOverMBC}" reRender="ContinueToReview,opConfigureChangeUBB,OverMBCConfigureChangePanel" status="loading"/>
+                                                    </apex:selectList>
+                                                    <br/>
+                                                    <div><apex:outputLabel value="No available MBC speeds to perform this operation" style="color:red; width: 560px; position: absolute; padding-top: 35px;margin-left: 0px !important;" rendered="{!OptionsMBC.size==1 && portspeed!=null}"></apex:outputLabel></div>
+                                                </td>
+                                                <td style="vertical-align: bottom;"><div class="ConfigTableHeaders"><apex:outputText value="{!monthlyAmount}"  /></div></td>
+                                                <td style="vertical-align: bottom;"><div class="ConfigTableHeaders"><apex:outputText value="{!overMBC}"/></div></td>
+                                            </tr>
+                                            <br/>
+                                            <div><apex:outputLabel value="No available MBC speeds to perform this operation" style="color:red; width:400px;" rendered="{!OptionsMBC.size==1 && portspeed!=null}"></apex:outputLabel></div>
+                                           <tr>
+                                            <td colspan="2">
+                                                   <p class="fine-print" style="margin:0; font-size:13px;">All prices shown are pre-tax.</p> 
+                                            </td>
+                                           </tr>
+ 
+                                            
+                                            
+                                            <br/>
+                                            <div><apex:outputLabel value="No available MBC speeds to perform this operation" style="color:red; width:400px;" rendered="{!OptionsMBC.size==1 && portspeed!=null}"></apex:outputLabel></div>
+                                        </table>
+                                        
+                                        <!--     <apex:actionStatus startText="Getting.." stopText="" id="st2"></apex:actionStatus> -->
+                                        
+                                    </apex:outputPanel>   
+                                    </apex:outputPanel>  
+                                     <div class="row m0"><div class="col-xs-12 m-b-20 m-t-20"><hr style="border-color: gray; width: 102.8%;margin-left: -15px;" /></div></div>
+                                      <div class="row m0" style="height:60px;">
+                                   <apex:outputPanel rendered="{!isUBBRemove || isUBBChange || isUBBAdd}">
+                                    <div class="pull-right text-right">
+                                       <apex:commandLink value="Cancel"  action="{!cancel}"  styleClass="secondary pull-left prodInfoNextBtnId"  style="padding: 6px 30px !important; color:#2E9AFE; background:#f0f0f0;" />
+                                       <apex:commandButton id="ContinueToReview" disabled="{!disablecontinue}" rerender="ReviewPanel" status="loading" value="Apply & Continue" action="{!initializeMacdUBBReview}" oncomplete="toggleToReviewPanel();"  styleClass="btn btn-primary m-l-10 configureContinue" style="font-size: 16px; margin-left: 10px !important; padding: 0px 20px !important;" />
+                                    </div>
+                </apex:outputPanel>
+                                    </div>
+                                
+                                
+                               
+                        </div>
+                        <div class="tab-pane fade" id="selectProd">
+                                       
+                            <div class="container" style="width: 100% !important; margin-top: 0 !important; padding: 0 !important;">
+                                <div>
+                                    <apex:pageMessages ></apex:pageMessages>   
+                                </div>  
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-12">
+                                        <h3 class="ConfigLabels" style="margin-top:23px; font-size:2em; margin-left:23px;margin-bottom: 0px;">Review Request</h3>
+                                    </div>
+                                </div> 
+                                <apex:outputPanel id="ReviewPanel">
+                                    <apex:outputPanel id="opReviewAddUBB" rendered="{!isUBBAdd}" >
+                                        <style>
+                                            .tabbed_menu .mainnav li.revReq .active::after {
+                                              margin-left: -27% !important;
+                                            }
+                                        </style>
+                                         <div class="row m0"><div><hr style="width: 100%;margin-left: 0px; margin-bottom: -11px;" /></div></div>
+                                         <br/>
+                                       <P class="ConfigLabels" style="margin-bottom: 23px;margin-left: 25px;font-family:omnes_light !important; font-size:18px;">To add the Minimum Bandwidth Commitment (MBC) before getting a Pricing Schedule Addendum, click <strong>Reconfigure MBC</strong>. To continue with the proposed addition of Hi-Cap Flex and MBC shown, Click <strong>Apply &amp; Continue.</strong></P> 
+                                       <br/> 
+                                            
+                                       <!--VF Component for Review Request Page-->
+                                       <div>
+                            <c:UISection_clone UiSectionList="{!wrc.WrapperUISections}">
+                                          </c:UISection_clone>
+                                       </div>
+                                  </apex:outputPanel>             
+                                            
+                                       <apex:outputPanel id="opReviewChangeUBB" rendered="{!isUBBChange}" >
+                                           <div class="row m0"><div class="col-xs-12 m-t-20" style="margin-top:20px;"><hr style="width: 103%;margin-left: -16px;" /> </div> </div>
+                                    <P class="ConfigLabels" style="margin-right:10px; margin-top: 23px; margin-left: 25px; margin-bottom: 8px; font-family:omnes_light !important; font-size:18px;">To change the Minimum Bandwidth Commitment (MBC) before getting a Pricing Schedule Addendum, click <strong style="font-weight: bold !important;">Reconfigure MBC</strong>. To continue with the proposed MBC change, click <strong style="font-weight: bold !important;">Apply &amp; Continue.</strong></p>
+                                    <br/><br/>
+                                    
+                                    <!--VF Component for Review Request Page-->   
+                                    <div>
+                                      <c:UISection_clone UiSectionList="{!wrc.WrapperUISections}">
+                                      </c:UISection_clone>
+                                    
+                                    </div>
+                                </apex:outputPanel> 
+                                                                    
+                               <apex:outputPanel id="opReviewRemoveUBB" rendered="{!isUBBRemove}" >
+                                    <div class="row m0" style="margin-top:22px;"><div><hr style="width: 100%; margin-left: 0%;" /></div></div>
+                                    <P class="ConfigLabels" style="margin-right:10px; margin-bottom: 23px; margin-left: 25px;font-family:omnes_light !important; font-size:18px; margin-top: 24px;">To remove Hi-Cap Flex and view a Pricing Schedule, click <span style="font-weight:bold">Apply and Continue</span>. To keep the site as Hi-Cap Flex, click <span style="font-weight:bold">Cancel.</span></P> <br/> 
+                                    
+                                    
+                                 <!--VF Component for Review Request Page-->   
+                                 <div>
+                               <c:UISection_clone UiSectionList="{!wrc.WrapperUISections}">
+                                   </c:UISection_clone>
+                                 </div>
+                           </apex:outputPanel>
+                      <script>
+                        $('.CurrentDiscount123').hide();
+                        $('.ProposedDiscount123').hide(); 
+                        $('.CurrentTotal123').hide();
+                        $('.ProposedTotal123').hide(); 
+                                    
+                      </script>
+                      
+                       <div class="row m0"><div class="col-xs-12 " style="margin-top:30px; margin-bottom:-20px"><hr style="width: 103%;margin-left: -16px;" />
+                     </div>
+                     </div>
+          
+                                </apex:outputPanel>
+        <apex:outputPanel rendered="{!isUBBRemove || isUBBChange || isUBBAdd}">
+                                    <div class="ConfigLabels" style="padding-top:0px;font-family:omnes_light;font-size:12px;color:#000000;Text-align:left;margin-left:26px;"><p style="font-family:omnes_light !important;">*Overage billing may apply.</p>
+                                    <div class="col-xs-12 p0"> <p class="fine-print">All prices shown are pre-tax.</p> </div>
+                    </div>
+                                     <div class="row m0"><div class="col-xs-12 m-t-20"><hr style="margin-left: -15px; width: 102.7%; margin-bottom: 40px;" /></div></div>
+                                     
+                                    <div class="row m0" style="height:60px;">
+                                    <!--<div class="row m0"><div class="col-xs-12 m-t-20 m-b-20"><hr style="border-color: -moz-use-text-color;" /></div></div>-->
+                                    <apex:commandButton status="loading" value="Apply & Continue" action="{!redirectToGetPricingSchedule}" styleClass="btn secondary pull-right" style="padding: 0px 20px !important;" rerender="" oncomplete="toggleToReviewPricingPanel();scrolltomacd();" disabled="false"/>
+                                    <apex:commandButton value="Reconfigure MBC" rendered="{!!isUBBRemove}" onclick="goBackToFirstStep();" oncomplete="scrolltomacd();" styleClass="btn secondary pull-right" style="padding: 0px 50px !important; color:#666; background:#fff;border:1px #666 !important; border-style: solid !important;" />
+                                    <apex:commandButton value="Cancel" styleClass="btn secondary pull-right" style="padding: 0px 20px !important; color:#2E9AFE; background:#f0f0f0;" action="{!cancel}"/>
+                                    </div>
+                                </apex:outputPanel> 
+
+
+                            </div>
+                            
+                        </div>
+                        <div class="tab-pane fade" id="enterAddress">
+                            
+                            <apex:outputPanel rendered="{!pricingScheduleFlag}" >
+                                <style>
+                                     ul.mainnav li.disabled a. {
+                                      cursor: default !important;
+                                      color: #fff !important;
+                                    }
+                                    
+                                </style>
+                                <script>
+                                      $("#revReqPriSchd").css("color","#fff");      
+                                </script>
+                            </apex:outputPanel>
+                            <apex:outputPanel id="panelPricingSchedule" rendered="{!!pricingScheduleFlag}" >    
+                                <div>
+                                    <!-- Radhika Add UBB change -->
+                                    <apex:outputPanel id="opReviewPricingAddUBB" rendered="{!isUBBAdd}" >
+                                        <style>
+                                            $(".whiteBack ").css("background","#fff");
+                                            $(".revReq").css("background","#fff");     
+                                        </style>
+                                        
+                                                <h3 class="section_headerfont_light section_headerPosition" id="header_3Page">{!$Label.MACD_Review_Pricing_Label}</h3>
+                                            
+                                           <hr class="BlackHr lineAdjust" />
+                                           <!-- Non-approver -->
+                                           <apex:outputPanel rendered="{!!isApprover}">
+                                               <p class="param1_posNApp param1_font">{!$Label.MACD_Non_Approver_Param1}</p>
+                                               <div class="param2_positionRCLink" > 
+                                                <apex:commandLink value="{!$Label.Pricing_Schedule_Addendum_Label}" action="{!contractSign}" immediate="true" styleClass="attLinkBlue" style="line-height:0px !important;font-size: 18px;" reRender="configpanelform,pricingDocusignProcess" status="loading" oncomplete="scrolltomacd();"></apex:commandLink>
+                                                </div>
+                                           </apex:outputPanel>
+                                           <!-- Approver --> 
+                                           <apex:outputPanel rendered="{!contractSigned && !signingStatus && !contractRead && isApprover}">
+                                               <div class="errorMsg m-b-20">
+                                                   {!$Label.MACD_Flow_DocSign_ErrorMsg}
+                                               </div>
+                                           </apex:outputPanel>
+                                           <apex:outputPanel rendered="{!!contractRead && isApprover}">
+                                               <p class="{!IF((contractSigned==true && signingStatus==false && contractRead==false && isApprover == true) ,'param1_positionErr','param1_APP1')} param1_font">Click on<strong> Go to Pricing Schedule Addendum </strong>link to view and electronically sign.</p>
+                                           </apex:outputPanel> 
+                                           <apex:outputPanel rendered="{!contractRead && isApprover}">
+                                                <div id="waitingDiv1 param1_font" style="display:none; margin-top:40px;margin-left:50px;">Please wait while we submit your order.
+                                                </div>
+                                            </apex:outputPanel>
+                
+                                           <apex:outputPanel rendered="{!contractRead && isApprover}">
+                                               <p id='approverTerm1' class="param1_positionRC param1_font">To review click&nbsp;<apex:commandLink value="{!$Label.Pricing_Schedule_Addendum_Label}" action="{!contractSign}" immediate="true" styleClass="attLinkBlue_18PX"  reRender="configpanelform,pricingDocusignProcess" status="loading" oncomplete="scrolltomacd();"></apex:commandLink></p>
+                                               <p id='approverTerm2' class="param2_positionRC param1_font">Please click <strong>Submit Order</strong> to continue.</p>
+                                           </apex:outputPanel>  
+                                    </apex:outputPanel>    
+                                    
+                                    <!-- Radhika change UBB -->
+                                    <apex:outputPanel id="opReviewPricingChangeUBB" rendered="{!isUBBChange}" >
+
+                                        <!-- Changes Start -->
+                                        <h3 class="section_headerfont_light section_headerPosition" id="header_3Page">{!$Label.MACD_Review_Pricing_Label}</h3>
+                                        <hr class="BlackHr lineAdjust" />
+                                        <!-- Non-approver -->
+                                           <apex:outputPanel rendered="{!!isApprover}">
+                                               <p class="param1_posNApp param1_font">{!$Label.MACD_Non_Approver_Param1}</p>
+                                               <div class="param2_positionRCLink" > 
+                                                <apex:commandLink value="{!$Label.Pricing_Schedule_Addendum_Label}" action="{!contractSign}" immediate="true" styleClass="attLinkBlue" style="line-height:0px !important;font-size: 18px;" reRender="configpanelform,pricingDocusignProcess" status="loading" oncomplete="scrolltomacd();"></apex:commandLink>
+                                                </div>
+                                           </apex:outputPanel>
+                                           <!-- Approver --> 
+                                           <apex:outputPanel rendered="{!contractSigned && !signingStatus && !contractRead && isApprover}">
+                                               <div class="errorMsg m-b-20">
+                                                   {!$Label.MACD_Flow_DocSign_ErrorMsg}
+                                               </div>
+                                           </apex:outputPanel>          
+                                           <apex:outputPanel rendered="{!!contractRead && isApprover}">
+                                               <p class="{!IF((contractSigned==true && signingStatus==false && contractRead==false && isApprover == true) ,'param1_positionErr','param1_APP1')} param1_font">Click on<strong> Go to Pricing Schedule Addendum </strong>link to view and electronically sign.</p>
+                                           </apex:outputPanel> 
+                                           <apex:outputPanel rendered="{!contractRead && isApprover}">
+                                                <div id="waitingDiv2 param1_font" style="display:none; margin-top:40px;margin-left:50px;">Please wait while we submit your order.
+                                                </div>
+                                            </apex:outputPanel>
+                
+                                           <apex:outputPanel rendered="{!contractRead && isApprover}">
+                                               <p id='approverTerm3' class="param1_positionRC param1_font">To review click&nbsp;<apex:commandLink value="{!$Label.Pricing_Schedule_Addendum_Label}" action="{!contractSign}" immediate="true" styleClass="attLinkBlue_18PX"  reRender="configpanelform,pricingDocusignProcess" status="loading" oncomplete="scrolltomacd();"></apex:commandLink></p>
+                                               <p id='approverTerm4' class="param2_positionRC param1_font">Please click <strong>Submit Order</strong> to continue.</p>
+                                           </apex:outputPanel>  
+                                           <!-- changes end -->
+                                    </apex:outputPanel> 
+                                    
+                                    <!-- Radhika UBB remove -->
+                                    <apex:outputPanel id="opReviewPricingRemoveUBB" rendered="{!isUBBRemove}" >
+                                        <!-- Changes Start -->
+                                        <h3 class="section_headerfont_light section_headerPosition" id="header_3Page">{!$Label.MACD_Review_Pricing_Label}</h3>
+                                        <hr class="BlackHr lineAdjust" />
+                                        <!-- Non-approver -->
+                                           <apex:outputPanel rendered="{!!isApprover}">
+                                               <p class="param1_posNApp param1_font">{!$Label.MACD_Non_Approver_Param1}</p>
+                                               <div class="param2_positionRCLink" > 
+                                                <apex:commandLink value="{!$Label.Pricing_Schedule_Addendum_Label}" action="{!contractSign}" immediate="true" styleClass="attLinkBlue" style="line-height:0px !important;font-size: 18px;" reRender="configpanelform,pricingDocusignProcess" status="loading" oncomplete="scrolltomacd();"></apex:commandLink>
+                                                </div>
+                                           </apex:outputPanel>
+                                           <!-- Approver --> 
+                                           <apex:outputPanel rendered="{!contractSigned && !signingStatus && !contractRead && isApprover}">
+                                               <div class="errorMsg m-b-20">
+                                                   {!$Label.MACD_Flow_DocSign_ErrorMsg}
+                                               </div>
+                                           </apex:outputPanel>           
+                                           <apex:outputPanel rendered="{!!contractRead && isApprover}">
+                                               <p class="{!IF((contractSigned==true && signingStatus==false && contractRead==false && isApprover == true) ,'param1_positionErr','param1_APP1')} param1_font">Click on<strong> Go to Pricing Schedule Addendum </strong>link to view and electronically sign.</p>
+                                           </apex:outputPanel> 
+                                           <apex:outputPanel rendered="{!contractRead && isApprover}">
+                                                <div id="waitingDiv3 param1_font" style="display:none; margin-top:40px;margin-left:50px;">Please wait while we submit your order.
+                                                </div>
+                                            </apex:outputPanel>
+                
+                                           <apex:outputPanel rendered="{!contractRead && isApprover}">
+                                               <p id='approverTerm5' class="param1_positionRC param1_font">To review click&nbsp;<apex:commandLink value="{!$Label.Pricing_Schedule_Addendum_Label}" action="{!contractSign}" immediate="true" styleClass="attLinkBlue_18PX"  reRender="configpanelform,pricingDocusignProcess" status="loading" oncomplete="scrolltomacd();"></apex:commandLink></p>
+                                               <p id='approverTerm6' class="param2_positionRC param1_font">Please click <strong>Submit Order</strong> to continue.</p>
+                                           </apex:outputPanel>  
+                                           <!-- changes end -->
+                                    </apex:outputPanel>
+                                       
+                                      
+                                        <!-- Add UBB Submit Button -->
+                                        <apex:outputPanel id="SubmitButtonSection">
+                                             <hr class="{!IF(isApprover == false,'hrMTBRC','')} {!IF(isApprover == true && contractRead == false ,'hrMBT_APP1','')} {!IF(isApprover == true && contractRead == true,'hrMTB','')}" />
+                                             <div class="row m0" style="margin:0px; {!IF((isApprover == true && contractRead == false) ,'height:64px;margin-top:-12px','height:72px')}">
+                                                 <div class="col-xs-6" style="float:right;">
+                                                     <apex:outputPanel id="SubmitForApprovalButtonSection" rendered="{!!isApprover}">
+                                                         <apex:commandButton value="{!submitLabel}" action="{!redirectToThank}"  styleClass="btn secondary pull-right submitbutton_position" style="padding: 0px 20px !important;" status="loading" rerender="ThankyouPanel" oncomplete="toggleToConfirmationPanel();scrolltomacd();" />
+                                                     </apex:outputPanel>
+                                                     <apex:outputPanel id="SubmitButtonSectionApprover" rendered="{!(contractRead && isApprover)}">
+                                                         <apex:commandButton value="{!submitLabel}" action="{!redirectToThank}"  styleClass="btn secondary pull-right submitbutton_position" style="padding: 0px 20px !important;" status="loading" onclick="showWaitingDiv();showProcessingLabel(this);" reRender="loading"/>
+                                                     </apex:outputPanel>
+                                                     <apex:outputPanel rendered="{!!contractRead && isApprover}">
+                                                         <apex:commandLink id="pricingschedule" value="{!$Label.Go_To_Pricing_Schedule_Addendum_Label}" rendered="{!!contractRead && isApprover}" action="{!contractSign}" status="loading" immediate="true" styleClass="attLinkBlue pull-right pslink_position cancelcol" reRender="configpanelform,pricingDocusignProcess"></apex:commandLink>
+                                                     </apex:outputPanel>
+                                                    <apex:commandLink value="Cancel Request" Styleclass="{!IF(isApprover == true && contractRead == false,'pull-left cancelLink_AppPS cancelcol','pull-right cancelLink_nonApp')}"  action="{!Cancel}"/>
+                                                  </div>
+                                             </div>
+                                        </apex:outputPanel>
+                                        
+                 
+                                </div>
+                            
+                            </apex:outputPanel>
+                            
+                        </div>
+                        <!-- Start Thank you Div-->
+
+                        <div class="tab-pane fade" id="configSites">
+                            <div id="manage_content" style="padding:0px;padding-bottom: 72px;" class="page ng-scope" ng-controller="QuoteController as beginQuote">
+                                <div class="container" style="width: 100% !important; margin-top: 0 !important; padding: 0 !important;"> </div>
+                                    <div>
+                                        <!-- UBB ADD -->
+                                        <apex:outputPanel id="opconfirmPricingAddUBB" rendered="{!isUBBRemove || isUBBChange || isUBBAdd}" >                                                                
+                                            <apex:outputPanel rendered="{!!showDenialReason}" >
+                                                <div class="thankyoulabelFont {!IF((isUBBRemove==true) ,'thankyoulabelPositionRemove','thankyoulabelPosition')}">Thank you!</div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!showDenialReason}" >
+                                                <div class="thankyoulabelFont thankyoulabelPositionRC">Submission received.</div>
+                                            </apex:outputPanel>     
+                                            <hr class="BlackHr lineAdjust" /> 
+                                            <!--<apex:outputPanel rendered="{!isapprover && !showDenialReason}">
+                                                <p class="cofiglabels2" id="confirmPagePara">We received your approval of the Pricing Schedule addendum for Order Number {!orderNumber}.</p>
+                                            </apex:outputPanel>-->
+                                            
+                                            <div style="margin: 37px 0px 40px 50px;">   
+                                                <apex:outputPanel rendered="{!isApprover && !showDenialReason}">                    
+                                                    <div>
+                                                        <p class="param1_font m0" style="padding-bottom:5px;">{!$Label.MACD_PS_Thank_Param1}&nbsp;{!orderNumber}.</p>
+                                                        <p class="param1_font m0">{!$Label.MACD_PS_Thank_Param2}</p>
+                                                    </div>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!!isApprover && !showDenialReason}">                    
+                                                    <div>
+                                                        <p class="param1_font m0">{!$Label.Non_Approver_Confirmation}</p>
+                                                    </div>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!showDenialReason}">                    
+                                                    <div>
+                                                        <p class="param1_font m0">We received your denial decision of the Pricing Schedule Addendum for Order Number {!orderNumber}.</p>
+                                                    </div>
+                                                </apex:outputPanel>
+                                                
+                                                <div class="param1_font m0" style="margin-top:38px !important;line-height:12px;">To view the status of your order, check <strong>Manage Quotes &amp; Orders</strong> on <strong>My Dashboard.</strong></div>   
+                                                                   
+                                            </div>  
+                                            
+                                            <!--
+                                            <apex:outputPanel rendered="{!showDenialReason}" >
+                                                <p class="cofiglabels2" id="confirmPagePara">We received your denial decision of the Pricing Schedule Addendum for Order Number {!orderNumber}.</p>
+                                            </apex:outputPanel>
+                                            -->
+                                            <!--<apex:outputPanel rendered="{!!showDenialReason}">
+                                                <p class="ConfigLabels1" style="margin-left:50px;">{!$Label.Confirmation_2}</p>
+                                            </apex:outputPanel>-->
+                                            <!--<p class="cofiglabels2" id="confirmPagePara">To view the status of your order, check  <strong style="font-weight:bold">Manage Quotes and Orders </strong>on<strong style="font-weight:bold"> My Dashboard</strong>.</p>-->
+                                            <hr class="BlackHr lineAdjust" style="margin-bottom:40px;"/>
+                                            
+                        <div class="col-xs-6 p0" style="float:right;">                        
+                            <div style="float:left;margin-left:23%;">
+                                <apex:commandLink action="{!Mydashboard}" value="Go to My Dashboard" id="Cancel" styleClass="attLinkBlue cancelcol" style="margin-right: 5%;"/>
+                            </div>
+                            <div style="float:right;margin-right:40px;">                                                            
+                                    <apex:commandButton action="{!close}" value="Close" id="SubmitForApproval" styleClass="btn secondary pull-right" style="padding: 0px 70px !important;" />
+                            </div>
+                        </div>
+                    
+                                        </apex:outputPanel>
+                                         
+                                        <!-- End of UBB Add Thank you Panel -->
+                                    </div>
+                                <!--</div>-->
+                            </div>
+                        </div>
+                        <!-- End of thank you div MACD UBB-->
+                        
+                    </div>
+                </apex:outputPanel>
+                <apex:commandLink value="<<Back" action="{!goBack}" rendered="{!ESignFlag}" styleClass="blueText" /><br/><br/>                                                     
+                <apex:include pageName="MACD_UBBPricingScheduleLaunch" rendered="{!ESignFlag}" id="pricingId"/> 
+                <apex:actionPoller action="{!checkESignUpdates}" interval="10" enabled="{!pollerEnabled}"/>    
+                </apex:form> 
+            </div>            
+        </div>        
+    </div>
+    
+    <script>  
+    var isRemove = '{!isUBBRemove}';
+    if(typeof isRemove != 'undefined' && isRemove == 'false' ){
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon();
+    }  
+    
+    </script>
+    
+    <script>
+    //Global Variables: RK
+    customerId = '';
+    generatedQuoteId = '';
+    function GetURLParameter(sParam) {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) {
+                return sParameterName[1];
+            }
+        }
+    }
+    var isRemove = '{!isUBBRemove}';
+    mode = GetURLParameter('mode');
+    if(mode=="contract" || mode=="TNC" )
+    {
+        $("a[data-name='selectCust'], a[data-name='selectProd']").parent('li').removeClass("active tabbed_menu_disabled");  
+        $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='configSites']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='enterAddress']").parent('li').removeClass("disabled tabbed_menu_disabled");
+        $("a[data-name='enterAddress']").parent('li').addClass("active");
+        $("a[data-name='enterAddress']").removeAttr("href","#selectProd");
+        $("a[data-name='enterAddress']").attr("href","#enterAddress");
+        $("a[data-name='enterAddress']").attr("data-tabname", "Review Pricing Schedule");
+        $("a[data-name='enterAddress']").attr("data-toggle","tab");
+        $("a[data-name='configSites']").removeAttr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#selectCust").removeClass("tab-pane fade in active");
+        $("#selectCust").addClass("tab-pane fade");
+        $("#enterAddress").removeClass("tab-pane fade");
+        $(".whiteBack ").css("background","#fff");
+        $(".revReq").css("background","#fff");
+        $("#revReqRem").css("background","#fff");
+        $("#enterAddress").addClass("tabafter");
+        $(".caretIconPricing").show(); 
+        $(".caretIconConfig").hide();
+        $("#circlenumconfText").css("color","#505050");
+        $(".caretIconReview").hide();
+        //scrolltomacd();
+        var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+        $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);
+        //$("#").show();  
+        //document.getElementById("j_id0:j_id101:j_id102:tabActiveIconRemId").style.display="block";  
+    }
+    else if (mode == 'conf' && isRemove == 'false'){
+        $("a[data-name='selectCust'], a[data-name='selectProd'],a[data-name='enterAddress']").parent('li').removeClass("active tabbed_menu_disabled");  
+        $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='enterAddress']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='configSites']").parent('li').removeClass("disabled");
+        $("#confId").addClass("active");
+        $("#confId").removeClass("tabbed_menu_disabled");
+        $("a[data-name='configSites']").removeAttr("href","#selectProd");
+        $("a[data-name='configSites']").attr("href","#configSites");
+        $("a[data-name='configSites']").attr("data-tabname", "View Pricing Confirmation");
+        $("a[data-name='configSites']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#selectCust").removeClass("tab-pane fade in active");
+        $("#selectCust").addClass("tab-pane fade");
+        $("#configSites").removeClass("tab-pane fade");
+        $(".whiteBack ").css("background","#fff");
+        $(".revReq").css("background","#fff");
+        $("#revReqRem").css("background","#fff");
+        $(".Pric").css("background","#fff");
+        $(".caretIconConfirm").show();
+        $(".caretIconPricing").hide(); 
+        $(".caretIconConfig").hide();
+        $("#circlenumconfText").css("color","#505050");
+        $(".caretIconReview").hide();
+        $("#confId").css("background-color","#056fab").css("color","#fff");
+        //scrolltomacd();
+        var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+        $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);
+        $("#").show();  
+        document.getElementById("j_id0:j_id101:j_id102:tabActiveIconRemId").style.display="block"; 
+    }
+    else if (mode == 'conf' && isRemove == 'true'){
+    
+        $("a[data-name='selectCust'],a[data-name='selectProd'],a[data-name='enterAddress']").parent('li').removeClass("active tabbed_menu_disabled ");  
+        $("a[data-name='selectCust'],a[data-name='selectProd'], a[data-name='enterAddress']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='configSites']").parent('li').removeClass("disabled");
+        $("#confIdRem").addClass("active");
+        $("#confIdRem").removeClass("tabbed_menu_disabled ");
+        $("a[data-name='configSites']").removeAttr("href","#selectProd");
+        $("a[data-name='configSites']").attr("href","#configSites");
+        $("a[data-name='configSites']").attr("data-tabname", "View Pricing Confirmation");
+        $("a[data-name='configSites']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#selectCust").removeClass("tab-pane fade in active");
+        $("#selectCust").addClass("tab-pane fade");
+        $("#configSites").removeClass("tab-pane fade");
+        
+        
+        $("#revReqRem").css("background","#fff");
+        $("#PricRem").css("background","#fff");
+        $(".caretIconConfirm").show();
+        $(".caretIconPricing").hide(); 
+        $("#circlenumconfText").css("color","#505050");
+        $(".caretIconReview").hide();
+        
+        scrolltomacd();
+        var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+        $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);
+        $("#").show();  
+        //$("#tabActiveIconRemId").style.display="block"; 
+       
+    }
+
+    if(mode!="contract") 
+        $("a[data-name='selectCust']").trigger("click");
+   
+    function toggleToReviewPanel(){
+       
+        $("a[data-name='selectCust']").parent('li').removeClass("active");  
+        $("a[data-name='enterAddress'], a[data-name='selectCust'], a[data-name='configSites']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='selectProd']").parent('li').removeClass("disabled tabbed_menu_disabled");
+        $("a[data-name='selectProd']").parent('li').addClass("active");
+        $("a[data-name='selectProd']").removeAttr("href","#selectCust");
+        $("a[data-name='selectProd']").attr("href","#selectProd");
+        $("a[data-name='selectProd']").attr("data-tabname", "Review Request");
+        $("a[data-name='selectProd']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#selectCust").removeClass("tab-pane fade in active");
+        $("#selectCust").addClass("tab-pane fade");
+        $("#selectProd").removeClass("tab-pane fade");
+        $("#selectProd").addClass("tab-pane fade in active"); 
+        $(".whiteBack ").css("background","#fff"); 
+        $(".caretIconConfig").hide();
+        $(".caretIconReview").show(); 
+        $(".caretIconPricing").hide(); 
+        $("#configTxtColr ").css("color","#356fab");
+    }
+    
+    
+    function toggleToReviewPricingPanel(){
+
+        $("a[data-name='selectProd']").parent('li').removeClass("active");  
+        $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='configSites']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='enterAddress']").parent('li').removeClass("disabled tabbed_menu_disabled");
+        $("a[data-name='enterAddress']").parent('li').addClass("active");
+        $("a[data-name='enterAddress']").removeAttr("href","#selectProd");
+        $("a[data-name='enterAddress']").attr("href","#enterAddress");
+        $("a[data-name='enterAddress']").attr("data-tabname", "Review Pricing Schedule");
+        $("a[data-name='enterAddress']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#selectProd").removeClass("tab-pane fade in active");
+        $("#selectProd").addClass("tab-pane fade");
+        $("#enterAddress").removeClass("tab-pane fade");
+        $("#enterAddress").addClass("tab-pane fade in active");
+        $("#revreId").css("background","#fff");
+        $(".revReq").css("background","#fff");
+        $("#revReqRem").css("background","#fff");
+        $("#enterAddress").addClass("tabafter");
+        $(".caretIconReview").hide();
+        $(".caretIconPricing").show(); 
+        $("#circlenumconfText").css("color","#505050"); 
+        //$(".caretIconPricing").css("margin-left","542px");    
+        $("#revReqTxtColr").css("color","#356fab");
+        //scrolltomacd();
+    }
+    
+    function toggleToConfirmationPanel(){
+
+        $("a[data-name='enterAddress']").parent('li').removeClass("active");        
+        $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='enterAddress']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='configSites']").parent('li').removeClass("disabled tabbed_menu_disabled");
+        $("a[data-name='configSites']").parent('li').addClass("active");
+        $("a[data-name='configSites']").removeAttr("href","#enterAddress");
+        $("a[data-name='configSites']").attr("href","#configSites");
+        $("a[data-name='configSites']").attr("data-tabname", "View Confirmation Information");
+        $("a[data-name='configSites']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#enterAddress").removeClass("tab-pane fade in active");
+        $("#enterAddress").addClass("tab-pane fade");
+        $("#configSites").removeClass("tab-pane fade");
+        $("#configSites").addClass("tab-pane fade in active");
+        $("#confId").css("background-color","#056fab").css("color","#fff");
+        $("#circlenumconfText").css("color","#fff");
+        $("#circlenumconf").css("color","#fff").css("border" , "1px solid #fff");
+        $(".Pric").css("background","#fff");        
+        $("a[data-name='enterAddress']").parent('li').find('.circlenum').text('').append('<span class="glyphicon glyphicon-ok"></span>');
+        $("#PricRem").css("background","#fff");
+        $("#configSites").addClass("active");
+        $(".caretIconConfig").hide();
+        $(".caretIconConfirm").hide(); 
+        $(".caretIconPricing").hide(); 
+        $(".caretIconReview").hide();
+        $("#revReqPriSchd").css("color","#356fab");
+        $("#caretConfirmi").hide();
+        $("#j_id0:j_id84:j_id85:tabActiveIconId").show();
+        document.getElementById("j_id0:j_id101:j_id102:tabActiveIconId").style.display="block";
+        document.getElementById("cirId").style.display="none";
+        document.getElementById("caretConfirmi").style.display="block";
+        document.getElementById("caretIconPricingi").style.display="none";
+        document.getElementById("j_id0:j_id84:j_id85:tabActiveIconId").style.display="block";
+        document.getElementById("cirId").style.display="none";
+    }       
+
+    function goBackToFirstStep(){
+
+        $("a[data-name='selectProd']").parent('li').removeClass("active");  
+        $("a[data-name='selectProd'], a[data-name='enterAddress'], a[data-name='configSites']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='selectCust']").parent('li').removeClass("disabled");
+        $("a[data-name='selectCust']").parent('li').addClass("active");
+        $("a[data-name='selectCust']").removeAttr("href","#selectProd");
+        $("a[data-name='selectCust']").attr("href","#selectCust");
+        $("a[data-name='selectCust']").attr("data-tabname", "Select Customer");
+        $("a[data-name='selectCust']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#selectProd").removeClass("tab-pane fade in active");
+        $("#selectProd").addClass("tab-pane fade");
+        $("#selectCust").removeClass("tab-pane fade");
+        $("#selectCust").addClass("tab-pane fade in active");
+        $(".whiteBack ").css("background","#056fab").css("color","#fff"); 
+        $(".caretIconReview").hide();
+        $(".caretIconPricing").hide();
+        $(".caretIconConfig").show();          
+        $(".caretIconPricing").css("margin-left","139px");  
+        $("#configTxtColr ").css("color","#fff");          
+    }
+    
+    function activeTabIcon() {
+        var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+        $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);            
+    }
+    
+    $(document).ready(function(){  
+        if($('#j_id0:productInfoId:j_id134:j_id194:applyContinueID').length){
+            document.getElementById("j_id0:productInfoId:j_id134:j_id194:applyContinueID").disabled = false;
+            $('j_id0:productInfoId:j_id134:j_id194:applyContinueID').removeAttr('disabled'); 
+        }
+        
+        if(typeof pricingSchDocSrc != 'undefined' && pricingSchDocSrc != null) {
+            scrolltomacd();
+        }
+    });   
+
+    </script>    
+    
+    <script>
+        $(document).ready(function(){
+            var mode = "";
+            if({!isInflightCancel} == 'true'){
+                $("a[data-name='selectProd']").trigger("click");
+                $("a[data-name='selectCust'], a[data-name='enterAddress'], a[data-name='configSites']").parent('li').addClass("disabled");
+                $('.disabled a').removeAttr('data-toggle href');
+            }
+            if( {!isUbbAdd} == 'true'){
+                $("a[data-name='selectCust']").trigger("click");
+                $("a[data-name='selectProd'], a[data-name='enterAddress'], a[data-name='configSites']").parent('li').addClass("disabled");
+                $('.disabled a').removeAttr('data-toggle href');
+            }
+            $('html, body').animate({
+                scrollTop: $('#ubbdiv').offset().top-100
+            },1000);
+        });
+               
+        function doContinue(){
+            doContinueAJAX();        
+        }         
+                       
+        function showProcessingLabel(inpObj){
+            inpObj.value = 'Processing....';  
+            inpObj.style.color = '#fff'; 
+        }
+        function showWaitingDiv() {
+           var text = "Please wait while we submit your order.";
+           var approverTerm1 = document.getElementById('approverTerm1');
+           var approverTerm2 = document.getElementById('approverTerm2');
+           var approverTerm3 = document.getElementById('approverTerm3');
+           var approverTerm4 = document.getElementById('approverTerm4');
+           var approverTerm5 = document.getElementById('approverTerm5');
+           var approverTerm6 = document.getElementById('approverTerm6');    
+           
+           if(approverTerm1 && approverTerm1.style.display != "none")
+               approverTerm1.style.display = "none";
+           if(approverTerm2 && approverTerm2.style.display != "none")
+               approverTerm2.innerHTML = text;
+           if(approverTerm3 && approverTerm3.style.display != "none")
+               approverTerm3.style.display = "none";     
+           if(approverTerm4 && approverTerm4.style.display != "none")
+               approverTerm4.innerHTML = text;
+           if(approverTerm5 && approverTerm5.style.display != "none")
+               approverTerm5.style.display = "none";
+           if(approverTerm6 && approverTerm6.style.display != "none")
+               approverTerm6.innerHTML = text;
+         }     
+    </script>
+    
+</apex:page>

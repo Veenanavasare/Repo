@@ -1,0 +1,1270 @@
+<apex:page showHeader="false" sideBar="false" controller="VlanCosChangeModuleController" >
+
+    <apex:includeScript value="{!URLFOR($Resource.bootstrapMin, 'js/bootstrap.min.js')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />    
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCss}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCSSDetails}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalExchangeCSS}" />
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'vendors/modernizr.js')}" />
+    <apex:includeScript value="{!$Resource.atomjqueryjs}" />      
+    <apex:stylesheet value="{!$Resource.PortalDesignCSS}" />
+    <apex:stylesheet value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.js')}" />
+    <apex:stylesheet value="{!$Resource.App_CSS}" />
+    <apex:stylesheet value="{!$Resource.TextStylesCSS}"/>
+    <apex:stylesheet value="{!$Resource.sitedetailsCos_StyleSheet}"/>
+<style>        
+    .tabbed_menu .mainnav li {
+        padding:25px 0 0 0;     
+        min-width: 33.33%;
+    }
+    b{font-weight:bold;}
+
+    .vlanPieTable
+    {
+        overflow:initial !important;
+    }
+    .legendItem
+    {
+        width:15px !important;
+        height:15px !important;
+    }
+        .greenText {color: green !important; padding: 10px 15px 0 0px;}
+        #contentWrapper { min-width: 1024px !important; }
+        button.close {font-size: 200%;}
+        .active > a, .active_tab > a { color: #fff; }
+        .active > a, .active_tab > a, .tabbed_menu .mainnav li.active::after { cursor: default; /* Added to ensure the cursor is default for the active tab */ }        
+        .dataTables_length { display: none; }
+        .dataTables_info { bottom: 22px;  position: absolute; right: 180px;}
+        .manage_user_name { width: 17% !important;}
+        .manage_user_contact_name { width: 10% !important;}
+        .manage_user_address { width: 10% !important;}
+        .manage_user_city { width: 10% !important; }
+        .manage_user_state { width: 10% !important; }
+        .manage_user_zip { width: 10% !important; }
+        #manage_content .pagination > a {padding: 5px 10px; font-family: omnes_att_iimedium;line-height: 1.125em; color: #056fab; margin-left: 5px; background: #fff; border: 1px solid #ccc;}
+        .paginate_enabled_previous, .paginate_enabled_next { cursor: pointer; }
+        .paginate_disabled_previous, .paginate_disabled_next { cursor: no-drop; }
+        .btn { padding: 10px 20px !important; }
+        .btn:hover { background: #fff !important; color: #333;}
+        h1 {font-family: omnesatt_iiregular; margin: 40px 0 20px 0; }
+        
+        .mainnav a:hover { color: #428bca !important; }
+        .mainnav .active a { color: #fff !important;cursor: default !important; }
+        .tabbed_menu .active {background: #056fab; }
+        .tabbed_menu .mainnav li {padding:25px 0 0 0; min-width: 25%; position:relative !important; height:70px; border-right:solid 1px #cccccc;}        
+        .tabbed_menu .mainnav li:last-child {border-right:none;}   
+        .tabbed_menu .mainnav li a { padding: 0px; }
+        .tabbed_menu .mainnav li.active  {color: #ffffff; }
+        .tabbed_menu .mainnav li.active::after { text-align: center;
+        content: ' ';
+        display: inline;
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        position: absolute;
+        border-top: 14px solid #056fab;
+        bottom: -12px;
+        /* left: 9%;*/
+        margin-left: -15% !important; 
+        z-index: 99999;
+        }
+        
+       
+        .circlenum {margin-right:5px;}
+        
+        .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+        background-size: 900px 900px !important;
+        }
+        
+        .manage_content-header { font-family: omnes_light; }
+        ul.mainnav li.disabled a, ul.mainnav li.disabled a:hover { cursor: default !important; color: #356fab !important; }
+        li.ng-isolate-scope.active::after { cursor: default;}        
+        .nscustomer_details{ margin-top: 50px;}        
+        .nscustomer_details li{display:inline;}
+        .adjust-select-small {
+          width: 256px;
+        }
+       #manage_content label, .manage_content label {
+       margin-left: 15px !important;
+       margin-bottom :10 px;
+       }
+        
+         label {
+        font-family: omnes_att_iimedium;
+        color:#010101;
+        letter-spacing:0 em;
+        font-style:normal;
+        text-align:left;
+        line-height :0.36em;
+        font-size: 1.25em;
+        effect:none;
+        
+        }
+        
+       #vlantable {
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+         border-radius: 10px;
+         border-width: thin;
+         border-spacing: 2px;
+         border-style: none;
+         border-color: black;
+        } 
+          #vlanlabel {
+          margin-left: 50px !important;
+          margin-bottom :10 px;
+         
+         } 
+            .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+                background-size: 900px 900px !important;
+            }
+       
+           
+           #manage_content label, .manage_content label {
+          margin-bottom :10 px;
+           }
+            
+             label {
+        font-family: omnes_att_iimedium;
+        color:#010101;
+        letter-spacing:0 em;
+        font-style:normal;
+        text-align:left;
+        line-height :0.36em;
+        font-size: 1.25em;
+        effect:none;
+        
+        }
+        
+       #vlantable {
+        -moz-border-radius: 10px;
+        -webkit-border-radius: 10px;
+         border-radius: 10px;
+         border-width: thin;
+         border-spacing: 2px;
+         border-style: none;
+         border-color: black;
+        } 
+          #vlanlabel {
+          margin-left: 50px !important;
+          margin-bottom :10 px;
+         
+         } 
+            .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+                background-size: 900px 900px !important;
+            }
+       
+                label {
+                    font-family: omnes_att_iimedium;
+                    color:#010101;
+                    letter-spacing:0 em;
+                    font-style:normal;
+                    text-align:left;
+                    line-height :0.36em;
+                    font-size: 1.25em;
+                    effect:none;
+                }
+                #vlanlabel {
+                    margin-left: 50px !important;
+                    margin-bottom :10 px;   
+                } 
+               
+                #SiteDetails {
+                    font-family: omnes_att_iilight;
+                    color:#040404;
+                    padding-top:23px;
+                    padding-bottom:25px; 
+                    letter-spacing:0 em;
+                    font-style:bold;
+                    text-align:left;
+                    line-height :1.71em;
+                    font-size: 2em;
+                    effect:none;   
+                }          
+                #Customer {
+                    font-family: omnes_att_iimedium;
+                    color:#010101;
+                    padding-top:0px;
+                    padding-bottom:10px; 
+                    letter-spacing:0 em;
+                    font-style:normal;
+                    text-align:left;
+                    line-height :0.36em;
+                    font-size: 1.25em;
+                    effect:none;   
+                } 
+                #SubaccountNumber {
+                    font-family: omnes_att_iimedium;
+                    color:#010101;
+                    padding-top:0px;
+                    padding-bottom:24px; 
+                    letter-spacing:0 em;
+                    font-style:normal;
+                    text-align:left;
+                    font-size: 0.94em;
+                    effect:none;   
+                }
+                table.SubaccountNumber{
+                    font-family: omnes_att_iimedium;
+                    color:#010101;
+                    font-style:normal;
+                    text-align:left;
+                    font-size: 0.94em;
+                    effect:none;   
+                    width:100%;
+                    table-layout : fixed;    
+                }
+                #SiteName{
+                    font-family: omnes_att_iimedium;
+                    color:#010101;
+                    padding-top:7px;
+                    padding-bottom:10px; 
+                    padding-left:25px;    
+                    letter-spacing:0 em;
+                    font-style:normal;
+                    text-align:left;
+                    line-height :0.36em;
+                    font-size: 1.25em;
+                    effect:none; 
+                    background-color: #F0F0F0;   
+                }
+                #SiteNameBGColor{
+                    background-color: #F0F0F0;
+                } 
+                table.SiteStatus{
+                    font-family: omnes_att_iimedium;
+                    color:#010101;
+                    margin-top:2px;
+                    margin-bottom:21px;  
+                    margin-left:25px; 
+                    margin-right:25px;    
+                    font-style:normal;
+                    text-align:left;
+                    font-size: 0.94em;
+                    effect:none;
+                    width:1175px;  
+                }
+                table.JumpTo{
+                    font-family: omnes_att_iimedium;
+                    color:#010101;
+                    margin-top:23px;
+                    margin-bottom:18px;
+                    font-style:bold;
+                    text-align:left;
+                    font-size: 1.13em;
+                    effect:none;
+                    width: 100%;
+                }
+                ModifySite{
+                    width:20px;
+                    height:10px;
+                    align:right; 
+                }
+                table.SiteContact{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-left:49px;    
+                    margin-top:30px;
+                    margin-bottom:14px; 
+                    font-style:bold;
+                    text-align:left;
+                    line-height:1.18em;
+                    font-size: 1.38em;
+                    effect:none; 
+                    
+                }
+                table.vlantable {
+                     border: 1px solid #a8a8a8;          
+                     margin-bottom:10px;  
+                }
+                td.PrimaryContact{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-left:50px;    
+                    margin-top:24px;
+                    margin-bottom:1.07em; 
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:1.07em;
+                    font-size: 1.13em;
+                    effect:none; 
+                    width: 1150px;
+                    margin-left:50px;
+
+                    white-space: -o-pre-wrap; 
+                    word-wrap: break-word;
+                    white-space: pre-wrap; 
+                    white-space: -moz-pre-wrap; 
+                    white-space: -pre-wrap; 
+                }        
+                hr.BlackHr{ 
+                    border: 0; 
+                    height: 1px; 
+                    background: #a8a8a8;
+                    margin-top:36px;      
+                    margin-bottom:1px;
+                }
+                table.progressBarLayout{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:1.07em;
+                    font-size: 1.13em;
+                    effect:none;
+                    margin-left:50px;
+                    margin-top:37px;
+                    margin-bottom:30px;
+                    width:1100px;          
+                 }
+                table.progressBar{
+                    height:20px;
+                    margin-left:150px;
+                    margin-top:24px;
+                    margin-bottom:40px;
+                }
+                canvas.UtilizationUsed{
+                    width:15px;
+                    height:15px;
+                    //border:1px solid #000000
+                    background-color:#0099CC;
+                }
+                canvas.UtilizationPending{
+                    width:15px;
+                    height:15px;
+                    //border:1px solid #000000;            
+                    background-color:orange;
+                }
+                canvas.UtilizationAvailable{
+                    width:15px;
+                    height:15px;
+                    //border:1px solid #000000;
+                    background-color:#8f8f8f;
+                }
+                canvas.RealTime{
+                    width:20px;
+                    height:20px;
+                    border:1px solid #000000;
+                    background-color:#2466a8;
+                    font-family:omnes_att_iimedium;
+                    font-style:bold;
+                    line-height:1.07em;
+                    letter-spacing:0em;
+                    font-size: 1.13em;
+                    color:#000000;
+                    text-align:left;
+                    effect:none;
+                }
+                canvas.BurstyHigh{
+                    width:20px;
+                    height:20px;
+                    border:1px solid #000000;
+                    background-color:#32a2e4;
+                    font-family:omnes_att_iimedium;
+                    font-style:bold;
+                    line-height:1.07em;
+                    letter-spacing:0em;
+                    font-size: 1.13em;
+                    color:#000000;
+                    text-align:left;
+                    effect:none;
+                }
+                canvas.BurstyLow{
+                    width:20px;
+                    height:20px;
+                    border:1px solid #000000;
+                    background-color:#64caf0;
+                    font-family:omnes_att_iimedium;
+                    font-style:bold;
+                    line-height:1.07em;
+                    letter-spacing:0em;
+                    font-size: 1.13em;
+                    color:#000000;
+                    text-align:left;
+                    effect:none;
+                }
+                canvas.BurstyEffort{
+                    width:20px;
+                    height:20px;
+                    border:1px solid #000000;
+                    background-color:#c8eefd;
+                    font-family:omnes_att_iimedium;
+                    font-style:bold;
+                    line-height:1.07em;
+                    letter-spacing:0em;
+                    font-size: 1.13em;
+                    color:#000000;
+                    text-align:left;
+                    effect:none;
+               }
+               /*
+                table td{
+                    border: 1px solid black;
+                  }
+                */
+                td.IPInformation{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-left:50px;    
+                    margin-top:24px;
+                    margin-bottom:1.07em; 
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:0.96em;
+                    font-size: 1.13em;
+                    effect:none; 
+                    width: 500px;
+                    margin-left:50px;
+                }
+                table.IPv4Information{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-left:0px;    
+                    margin-top:1px;
+                    margin-bottom:19px; 
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:0.96em;
+                    font-size: 1.13em;
+                    effect:none; 
+                    width: 1150px;
+                }
+                
+                table.IPv4VLANInformation{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-left:0px;    
+                    margin-top:1px;
+                    margin-bottom:19px; 
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:0.96em;
+                    font-size: 1.13em;
+                    effect:none; 
+                    width: 350px;
+
+                 
+                 
+                }
+                td.LogicalChannelSpeed{
+                    font-family: omnes_att_iimedium;
+                    font-size: 1.13em;
+                    color:#0077b4;
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:1.07em;
+                    effect:none;
+                    vertical-align:middle;
+                 }
+                 .LogicalChannelInfo{
+                      margin-left:50px;
+                      width:1100px;
+                      border: 1px solid #a8a8a8;
+                      margin-top:10px;
+                      
+                 }
+                 .LogicalChannelInfo{
+                    font-family: omnes_att_iimedium;
+                    font-size: 1.13em;
+                    color:#000000;
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:1.07em;
+                    effect:none;
+                    height:70px !important;
+                    padding-left:25px;
+                    height:35px;
+                   
+                    vertical-align:middle;
+                }
+                 td.arrowStyle{
+                     height:30px;
+                     width:45px;
+                     padding-top:10px;
+                     padding-left:0px;
+                     text-align:center;
+                 }
+                 
+                 td.arrowStyleNew{
+                     height:30px;
+                     width:78px;
+                     padding-top:10px;
+                     padding-left:0px;
+                     text-align:center;
+                 }
+                 td.arrowStyleForAdd{
+                     height:30px;
+                     width:65px;
+                     padding-top:10px;
+                     padding-left:0px;
+                     text-align:center;
+                 }          
+                 table.vlanPieTable{
+                     width:1100px;
+                     margin-left:50px;
+                     border: 1px solid #a8a8a8;
+                     overflow:hidden !important;
+                     height:0px !important;
+                 }
+                td.PieChart{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-bottom:1.07em; 
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:0.96em;
+                    font-size: 1.13em;
+                    effect:none; 
+                }
+                td.InnerPieChart{
+                    font-family: omnes_att_iimedium;
+                    color:#000000;
+                    margin-bottom:1.07em; 
+                    font-weight:bold;
+                    text-align:left;
+                    line-height:0.96em;
+                    font-size: 1.13em;
+                    effect:none;
+                    margin-left:50px; 
+                }
+                td.InnerPieChartLayout{
+                    padding-left:50px;
+                    width:300px;
+                    height:250px;
+                    
+                }
+                
+                td.PieChartLayout{
+                    padding-top:10px; 
+                    padding-bottom:39px;
+                    vertical-align:top;
+                }
+                td.ShowLevel{
+                    padding-top:70px;
+                    vertical-align:top;
+                }
+                table.InnerShowLevel{
+                    padding-top:70px;
+                    vertical-align:top;
+                    margin-left:50px;
+                    vertical-align:top;
+                }
+                select {
+                    width:290px; 
+                    height:39px;
+                    overflow:hidden; 
+                    white-space:nowrap; 
+                    text-overflow:ellipsis;
+                }
+                body    {overflow-x:scroll;}
+
+                #pageBody{
+                    width: 1200px; 
+                    background-color: white;
+
+                }
+                    #pageFull{
+                    width: 1292px; 
+                }
+                .scrollToTop{ cursor:pointer; padding:10px; text-align:center; font-weight: bold; color: #444; text-decoration: none; position:fixed; top:80%; right:30px; display:none; .background: url(url('!$Resource.scrollTop') no-repeat center;) no-repeat 0px 20px; width:72px; height:106px; }
+                .scrollToTop:hover{ text-decoration:none; }
+                .switchImage{ padding-top:30px; position:static;}
+                .displayMssg{ font-size: 20px !important;}
+             
+             
+             
+             
+             #progressBaraddvlan {
+                width: 742px;
+                height: 22px;
+                background-color: #8f8f8f;
+             }   
+            #addvlanprogbardiv1 {
+                 height: 100%;
+                color: #fff;
+                text-align: center;
+                line-height: 20px;
+                width: auto;
+                background-color: #32a2e4;
+                float:left;
+             }
+                #addvlanprogbardiv2 {
+                height: 100%;
+                color: #fff;
+                text-align: center;
+                line-height: 20px;
+                width: auto;
+                background-color: orange;
+                float:left;
+             }
+                #progressBaraddvlan span {
+                height: 100%;
+                color: #fff;
+                text-align: center;
+                line-height: 20px;
+                width: auto;
+                background-color: #8f8f8f;
+                float:right;
+     
+             }
+
+
+
+
+
+
+             .progressBarVlanClass{
+                height: 100%;
+                color: #fff;
+                text-align: center;
+                line-height: 20px;
+                width: auto;
+                background-color: #8f8f8f;
+                float:right;
+                margin-top:-40px;
+               
+             }
+
+             .removeBold{
+                font-weight:normal;
+            }
+             
+            .vlanProgressBarCssClass{
+                width: 742px;
+                height: 22px;
+                border: 1px solid #111;
+                background-color: #8f8f8f;
+                margin-top:40px;
+                margin-bottom:20px;
+            }
+           
+            .vlanProgressBarCssClassDiv{
+                color: #fff;
+                text-align: center;
+                line-height: 22px;
+                width: 742px;
+                height: 20px;
+                background-color: #32a2e4;
+                margin-top:0px;
+                margin-bottom:20px;
+            }
+
+        .requiredInputFieldNumberipv6_error{
+            width: 810px;
+            margin-left: -14px;
+        }
+        .passwordFieldSelector2_error{
+            width: 359px;
+            margin-left: -11px;
+        }
+        
+        .ci-m-b label{padding-top:20px;}
+        
+     .cosSliderLabelsProgress{
+            position: absolute;
+            top: 7px;
+            left: 40px;
+            z-index: 10;
+            color: Black;
+            font-family: omnes_light;
+        }
+    
+    .cosSliderLabelsMax {
+        position: absolute;
+        top: 6px;
+        right: 43px;
+        z-index: 10;
+        color: #4ca90c;
+        font-family: omnes_light;
+    }
+    .ui-slider .ui-slider-handle {
+        width: 22px;
+        height: 45px;
+        margin-left: -8px;
+        margin-top: -2px;
+    }
+    .ui-widget-header {
+        background: #4ca90c none repeat scroll 0% 0% !important;
+    }
+    </style>
+    <script>
+        function vlanExpandIPInfoPanel(vlanId){
+            enableThisVlanPanel(vlanId);
+        }
+        
+        function vlanExpandConfigurationPanel(vlanId){
+            document.getElementById("hdnSelectedVlanId").value = vlanId;           
+            enableAndShowConfigPanel(vlanId);  
+        }
+        
+        function undoChangesJS(vlanId){
+        
+            invokeUndoChangesAjax(vlanId);
+        }
+        function resetAndCancel(){
+        
+            doProcessResetAndCancel();
+        }
+        function cancelallchangesAndExit(){
+        
+                cancelAndExitJs();
+        }
+        function navigateToDashBoard(){
+        
+            window.location.href = '/portaldashboard_ui';
+        }
+        
+
+    </script>
+        <input type="hidden" id="hdnSelectedVlanId" value="" />
+        <apex:form id="parentForm" >
+            <input type="hidden" id="hdnSelectedSliderValue" value="{!existingSliderValue}" />
+
+            <apex:actionFunction name="initCoSChangeVlan" reRender="parentForm,rptVlanPanel,vlanIpInfoPanel" status="loading" action="{!doDefaultLoad}" />
+            
+            <apex:actionFunction name="doProcessResetAndCancel" reRender="" status="loading" action="{!resetAndCancelTheQuote}" oncomplete="navigateToDashBoard();">
+                
+            </apex:actionFunction>
+            <apex:actionFunction name="enableThisVlanPanel" reRender="parentForm,rptVlanPanel,vlanIpInfoPanel" status="loading" action="{!enableAndExpandTheSelectedPanel}">
+                <apex:param assignTo="{!selectedVlanId}" name="vlanId" value="" />
+            </apex:actionFunction>
+            <apex:actionFunction name="enableAndShowConfigPanel" reRender="parentForm,rptVlanPanel,vlanIpInfoPanel" status="loading" action="{!enableAndExpandTheSelectedConfigPanel}" oncomplete="updateSlider();">
+                <apex:param assignTo="{!selectedVlanId}" name="vlanId" value="" />
+            </apex:actionFunction>
+            <apex:actionFunction name="invokeUndoChangesAjax" reRender="parentForm,rptVlanPanel,vlanIpInfoPanel,reviewPanelId" status="loading" action="{!doUndoChanges}" oncomplete="setTimeout(function(){ updateSlider(); }, 1000);" >
+                <apex:param assignTo="{!selectedVlanId}" name="vlanId" value="" />
+            </apex:actionFunction>
+            <apex:actionFunction name="getCosProfiles" action="{!fetchProfileCosValues}" oncomplete="" reRender="cosProfileID,btnApplyAndSave" status="loading">
+                <apex:param name="slidervalue" value="" assignTo="{!selectedSliderValue}"/>
+            </apex:actionFunction>
+            <apex:actionFunction name="doUpdateValidation" action="{!doUpdateOnValidationRecord}" rerender="parentForm,rptVlanPanel,vlanIpInfoPanel,reviewPanelId,confirmPanelId" status="loading" oncomplete="enableThankyouPanel();"/>
+            
+            <apex:outputPanel id="parentPanelVLanInfo" rendered="{!!isSubmitted}">
+                <apex:variable var="cntr" value="{!0}"/>
+                <apex:repeat id="rptVlanPanel" value="{!listVlanDataWrapper}" var="vlanData">
+                <apex:variable var="cntr" value="{!cntr+1}"/>
+                <apex:variable var="count" value="{!0}"/>
+                <apex:variable var="count" value="{!count+1}"/> 
+                <div>
+                    <div class="LogicalChannelInfo"><span style="margin-top:23px;position:absolute;">VLAN {!cntr} - VPN Name: {!vlanData.vpnName}</span> <span class="removeBold"></span>
+                            <apex:outputPanel rendered="{!!vlanData.isChangeApplied}">
+                                <div style="width:195px;height:10px;float:right;margin-top: 9px;margin-right:65px;"><font style="color:black;"><b>CoS Profile ID: {!vlanData.cosProfileId}</b></font></div><br />
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!vlanData.isChangeApplied}">
+                                <div style="width:auto;height:10px;float:right;margin-top: 9px;margin-right:70px;"><font style="color:#FFA500;"><b>CoS Profile ID: {!vlanData.selectedIngressProfileId} Pending...</b></font></div><br />
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel rendered="{!!vlanData.isChangeApplied}">   
+                                <a href="javascript:void(0);" onClick="vlanExpandConfigurationPanel('{!vlanData.vlanId}')" class="cosBtnID" style="margin-right:70px;float:right;margin-top: 15px;">Change Cos</a>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!vlanData.isChangeApplied}">
+                                <a href="javascript:void(0);" onClick="undoChangesJS('{!vlanData.vlanId}')" class="cosBtnID" style="margin-right:70px;float:right;margin-top: 15px;">Undo Change Cos</a>
+                            </apex:outputPanel>
+                            
+                            <a href="javascript:void(0);" onClick="vlanExpandIPInfoPanel('{!vlanData.vlanId}');" style="text-decoration: none;float:right;">
+                                <apex:outputPanel rendered="{!!vlanData.isExpanded && !vlanData.isChangeApplied}">
+                                    <img style="margin-top: 8px;margin-left: 132px;position: absolute;" id="NavigationDownImage" src="{!$Resource.Navigate_down}" height="15" width="15" />
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!!vlanData.isExpanded && vlanData.isChangeApplied}">
+                                    <img style="margin-top: 8px;margin-left: 180px;position: absolute;" id="NavigationDownImage" src="{!$Resource.Navigate_down}" height="15" width="15" />
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!vlanData.isExpanded && !vlanData.isChangeApplied}" >
+                                    <img style="margin-top: 8px;margin-left: 132px;position: absolute;" id="NavigationUpImage" src="{!$Resource.Navigate_Up}" height="15" width="15" />
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!vlanData.isExpanded && vlanData.isChangeApplied}" >
+                                    <img style="margin-top: 8px;margin-left: 180px;position: absolute;" id="NavigationUpImage" src="{!$Resource.Navigate_Up}" height="15" width="15" />
+                                </apex:outputPanel>
+                            </a>
+                        </div> 
+                    </div>
+                    <apex:outputPanel id="vlanIpInfoPanel" rendered="{!vlanData.isExpanded}" >                  
+                    <table id="vlanIpInfo" class="vlanPieTable">     
+                        <tr>
+                            <td width="38%">
+                                <div style="margin-top:30px; margin-left:25px;font-family: omnes_att_iimedium;color: #000;margin-top: 24px;margin-bottom: 1.07em;font-weight: bold;text-align: left;line-height: 0.96em;font-size: 1.20em;" class="IPInformation">IPv4 Information</div> 
+                                    <table style="margin-top:10px; margin-left:25px;">                                                                   
+                                        <tr><td class="IPInformation">Routing Protocol:  <span class="removeBold">{!vlanData.vlanInfo.V4_Routing_Protocol__c}</span></td></tr>
+                                        <tr><td class="IPInformation">Autonomous System Number:  <span class="removeBold">{!vlanData.vlanInfo.V4_Routing_ASN__c}</span></td></tr>
+                                        <tr><td class="IPInformation"><apex:outputPanel >Restrictive Routing: Yes <span class="removeBold"></span></apex:outputPanel></td></tr>
+                                        <tr><td class="IPInformation"><apex:outputPanel >Autonomous System Number Override: Yes <span class="removeBold"></span></apex:outputPanel></td></tr>  
+                                        <tr><td class="IPInformation">MD5 Authentication:  <span class="removeBold"><apex:outputText rendered="{!vlanData.vlanInfo.MD5__c}" value="Yes" /><apex:outputText rendered="{!!vlanData.vlanInfo.MD5__c}" value="No" /></span></td></tr>
+                                        <tr><td class="IPInformation">Customer Edge IP Address:  <span class="removeBold">{!vlanData.vlanInfo.Customer_IP_V4_Address__c}</span></td></tr>                                       
+                                        <tr><td class="IPInformation">AT&amp;T Edge IP Address:  <span class="removeBold">{!vlanData.vlanInfo.ATT_IP_Address__c}</span></td></tr>                    
+                                        <tr><td class="IPInformation">Subnet Mask:  <span class="removeBold">{!vlanData.vlanInfo.Subnet_Mask_V4__c}</span></td></tr>
+                                    </table>
+                                <div style="margin-top:30px;" class="IPInformation"></div>
+                            </td> 
+                
+                                 <td width="37%">
+                                     <div class="IPInformation" style="font-family: omnes_att_iimedium;color: #000;;margin-bottom: 1.07em;font-weight: bold;text-align: left;line-height: 0.96em;font-size: 1.20em;">IPv6 Features and Options</div>
+                                    <table style="margin-top:10px;">                                    
+                                        <tr><td class="IPInformation">Routing Protocol:  <span class="removeBold">{!vlanData.vlanInfo.V6_Routing_Protocol__c}</span></td></tr>
+                                        <tr><td class="IPInformation">Autonomous System Number:  <span class="removeBold">{!vlanData.vlanInfo.V6_Routing_ASN__c}</span></td></tr>
+                                        <tr><td class="IPInformation"><apex:outputPanel >Restrictive Routing: Yes <span class="removeBold"></span></apex:outputPanel></td></tr>       
+                                        <tr><td class="IPInformation"><apex:outputPanel >Autonomous System Number Override: Yes <span class="removeBold"></span></apex:outputPanel></td></tr>  
+                                        <tr><td class="IPInformation">MD5 Authentication:  <span class="removeBold"><apex:outputText rendered="{!vlanData.vlanInfo.V6_MD5_required__c}" value="Yes" /><apex:outputText rendered="{!!vlanData.vlanInfo.V6_MD5_required__c}" value="No" /></span></td></tr>
+                                    </table>
+                                </td>
+                                <td>
+                                    <div class="IPInformation" style="font-family: omnes_att_iimedium;color: #000;;margin-bottom: 1.07em;font-weight: bold;text-align: left;line-height: 0.96em;font-size: 1.20em;">Class of Service</div>
+                                    <apex:outputPanel rendered="{!vlanData.listCoSProfile.size == 6}">
+                                        <table id="ipPieLegendsID" style="display:block;">                                                               
+                                           <tr>
+                                               <td class="IPInformation">
+                                                   <apex:outputPanel >
+                                                       Class of Service Profile ID : <span class="removeBold">{!vlanData.vlanInfo.Ingress_Profile_ID__c}</span>
+                                                   </apex:outputPanel>
+                                               </td>
+                                           </tr>
+                                           <apex:variable var="cntr" value="{!0}"/>
+                                           <apex:repeat value="{!vlanData.listCoSProfile}" var="cosInfo">
+                                          
+                                           <tr><td class="IPInformation">
+                                               <apex:outputPanel rendered="{!cntr == 0}">
+                                                   Real Time:<span class="removeBold">{!vlanData.listCoSProfile[0]}%</span>
+                                               </apex:outputPanel>
+                                               </td></tr>
+                                               
+                                               <tr><td class="IPInformation">
+                                               <apex:outputPanel rendered="{!cntr == 1}">
+                                                   Video:<span class="removeBold">{!vlanData.listCoSProfile[1]}%</span>
+                                               </apex:outputPanel>
+                                               </td></tr>
+                                               
+                                               <tr><td class="IPInformation">
+                                               <apex:outputPanel rendered="{!cntr == 2}">
+                                                   Bursty High:<span class="removeBold">{!vlanData.listCoSProfile[2]}%</span>
+                                               </apex:outputPanel>
+                                               </td></tr>
+                                               
+                                               <tr><td class="IPInformation">
+                                               <apex:outputPanel rendered="{!cntr == 3}">
+                                                   Bursty Low:<span class="removeBold">{!vlanData.listCoSProfile[3]}%</span>
+                                               </apex:outputPanel>
+                                               </td></tr>
+                                               
+                                               <tr><td class="IPInformation">
+                                               <apex:outputPanel rendered="{!cntr == 4}">
+                                                   Best Effort:<span class="removeBold">{!vlanData.listCoSProfile[4]}%</span>
+                                               </apex:outputPanel>
+                                               </td></tr>
+                                               
+                                               <tr><td class="IPInformation">
+                                               <apex:outputPanel rendered="{!cntr == 5}">
+                                                   Scavenger:<span class="removeBold">{!vlanData.listCoSProfile[5]}%</span>
+                                               </apex:outputPanel>  
+                                               </td></tr>
+                                               <apex:variable var="cntr" value="{!cntr+1}"/>  
+                                           </apex:repeat>                                                          
+                                       </table> 
+                                     </apex:outputPanel>
+                                     <apex:outputPanel rendered="{!vlanData.listCoSProfile.size == 4}">
+                                        <table id="ipPieLegendsID" style="display:block;"> 
+                                            <tr>
+                                               <td class="IPInformation">
+                                                   <apex:outputPanel >
+                                                       Class of Service Profile ID : <span class="removeBold">{!vlanData.vlanInfo.Ingress_Profile_ID__c}</span>
+                                                   </apex:outputPanel>
+                                               </td>
+                                           </tr>                                                              
+                                           <apex:variable var="cntr" value="{!0}"/>
+                                           <apex:repeat value="{!vlanData.listCoSProfile}" var="cosInfo">
+                                               <tr><td class="IPInformation">
+                                               <apex:outputPanel rendered="{!cntr == 0}">
+                                                   Real Time:<span class="removeBold">{!vlanData.listCoSProfile[0]}%</span>
+                                               </apex:outputPanel>
+                                               </td></tr>
+                                               
+                                               <tr><td class="IPInformation">
+                                               <apex:outputPanel rendered="{!cntr == 1}">
+                                                   Video:<span class="removeBold">{!vlanData.listCoSProfile[1]}%</span>
+                                               </apex:outputPanel>
+                                               </td></tr>
+                                               
+                                               <tr><td class="IPInformation">
+                                               <apex:outputPanel rendered="{!cntr == 2}">
+                                                   Bursty High:<span class="removeBold">{!vlanData.listCoSProfile[2]}%</span>
+                                               </apex:outputPanel>
+                                               </td></tr>
+                                               
+                                               <tr><td class="IPInformation">
+                                               <apex:outputPanel rendered="{!cntr == 3}">
+                                                   Bursty Low:<span class="removeBold">{!vlanData.listCoSProfile[3]}%</span>
+                                               </apex:outputPanel>
+                                               </td></tr>
+                                               
+                                               <apex:variable var="cntr" value="{!cntr+1}"/>  
+                                           </apex:repeat>                                                          
+                                       </table> 
+                                     </apex:outputPanel>
+                                     <!--<apex:outputPanel rendered="{!vlanInfo.coS_wrp == 'Yes' && ServiceType == 'MIS'}">
+                                        <table style="display:block;">
+                                           
+                                           <tr><td class="IPInformation">Real Time:<span class="removeBold">{!CoS1}%</span></td></tr>                                                               
+                                           <tr><td class="IPInformation">Bursty High:<span class="removeBold">{!CoS2}%</span></td></tr>
+                                           <tr><td class="IPInformation">Bursty Low:<span class="removeBold">{!CoS3}%</span></td></tr>
+                                           <tr><td class="IPInformation">Best Effort:<span class="removeBold">{!CoS4}%</span></td></tr>                                                                                                                           
+                                       </table> 
+                                     </apex:outputPanel>-->
+                                </td>
+                            </tr>
+                          </table>     
+                      </apex:outputPanel> 
+                      <!-- Config Site Start -->                   
+                      <apex:outputPanel id="vlanLevelCospanel" rendered="{!vlanData.isVlanConfigPanelVisible}">
+                          <div style="width:1100px;">                     
+                             <div class="content_container">      
+                             <div id="manage_content" style="padding: 0; margin-left: 50px; margin-right:0;width: 1100px;height:681px;border:1px solid #A8A8A8; background: #F0F0F0;" class="page ng-scope" ng-controller="QuoteController as beginQuote">
+                              <div class="row">                            
+                                <div class="col-xs-12">
+                                <br/>      
+                                <apex:outputPanel id="vlanCosChangeFormId">                             
+                                    <apex:outputPanel id="cosVlanTabpanel">  
+                                        <div class="tab-content">                                                
+                                                                  
+                                            <div id="configSitesPanel">
+                                                <h4 style="margin-left:25px;font-size: 1.13em;font-family:omnes_att_iimedium;">Order Number:&nbsp; {!rdsValidation.RelatedQuote__r.Apttus_Proposal__Proposal_Name__c}</h4>  
+                                                <br/><br/>
+                                                <!--<h4 style="margin-left:25px;font-size: 0.94em;font-family:omnes_att_iimedium;">VLAN Name: &nbsp;{!vlanData.vpnName}</h4>-->   
+                                                <hr class="gray_hr"  style="border-top:1px solid gray !important;width: 100%;margin-left: 0%;"/>
+                                                <br/>
+                                                <div class="" style="margin-left:25px;">
+                                                    <h2 style="color:black;font-size: 2em;font-family:omnes_att_iimedium;background-color: #F0F0F0;margin-left: -25px;padding-left: 23px;"> Change Class of Service Profile ID</h2>
+                                                </div>
+                                                <br/>
+                                                <hr class="gray_hr"  style="border-top:1px solid gray !important;width: 100%;margin-left: 0%;"/>
+                                                <br/>                                                      
+                                                <div style="margin-left:25px;width:1000px;height:100px">
+                                                    <p style="font-size: 1.13em;font-family:omnes_att_iimedium;text-align:left;line-height:1.5;">Change your Class of Service (CoS) Profile ID by moving the Real-Time Percentage slider bar to the percentage you want. Then change the value in the dropdown menu. Click <b>Apply &amp; Save</b> to change your CoS Profile ID. Click <b>Cancel All Changes &amp; Exit</b> if you want to stop the proposed change.</p>
+                                                    <br/><br/><br/>    
+                                                </div>                                                            
+                                                <br/>                                                             
+                                                <div style="margin-left:30px;">
+                                                    <table>                                                                
+                                                        <!-- Slider for COS selection Start -->                                        
+                                                        <tr>
+                                                            <td style="width:550px;" >
+                                                                <div class="col-xs-4 col-md-4" style=" width:800px;height: 100px;">
+                                                                    <h4 style="font-size: 1.13em;font-family: omnes_att_iimedium;"><b>Real-Time percentage :</b></h4><br/> <br/>
+                                                                    <div class="col-xs-12 col-md-12 m-l-5" id="vlanCosSlider{!vlanData.vlanId}" style="height:32px;width:940px;">
+                                                                        <div class="col-xs-12 col-md-12" id="cosSlider" >
+                                                                            <div class="cosSliderLabelsProgress">
+                                                                                <span id="cosSliderPrgs{!vlanData.vlanId}">0 %</span>
+                                                                            </div>
+                                                                            <div class="cosSliderLabelsMax">
+                                                                                <span id="cosSliderMax">100 %</span>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                     
+                                                                    <div class="row" style="width:980px">
+                                                                        <span class="col-xs-1">|</span>
+                                                                        <span class="col-xs-10" style="text-align:center; ">|</span>
+                                                                        <span class="col-xs-1" style="padding-left:52px;">|</span>
+                                                                    </div>
+                                                                    <div class="row" style="width:980px">
+                                                                        <span class="col-xs-1">0</span>
+                                                                        <span class="col-xs-10" style="text-align:center;">50</span>
+                                                                        <span class="col-xs-1" style="padding-left: 42px;">100</span>
+                                                                    </div>                                            
+                                                                </div> 
+                                                            </td>    
+                                                                                            
+                                                        </tr>  
+                                                        <tr>
+                                                            <td style="width:750px;" >
+                                                                <div class="col-xs-4 col-md-4" style="width:250px;height:70px;margin-left:0px;margin-bottom: 32px;">
+                                                                    <h4 style="font-size: 1.13em;font-family: omnes_att_iimedium;"><b>Profile ID:</b></h4><br/><br/>  
+                                                                    <apex:outputPanel id="cosProfileID">
+                                                                        <apex:selectList id="slCosProfile" rendered="{!vlanData.isCoSDropDownShown}" value="{!vlanData.selectedIngressProfileId}" styleclass="form-control requiredSelectField styled-select-small select" style="width: 940px;padding-left: 0px;-moz-appearance:none;"  multiselect="false" size="1">
+                                                                            <apex:selectOptions value="{!vlanData.listOptionsCosProfileId}" />
+                                                                            <apex:actionSupport event="onchange" action="{!validateAndEnableApplyAndSave}" reRender="parentForm,rptVlanPanel,vlanIpInfoPanel,reviewPanelId,cosProfileID" oncomplete="updateSlider();retainSliderValue();" />
+                                                                        </apex:selectList>
+                                                                    </apex:outputPanel>                                                                                                                                                                                                     
+                                                                </div>
+                                                                
+                                                             
+                                                            </td>
+                                                         </tr>
+                                                         <tr>
+                                                         <td>
+                                                         <hr class="gray_hr" style="border-top: 1px solid black ! important; width: 1100px; margin-left: -30px; margin-bottom: 40px;"></hr>
+                                                         </td>
+                                                         </tr>
+                                                         <tr>  
+                                                            <td style="width: 50px;">   
+                                                               <div style="margin-bottom: 20px;margin-right:50px;margin-left:-231px;">
+                                                                   <apex:commandLink value="Cancel Request" action="{!CancelandExit}" status="loading" style="margin-left: 621px !important;margin-top: 5px !important;"/>       
+                                                                   <apex:CommandButton value="Reset" action="{!doUndoChanges}" rerender="parentForm,rptVlanPanel,vlanIpInfoPanel,reviewPanelId" status="loading" styleClass="btn secondary prodInfoNextBtnId" style="font-size: 16px;margin-left: 898px !important;width: 150px !important;height: 35px !important;margin-right: -75px !important;background-color: #FFF !important;color: #056FAB !important;margin-top: -20px;padding: 0px 10px !important;" oncomplete="updateSlider();"/>                                                                         
+                                                                   <apex:CommandButton id="btnApplyAndSave" disabled="{!vlanData.isApplyDisabled}" rerender="parentForm,rptVlanPanel,vlanIpInfoPanel,reviewPanelId" style="height: 35px !important;width: 135px !important;float: right;margin-right: -7px;margin-top: -20px;text-align: center;padding-top: 8px ! important;" status="loading" value="Apply & Save" action="{!doApplyAndSave}" styleClass="btn btn-primary" />                                                         
+                                                                </div>
+                                                            </td>
+                                                            <td style="width: 50px;">   
+                                                                
+                                                            </td> 
+                                                        </tr>     
+                                                        <!-- Slider for COS selection End -->                                                                                                                   
+                                                    </table>
+                                                </div>
+                                                <br/>
+                                            </div> 
+                                        </div>
+                                        </apex:outputPanel>   
+                                        </apex:outputPanel>                               
+                                        <!-- Config Site End -->
+                                    </div>                                             
+                                 </div>
+                             </div>                                             
+                         </div>                                                                            
+                    </div> 
+                  </apex:outputPanel>              
+                  </apex:repeat>
+              </apex:outputPanel>
+             
+              <apex:outputPanel id="displayMessage" rendered="{!displayMessageflag}" >
+                      <div id="displayMessageID" style="height:200px;width:1100px;border:1px solid #a8a8a8;margin-left:50px;">
+                      <div style="font-size=135px; margin-top:25px; margin-left:35px; margin-bottom:26px;margin-right:35px;" >
+                           <p class="displayMssg">Class of Service(CoS) allows the network to prioritize different types of Internet traffic. To change the CoS profile ID for a VLAN, click <strong>Change CoS</strong> for that VLAN. Reconfigure the profile and click <strong>Apply &amp; Save</strong>.You can reconfigure 1 or more VLANs before submitting your request.</p>  
+                    </div>              
+                                             
+                       <hr class="BlackHr"  style="border-top:0px solid #a8a8a8 !important;margin-left: 0px;margin-right: 0px;height: 1px;margin-top: 38px !important;"/>
+                      <div style="margin-top:30px">
+                      <apex:commandLink value="Cancel Request" style="margin-right:80px;" styleClass="pull-right" action="{!CancelandExit}"/>
+                      </div>       
+                      </div>
+           </apex:outputPanel>
+             
+              <!-- REVIEW PANEL START --> 
+              <div style="background:#F0F0F0;width: 1100px;margin-left: 50px;margin-top: 0px;">                   
+                  <apex:outputPanel style="width:1100px;background-color:#F0F0F0;margin-left:25px;" id="reviewPanelId" rendered="{!doShowReviewPanel}">
+                    <apex:outputPanel styleClass="displayclassforreview" style="background:#F0F0F0;">                                             
+                        <br/>
+                        <h4 style="margin-left:50px;color:black;font-size: 0.94em;font-family:omnes_att_iimedium;">Order Number:&nbsp;{!rdsValidation.RelatedQuote__r.Apttus_Proposal__Proposal_Name__c}</h4>  
+                        <br/> 
+                        <hr class="gray_hr"  style="border-top:1px solid black !important; margin-left: 0px;margin-right: 0px;"/>                                         
+                        <br/>             
+                        <div class="" style="margin-left:270px;">
+                            <h2 style="color:black;font-size: 1.38em;font-family:omnes_att_iimedium;background: #F0F0F0;"><b>You have changed the Class of Service Profiles on {!noOfVlanChanged} VLAN(s).</b></h2>
+                        </div>
+                        
+                        <div style="margin-left: 80px;margin-right: 50px;margin-bottom:20px;margin-top:0px;text-align:20px;width: 100%;">
+                            <p style="margin-left:50px;color:black;font-size: 1.13em;font-family:omnes_att_iimedium;line-height:1.1">To change a (CoS) on more VLANs before submitting, click <b>Change CoS</b> on the appropriate VLAN.</p><br/>
+                            <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;line-height:1.1;margin-top:0px;"> To stop without the changes taking effect, click <b>Cancel All Changes &amp; Exit</b>. To complete your request, click <b>Submit.</b></p>
+                            <br/>
+                        </div>                          
+                        <div style="display:inline-flex;">
+                            <div style="margin-left: 200px;">
+                                <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b>Current</b>  Class of Service Profile IDs</p>
+                                
+                                <table style="width:350px;float:left;">
+                                
+                                    <tr style="height:30px;">
+                                        <td>
+                                            <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b>VLAN Number and Name</b></p>
+                                        </td>
+                                        <td>
+                                            <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b> Profile ID </b></p>
+                                        </td>
+                                    </tr>                                                                   
+                                    <apex:repeat value="{!dataListReviewPanelCurrent}" var="currentData">
+                                        <tr style="">
+                                            <td>
+                                                <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;margin-top: 4px !important;">VLAN {!currentData.indexOfVlan} &nbsp; {!currentData.vlanName} </p>
+                                            </td>
+                                            <td>
+                                                <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;margin-top: 4px !important;">{!currentData.profileIdCurrent}</p>
+                                            </td>
+                                        </tr>
+                                    </apex:repeat>
+                                </table>
+                            </div>
+                            
+                            <div style="margin-left: 100px;">
+                                <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b>Proposed</b>  Class of Service Profile IDs</p>
+                               
+                                <table style="width:350px;float:left;">
+                                
+                                    <tr style="height:30px;">
+                                        <td>
+                                            <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b>VLAN Number and Name</b></p>
+                                        </td>
+                                        <td>
+                                            <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b> Profile ID </b></p>
+                                        </td>
+                                    </tr>                                                                   
+                                    
+                                    <apex:repeat value="{!dataListReviewPanelProposed}" var="currentData">
+                                        <tr style="height:30px;">
+                                            <td>
+                                                <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;margin-top:4px !important;">VLAN {!currentData.indexOfVlan} &nbsp; {!currentData.vlanName} </p>
+                                            </td>
+                                            <td>
+                                                <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;margin-top:4px !important;">{!currentData.profileIdProposed}</p>
+                                            </td>
+                                        </tr>
+                                    </apex:repeat>
+                                
+                                </table>
+                            </div>
+                        </div>           
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <hr class="gray_hr"  style="border-top:1px solid black !important; margin-left: 0px;margin-right: 0px;"/>
+                            </div>
+                        </div>                                  
+                        <div style="background:#F0F0F0;height: 50px;width: 1100px;margin-left: 50px;float:right;">                                  
+                            <div class="" style="margin-bottom: 20px;">                                      
+                                <apex:commandLink value="Cancel Request" action="{!CancelandExit}" status="loading" style="margin-left: 715px !important;margin-top: 5px !important;"/>
+                                <!--<a Class="blueText btnAsLink" style="font-size:1.13em;" value="Cancel All Changes & Exit" onclick="resetAndCancel();">Cancel All Changes and Exit</a>-->
+                            </div>
+                           
+                           
+                            <div class="pull-right" style="margin-bottom: 20px;"> 
+                                <apex:commandButton styleClass="btn btn-primary prodsubmitCosBtnId" action="{!doSubmitVlanCoSChange}" style="height: 35px; width: 172px ! important;margin-right:25px;margin-top:-40px;float:right;" status="loading" rerender="" value="Submit" oncomplete="doUpdateValidation();">
+                                </apex:commandButton>                           
+                            </div> 
+                        </div>                           
+                    </apex:outputPanel>                                            
+               </apex:outputPanel>
+           </div>
+           <!-- REVIEW PANEL END -->
+                                 
+           <!-- Confirmation page content -->
+           <apex:outputPanel style="margin-left:50px;" id="confirmPanelId" rendered="{!isSubmitted}">                                                    
+                <div class="">
+                    <hr style="margin:0px" />
+                </div>                                 
+                <div>                                                                
+                    
+                        <p class="greenText f-s-xxl" style="font-size: 2em;line-height:1.71em;font-color:#4ca90c !important;font-family: omnesattiimedium;margin-left:25px;" >
+                            Thank you!
+                        </p>                                                                    
+                    
+                </div>                                                           
+                <div class="row m0">
+                    
+                        <hr class="gray_hr" style="border-top:1px solid black !important;;margin-left: 0px !important;margin-right: 0px;"/>
+                    
+                </div>
+                <div style="margin-left:25px;">
+                    <br/><h4 style="font-size: 1.13em;font-family: omnes_att_iimedium;">We will confirm your Order Number:&nbsp;{!rdsValidation.RelatedQuote__r.Apttus_Proposal__Proposal_Name__c} by mail.</h4>
+                </div>
+                <br/>
+                <div style="margin-left:25px;">          
+                    <h4 style="font-size: 1.13em;font-family: omnes_att_iimedium;">To View the status of your order, go to <b>My Dashboard</b> and check <b>Manage Quotes &amp; Orders</b>.</h4>
+                </div>
+                <br/>
+                <div class="row m0">
+                    
+                        <hr class="gray_hr" style="border-top:1px solid black !important;;margin-left: 0px !important;margin-right: 0px;"/>
+                    
+                </div>
+                <div style="float:right;">
+                    <div class="col-xs-2 p0" style="margin-bottom: 20px;margin-left:7px;width: 215px;">                                                                
+                        <a class="blueText btnAsLink" href="/apex/PortalDashboard_UI" style="margin-left:15px;font-size:1.13em;">Go to My Dashboard</a>
+                    </div>                                                           
+                    <div class="pull-right text-right" style="margin-bottom: 20px;margin-right:50px;">                                                        
+                        <apex:commandButton action="{!closeCosChangePanel}" value="Close" styleClass="btn secondary pull-left prodInfoNextBtnId" style="padding: 5px 20px 5px 20px !important;" />
+                    </div> 
+                </div>  
+            </apex:outputPanel>
+         <!-- Confirmation page content End-->
+          </apex:form>            
+          <script type="text/javascript">   
+                function retainSliderValue(){
+                    var selectedVlanId = document.getElementById("hdnSelectedVlanId").value; 
+                    var selectedSliderValue = document.getElementById("hdnSelectedSliderValue").value;
+                    
+                    $("#cosSliderPrgs"+selectedVlanId).text(selectedSliderValue + ' %');
+                }
+                                                                             
+                function updateSlider(){   
+                    //alert("updateSlider"); 
+                    var selectedVlanId = document.getElementById("hdnSelectedVlanId").value; 
+                    var selectedSliderValue = document.getElementById("hdnSelectedSliderValue").value;  
+                    //document.getElementById("btnApplyAndSave").disabled = true;
+                    
+                    //alert(document.getElementById("vlanCosSlider"+selectedVlanId));     
+                    //var selectedVlanId = document.getElementById("hdnSelectedVlanId").value;      
+                    //alert('fsdfds'+document.getElementById("cosSliderPrgs"));
+                    console.log("#vlanCosSlider"+selectedVlanId);
+                    $("#vlanCosSlider"+selectedVlanId).slider({
+                        value:parseInt(selectedSliderValue),
+                        range: "min",
+                        animate: false,
+                        step: 5,
+                        change: function (event, ui) {
+                               //$("#vlanCosSlider"+selectedVlanId+"Prgs").text(ui.value + ' %');                                                                                                                                                                           
+                               if(ui.value == 55 || selectedSliderValue == 55 ){
+                                    ui.value = ui.value - 5;                                                                                    
+                                    getCosProfiles(ui.value);   
+                                    $("#cosSliderPrgs"+selectedVlanId).text(ui.value + ' %');                                                                                                   
+                                    $("#vlanCosSlider"+selectedVlanId).slider({
+                                        value: ui.value
+                                    });
+                                      
+                                  } else if(ui.value == 65 || selectedSliderValue == 65 ){
+                                         ui.value = ui.value - 5;
+                                         getCosProfiles(ui.value);
+                                         $("#cosSliderPrgs"+selectedVlanId).text(ui.value + ' %');   
+                                         $("#vlanCosSlider"+selectedVlanId).slider({
+                                            value: ui.value
+                                        }); 
+                                   } else if(ui.value == 75 || selectedSliderValue == 75 ){
+                
+                                     ui.value = ui.value - 5;
+                                     getCosProfiles(ui.value);  
+                                     $("#cosSliderPrgs"+selectedVlanId).text(ui.value + ' %');   
+                                     $("#vlanCosSlider"+selectedVlanId).slider({
+                                        value: ui.value
+                                     });
+                
+                                  }else if(ui.value == 85 || selectedSliderValue == 85){
+                
+                                   ui.value = ui.value - 5;
+                                   getCosProfiles(ui.value);  
+                                   $("#cosSliderPrgs"+selectedVlanId).text(ui.value + ' %');   
+                                    $("#vlanCosSlider"+selectedVlanId).slider({
+                                        value: ui.value
+                                    });  
+                                  }else if(ui.value == 95 || selectedSliderValue == 95){
+                
+                                      ui.value = ui.value - 5;
+                                      getCosProfiles(ui.value); 
+                                      $("#cosSliderPrgs"+selectedVlanId).text(ui.value + ' %');   
+                                      $("#vlanCosSlider"+selectedVlanId).slider({
+                                        value: ui.value
+                                      });
+                
+                                  }
+                                  else if(ui.value == 100 || selectedSliderValue == 100){
+                                      
+                                      ui.value = ui.value - 10;                
+                                      getCosProfiles(ui.value);  
+                                      $("#cosSliderPrgs"+selectedVlanId).text(ui.value + ' %');   
+                                      $("#vlanCosSlider"+selectedVlanId).slider({
+                                        value: ui.value
+                                      });
+                                      
+                                  }
+                                  else{   
+                                      getCosProfiles(ui.value);     
+                                      $("#cosSliderPrgs"+selectedVlanId).text(ui.value + ' %');   
+                                        
+                                  }                                                                                          
+                        }
+                        
+                    });
+                    }
+                    function enableReviewRequesPanel(){
+                        
+                        
+                    }
+                    function enableThankyouPanel(){
+                        
+                    }
+                                                                                                                                                                                                              
+        </script>
+</apex:page>

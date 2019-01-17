@@ -1,0 +1,114 @@
+<apex:page controller="submitOrderController" standardStylesheets="false" sidebar="false" action="{!returnConfigPage}" showHeader="false" tabStyle="Apttus_Proposal__Proposal__c" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" >
+    <script src="/soap/ajax/32.0/connection.js"></script>
+    <style>
+        .m-t-15 {
+            margin-top:15px;
+        }
+        .m-t-25{
+            margin-top:25px;
+        }
+        .confirmPara {
+            font-size:18px;
+            font-family:omnes_light;
+            font-weight:bold;
+        }
+        .errorMsg{
+            font-size:18px;
+            font-family:omnes_att_iimedium;
+            color:#b30a3c;
+        }
+        .attLink{
+            font-size:16px;
+            font-family:omnes_att_iimedium;
+            color:#0568ad;
+            font-weight:bold;
+        }
+        .attLink:hover {
+            color:#70c4e8;
+         }
+            
+    </style>
+
+    <apex:form >
+    <h3 style="font-size:32px;margin-bottom: 30px;">{!$Label.SubmitOrder_Label6}</h3>
+        <c:Dealreg_QuoteInfoTable quoteObj="{!quoteObj}"></c:Dealreg_QuoteInfoTable>
+        <div class="p20">
+            <hr class="dividerHr" style="margin-top:15px !important;"/>
+            <div>
+                <apex:pageMessages ></apex:pageMessages>
+                                
+                <apex:outputPanel rendered="{! If(signingStatus == false && isApprover == true  && contractSigned == true,true,false) }">
+                    <div class="errorMsg m-b-20">
+                        {!$Label.Buy_Flow_DocSign_ErrorMsg}
+                    </div>                
+                </apex:outputPanel>     
+               
+                <apex:outputPanel rendered="{!!contractRead && isApprover}">
+                    <p class="confirmPara" style="margin-top:25px;">Click on <strong style="font-weight:bold;">Go to Pricing Schedule</strong> link to view and electronically sign a Pricing Schedule.</p>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!contractRead && isApprover}">
+                    <p id='approverTerm' class="m-t-25" style="font-size:18px;color: #078E34;"><strong>{!$Label.PS3}</strong></p>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!contractRead && !isApprover && IpflexDeal}">
+                    <p id='approverTerm' class="m-t-25" style="font-size:18px;color: #078E34;"><strong>{!$Label.PS3}</strong></p>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!contractRead && isApprover}">
+                    <div id="waitingDiv" style="display:none; font-size:18px; margin-top:25px;"><strong>Please wait while we submit your order.</strong>
+                    </div>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!!isApprover && !IpflexDeal}">
+                    <p class="m-t-25 confirmPara">Read the pricing schedule, and submit for approval.</p>
+                </apex:outputPanel> 
+                <apex:outputPanel rendered="{!!isApprover && !IpflexDeal}">
+                    <div style="margin-top:2.5%;" >
+                        <apex:commandLink id="pricingschedule" value="{!$Label.Pricing_Schedule}" rendered="{!!isApprover}" action="{!contractSign}" status="loading" immediate="true" styleClass="attLink" ></apex:commandLink>
+                    </div>
+                </apex:outputPanel> 
+                <apex:outputPanel rendered="{!!isApprover && IpflexDeal && !contractRead }">
+                    <p class="m-t-25 confirmPara">Read the pricing schedule, and submit for approval.</p>
+                </apex:outputPanel> 
+                <apex:outputPanel rendered="{!!isApprover && IpflexDeal && !contractRead }">
+                    <div style="margin-top:2.5%;" >
+                        <apex:commandLink id="pricingscheduleIpFlex" value="{!$Label.Pricing_Schedule}" rendered="{!!isApprover}" action="{!contractSign}" status="loading" immediate="true" styleClass="attLink"></apex:commandLink>
+                    </div>
+                </apex:outputPanel>
+
+                <hr class="dividerHr"/>
+                    
+                <apex:pageBlock html-class="m-t-20">
+                    <div class="row">
+                        <div class="" style="float:right;">                        
+                            <div style="float:left;{!IF(contractRead == false,'margin-right:49px;','margin-top: 15px;margin-right: 49px;')}{!IF( isApprover == false && IpflexDeal == true,'margin-top:15px;','')}{!IF( isApprover == false && IpflexDeal == false,'margin-top:15px;','')}">
+                                <apex:commandLink action="{!Cancel}" value="{!$Label.Cancel}" id="Cancel" styleClass="attLink" />
+                            </div>
+                            <div style="float:right;">                            
+                                <apex:outputPanel rendered="{!!contractRead && isApprover}">
+                                    <div style="">
+                                        <apex:commandLink id="pricingschedule" value="{!$Label.PS2}" rendered="{!!contractRead && isApprover}" action="{!contractSign}" status="loading" immediate="true" styleClass="attLink" ></apex:commandLink>
+                                    </div>
+                                </apex:outputPanel>
+                                <apex:outputPanel id="SubmitButtonSection" rendered="{!(contractRead && isApprover)}">
+                                    <apex:commandButton action="{!submitOrder}" value="{!submitLabel}" id="Submit" styleClass="btn btn-primary" status="loading" onclick="showWaitingDiv();showProcessingLabel(this);" style="margin:0px;float:left;width: 175px !important;height: 40px !important;margin-top:5px" reRender="loading"/>
+                                </apex:outputPanel>
+                                <apex:outputPanel id="SubmitForApprovalButtonSection" rendered="{!!isApprover}">
+                                    <apex:commandButton action="{!submitOrder}" value="{!submitLabel}" id="SubmitForApproval" styleClass="btn btn-primary" style="margin:0px;float:left;width: 175px !important;height: 40px !important;margin-top:5px"/>
+                                </apex:outputPanel>
+                            </div>
+                        </div>
+                    </div>
+                </apex:pageBlock>
+            </div>            
+        </div>
+    </apex:form>
+    
+    <script>       
+        function showProcessingLabel(inpObj){
+            inpObj.value = 'Processing....';  
+        }
+        function showWaitingDiv() {
+           document.getElementById('waitingDiv').style.display = "block";
+           document.getElementById('approverTerm').style.display = "none";           
+        }
+    </script> 
+</apex:page>

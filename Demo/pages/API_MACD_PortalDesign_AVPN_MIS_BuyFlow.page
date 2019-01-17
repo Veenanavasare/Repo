@@ -1,0 +1,277 @@
+<apex:page controller="API_MACD_AVPNMISBuyFlowController" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" title="BuyFlow" cache="false">
+    <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" />
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCss}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCSSDetails}" />
+        <style>
+            .new_hero_manage {
+                height: 99px;
+                background-image: url("{!$Resource.new_hero}") !important;
+             }
+            #contentWrapper {
+                min-width: 1024px !important;
+            }
+            button.close {
+                font-size: 200%;
+            }
+            .active > a,
+            .active_tab > a {
+                color: #fff;
+            }
+            .tabbed_menu .active {
+                background: #056fab;
+            }
+            .tabbed_menu li {
+                padding: 0;
+                width: 25%;
+            }
+            .tabbed_menu li a {
+                padding: 20px 60px 20px 60px;
+                display: block;
+                text-align: center;
+                cursor: default !important;
+                height:35px;
+            }
+            .dataTables_length {
+                display: none;
+            }
+            .dataTables_info {
+                bottom: 22px;
+                position: absolute;
+                right: 180px;
+            }
+            .manage_user_name {
+                width: 17% !important;
+            }
+            .manage_user_contact_name {
+                width: 10% !important;
+            }
+            .manage_user_address {
+                width: 10% !important;
+            }
+            .manage_user_city {
+                width: 10% !important;
+            }
+            .manage_user_state {
+                width: 10% !important;
+            }
+            .manage_user_zip {
+                width: 10% !important;
+            }
+            #manage_content .pagination > a {
+                padding: 5px 10px;
+                font-family: omnes_att_iimedium;
+                line-height: 1.125em;
+                color: #056fab;
+                margin-left: 5px;
+                background: #fff;
+                border: 1px solid #ccc;
+            }
+            .paginate_enabled_previous,
+            .paginate_enabled_next {
+                cursor: pointer;
+            }
+            .paginate_disabled_previous,
+            .paginate_disabled_next {
+                cursor: no-drop;
+            }
+            .btn {
+                padding: 10px 20px !important;
+            }
+            .btn:hover {
+                background: #fff !important;
+                color: #333;
+            }
+            h1 {
+                font-family: omnesatt_iiregular;
+                margin: 40px 0 20px 0;
+            }
+            .tabbed_menu .mainnav li.active::after {
+                content: ' ';
+                display: inline;
+                width: 0;
+                height: 0;
+                border-left: 20px solid transparent;
+                border-right: 20px solid transparent;
+                position: absolute;
+                border-top: 14px solid #056fab;
+                bottom: -12px;
+                /* left: 9%; */
+                margin-left: 11%;
+                z-index: 99999;
+            }
+            .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+                background-size: 900px 900px !important;
+            }
+            .nscustomer_details li{
+                display:inline;
+            }
+            .label_head {
+                font-weight: bold;
+                color: #686868;
+                font-size: 18px;
+            }
+        	.label {
+                font-weight: bold;
+                color: #333;
+                font-size: 15px;
+            }
+        	.cust_head{
+            	padding-left:15%;
+        	}
+        	.nscustomer_details{
+              padding-top: 10px;
+              padding-left: 10px; 
+        	}
+            .mainnav_sub ul{
+            	height: 30px;
+            }
+            .mainnav_sub li a{
+                padding: 7px;
+                text-align: center;
+                border-top: 1px solid #DDD;
+            }
+        	a{
+            	color: #494E53;
+            }
+            a:hover{
+                 color: #494E53;
+            }
+            .active a:hover {       
+                 color: #FFF;       
+            }
+            .tabbed_menu_completed{
+                background:white none repeat scroll 0% 0% !important;
+                border:1px solid #B7B7B7;
+                height:56px;
+            }
+            .tabbed_menu_disabled{
+                background:lightgray none repeat scroll 0% 0% !important;
+                border:1px solid #B7B7B7;
+                height:56px;
+            }
+            .tabbed_menu_disabled .circlenum{
+                color: #494E53;
+                border: 1px solid #494E53;
+                background: #C9C9C9;
+                font-weight:bold;
+            }
+            .active .circlenum{
+                background: transparent none repeat scroll 0% 0%;
+            }
+        </style>
+    <div class="content_container">
+        <div id="new_hero_banner" class="new_hero_manage jumbotronContainer ng-scope">
+            <div class="row">
+                <div class="col-sm-12"></div>
+            </div>
+        </div>
+        <div id="manage_content" style="padding-top: 0;" class="page ng-scope" ng-controller="QuoteController as beginQuote">
+            <div class="row">
+                <div class="col-xs-12 col-md-12 p0">
+                    <h1 style="color:#333">Add Sites</h1>
+                </div>
+            </div>
+            <div class="row p0" style="padding-bottom:5px;">
+                <div class="col-xs-12 p0">
+                    <label style="margin:15px 10px 20px 0px !important;font-weight:bold;"><apex:outputText value="Customer" /></label>
+                    <apex:outputText value="{!customerName}" />
+                </div>
+                <div class="col-xs-4 p0">
+                    <label style="margin:10px 10px 20px 0px !important;font-weight:bold;"><apex:outputText value="Subaccount:" /></label>
+                    <apex:outputText value="{!subAccNo}" />
+                </div>
+                <div class="col-xs-4 p0">
+                    <label style="margin:10px 10px 0px 0px !important;font-weight:bold;"><apex:outputText value="Product:" /></label>
+                    <apex:outputText value="{!productName}" />
+                </div>
+                <div class="col-xs-4 p0" style="text-align:right;">
+                    <label style="margin:10px 10px 0px 0px !important;font-weight:bold;"><apex:outputText value="Term End Date:" /></label>
+                    <apex:outputText value="{!conEndDate}" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 p0">
+                    <hr class="blue_hr" />
+                </div>
+            </div>
+            <div class="container" style="width: 100% !important; margin-top: 15px !important; padding: 0 !important;">
+                <div id="main" class="row tabbed_menu">
+                    <div class="col-xs-12 col-md-12 p0">
+                        <ul class="mainnav_sub">
+                            <li class="active" style="width:75%;border-top-left-radius: 4px;">
+                                <a href="#PreApproval" data-name="" data-tabName="{!$Label.Enter_Addresses}" role="tab" data-toggle="tab">
+                                    Pre-Approval Steps</a>
+                            </li>
+                            <li class="disabled">
+                                <a href="#PostApproval" data-name="" data-tabName="{!$Label.Configure_Sites}" role="tab" data-toggle="tab" style="border-right:1px solid rgb(221, 221, 221);border-top-right-radius: 4px;">  
+                                    Post-Approval Steps </a>
+                            </li>
+                        </ul>
+                        <ul id="main" class="mainnav" role="tablist">
+                            <li class="disabled tabbed_menu_completed" style="border-bottom-left-radius: 4px;">
+                                <a href="javascript:void(0);" data-name="enterAddress" data-tabName="{!$Label.Enter_Addresses}" role="tab" data-toggle="tab"><div class="circlenum">1</div> {!$Label.Enter_Addresses} </a>
+                            </li>
+                            <li class="active">
+                                <a href="javascript:void(0);" data-name="configProduct" data-tabName="{!$Label.Configure_Product}" role="tab" data-toggle="tab" style="height: 56px;"><div class="circlenum">2</div> {!$Label.Configure_Sites} </a>
+                            </li>
+                            <li class="disabled tabbed_menu_disabled">
+                                <a href="javascript:void(0);" data-name="reviewQuote" data-tabName="{!$Label.Review_Quote}" role="tab" data-toggle="tab"  style="padding-top: 12px;padding-bottom: 44px;padding-left:50px;"><div class="circlenum" style="margin-top: 4px;">3</div> Review Pricing &amp; Submit Request</a>
+                            </li>
+                            <apex:outputPanel rendered="{!productName = 'Managed Internet Service'}">
+                                <li class="disabled tabbed_menu_disabled">
+                                    <a href="javascript:void(0);" data-name="finalizeOrder" data-tabName="Finalize Order" role="tab" data-toggle="tab"><div class="circlenum">4</div> Complete RDS </a>
+                                </li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!productName = 'AT&T Virtual Private Network Service'}">
+                                <li class="disabled tabbed_menu_disabled" style="border-bottom-right-radius: 4px !important;border-top-right-radius: 0px !important;">
+                                    <a href="javascript:void(0);" data-name="finalizeOrder" data-tabName="Finalize Order" role="tab" data-toggle="tab"><div class="circlenum">4</div> Finalize Order </a>
+                                </li>
+                            </apex:outputPanel>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade in active">
+                        <apex:include pageName="{!pageToLoad}" />
+                    </div>                     
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $(".tooltipTrigger").tooltip();
+        });
+        
+        function activeTabIcon() {
+            var tabName = $('.tabbed_menu li.active a').attr('data-tabname');            
+            $('.manage_content-header').text(tabName);
+            var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+            $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);
+        }
+        
+        function GetURLParameter(sParam) {
+            var sPageURL = window.location.search.substring(1);
+            var sURLVariables = sPageURL.split('&');
+            for (var i = 0; i < sURLVariables.length; i++) {
+                var sParameterName = sURLVariables[i].split('=');
+                if (sParameterName[0] == sParam) {
+                    return sParameterName[1];
+                }
+            }
+        }
+        
+        var mode = GetURLParameter('mode');
+        var generatedQuoteId = GetURLParameter('quoteid');
+        
+        if (generatedQuoteId) {
+            if (mode == "reviewquote") {
+                $("a[data-name='configProduct']").parent('li').removeClass("active").addClass("tabbed_menu_completed");
+                $("a[data-name='reviewQuote']").parent('li').removeClass("tabbed_menu_disabled").addClass("active");
+            }
+            activeTabIcon();                      
+        }  
+    </script>
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+</apex:page>

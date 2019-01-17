@@ -1,0 +1,30 @@
+<apex:page standardController="Opportunity" standardStylesheets="true" extensions="TechnicalReviewController">
+     <apex:outputLabel >
+            <font size="4" color="Gray"><p>Select an action in order to approve or deny the design.</p></font>
+    </apex:outputLabel>
+    
+        <apex:form >
+            <apex:pageMessages id="pagemessage" />
+            <apex:pageBlock >
+                <apex:pageBlockSection >
+                     <apex:pageBlockSectionItem >
+                        <apex:selectRadio value="{!type}" style="margin-bottom:-14px;">
+                        <apex:selectOptions value="{!items}"/>
+                        </apex:selectRadio> <br/>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+                           
+                <apex:pageBlockSection >
+                    <apex:pageBlockSectionItem dataStyle="padding-left:20px;">
+                       <apex:outputPanel >
+                            <apex:outputlabel style="font-size: 91%;font-weight: bold;">Comments</apex:outputlabel><br/>
+                            <apex:inputTextarea value="{!comments}" cols="130" rows="4"/> 
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>  
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+      
+            <apex:commandButton value="Submit" action="{!submit}" reRender="{!type}" status="status"/>&nbsp;&nbsp;&nbsp;&nbsp;
+            <apex:commandButton value="Cancel" action="{!cancel}"/>
+        </apex:form>
+</apex:page>

@@ -1,0 +1,24 @@
+<apex:page id="genericPage" controller="SI_GenericHighLighter">
+<apex:stylesheet value="{!URLFOR($Resource.SI_StringSearch, 'SI_StringSearch/searchPage_highlight.css')}"/> 
+<apex:stylesheet value="{!URLFOR($Resource.SI_StringSearch, 'SI_StringSearch/searchPage_jquery_highlight.css')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SI_StringSearch, 'SI_StringSearch/jQuery')}"/>
+<apex:includeScript value="{!URLFOR($Resource.SI_StringSearch, 'SI_StringSearch/searchPage_jquery_highlighttextareajs')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.SI_StringSearch, 'SI_StringSearch/searchPage_style.css')}"/>
+
+
+<script type="text/javascript">
+  $(document).ready(function() {
+      var stringPassed = document.getElementById('genericPage:genericForm:genericSearchValue').value;
+      $("#genericPage\\:genericForm\\:genericInputArea").highlightTextarea({
+          words: [stringPassed],
+          color: "#ADF0FF"
+      });
+  });
+  </script>
+  
+  
+    <apex:form id="genericForm">
+        <apex:inputTextarea value="{!inputTextAreaBody}" rows="25" cols="100" id="genericInputArea"/>
+        <apex:inputHidden value="{!searchString}" id="genericSearchValue" />
+    </apex:form>  
+</apex:page>

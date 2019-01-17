@@ -1,0 +1,62 @@
+<apex:page controller="arrowController" showHeader="true">
+    <apex:form >
+        <apex:pageBlock title="Document Sequencing">
+            <c:MultiselectPicklist leftLabel="Available Contacts"     leftOption="{!allContacts}"  rightLabel="Sequenced Document"
+                rightOption="{!selectedContacts}"       size="20"   width="450px"/>
+            <apex:pageBlockButtons >
+                <apex:commandButton value="ChangeSequence" action="{!save}"/>
+                <apex:commandButton value="NewDocument" action="{!addNew}"/>
+                <apex:commandButton value="RemoveDocument" action="{!remove}"/>          
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+    </apex:form>
+    <apex:outputText >{!message}</apex:outputText>
+    
+    <apex:form rendered="{!isNew}" enctype="multipart/form-data">
+    <apex:pageMessages />
+    <apex:pageBlock title="Add New Document">
+     <apex:pageBlockButtons >
+        <apex:commandButton action="{!upload}" value="Save"/>
+        <apex:commandButton action="{!Cancel}" value="Cancel"/>
+      </apex:pageBlockButtons>
+       
+     <apex:pageBlockSection showHeader="false" columns="2" id="block1"> 
+        <apex:pageBlockSectionItem >
+          <apex:outputLabel value="Document Name" for="Name"/>
+          <apex:inputText value="{!document.name}" id="Name"/>
+        </apex:pageBlockSectionItem>
+        
+        <apex:pageBlockSectionItem >
+          <apex:outputLabel value="Folder" for="folder"/>
+                 <apex:selectList required="false" value="{!document.folderid}" multiselect="false" size="1" style="width:150px">
+                    <apex:selectOptions value="{!Folder}"/>
+                 </apex:selectList>
+         </apex:pageBlockSectionItem>
+ 
+         <apex:pageBlockSectionItem >
+          <apex:outputLabel value="Document Unique Name" for="UniqueName"/>
+          <apex:inputText value="{!document.DeveloperName}" id="UniqueName"/>
+        </apex:pageBlockSectionItem>
+                        
+        <apex:pageBlockSectionItem >
+          <apex:outputLabel value="File" for="file"/>
+          <apex:inputFile value="{!document.body}" filename="{!document.name}" id="file"/>
+        </apex:pageBlockSectionItem>
+        
+ 
+        <apex:pageBlockSectionItem >
+          <apex:outputLabel value="Keywords" for="keywords"/>
+          <apex:inputText value="{!document.keywords}" id="keywords"/>
+        </apex:pageBlockSectionItem>
+        
+        <apex:pageBlockSectionItem >
+          <apex:outputLabel value="Description" for="description"/>
+          <apex:inputTextarea value="{!document.description}" id="description"/>
+        </apex:pageBlockSectionItem>
+        
+        
+ 
+      </apex:pageBlockSection>
+        </apex:pageBlock>
+  </apex:form>
+</apex:page>

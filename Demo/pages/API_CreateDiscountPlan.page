@@ -1,0 +1,33 @@
+<!--
+     Requirement/User Story Number :US244316
+     Requirement Description:As a EBM user I want to be able to create discount 
+     rate cards in SFDC for features such that EBM user are able to create discount rate plan in SFDC whenever a new features is added to the systems 
+     Component Author:Accenture IDC
+     Created Date:23rd May 2014 
+     Version:1.0    
+!-->
+
+<apex:page standardController="Rates__c" extensions="API_CreateDiscountPlanController" sidebar="true">
+<apex:pagemessages />
+    <apex:form >    
+        <apex:pageBlock >
+            New Discount Plan Name:<apex:inputText value="{!newRatePHINAme}"/>                  
+                <apex:pageBlockTable value="{!innerList}" var="c">    
+                     <apex:column title="Select" > 
+                        <apex:inputCheckbox value="{!c.selected}" >
+                        </apex:inputcheckbox>
+                    </apex:column>                                
+                    <apex:column value="{!c.rates.PBI_Name__c}" title="PBI NAME"/>
+                    <apex:column value="{!c.rates.PBI_Number__c}" title="PBI NUMBER"/>
+                   
+                    <apex:column value="{!c.rates.Billing_Element_Category__c}" title="Billing Element Category"/>                
+                </apex:pageBlockTable>
+                <apex:pageblockButtons >  
+                 
+                    <apex:commandButton value="Create Discount" action="{!processSelectedRecords}" disabled="{!If(hidebutton ==true,true,false)}" status="stat" /> 
+                    <apex:actionStatus startText="redirecting..." id="stat"/>
+                    <apex:commandButton value="Close" onclick="return window.top.close();"/> 
+                </apex:pageblockButtons>          
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

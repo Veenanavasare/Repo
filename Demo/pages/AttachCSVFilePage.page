@@ -1,0 +1,123 @@
+<apex:page controller="AttachCSVFileCtrl" sidebar="false" id="myPage" readOnly="false">
+    <apex:form id="myForm">
+        <apex:sectionHeader title="Upload a CSV file"/>
+        <apex:pageBlock title="Upload a File" id="myPageBlock">
+            <apex:pageBlockSection collapsible="true" id="myPageBlockSection1" title="Object Selection" columns="3">
+                <apex:outputLabel value="Select a Object you want to Insert" />
+                    <apex:selectList value="{!objectSelected}" title="Please Select a Object : " size="1" style="" >
+                    <apex:selectOptions value="{!ObjectList}"></apex:selectOptions>
+                </apex:selectList>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection Collapsible="true" columns="1" id="myPageBlockSection" title="Browser Your File">
+                 <apex:pageMessages />
+                <apex:pageBlockSectionItem id="myPageBlockSectionItem">
+                    <br/>
+                    <apex:inputFile value="{!contentFile}" fileName="{!nameFile}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Upload" action="{!insertNewOppty}" disabled="{!disableUploadButton}"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
+        <apex:pageBlock title="Upload History" rendered="{!enableResultSection}" id="myResultSection">
+            <apex:pageBlockSection title="Record Information" id="myResultBlockSection" columns="3">
+                <apex:pageBlockSectionItem id="myResultBlockSectionItem" >
+                    <apex:outputText value="Total Records : {!totalRecord}" id="myOutputText"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Success : {!totalSuccess}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Failure : {!totalFailure}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Failure on End Customer" columns="4" rendered="{!enableFailedRecordSection}">
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable value="{!FailedRec}" var="endCust">
+                        <apex:column value="{!endCust.Name}"/>
+                        <apex:column value="{!endCust.Mailing_Street_Address__c}"/>
+                        <apex:column value="{!endCust.City__c}"/>
+                        <apex:column value="{!endCust.State__c}"/>
+                        <apex:column value="{!endCust.Zip__c}"/>
+                        <apex:column value="{!endCust.URL__c}"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable value="{!errorList}" var="err">
+                        <apex:column value="{!err}" headerValue="Error Message"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Failure on Opportunity" columns="4" rendered="{!enableFailedSectionOppty}">
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable value="{!FailedOppty}" var="oppty">
+                        <apex:column value="{!oppty.Name}"/>
+                        <apex:column value="{!oppty.SAART_Segment__c}"/>
+                        <apex:column value="{!oppty.CloseDate}"/>
+                        <apex:column value="{!oppty.stageName}"/>
+                        <apex:column value="{!oppty.Deal_On_Off_Cart__c}"/>
+                        <apex:column value="{!oppty.End_Customer__c}"/>
+                        <apex:column value="{!oppty.AccountId}"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable value="{!errorList}" var="err">
+                        <apex:column value="{!err}" headerValue="Error Message"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Failure on SPProduct" columns="4" rendered="{!enableFailedSectionSPP}">
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable value="{!FailedSPP}" var="SPP">
+                        <apex:column value="{!SPP.Deal__c}"/>
+                        <apex:column value="{!SPP.Product_Name__c}"/>
+                        <apex:column value="{!SPP.Record_Type_Name__c}"/>
+                        <apex:column value="{!SPP.List_Price__c}"/>
+                        <apex:column value="{!SPP.one_time_revenue__c}"/>
+                        <apex:column value="{!SPP.Term_Length__c}"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable value="{!errorList}" var="err">
+                        <apex:column value="{!err}" headerValue="Error Message"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Failure on Product Pricing" columns="4" rendered="{!enableFailedSectionPP}">
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable value="{!FailedPP}" var="PP">
+                        <apex:column value="{!PP.product_name__c}"/>
+                        <apex:column value="{!PP.Record_Type__c}"/>
+                        <apex:column value="{!PP.list_price__c}"/>
+                        <apex:column value="{!PP.type__c}"/>
+                        <apex:column value="{!PP.Quantity_of_items__c}"/>  
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable value="{!errorList}" var="err">
+                        <apex:column value="{!err}" headerValue="Error Message"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection title="Failure on Sites" columns="4" rendered="{!enableFailedSectionPP}">
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable value="{!FailedSites}" var="site">
+                        <apex:column value="{!site.SPProduct__c}"/>
+                        <apex:column value="{!site.Address__c}"/>
+                        <apex:column value="{!site.Line__c}"/>
+                        <apex:column value="{!site.Line_2__c}"/>
+                        <apex:column value="{!site.City__c}"/>  
+                        <apex:column value="{!site.State__c}"/>  
+                        <apex:column value="{!site.Zip__c}"/>  
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable value="{!errorList}" var="err">
+                        <apex:column value="{!err}" headerValue="Error Message"/>
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageMessages id="ErrMsg"/>
+    </apex:form>
+</apex:page>

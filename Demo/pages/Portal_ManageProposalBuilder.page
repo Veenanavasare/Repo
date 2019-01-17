@@ -1,0 +1,132 @@
+<apex:page Controller="ManageBannerBuilderController"   docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+    
+    <apex:includeScript value="{!$Resource.atomjqueryjs}" />
+   <apex:includeScript value="{!URLFOR($Resource.bootstrapMin, 'js/bootstrap.min.js')}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalExchangeCSS}"/>
+				<script type="text/javascript" src="https://www.partnerexchangetoolkit.com/mauth/obauth.js"></script>
+    <script type="text/javascript" src="https://www.partnerexchangetoolkit.com/mauth/jMlsmbpxWLzNXZjNWYzITJyITJ4ITJ0ITJwITJwITJwITJwITJwITJwITJwIT.js"></script>
+				<script type="text/javascript">
+					$(document).ready(function() {
+					/* proposal Builder Access1 */
+					$('.btProposalBuilder').click(function(){
+						var slugId = "proposal";
+						//setTimeout(function(){
+							if($('#access-link').text() != ""){
+                                var dynLink = "https://www.partnerexchangetoolkit.com/"+"?tk="+$('#access-link').text()+"&c=A-14008&u=abcd&level=Platinum&slug=AVPN"; 
+					            window.open(dynLink);
+					        }else{
+					        	alert(" Proposal builder's link is not created dynamically !");
+					        }
+						// },1000);
+						});
+				});
+				</script>
+    
+     
+    <style>
+				#access-link{
+				 display: none;
+				}        
+        .check-label {
+        margin: auto;
+        }
+       
+        span.highlight {
+        background-color: yellow;
+         }
+            .table-bordered>thead>tr>th, .table-bordered>thead>tr>td { border-top: none; border-bottom: none; }  
+            .table-bordered>tbody>tr:first-child td { border-top: none !important; }  
+            table thead tr { background: #fff; border-bottom: 1px dashed #ddd !important; cursor: pointer; }
+            table thead td { border: none;
+        }
+
+        b { font-weight: bold; }
+
+        #manage_content .messageText{
+            color: #47D510;
+        }
+        #manage_content h2{
+            color: #666;
+            font-size: 1.0em;
+        }      
+       
+        
+        .false{
+        
+              pointer-events: none !important;
+              color:#ccc !important;
+              background-color:#eee !important;
+              
+        }
+
+    </style>
+    <div class="content_container" id="manageCustomerWrapperId">
+        <!-- CONTENT MODULE -->
+        <apex:form id="ManageCustomerId">
+           <div id="access-link"></div>
+            <div id="manage_content" class="page">
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <h1>Brochure Builder</h1>
+                        <br></br>
+                        <br></br>
+                        <p>
+                            Brochure Builder helps you create custom, co-branded materials targeted to each of your customers. You can promote
+                            your business with ready-to-use or customized templates. You can also customize the AT&amp;T Bi-Fold Sales Brochure that
+                            introduces the AT&amp; Partner Exchange Program.
+                        <br></br>
+                        </p>
+                        <br></br>                
+                        <p>
+                            Each template offers you a brief product description highlighting features and potential benefits. You can use drop-down
+                            options with pre-formatted text and design an effective call-to-action with your contact information.
+                        </p>
+                        <br></br>
+                        <br></br>
+                    </div>
+                    <table border="2">
+                        <thead>                            
+                            <th>Icon</th>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>FileType</th>
+                            <th>Author</th>
+                            <th>Customize</th>                            
+                        </thead>
+                        <tbody>
+                            <apex:repeat var="cv" value="{!contentVersions}">                                
+                                <tr>
+                                <td>
+                                    <apex:image url="{!cv.Icon_URL__c}" width="100" height="55"/>
+                                       </td>
+                                <td><a href="/{!cv.id}">{!cv.title}</a></td>
+                                <td>{!cv.description}</td>
+                                <td>{!cv.FileType}</td>
+                                <td>{!cv.Owner.Name}</td>
+                                <td>
+                                    <div  style="padding:25px 0px 25px 410px;">
+                                    <a href="javascript:void(0);" id="proposal" class="btProposalBuilder">Customize</a>
+                                        </div>
+                                    
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </tbody>
+                    </table>
+                </div>
+
+                <apex:pageMessages ></apex:pageMessages>
+
+            </div>
+            
+        </apex:form>
+    </div>    
+    <!-- JavaScript
+================================================== -->
+    <!-- PRODUCTION -->
+    
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/libs/jquery.dataTables.js')}"/>        
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/modernizr.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/bootstrap.min.js')}"/>
+   
+</apex:page>

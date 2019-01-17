@@ -1,0 +1,109 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="ContactPrototypeController">
+    <style type="text/css">
+        /*.description-container { display: none; }*/
+        .order-num-container { display: block !important; }
+        .wireline-form-elements {
+            display: none;
+        }
+    </style>
+    <apex:form styleClass="macd" html-action="">
+        <apex:inputText value="{!Topic}" styleClass="topic-field internal hidden" />
+        <apex:inputText value="{!Category}" styleClass="category-field internal hidden" />    
+        <apex:inputText value="{!Subject}" styleClass="subject-field internal hidden"/>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-back-link">Back</div>
+                <div class="row">
+                    <div class="col-md-12 additional-links">
+                        <h1>Helpful Links</h1>
+                        <ol>
+                            <apex:outputPanel >   
+                                <apex:repeat value="{!DocMapSDMacd}" var="docMap"> 
+                                    <li>
+                                        <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}" target="_blank" styleClass="document-file">
+                                            <apex:outputText value="{!docMap.Name}"/>
+                                        </apex:outputLink>        
+                                    </li>
+                                </apex:repeat>    
+                            </apex:outputPanel>
+                        </ol>
+                    </div>
+                </div>
+            </div>  
+            <div class="col-md-8">
+                <h1 class="topic-form-title">Non-Contract Impacting MACDs</h1>
+                <div class="form-body">
+                    <p>This page is for Non-Contract Impacting MACDs only. For Contract Impacting MACDs, please email your <a href="mailto:{!emailCAM}?Subject=Contract%20Impacting%20MACD" target="_top">Channel Account Manager</a>.</p>
+                    <p>Show me the difference between                      
+                    <apex:outputLink value="{!fileURL+docLink}" target="_blank">
+                    Non-Contract Impacting vs Contract Impacting MACDs
+                    </apex:outputLink> </p>
+                    <div class="row">
+                            <div class="col-md-12">
+                                <label><input type="checkbox" class="created-ticket"/>I understand I am required to respond to the confirmation email with an
+                                <apex:outputLink value="{!fileURL+docLink1}" target="_blank"> RDS attachment.</apex:outputLink>
+                                </label>
+                            </div>
+                        </div>
+                    <div class="wireline-form-elements">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Request Type</label>
+                                <apex:selectList id="macdReqType" value="{!Issue_Type}" styleClass="req-type required" size="1">
+                                    <apex:selectoption itemLabel="Select" itemValue="none"></apex:selectoption>
+                                    <apex:selectoption itemLabel="ADD VLAN" itemValue="ADD VLAN"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Caller ID Change" itemValue="Caller ID Change"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Change ASN Override/Number" itemValue="Change ASN Override/Number"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Change CER/PER IPs" itemValue="Change CER/PER IPs"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Change VLAN CIR" itemValue="Change VLAN CIR"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Change VLAN Tag ID" itemValue="Change VLAN Tag ID"></apex:selectoption>
+                                    <apex:selectoption itemLabel="COS Change/Add/Remove" itemValue="COS Change/Add/Remove"></apex:selectoption>
+                                    <apex:selectoption itemLabel="VPN Reassignment" itemValue="VPN Reassignment"></apex:selectoption>
+                                    <apex:selectoption itemLabel="Other" itemValue="Other"></apex:selectoption> 
+                                </apex:selectList>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                 <label>AT&amp;T Circuit ID</label>
+                                 <apex:inputText id="macdCktId" value="{!Circuit_IDs}" styleClass="required attCktID" /> 
+                              </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Is there live traffic on this circuit?</label>
+                               <apex:selectList id="macdLiveTraffic" value="{!livetraffic}" size="1" styleClass="live-traffic required">
+                                    <apex:selectoption itemValue="none"  itemLabel="Select"></apex:selectoption>
+                                    <apex:selectoption itemValue="Yes"  itemLabel="Yes"></apex:selectoption>
+                                    <apex:selectoption itemValue="No"  itemLabel="No"></apex:selectoption>
+                                </apex:selectList>
+                            </div>
+                            <div class="col-md-6"></div>
+                        </div>
+                        <div class="row description-container">
+                            <div class="col-sm-7">
+                                <label>Description</label>
+                                <apex:inputTextarea id="macdDescription" styleClass="required macd-desc" value="{!Description}" style="width: 260px; border-radius: 4px; height: 100px; padding: 0px; padding:10px; border: 1px solid #939393;"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-buttons">
+                        <div class="btn btn-default">Cancel</div>
+                        <input type="hidden"  id="external" name="external" value="1" />
+                        <div class="btn btn-primary submitToConfirm-button">Confirm</div>
+                        <apex:commandButton action="{!onSubmit}" styleClass="btn btn-primary submit-button" value="Quick Submit" reRender="true" />
+                    </div>
+                </div>          
+            </div>  
+        </div>
+    </apex:form>
+
+    <script type="text/javascript">
+        $(document).ready( function () {
+        });
+    </script>
+</apex:page>

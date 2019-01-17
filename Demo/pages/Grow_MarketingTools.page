@@ -1,0 +1,66 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader_UIUX" />
+    <apex:includeScript value="{!URLFOR($Resource.productMobileMenuJS)}" />
+    <!-- <apex:stylesheet value="{!$Resource.peCustom}" /> -->
+    <apex:stylesheet value="{!$Resource.products_css}" />
+    <style>
+    .grow-body .leftNavCol .leftNav, .products-body .leftNavCol .leftNav {
+        width: 180px;
+    }
+    </style>
+    <!-- Robyn 6/8/16: removed inline hero style and updated the class name on line 7 to grow-marketing-guides -->
+
+    <!-- HERO SLICE -->
+    <div id="slice_hero" class="grow-marketing-guides jumbotronContainer col-sm-12">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                    <h1 class="hero_badge_1">{!$Label.Marketing_Tools}</h1>
+                    <h2 class="hero_badge_2">Marketing resources to enhance your presence.</h2>
+                </div>
+            </div>
+            <div class="col-sm-2"></div>
+        </div>
+    </div>
+    <!-- END HERO SLICE -->
+
+    <!-- BODY SLICE -->
+    <div class="products-body col-sm-12 product-page Grow_MarketingGuides">
+        <div class="row">
+            <div class="leftNavCol col-sm-3">
+                <div class="leftNav">
+                  <ul class="" role="tablist">
+                        <li class="active" data-page="Grow_MarketingTools_CoBranding"><a class="btn btn-link" href="#Grow_MarketingTools_CoBranding" role="tab" data-toggle="tab">Co-branding Resources</a></li>
+                        <li class="" data-page="Grow_MarketingTools_Services_Templates"><a class="btn btn-link" href="#Grow_MarketingTools_Services_Templates" role="tab" data-toggle="tab">Services &amp; Templates</a></li>
+                        <li class="" data-page="Grow_MarketingTools_ProspectingTools"><a class="btn btn-link" href="#Grow_MarketingTools_ProspectingTools" role="tab" data-toggle="tab">Prospecting Tools</a></li>
+                  </ul><!-- Nav tabs -->
+                </div>
+
+                <div class="mobile-content-menu">
+                  <div class="dropdown-label" data-status="closed">
+                    Overview 
+                    <span class="ionicons ion-ios7-arrow-down" style="position: relative; top: 3px; left: 7px; "></span>
+                  </div>
+                  <ul class="mobile-dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                        <a data-page="Grow_MarketingTools_CoBranding" role="menuitem" href="#Grow_MarketingTools_CoBranding" ><li role="presentation">Co-branding Resources</li></a>
+                        <a data-page="Grow_MarketingTools_Services_Templates" role="menuitem" href="#Grow_MarketingTools_Services_Templates" ><li role="presentation">Services &amp; Templates</li></a>
+                        <a data-page="Grow_MarketingTools_ProspectingTools" role="menuitem" href="#Grow_MarketingTools_ProspectingTools" ><li role="presentation">Prospecting Tools</li></a>
+                  </ul>
+                </div>
+            </div>
+            <div class="contentCol col-sm-8 body-load-content">
+              <!-- Tab panes -->
+             <div class="tab-content">
+             <div class="tab-pane active" id="BrandGuidlines">
+                    <div class="page-include Grow_MarketingTools_CoBranding"><apex:include pageName="Grow_MarketingTools_CoBranding" id="Grow_MarketingTools_CoBranding" />  </div>
+                    <div class="page-include Grow_MarketingTools_Services_Templates"><apex:include pageName="Grow_MarketingTools_Services_Templates" id="Grow_MarketingTools_Services_Templates" /> </div>
+                    <div class="page-include Grow_MarketingTools_ProspectingTools"><apex:include pageName="Grow_MarketingTools_ProspectingTools" id="Grow_MarketingTools_ProspectingTools" /> </div>
+              </div>
+              </div>
+            </div>
+        </div>
+    </div>
+    <!-- END BODY SLICE -->
+    <apex:includescript value="{!$Resource.LeftNav_Controller}" />
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+</apex:page>

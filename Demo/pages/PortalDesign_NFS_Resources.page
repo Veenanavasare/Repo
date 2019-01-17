@@ -1,0 +1,46 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    <div class="resources">
+
+        <h2>Learn more about {!$Label.Network_Based_Firewall_Service}.</h2>
+        <hr class="blue_hr" />
+
+        <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-billing.png')}" />{!$Label.heading_sales}</h3>
+        <p>Review our sales resources for an overview of product&nbsp;details.</p>
+        
+        <!-- Document List: Sales Material -->
+        <apex:outputPanel >   
+             <apex:repeat value="{!DocMapNBFWSales}" var="docMap"> 
+                <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">                        
+                    <div class="document-row">
+                        <div class="file-type file-{!docMap.type}"></div>
+                        <div class="details">
+                            <h4><apex:outputText value="{!docMap.Name}"/></h4>                            
+                            <p><apex:outputText value="{!docMap.description}"/></p>
+                        </div>
+                    </div>
+                </apex:outputLink>         
+            </apex:repeat>   
+        </apex:outputPanel>
+
+        <hr class="blue_hr" />
+
+        <!-- Document List: Technical Information -->
+        <h3 class="bg-heading"><apex:image value="{!URLFOR($Resource.ImgStatic,'/ico-head-technical.png')}" />{!$Label.heading_technical}</h3>
+        <p>Take a deeper dive with our technical&nbsp;information.</p>
+        <div class="mb-30">
+            <apex:outputPanel >   
+                 <apex:repeat value="{!DocMapNBFWTechnical}" var="docMap"> 
+                    <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">                        
+                        <div class="document-row">
+                            <div class="file-type file-{!docMap.type}"></div>
+                            <div class="details">
+                                <h4><apex:outputText value="{!docMap.Name}"/></h4>                            
+                                <p><apex:outputText value="{!docMap.description}"/></p>
+                            </div>
+                        </div>
+                    </apex:outputLink>         
+                </apex:repeat>  
+            </apex:outputPanel>
+        </div>
+    </div>
+</apex:page>

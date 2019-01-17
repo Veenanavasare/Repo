@@ -1,0 +1,113 @@
+<apex:page controller="RateTierDeterminantDisplay" sidebar="true">
+    <apex:form >
+        <apex:pageMessages >
+        </apex:pageMessages>
+        
+        <apex:pageBlock >
+            <style>
+            body .bPageBlock .pbBody .white .pbSubheader{
+            background-color:#FBFBEF;
+            font-size:15px;
+            }
+            </style>
+            
+            <apex:outputPanel style="width:800px;font-weight:bold;" layout="block">
+                <div style="text-align:center;">
+                    <apex:outputText value="Changes can only be made during the" style="font-size:15px;font-weight:bold;"/>
+                    <apex:outputText value=" "/>
+                    <apex:outputText value="{!admin.Master_Occurrence_new__c}" style="font-size:15px;font-weight:bold;"/>
+                    
+                    <apex:outputText value="-" rendered="{!admin.Master_Rate_Edit_Day__c != null}" style="font-size:15px;font-weight:bold;"/>
+                    <apex:outputText value="{!admin.Master_Rate_Edit_Day__c}" style="font-size:15px;font-weight:bold;"/>
+                    <apex:outputText value=" "/>
+                    <apex:outputText value="of every month" style="font-size:15px;font-weight:bold;"/>
+                    <apex:outputText value=" "/>
+                    <apex:outputText value="between" rendered="{!admin.Master_Edit_Start_Time__c !=null}" style="font-size:15px;font-weight:bold;"/>
+                    <apex:outputText value=" "/>
+                    <apex:outputText value="{!admin.Master_Edit_Start_Time__c}" style="font-size:15px;font-weight:bold;"/>
+                    <apex:outputText value="-" rendered="{!admin.Master_Edit_End_Time__c !=null}" style="font-size:15px;font-weight:bold;"/>
+                    <apex:outputText value="{!admin.Master_Edit_End_Time__c}" style="font-size:15px;font-weight:bold;"/>
+                </div>
+            </apex:outputPanel>
+            <br/>
+             
+            <apex:outputPanel layout="block" styleClass="white" id="errr">  
+                <div style="text-align:left;white-space: pre;" >
+                    <!--  <apex:pageBlockSection columns="1" collapsible="true"> --!>
+                    <!-- <apex:facet name="header">
+                    <span style="color:black">Rate-PBI</span>
+                    </apex:facet>!-->
+                    <apex:outputLabel value="    Rate Plan ID                          "></apex:outputLabel> 
+                    <apex:outputField value="{!phirecord.Rate_Plan_ID__c}" title="Rate Plan ID"/><br/>
+                    <apex:outputLabel value="    Rate Plan Name                   "></apex:outputLabel> 
+                    <apex:outputField value="{!phirecord.Rate_Plan_Name__c}" title="Rate Plan Name"/><br/>
+                    <apex:outputLabel value="    PBI Number/PBI Name        "></apex:outputLabel>
+                    <apex:selectList value="{!pbiNumber}" size="1">
+                    <apex:selectOptions value="{!options}">                                   
+                    
+                    </apex:selectOptions>
+                    </apex:selectList><br/>
+                              
+                    <apex:outputLabel value="        Billing Element                  "></apex:outputLabel>
+                    <apex:selectList size="1" value="{!billingElement}">
+                        <apex:selectOptions value="{!optionsBillingElement}">
+                    </apex:selectOptions>
+                  
+                    </apex:selectList>
+                </div>
+            </apex:outputpanel>
+            
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Search" action="{!Search}"/>
+                <apex:commandButton value="Submit" action="{!amountupdate}" id="inlinesave"/>     
+                <apex:commandButton value="Close" onclick="return window.top.close();"/>                    
+            </apex:pageBlockButtons>
+            
+            <apex:outputPanel layout="block" styleClass="white">
+                <apex:pageBlockSection >    
+                    <apex:pageBlockTable value="{!newrateList}" var="t" style="width:125%" columns="10" rendered="{!flag}">    
+                        <apex:facet name="header">
+                            <span style="color:black">Rates</span>
+                        </apex:facet>
+                        <apex:facet name="header">
+                            <span style="color:black">Rates</span>
+                        </apex:facet>    
+                        <apex:column headerValue="Determinant Set Id" >
+                            <apex:outputField value="{!t.Determinant_Set_ID__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="BEID" >
+                            <apex:outputField value="{!t.BEID__c}"/>
+                        </apex:column>                        
+                        <apex:column headerValue="Currency Code" >
+                            <apex:outputField value="{!t.Currency_Code__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="Low Level" >
+                            <apex:outputField value="{!t.Low_Level__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="High Level" >
+                            <apex:outputField value="{!t.High_Level__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="Current Amount" >
+                            <apex:outputField value="{!t.Amount__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="New Amount" >
+                            <apex:outputField value="{!t.Temp_Amount__c}">
+                            <apex:inlineEditSupport showOnEdit="inlinesave" event="ondblclick"/>
+                        </apex:outputField>
+                        </apex:column>
+                        <apex:column headerValue="Surcharge Amount" >
+                            <apex:outputField value="{!t.Surcharge_Amount__c}">
+                           </apex:outputField>
+                        </apex:column>
+                        <apex:column headerValue="Bill Display Name" >
+                            <apex:outputField value="{!t.Bill_Display_Name__c}"/>
+                        </apex:column>
+                        <apex:column headerValue="Rate Sync Status" >
+                            <apex:outputField value="{!t.Rate_Sync_Status__c}"/>
+                        </apex:column>    
+                    </apex:pageBlockTable>
+                </apex:pageBlockSection>
+            </apex:outputPanel>    
+        </apex:pageBlock> 
+    </apex:form>  
+</apex:page>

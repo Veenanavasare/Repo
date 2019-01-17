@@ -1,0 +1,44 @@
+<apex:page docType="html-5.0" standardStylesheets="false" controller="ProfilePermission" action="{!setCurrentUser}" sidebar="false" showHeader="false">
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-1.9.1.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js')}" />
+    <script type="text/javascript" src="{!URLFOR($Resource.newsroomplayer2, 'amp/amp.min.js')}?amp-defaults={!$Resource.prodVideoXML3}"></script>
+    
+    <div class="overview">
+        <h2>Overview</h2>
+        <p>Development funds provide you with tools and resources to help optimize your business and drive demand for your solutions powered by AT&amp;T.</p>
+        <p class="mb-40">There are two different funding programs available: Market Development Funds (MDF) and Investment Development Funds (IDF). MDF can be used for activities and services that build funnel and drive sales through demand generation and brand awareness. IDF can be used for activities and services to optimize business operations and process improvements.</p> 
+     
+        <div class="nav_quote_li">
+            <!-- Enable button for users with permission to Manage Funds -->
+           <apex:outputPanel rendered="{!hasPremission!=0}">
+              <apex:outputLink value="{!IF(isStopBirch,URLFOR($Action.User.ThroughChannel_IDP_Link),URLFOR($Action.User.manageFunds_link))}" target="_blank" styleClass="manage-funds-callout mb-30">
+                <!-- SSO link -->
+                    <button  class="manage-funds-btn">
+                        {!$Label.Manage_My_Funds}
+                    </button>
+                    <span class="manage-funds-txt">Click here to access the development funds request portal.</span>
+                </apex:outputLink>
+            </apex:outputPanel>
+               
+            <!-- Disable button for users without permission to Manage Funds -->
+            <apex:outputPanel rendered="{!IF(hasPremission==0 ,true,false)}">
+                <div class="manage-funds-callout mb-30">
+                    <button class="manage-funds-disabledbtn" disabled=""> 
+                        {!$Label.Manage_My_Funds}
+                    </button>
+                    <span class="manage-funds-disabledtxt">You need permission to access the development funds request portal.</span>
+                </div>
+            </apex:outputPanel>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function onmouseOverManageFund() {
+            $('.profile-dropdown-container-ManageFund').show();
+        }
+
+        function onmouseOutManageFund() {
+            $('.profile-dropdown-container-ManageFund').hide();
+        }
+    </script>
+</apex:page>

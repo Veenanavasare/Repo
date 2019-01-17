@@ -1,0 +1,786 @@
+<apex:page Controller="DocumentsArchiveController"   docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:includescript value="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js" />
+    <apex:includescript value="//cdn.datatables.net/plug-ins/1.10.11/features/searchHighlight/dataTables.searchHighlight.min.js" />
+    <apex:includescript value="//cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" />
+    <apex:includeScript value="{!$Resource.downloadJS}"/> 
+    
+    <style>  
+        .m-t-40{margin-top:40px}      
+        .tooltip.top .tooltip-arrow{border-top-color: #fff!important;}
+        .tooltip.right .tooltip-arrow{border-right-color: #fff!important;} 
+        .tooltip.bottom .tooltip-arrow{border-bottom-color: #fff!important;}
+        .tooltip.left .tooltip-arrow{border-left-color: #fff!important;}
+        .tooltip-inner{background-color: #fff;color: #000;box-shadow: 2px 2px 8px 8px rgba(0, 0, 0, 0.1);}
+        .dataTables_paginate a.disabled {cursor: no-drop;color: #cfcfcf;pointer-events: auto;}
+        .dataTables_paginate> a.disabled {background-color: #fff;color:#cfcfcf;padding: 5px 10px;font-family: omnes_att_iimedium;line-height: 1.125em;margin-left: 0;border: 1px solid #ccc;}
+        .dataTables_paginate a.disabled:hover {text-decoration: none !important;color: #cfcfcf!important;}
+        .dataTables_paginate a {padding: 5px 10px;font-family: omnes_att_iimedium;background: #fff; border: 1px solid #ccc;cursor: pointer;}
+        .dataTables_paginate .current{background-color: #428bca;border: 1px solid #428bca;color:#fff;cursor: default;}
+        .dataTables_paginate .current:hover{color: #fff!important}
+        b { font-weight: bold; }
+        .caret {border-top: 9px solid;border-right: 9px solid transparent;border-left: 9px solid transparent;}
+        .dataTables_info {position: absolute;}
+        .pagination { float: left; margin: 0; }
+        .reorder_btn { margin-top: -4px; }      
+        input[type = "search"] {width: 260px;font-weight: normal;padding-right: 30px;}
+        .search_button{top: 5px;left: -32px;}
+        .ContractEndDate__cls_error{color: red;font-weight: bold;}
+        .dropdown-menu>li>a ,a {color: #056fab;}
+        a.disabled {pointer-events: none;cursor: default;background-color: #eee;color: #A0A0A0}            
+        td a.disabled {pointer-events: none;cursor: default;background-color: transparent;color: #A0A0A0}   
+        #manage_content label{float:left}
+        .checkbxLabel{font-weight: normal;margin-top: 7px !important;padding-right: 10px;}
+        #loading{left:0;top:0}
+        .manageNetServiceDT .Th_Action__cls .reorder_btn{display:none}
+        
+        .header_Action__cls .reorder_btn{display:none;}
+        #manage_users_table_wrapper .dropdown .styled-select-small {
+            height: 26px;
+            //background: url(portalDesignImg/new_arrow_small.png) no-repeat right #fff !important;
+            padding: 0px;
+            float: none;
+            font-size:14px !important;
+            font-family:omnesatt_iiregular !important;
+        }
+        
+        #manage_users_table_wrapper .dropdown .styled-select-small:hover, .btn-default:not(.cancelBtn):active, .open>.dropdown-toggle.btn-default {
+            background: url(resource/1496115005000/portalDesignImg/new_arrow_small.png) no-repeat right #fff !important;
+        }
+        
+        #manage_users_table_wrapper .dropdown .btn{
+            font-family: Omnes_Light !important;
+            font-size: 18px;
+            width: 120px;
+            background-color: #fff;
+            text-align:left !important;
+            padding-left: 10px !important;
+        }
+        .manageNetServiceDT td.td_ellipsis {white-space: nowrap;overflow: hidden;text-overflow: ellipsis !important;max-width:0px;}
+        #manageDocumentDownloadDT td.td_ellipsis {white-space: nowrap;overflow: hidden;max-width:0px;}
+        .manageNetServiceDT th{
+            border-style: dashed !important;
+            border-color: #ddd !important;
+            border-right-style: solid !important;
+        }
+        
+        .header_Service_Type_Formula__cls{
+            width: 120px !important;
+        }
+        .header_Order_Submitted_Date__cls{
+            width: 200px !important;
+        }
+        .header_Number_of_Products__cls{
+            width: 140px !important;
+        }
+        .header_EndCustomerName__cls {
+            width: 250px !important;
+        }
+        .header_Sub_Account__cls {
+            width: 200px !important;
+        }
+        .header_Action__cls{width:90px !important;}
+        .dataTables_filter label{
+            margin-bottom:15px !important;
+        }
+        .dataTables_filter {
+            margin-top:12px;
+        }
+        div.bottom .dataTables_info{
+            margin-top: 15px !important;
+        }
+        div.dataTables_paginate{
+            margin-top: 24px !important;
+        }
+        table.dataTable span.highlight {
+          background-color: #FFFF88;
+        }
+        .dataTables_wrapper tbody td {
+            border-style: dashed !important;
+            border-right-style: solid !important;
+        }
+        .dropdown-menu{
+            top: 23px !important;
+            left:-101px !important;
+            border-radius:0px !important;
+            
+        }
+        #manage_users_table_wrapper .dropdown .btn{
+            width: 90px;
+            margin-left: 0px;
+        }
+        .dropdown-menu>li>a{
+            padding: 8px 10px !important;
+            line-height:0 !important;
+        }
+        div#manage_content {
+            padding: 18px 20px 0 !important;
+        }
+        .Action__cls div.dropdown{
+            max-width:90px !important;
+        }
+        #slice_footer{
+            margin-top: -26px !important;
+        }
+        div.modal-footer .btn{
+            padding:8px 40px !important;
+            font-size:16px;
+            height:40px;
+        }
+        .btn .cancelBtn{
+            margin-right:30px !important;
+        }
+        div#documentArchiveOverlayModal h1.documentHeader {
+            padding:0px;
+            margin: 22px 0px 32px 50px;
+        }
+        .grey_hr{
+            background: #ccc;
+            border-bottom: 1px solid #ccc;
+        }
+        .cancelBtn, .downloadDocumentBtn{
+            margin-right: 40px;
+        }
+        div#documentArchiveOverlayModal .modal-footer{
+            margin-bottom: 38px;
+        }
+        .modal-static-text{
+            margin-top:-15px;
+            color: #000;
+            font-size:15px;
+            margin-bottom: -20px;
+            position:relative;
+        }
+        
+        .actionCls{
+            text-align:center;
+            padding-bottom:0px !important;
+        }
+        input[type="checkbox"], input[type="radio"]{
+            margin-left: 8px;
+        }
+        button.close:hover{
+            background:none;
+        }
+        .modal-body{
+            padding-top:35px;
+            padding-left:56px;
+    }
+    .documentArchiveContainer{
+        width:95%;
+        overflow:visible;
+    }
+    .downloadDocCls{
+        cursor: pointer;
+    }
+    
+    table.manage_downlaod_table_scroll>thead>tr, table.manage_downlaod_table_scroll>tbody>tr{
+        display:table;
+        width:100%;
+        table-layout:fixed;
+    }
+    table.manage_downlaod_table_scroll>thead, table.manage_downlaod_table_scroll>tbody{
+        display:block;
+        border-bottom: 1px dashed #ddd !important;
+    }
+    table.manage_downlaod_table_scroll>tbody{
+        overflow-x:hidden;
+        overflow-y:scroll;
+        height:320px;
+    } 
+    table.manage_downlaod_table_scroll_moz>tbody{
+        overflow-x:hidden;
+        overflow-y:scroll;
+        height:316px;
+    }
+    table.manage_downlaod_table_scroll>thead>tr>th:first-child{
+        width: 40px !important;
+        border-left-style: none !important;
+    }
+    table.manage_downlaod_table_scroll_moz>thead>tr>th:first-child{
+        width: 43px !important;
+        border-left-style: none !important;
+    }
+    table.manage_downlaod_table_scroll>tbody>tr>td:first-child{
+        width: 43px !important;
+        border-left-style: none !important;
+    }
+    table.manage_downlaod_table_scroll_moz>tbody>tr>td:first-child{
+        width: 45px !important;
+        border-left-style: none !important;
+    }
+    table.manage_downlaod_table_scroll>thead>tr>th(2),table.manage_downlaod_table_scroll>tbody>tr>td(2){
+        width: 650px;
+    }
+    table.manage_downlaod_table_scroll>thead>tr>th:last-child{
+        width: 110px !important;
+    }
+    table.manage_downlaod_table_scroll_moz>thead>tr>th:last-child{
+        width: 114px !important;
+    }
+    table.manage_downlaod_table_scroll>tbody>tr>td:last-child{
+        width: 105px !important;
+    }
+    table.manage_downlaod_table_scroll_moz>tbody>tr>td:last-child{
+        width: 103px !important;
+    }
+    table.manage_downlaod_table_scroll input[type="checkbox"], table.manage_downlaod_table_scroll input[type="radio"]{
+            width:25px !important;
+            margin-right:0px;
+            margin-left:0px;
+    }
+
+        
+    </style>
+    
+    <div class="content_container" id="manageCustomerWrapperId">
+        <apex:form id="ManageCustomerId">
+            <div id="manage_content" class="page">
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <div class="documents_archive_header_text"><h1>{!$Label.DOCUMENTS_ARCHIVE_TITLE}</h1></div>                        
+                    </div>
+                </div>
+
+                <apex:pageMessages ></apex:pageMessages>
+                
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <div class="manage_users_table">
+                            <div id="manage_users_table_wrapper" class="dataTables_wrapper" role="grid">
+                                <table class="manageNetServiceDT table table-bordered table-striped table-hover hidden" style="white-space: nowrap;">
+                                    <thead><tr></tr></thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+             
+        </apex:form>
+    </div>
+    <div class="hidden">    
+        <div class="dropdown actionDropDown">
+            <button class="btn btn-default dropdown-toggle styled-select-small" data-toggle="dropdown" >Select</button>
+            <ul class="dropdown-menu">
+                <li><a role="menuitem" class="viewSiteLevelDocCls" href="/DocumentsArchive">{!$Label.VIEW_SITE_LEVEL_DOCU}</a></li>
+                <li role="presentation" class="divider" ></li>
+                <li><a role="menuitem" class="downloadDocCls" onclick="return showDocumentModal();">{!$Label.DOWNLOAD_DOCUMENTS}</a></li>
+            </ul> 
+        </div>
+    </div>
+     <div class="modal fade" id="documentArchiveOverlayModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <apex:form id="documentArchiveOverlay"> 
+             <div class="modal-dialog modal-lg">  
+                <div class="modal-content">
+                    <div class="modal-header p0">
+                        <button type="button" class="close" data-dismiss="modal" style="font-size:200%!important;"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    </div>
+                    <div class="downLoadHeader">
+                        <div class="documents_archive_header_text"><h1 class="documentHeader">{!$Label.DOWNLOAD_DOCUMENTS}</h1></div>                        
+                    </div>
+                    <hr class="grey_hr" style="margin-bottom:5px !important;"/>
+                    <div class="modal-body">
+                        <div id="manage_content m0" class="page"> 
+                            
+                            <apex:pageMessages ></apex:pageMessages>                            
+                            <div class="row">
+                                <div class="col-xs-12 col-md-12 documentArchiveContainer">
+                                    <div class="manage_downlaod_table">
+                                        <div id="manage_users_table_wrapper" class="dataTables_wrapper" role="grid">
+                                            <table id="manageDocumentDownloadDT" class="manageDocumentDownloadDT table table-bordered table-striped table-hover hidden" style="white-space: nowrap;max-width:800px !important;">
+                                                <thead>
+                                                    <tr role="row">
+                                                        <th class="header_Quote_ID__cls sorting_desc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label=": activate to sort column ascending" style="text-align:center;">
+                                                            <div class=""><input class="chkbox" id="checkboxAll" name="checkboxAll" type="checkbox"/><label class="css-label radGroup1 clr chklbl" for="checkboxAll" style="margin-left:5px;"></label></div>
+                                                        </th>
+                                                        <th class="header_Quote_ID__cls sorting_desc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Quote ID: activate to sort column decending" style="width: 151px;">Document Name<div class="reorder_btn"></div></th>
+                                                        <th class="header_Quote_ID__cls sorting_desc" tabindex="0" aria-controls="DataTables_Table_0" rowspan="1" colspan="1" aria-label="Quote ID: activate to sort column ascending" style="width: 151px;">Action</th>                                                       
+                                                    </tr>
+                                                </thead>
+                                                <tbody></tbody>
+                                            </table>
+                                        </div>
+                                    </div>  
+                                    <div class="modal-static-text"><p>{!$Label.DocumentDownLoad_ZIP_TEXT}</p></div>
+                                </div>
+                            </div> 
+                        </div>                      
+                    </div>
+                    <div class="modal-footer">
+                        <div class="pull-right">
+                            <apex:commandButton styleclass="btn btn-default cancelBtn" value="Cancel" onclick="return closeOverLay();" rerender="tstpopup" html-data-dismiss="modal" id="cancelBtn"/>
+                            <apex:commandButton styleclass="btn btn-primary downloadDocumentBtn disabled" value="Download" onclick="return downloadZip();" id="downloadDocumentBtn" disabled="true"/>
+                        </div>
+                    </div>
+                </div>              
+            </div>
+            <apex:actionFunction id="refershPopup" action="{!refreshDataTable}" name="refreshDataTable" reRender="documentArchiveOverlay">
+            </apex:actionFunction>
+        </apex:form>
+    </div>
+    <script>
+    
+        
+
+        var conResponse;
+        var count=0;   
+        var zipFile = new JSZip();
+        var jsAtt;
+        var zipFileCount = 1;
+        var arr = new Array();
+        var totalFileSize=0;
+        var lastAttachment=0;
+        var attachmentCounter = 0;
+        var dataTableComp;
+        var downloadDataTableComp;
+        var chkValArr=[];
+        var singleFileDownloadArr = [];
+        var downloadDocumentQuoteName="";
+        var index=0;
+        var hideProcessing=false;
+        
+        function executeDownload(){
+            if (index < singleFileDownloadArr.length) {
+                var fileToDownload = singleFileDownloadArr[index];
+                setTimeout(function(){
+                    var obj = ($('[id='+fileToDownload+']').closest('td').siblings());
+                    $(obj).find('img').trigger("click");
+                    ++index;
+                    executeDownload();
+                },1000);
+            }
+            else{
+                setTimeout(function(){
+                    if(hideProcessing == false){$("#loading").parent().hide();}
+                },1000);
+            }
+            return false;
+
+        }
+        
+        function downloadZip(){
+            downloadZipFiles();
+            index=0;
+                setTimeout(function(){
+                    if (index < singleFileDownloadArr.length) {
+                        executeDownload();
+                    }
+                },200);
+                return false;
+        }
+        
+        function downloadZipFiles(){
+            zipFileCount =1;
+            totalFileSize=0;
+            attachmentCounter = 0;
+            var fileName = '';
+            $("#loading").parent().show();
+            if(chkValArr.length>1){
+                chkValArr.forEach(function(attId) {
+                     Visualforce.remoting.Manager.invokeAction(
+                     '{!$RemoteAction.DocumentsArchiveController.getDocumentCnt}',
+                     attId,
+                     function(result,event) 
+                     {
+                         if(event.status)
+                         {
+                             jsAtt = result;
+                             var attachmentData;
+                             hideProcessing = true;
+                             $.each(jsAtt, function(key,value) 
+                             {
+                                                
+                                totalFileSize+=value.attFileSize;
+                                
+                                if(attachmentCounter==0){
+                                    zipFile = new JSZip();
+                                    fileName = downloadDocumentQuoteName+'_Archive Documents'+zipFileCount+'.zip';
+                                    
+                                }
+                                attachmentCounter++;
+                                if (totalFileSize <26203910)
+                                {
+                                    compressFile(zipFile,value.attName,value.attEncodedBody);
+                                    if(attachmentCounter ==  chkValArr.length){
+                                        setTimeout(function(){
+                                            attachmentData = zipFile.generate();
+                                            download('data:application/zip;base64,'+attachmentData,fileName,'application/zip');
+                                        },300); 
+                                        setTimeout(function(){$("#loading").parent().hide();},1000);
+                                        hideProcessing = false;
+                                    }
+                                }  
+                                else{
+                                    zipFileCount++;
+                                    totalFileSize=value.attFileSize;
+                                    attachmentData = zipFile.generate();
+                                    download('data:application/zip;base64,'+attachmentData,fileName,'application/zip');  
+                                    zipFile = new JSZip();
+                                    fileName = downloadDocumentQuoteName+'_Archive Documents'+zipFileCount+'.zip';
+                                        compressFile(zipFile,value.attName,value.attEncodedBody);
+                                        if(attachmentCounter ==  chkValArr.length){ 
+                                            setTimeout(function(){
+                                            attachmentData = zipFile.generate();
+                                            download('data:application/zip;base64,'+attachmentData,fileName,'application/zip'); 
+                                            setTimeout(function(){$("#loading").parent().hide();},1000);
+                                            hideProcessing = false;
+                                            },300);  
+                                        }
+                                    
+                                }
+                                 
+                                
+                             });
+                             
+                         }
+                         
+                    },{buffer: false,escape: true, timeout: 90000});
+                 });
+             }
+             else if(chkValArr.length ==1){
+                ($('[id='+chkValArr[0]+']').closest('td').siblings().find('img')).trigger("click");
+                setTimeout(function(){$("#loading").parent().hide();},1000);                                  
+             }
+             
+             return false;
+         }
+        
+        function compressFile(zipFile, name, data){
+            zipFile.file(name, data, {base64:true});
+        }
+        
+        function prepareDataForDownloadDocDataTable(quoteId,quoteName) {
+        downloadDocumentQuoteName = quoteName;
+        $("#loading").parent().show();        
+            endCustFields =[
+                    {apiName:'Id',value:''},
+                    {apiName:'Name',value:'Name'},
+                    {apiName:'Action__c',value:'Action'}                    
+            ]; 
+            var tableInitialized = $(".manageDocumentDownloadDT thead tr th").length;
+            if(tableInitialized>0){
+                $('#manageDocumentDownloadDT').dataTable().fnDestroy();
+                $("#manageDocumentDownloadDT tbody").html("");
+            }
+               
+           var imageResourcePath = "{!($Resource.downloadIcon)}";
+           var baseURL = "{!($Site.BaseUrl)}";         
+           DocumentsArchiveController.fetchAttachments(quoteId,function(result, event) {
+                if (event.type != 'exception') {
+                    for(row = 0;row<result.length;row++){
+                        var currRow = '<tr>';
+                        var downloadLink = baseURL+"/servlet/servlet.FileDownload?file="+result[row].Id;
+                        currRow += '<td> <input type="checkbox" name="selected" id="'+result[row].Id+'" value="val_'+result[row].Id+'" class="chkbox"/></td>';
+                        $.each( endCustFields, function( index, columnObj){
+                            if(columnObj.apiName == 'Name'){
+                                if(typeof result[row][columnObj.apiName] == 'undefined' || result[row][columnObj.apiName] == null){                                    
+                                    currRow += '<td class="td_ellipsis ' +columnObj.apiName+'ls">'+''+'</td>';
+                                }                                
+                                else{
+                                        var docName = result[row][columnObj.apiName];
+                                        if (docName.length > 50) {
+                                            docName = docName.substr(0, 25) + '...' + docName.substr(docName.length-25, docName.length);
+                                        }
+                                        currRow += '<td class="td_ellipsis '+columnObj.apiName+'ls" title="'+result[row][columnObj.apiName]+'">'+docName+'</td>';
+                                }
+                                
+                            }
+                            else if(columnObj.apiName == 'Action__c'){
+                                currRow += '<td class="actionCls"><a href="'+downloadLink+'" for="'+result[row].BodyLength+'" class="arrowImageDim" download> <img src="'+imageResourcePath+'" class="arrowImageDim" /></a></td>';                                                           
+                            }
+                            
+                        });  
+                        currRow += '</tr>';
+                       $(".manageDocumentDownloadDT tbody").append(currRow);
+                    }
+                  
+                } 
+                
+                invokeDownloadDataTable(); 
+            }); 
+           
+        }
+        function prepareDataForDataTable() { 
+        
+            endCustFields =[
+                    {apiName:'Quote_ID__c',value:'Quote ID'},
+                    {apiName:'EndCustomerName__c',value:'Customer Name'},
+                    {apiName:'Sub_Account__c',value:'Sub Account Number'},
+                    {apiName:'Order_Submitted_Date__c',value:'Order Submitted Date'},
+                    {apiName:'Service_Type_Formula__c',value:'Product'},
+                    {apiName:'Number_of_Products__c',value:'No. of Sites'},
+                    {apiName:'Action__c',value:'Actions'},
+                    {apiName:'Id',value:''},
+                    {apiName:'Block_Site_Level_Documents__c',value:''}
+            ];         
+            $.each( endCustFields, function( index, columnObj){
+                    if(columnObj.apiName == 'Product'){
+                        $(".manageNetServiceDT thead tr").append('<th style="width:120px;" class="header_'+columnObj.apiName+'ls">'+columnObj.value+'<div class="reorder_btn"></div></th>');
+                    }
+                    else{
+                        $(".manageNetServiceDT thead tr").append('<th class="header_'+columnObj.apiName+'ls">'+columnObj.value+'<div class="reorder_btn"></div></th>');
+                    }
+            });    
+           
+           DocumentsArchiveController.fetchOpportunityRecords(function(result, event) {
+                if (event.type != 'exception') {
+                    for(row = 0;row<result.length;row++){
+                        var currRow = '<tr>';
+                        $.each( endCustFields, function( index, columnObj){
+                            if(columnObj.apiName == 'Sub_Account__c' || columnObj.apiName == 'Service_Type_Formula__c' || columnObj.apiName == 'Number_of_Products__c' || columnObj.apiName == 'Quote_ID__c'){
+                                if(typeof result[row][columnObj.apiName] == 'undefined' || result[row][columnObj.apiName] == null){                                    
+                                    currRow += '<td class="td_ellipsis ' +columnObj.apiName+'ls">'+''+'</td>';
+                                }
+                                else if(columnObj.apiName == 'Quote_ID__c' && (result[row].Block_Site_Level_Documents__c == false)){
+                                    currRow += '<td class="td_ellipsis'+columnObj.apiName+'ls" title="'+result[row][columnObj.apiName]+'"><a href="/DocumentsArchive?id='+result[row].Id+'">'+result[row][columnObj.apiName]+'</a></td>';
+                                }
+                                else{
+                                    currRow += '<td class="td_ellipsis '+columnObj.apiName+'ls" title="'+result[row][columnObj.apiName]+'">'+result[row][columnObj.apiName]+'</td>';
+                                }
+                                
+                            }else{
+                               currRow += '<td class="td_ellipsis '+columnObj.apiName+'ls" title="'+result[row][columnObj.apiName]+'">'+result[row][columnObj.apiName]+'</td>';
+                            }
+                        });  
+                        currRow += '</tr>';
+                       $(".manageNetServiceDT tbody").append(currRow);
+                       prepareActionDropdown(result[row],row);
+                    }
+                  
+                } else {
+                }  
+                invokeDataTable(); 
+            }); 
+           
+        }
+        
+        function showDocumentModal(quoteId,quoteName){
+            $('#documentArchiveOverlayModal').modal('show');
+            prepareDataForDownloadDocDataTable(quoteId,quoteName);
+            return false;
+        }
+        
+        
+        
+        function closeOverLay(){
+            $('#documentArchiveOverlayModal').modal('hide');
+            $('.manageDocumentDownloadDT').dataTable().fnDestroy();
+            return false;
+        }
+        
+        
+        
+        function invokeDataTable(){
+         
+            $('.manageNetServiceDT').dataTable().fnDestroy();
+            $('.manageNetServiceDT').removeClass('hidden');
+            dataTableComp = $('.manageNetServiceDT').dataTable({
+               'language': {
+                    'search': '_INPUT_',
+                    'searchPlaceholder': 'Search by any displayed criteria',
+                    'info': 'Showing _START_ - _END_ of _TOTAL_',
+                    'zeroRecords': 'At this time there are no documents to download.'
+                    
+                },
+                "pagingType": "full_numbers",
+                "dom": '<"top"f>rt<"bottom"il><"pull-right"p><"clear">',
+                "aoColumnDefs": [
+                    { "bVisible": true, "bSearchable": true, "aTargets": [0,1,2,3,4,5] },
+                    { "bVisible": true, "bSearchable": false, "aTargets": [6] },
+                    { "bVisible": false, "bSearchable": false, "aTargets": [ '_all' ] },
+                    { "width": "15%", "targets": 3 },
+                    { "width": "15%", "targets": 0 }
+                ],
+                "aaSorting": [[3,'desc'],[0,'desc']],
+                "bLengthChange": false,
+                "iDisplayLength":8,
+                "searchHighlight": true             
+            });
+            $("#DataTables_Table_0_filter input").before('<span class="search_button"></span>' );
+            $('[data-toggle ="tooltip"]').tooltip();
+            $("#loading").parent().hide();
+            
+        }
+        function invokeDownloadDataTable(){
+         
+            $('.manageDocumentDownloadDT').removeClass('hidden');
+            downloadDataTableComp = $('.manageDocumentDownloadDT').dataTable({
+               'language': {
+                    'searching': false,
+                    'zeroRecords': 'At this time there are no documents to download.'
+                },
+                "pagingType": "full_numbers",
+                "sdom": '<"top"f>rt<"bottom"il><"pull-right"p><"clear">',
+                "aoColumnDefs": [
+                    { "bVisible": true, "bSearchable": false, "aTargets": [0,1,2] },
+                    { "bVisible": false, "bSearchable": false, "aTargets": [ '_all' ] },
+                    { "width": "5%", "targets": 0 },
+                    { "width": "50%", "targets": 1 },
+                    { "width": "10%", "targets": 2 }
+                ],
+                "aaSorting": [[1,'asc']],
+                "bLengthChange": false,
+                "paging":false,                
+                "dom":'t',
+                "bDestroy":true          
+            });
+            $('#manageDocumentDownloadDT thead input[id="checkboxAll"]').prop('checked', false);
+            $('#manageDocumentDownloadDT thead input[id="checkboxAll"]').on('click', function(e){                    
+                if(this.checked){
+                    $('#manageDocumentDownloadDT tbody input[type="checkbox"]:not(:checked)').trigger('click');
+                } else {
+                    $('#manageDocumentDownloadDT tbody input[type="checkbox"]:checked').trigger('click');
+                }
+
+                e.stopPropagation();
+            });
+            
+        if($('#manageDocumentDownloadDT tbody tr').length>8){
+                
+                if(navigator.userAgent.indexOf("Chrome") == -1 )
+                {
+                    $(".manageDocumentDownloadDT").addClass("manage_downlaod_table_scroll_moz manage_downlaod_table_scroll");
+                }  
+                else{
+                    $(".manageDocumentDownloadDT").addClass("manage_downlaod_table_scroll");
+                }
+            }
+            else{
+                $(".manageDocumentDownloadDT").removeClass("manage_downlaod_table_scroll manage_downlaod_table_scroll_moz");
+            }
+            chkValArr=[];
+            singleFileDownloadArr = [];
+            $('input.chkbox').change(function(e){
+                if($(this).is(':checked')){
+                    var chkVal = $(this).attr('id');
+                    if(typeof chkVal != 'undefined' && chkVal != null &&  chkVal != 'checkboxAll'){
+                        
+                        var filesize = $('[id='+chkVal+']').closest('td').siblings().find('a').attr("for");
+                        if(filesize < 4194304){
+                            chkValArr.push(chkVal); 
+                        }else{
+                            singleFileDownloadArr.push(chkVal); 
+                        }
+                    }
+                } else {
+                    var chkValRemove = $(this).attr('id');
+                    chkValArr.splice( $.inArray(chkValRemove , chkValArr), 1 );
+                }   
+                if((chkValArr.length+singleFileDownloadArr.length)==0)
+                {
+                    $(".downloadDocumentBtn").addClass("disabled");
+                    $(".downloadDocumentBtn").prop("disabled",true);
+                    $('#manageDocumentDownloadDT thead input[id="checkboxAll"]').prop('checked', false);
+                }
+                else{
+                    $(".downloadDocumentBtn").removeClass("disabled");
+                    $(".downloadDocumentBtn").removeAttr("disabled");
+                    if((chkValArr.length+singleFileDownloadArr.length)>0 && ($('#manageDocumentDownloadDT tbody input[type="checkbox"]').length == (chkValArr.length+singleFileDownloadArr.length))){
+                        $('#manageDocumentDownloadDT thead input[id="checkboxAll"]').prop('checked', true);
+                    }
+                    else{
+                        
+                            $('#manageDocumentDownloadDT thead input[id="checkboxAll"]').prop('checked', false);
+                        
+                    }
+                }
+                e.stopPropagation();
+            });
+            $("#loading").parent().hide();
+            $(".close").on("click", function(){
+                refreshDataTable();
+            });
+            
+        }
+        
+        $.extend({
+            highlight: function (node, re, nodeName, className) {
+                    if (node.nodeType === 3) {
+                    var match = node.data.match(re);
+                    if (match) {
+                        var highlight = document.createElement(nodeName || 'span');
+                        highlight.className = className || 'highlight';
+                        var wordNode = node.splitText(match.index);
+                        wordNode.splitText(match[0].length);
+                        var wordClone = wordNode.cloneNode(true);
+                        highlight.appendChild(wordClone);
+                        wordNode.parentNode.replaceChild(highlight, wordNode);
+                        return 1; 
+                    }
+                } else if ((node.nodeType === 1 && node.childNodes) && 
+                !/(script|style)/i.test(node.tagName) && 
+                !(node.tagName === nodeName.toUpperCase() && node.className === className)) { 
+                    for (var i = 0; i < node.childNodes.length; i++) {
+                        i += $.highlight(node.childNodes[i], re, nodeName, className);
+                    }
+                }
+                return 0;
+            }
+        });
+
+        $.fn.unhighlight = function (options) {
+            var settings = { className: 'highlight', element: 'span' };
+            $.extend(settings, options);
+
+            return this.find(settings.element + "." + settings.className).each(function () {
+                var parent = this.parentNode;
+                parent.replaceChild(this.firstChild, this);
+                parent.normalize();
+            }).end();
+        };
+
+        $.fn.highlight = function (words, options) {
+            var settings = { className: 'highlight', element: 'span', caseSensitive: false, wordsOnly: false };
+            $.extend(settings, options);
+
+            if (words.constructor === String) {
+                words = [words];
+            }
+            words = $.grep(words, function(word, i){
+                return word != '';
+            });
+            words = $.map(words, function(word, i) {
+                return word.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+            });
+            if (words.length == 0) { return this; };
+
+            var flag = settings.caseSensitive ? "" : "i";
+            var pattern = "(" + words.join("|") + ")";
+            if (settings.wordsOnly) {
+                pattern = "\\b" + pattern + "\\b";
+            }
+            var re = new RegExp(pattern, flag);
+
+            return this.each(function () {
+                $.highlight(this, re, settings.element, settings.className);
+            });
+        };
+        
+        function prepareActionDropdown(rowObj,row){
+            var dropdownContent = $(".actionDropDown").clone().removeClass('actionDropDown');
+            var actionDropdownId = "actionDropDown"+row;
+            dropdownContent.attr("id",actionDropdownId);
+            $('.Action__cls').eq(row).html(dropdownContent);    
+            if(rowObj.Block_Site_Level_Documents__c){   
+                $("#"+actionDropdownId+' .viewSiteLevelDocCls').addClass('disabled');
+            }           
+            $('.viewSiteLevelDocCls').eq(row).attr("href",$('.viewSiteLevelDocCls').eq(row).attr("href")+"?id="+rowObj.Id);
+            $('.downloadDocCls ').eq(row).attr("onclick",'return showDocumentModal("'+rowObj.Id+'","'+rowObj.Quote_ID__c+'");');
+            $(".Action__cls").removeClass("td_ellipsis").removeAttr("title");                       
+            
+        } 
+        $( window ).bind( "beforeunload", function() {  
+            $("#loading").parent().show();
+        });
+        $( window ).bind( "load", function() {
+            var execute = function(){   
+                invokeDownloadDataTable(); 
+                $("#loading").parent().show();
+                prepareDataForDataTable();   
+                 
+            }
+            execute();
+        });
+    </script>
+</apex:page>

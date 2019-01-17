@@ -1,0 +1,1989 @@
+<apex:page controller="WirelinePromotionController" sidebar="false" title="Wireline Promotion">
+        <apex:includeScript value="//code.jquery.com/jquery-1.12.4.js" />
+        <apex:includeScript value="//code.jquery.com/ui/1.10.3/jquery-ui.js" />
+        <apex:includeScript value="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" />
+        <apex:includeScript value="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js" />
+        <apex:includeScript value="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.min.js" />
+        <apex:includeScript value="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js" />    
+        <apex:stylesheet value="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+        <apex:stylesheet value="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css" />
+        <apex:stylesheet value="https://cdn.datatables.net/t/bs-3.3.6/dt-1.10.11/datatables.min.css" />
+        
+        <style>
+        input.disableCheckBox{
+            pointer-events:none;
+            opacity: .50;
+            filter: alpha(opacity=50);
+        }
+        td.dataCol > input.disableCheckBox{
+            cursor: not-allowed !important;
+        }
+            .allTabsArrow{
+                background-position: 0px -2px;
+            }
+            .alertBtn{
+                padding: 2px;
+                width:40px;
+                margin: 0 2px;
+                color: #000;
+            }
+            #duplicateAlertp{
+                height: auto;
+                padding: inherit;
+            }
+            .tertiaryPalette, .individualPalette .Custom72Block .tertiaryPalette, .layoutEdit .individualPalette .Custom72Block .tertiaryPalette {
+            background-color: #1797c0 !important;
+            border-color: #1797c0 !important;
+            }
+            body{
+                font-size: 12px;
+                font-family: Arial;
+            }
+            .secondaryPalette, .individualPalette .Custom72Block .secondaryPalette {
+                background-color: #1797c0;
+                border-color: #1797c0;
+            }
+            div.secondaryPalette label{
+                padding-right:10px;
+                font-size: 12px;
+                color: #000;
+                font-family: Arial;
+            }
+            th.labelCol label{
+                pointer-events:none;
+            }
+            div.secondaryPalette .pbBody{
+                padding: 6px 20px 4px 20px;
+            }
+            div.secondaryPalette input,div.secondaryPalette select, div.secondaryPalette textarea{
+                margin:0 10px;
+                border-radius: 4px;
+            }
+        
+            fieldset {
+                font-family: Arial;
+                border: 3px solid #1797c0;
+                background: #FFFFFF;
+            }
+        
+            fieldset legend {
+        
+                background: #1797c0;
+                color: #FFFFFF;
+                padding: 3px 10px;
+                font-size: 19px;
+                border-radius: 5px;
+                box-shadow: 0 0 0 3px #ddd;
+                margin-left: 30px;
+                width: auto;
+            }
+            .requiredasterisk{
+             color: red;
+                font-size: 20px;
+                position: absolute;
+                padding-left: 5px;
+                visibility:hidden;
+            }
+            .criteriaContainer, .detailList{
+                margin-top: 10px !important;
+            }
+            .criteriaContainer, .criteriaContainer li{
+                margin: 0px;
+                padding: 0px;
+            }
+            .criteriaContainer ul{
+                width:100%;
+            }
+            .criteriaContainer table>tbody>td{
+                font-size: 16px !important;
+            }
+            .criteriaContainer{
+                font-size: 14px !important;
+            }
+            .tab-content {
+                padding:10px;
+                border-left:1px solid #DDD;
+                border-bottom:1px solid #DDD;
+                border-right:1px solid #DDD;
+            }
+            .nav-tabs>li{
+                margin-bottom: 0px !important;
+                padding-right: 2px;
+                font-size: 14px !important;
+            }
+            .manageNetServiceDT thead th:last-child, .manageNetServiceDT tbody td:last-child {
+                display: none;
+            }
+            .manageNetServiceDT thead th:nth-child(11), .manageNetServiceDT tbody td:nth-child(11) {
+                display: none;
+            }
+            .manageNetServiceDT thead th:nth-child(12), .manageNetServiceDT tbody td:nth-child(12) {
+                display: none;
+            }
+            .manageNetServiceDT thead th:nth-child(13), .manageNetServiceDT tbody td:nth-child(13) {
+                display: none;
+            }
+            
+            .dataTables_paginate{
+                float: right !important;
+            }
+            /*.dataTables_filter,*/
+            /*.dataTables_length{
+                display:none;
+            }*/
+            .manageNetServiceDT{
+                width: 100% !important;
+            }
+            table.manageNetServiceDT tbody td:nth-child(2){
+                max-width: 20px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            
+            /* tab color */
+            .nav-tabs>li>a {
+                background-color: #eeeeee; 
+                border-color: #eeeeee;
+                color:#000;
+                padding: 5px;
+            }
+        
+            /* active tab color */
+            .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+                color: #fff;
+                /*background-image: linear-gradient(#ccc, #056fab);*/
+                background: #1797c0;
+                border: 1px solid #888888;
+            }
+            .nav-tabs>li>a[disabled]:hover{
+                background: #e1e1e1;
+                border:1px solid #e1e1e1;
+                cursor: not-allowed;
+            }
+            
+        
+            /* hover tab color */
+                .nav-tabs>li>a:hover {
+                border-color: #000000;
+                background-color: #1797c0;
+            }
+            .nav-tabs>li>a{
+                border-radius: 10px 10px 0 0;
+            }
+            /*table.dataTable thead .sorting_asc:after, table.dataTable thead .sorting_desc:after{
+                content: "\e150";
+            }*/
+            .fieldSection{
+                margin-top: 10px;
+            }
+            .exportExcel{
+                float: right;
+                width: 100px;
+                font-size: 12px !important;
+            }
+            .exportExcel:hover{
+                color: #000;
+                background: #1797c0 !important;
+            }
+            .exportExcel:blur{
+                color: #000;
+                background: #e1e1e1 !important;
+            }
+            .activePromotionsCheckbox input.css-checkbox{
+                margin:0px;
+            }
+            div.pbSubheader{
+                height: 32px;
+                font-size: 14px;
+                padding: 8px !important;
+                border-radius:4px;
+            }
+            div.pbSubheader h3{
+                font-weight:bold;
+            }
+            div.dataTables_wrapper div.dataTables_filter input{
+                margin-right: -10px !important;
+            }
+            .submitBtn, .cancelBtn{
+                width: 110px;
+                margin: 10px !important;
+                font-size: 12px !important;
+            }
+            center{
+                margin: 10px;
+            }        
+            .promoSection label{
+                vertical-align: middle;
+            }
+            .manageNetServiceDT a{
+                color: #337ab7;
+            }
+            .bPageBlock .detailList .errorMsg{
+                padding-left: 10px;
+            }
+            .addOrRemoveBtn{
+                display: grid;
+                justify-content: space-evenly;
+                margin-left: 14px;
+                margin-top: 18px;
+            }
+            .multiSelectField{
+                display: flex;
+                margin-top:10px;
+            }
+            #multiselectLabel{
+                width: 100%;
+            }
+            .input-group button{
+                width: 100px;
+            }
+            .scrollTopImage{ padding:10px; text-align:center; font-weight: bold; color: #444; text-decoration: none; position:fixed; top:85%; right:30px; display:none; .background: url(url('!$Resource.scrollTop') no-repeat center;) no-repeat 0px 20px; width:72px; height:106px; z-index: 9999; display:none; }    
+             
+            .scrollTopImage:hover{
+                text-decoration:none;
+            }
+            .waitingSearchDiv{
+                background-color: #fbfbfb;
+                height: 100%;
+                opacity: 0.65;
+                width: 100%;
+                position: fixed;
+                z-index: 999999;
+                top: 0;
+                left: 0;
+            }
+            .message errorM3{
+                display: none;
+            }
+            button[disabled]{
+                background: #eee;
+                color: #d1d1d1;
+                cursor: not-allowed;
+            }
+            div.duplicateAlertModalFooter{
+                border-top: 0 !important;
+                display: flex;
+                justify-content: center;
+                margin-bottom: 20px;
+                padding: 0;
+            }
+            div.alertDesc{
+                display: grid;
+                margin-left: 16px;
+                font-size: 13px;
+            }
+            table.promotionDuplicateTable{
+                margin:0;
+            }       
+            table.promotionDuplicateTableScroll>thead>tr, table.promotionDuplicateTableScroll>tbody>tr{
+                display:table;
+                width:100%;
+                table-layout:fixed;
+            }
+            table.promotionDuplicateTableScroll>thead, table.promotionDuplicateTableScroll>tbody{
+                display:block;
+            }
+            table.promotionDuplicateTableScroll>tbody{
+                overflow-x:hidden;
+                overflow-y:scroll;
+                height:275px;
+            } 
+            table.promotionDuplicateTableScroll thead th:first-child{
+                width: 31%;
+            }
+            table.promotionDuplicateTableScroll tbody td:first-child{
+                width: 32%;
+            }
+            table.promotionDuplicateTable tbody td:last-child{
+                max-width: 40px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+                
+            h3.modal-title{
+                padding-left: 16px;
+            }
+            .confirmDuplication{
+                float: left;
+                margin-top: 5px;
+                padding-right: 10px;
+            }
+            .selectAllDiv{
+                margin-bottom: 5px;
+            }
+            .cloneBtn{
+                width: 110px !important;
+            }
+        </style>
+        
+        <script>
+            var dataTableComp;
+            var criteriaMap={};
+            var criteriaInputSaved={};
+            var selectedFields=[];
+            var inputFieldsValues=[];
+            var inputFields=[];
+            var earlyDateDisabled = false;
+            
+            function disableFields(){
+                var readOnlyFlag = "{!readOnlyMode}";
+                var cloneFlag = "{!cloneFlag}";
+                var selectedPromoType= $('[id$=promoTypeDropdown]').val();
+                if(typeof readOnlyFlag != 'undefined' && readOnlyFlag === "true"){
+                    $(".promoEditPanel input,textarea").not('.editable,.submitBtn,.cancelBtn').each(function(){
+                    var fieldType = $(this).attr("type");
+                    if(typeof "undefined" != fieldType && fieldType != "checkbox" || !($(this).hasClass("disableCheckBox"))){
+                        $(this).attr('disabled','true');
+                    }
+                    else{
+                        $(this).attr('readonly',true);
+                    }
+                    });
+                    $(".promoEditPanel select").not('.editable,.submitBtn,.cancelBtn').each(function(){
+                        $(this).attr('disabled','true');
+                    });
+                    $('#add, #remove').attr('disabled','true');
+                }
+                else{
+                    $('.earlyStopDate').prop('disabled','true');
+                }
+                if("undefined" != typeof selectedPromoType && selectedPromoType != "Access")
+                {
+                    $(".promotionNotificationFeild").prop("readonly","true");
+                    $(".promotionNotificationFeild").addClass("disableCheckBox");
+                }
+                else{
+                    $('.promotionNotificationFeild').click(function () {
+                    if(($(this).is(":checked"))){
+                           $('.displayPromoEndDate').prop('checked',true);
+                        }
+                        else{
+                           $('.displayPromoEndDate').removeAttr('checked');
+                        }
+                    });             
+                }
+                /* Uncheck Test Accounts Only on Promotion Certified */
+                /*$('.promoCertifiedField').click(function () {
+                if(($(this).is(":checked"))){
+                       $('.testAccountField').removeAttr('checked');
+                       $('.testAccountField').prop('disabled',true);
+                    }
+                    else{
+                       $('.testAccountField').prop('checked',true);
+                       $('.testAccountField').removeAttr('disabled');
+                    }
+                });*/
+                
+                /*Disable early date*/
+                $('.stopPromotionField').click(function () {
+                    if(($(this).is(":checked"))){
+                        if(($('.earlyStopDate').not(':disabled')).length > 0){
+                           $('.earlyStopDate').prop('disabled',true);
+                           earlyDateDisabled = true;
+                        }                   
+                    }
+                    else{
+                        if(earlyDateDisabled){
+                            $('.earlyStopDate').removeAttr('disabled');
+                        }
+                    }
+                });
+                /*Disable Promotype on cloneFlag*/
+                if(typeof cloneFlag != 'undefined' && cloneFlag === "true" && ($("[id$=promoTypeDropdown]").not(":disabled"))){
+                    $("[id$=promoTypeDropdown]").attr('disabled','true');
+                    $('.stopPromotionField').addClass('disableCheckBox');
+                }
+            }
+            
+            function populateInputMapData(){
+                var x = ($('[id$=criteriaMap]').val()).split(";");
+                var myobj_array= $.map(x, function(value, index) {
+                    if(value != null){
+                        var temp = value.split(":");
+                        (temp != null && temp.length>1) ? criteriaInputSaved[temp[0]]=temp[1]:'';  
+                    }                
+                });
+            }
+            
+            $(document).ready(function() {
+                inputFields=[];
+                inputFieldsValues=[];
+                $('a[data-toggle="tab"]').on('shown.bs.tab', function(e){
+                    filterActive=false;
+                    $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+                    //var activeTabFilterId = $('.active.in').find('.css-checkbox').attr('id');
+                    //$('#'+activeTabFilterId).prop('checked',false).trigger('change');
+                    var activeTabFilterId = $('.active.in').find('[type="radio"]:checked').attr('id');
+                    $('#'+activeTabFilterId).prop('checked',false).trigger('change');
+                    $('.manageNetServiceDT').dataTable().fnDestroy();
+                    //dataTableComp.dataTable();
+            dataTableComp =$('.manageNetServiceDT').dataTable({
+                "destroy": true,
+                'language': {
+                    'search': '_INPUT_',
+                    'searchPlaceholder': 'Search',
+                    'info': 'Showing _START_ - _END_ of _TOTAL_',
+                    'zeroRecords': 'At this time there are no records for this promo type.'
+                            
+                },
+                "pagingType": "full_numbers",
+                "responsive": true,
+                "iDisplayLength":10,
+                "bLengthChange": true,
+                "bDestory": true,
+                "info":true,
+                order: [0, 'desc'],
+                "aoColumnDefs": [
+                    { "orderDataType": "dom-text","type":"date","aTargets": [5,6] },
+                    { "orderDataType": "dom-checkbox","aTargets": [4,7,8,9] },
+                    
+                ]
+            });
+                });                         
+                dataTableComp = $('.manageNetServiceDT').dataTable({
+                    'language': {
+                        'search': '_INPUT_',
+                        'searchPlaceholder': 'Search',
+                        'info': 'Showing _START_ - _END_ of _TOTAL_',
+                        'zeroRecords': 'At this time there are no records for this promo type.'
+                        
+                    },
+                    "pagingType": "full_numbers",
+                    "responsive": true,
+                    "iDisplayLength":10,
+                    "bLengthChange": true,
+                    "bDestory": true,
+                    "info":true,
+                    order: [0, 'desc'],
+                "aoColumnDefs": [
+                    { "orderDataType": "dom-text","type":"date","aTargets": [5,6] },
+                    { "orderDataType": "dom-checkbox","aTargets": [4,7,8,9] },
+                    
+                ]
+                });
+                disableFields();  
+                if('{!wirelinePromoRule.Rank__c}' != null && '{!wirelinePromoRule.Rank__c}' == 1){
+                   $('.disableRank').attr('disabled','true');
+                }
+                $('.scrollTopImage').click(function(){
+                    $('html, body').animate({scrollTop : 0},500);
+                    return false;
+                });
+                $(window).scroll(function(){
+                    if ($(this).scrollTop() > 100) {
+                    $('.scrollTopImage').fadeIn();
+                    } else {
+                        $('.scrollTopImage').fadeOut();
+                    } 
+                });
+                $('[id$=promoTypeDropdown] option[value="One-Time Charge"]').attr("disabled","disabled");
+                setTimeout(function(){$('.zen-lastItem').removeClass('brandPrimaryBgr primaryPalette zen-active')},500);
+            });
+            
+            $.fn.dataTable.ext.order['dom-checkbox'] = function  ( settings, col )
+            {
+                return this.api().column( col, {order:'index'} ).nodes().map( function ( td, i ) {
+                    return $('input', td).prop('checked') ? '1' : '0';
+                } );
+            };
+            
+            var filterActive=false;
+            function filterActivePromotions(obj,columnClass){
+            if(filterActive){
+                     $('.active.in').find('.manageNetServiceDT').dataTable().fnDestroy();
+                     $('.active.in').find('.manageNetServiceDT').DataTable().draw();
+                }
+                if(!filterActive){filterActive=true;}
+                var colNum;
+                var columnToFilter = $('.active.in').find('.'+columnClass);
+                if(columnToFilter != 'undefined' && columnToFilter != null && columnToFilter.length>0){
+                    colNum = $('.active.in').find('.'+columnClass)[0].cellIndex;
+                }
+                var regex = 'true';
+                $('.manageNetServiceDT').dataTable().fnDestroy();
+                $('.manageNetServiceDT').DataTable();
+                if(colNum != "undefined"){
+                    $('.active.in').find('.manageNetServiceDT').DataTable().column(colNum).search(
+                        regex, true, true
+                      ).draw();        
+                }               
+            }
+            
+             function filterPromoCertifiedNotActive(obj,columnClass1,columnClass2){
+                var colNum1,colNum2;
+                var columnToFilter1 = $('.active.in').find('.'+columnClass1);
+                var columnToFilter2 = $('.active.in').find('.'+columnClass2);
+                if(columnToFilter1 != 'undefined' && columnToFilter1 != null && columnToFilter1.length>0 && columnToFilter2 != 'undefined' && columnToFilter2 != null && columnToFilter2.length>0){
+                    colNum1 = $('.active.in').find('.'+columnClass1)[0].cellIndex;
+                    colNum2 = $('.active.in').find('.'+columnClass2)[0].cellIndex;
+                }
+                $('.active.in').find('.manageNetServiceDT').dataTable().fnDestroy();
+                $('.active.in').find('.manageNetServiceDT').DataTable().draw();
+                var regex = 'true';
+                var regex1 = 'false';
+                $('.manageNetServiceDT').dataTable().fnDestroy();
+                $('.manageNetServiceDT').DataTable();
+                if(colNum1 != "undefined" && colNum2 !="undefined"){
+                    $('.active.in').find('.manageNetServiceDT').DataTable().column(colNum1).search(
+                        regex, true, true
+                    ).column(colNum2).search(
+                        regex1, false, false
+                    ).draw();
+                }
+                
+            }
+            
+            
+            
+            var promoType='';
+            function renderPromoSections(element){
+                promoType = $(element).val();
+                var href = "{!($Site.BaseUrl)}"+'?promotype='+promoType;
+                document.location = href;
+            }
+            
+            function renderPromotionData(promotionId){
+                var href = "{!($Site.BaseUrl)}"+'?id='+promotionId;
+                document.location = href;
+                return false;
+            }
+            
+            function setCriteriaInput(){
+                var criteriaInput=[];
+                Object.keys(criteriaMap).map(function (key){
+                    var inputData = key+":"+criteriaMap[key];
+                    criteriaInput.push(inputData);
+                });
+                $('[id$=criteriaMap]').val(JSON.stringify(criteriaInput.join(';')));
+            }
+            var alertMessage='';
+            function validateMandatorySectionData(){
+                alertMessage='';
+                var selectedPromoType= $('[id$=promoTypeDropdown]').val();
+                console.log('selectedPromoType>>> '+selectedPromoType);
+                switch(selectedPromoType){          
+                    case "Feature": var showFeatureAlert = false;
+                                    if('undefined' != typeof criteriaMap && criteriaMap != null){                                   
+                                        $.each(criteriaMap, function( key, value ) {
+                                          if(key != null && key.indexOf("Feature") >= 0){
+                                            if(showFeatureAlert == true) return false;
+                                            else{
+                                                showFeatureAlert = (criteriaMap[key] != '')?true:false;
+                                                console.log('feature>>'+criteriaMap[key]);
+                                            }
+                                          }
+                                        });
+                                    }
+                                    console.log('showFeatureAlert>>'+showFeatureAlert);
+                                    if(!showFeatureAlert){
+                                        alertMessage="Please select at least one feature.";
+                                    }
+                                    
+                                break;
+                    case "Port": if('undefined' != typeof criteriaMap && criteriaMap != null && criteriaMap['Product'] == ''){
+                                    alertMessage="Please select at least one Product.";
+                                }
+                                if('undefined' != typeof criteriaMap && criteriaMap != null && criteriaMap['SP Tier'] == ''){
+                                    if(alertMessage.length>0){
+                                        alertMessage = alertMessage+"\nPlease select at least one SP Tier.";
+                                    }
+                                    else{
+                                        alertMessage="Please select at least one SP Tier.";
+                                    }
+                                }
+                                if('undefined' != typeof criteriaMap && criteriaMap != null && criteriaMap['Term'] == ''){
+                                    if(alertMessage.length>0){
+                                        alertMessage = alertMessage+"\nPlease select at least one Term.";
+                                    }
+                                    else{
+                                        alertMessage="Please select at least one Term.";
+                                    }
+                                }
+                                if('undefined' != typeof criteriaMap && criteriaMap != null && criteriaMap['Port Speed'] == ''){
+                                    if(alertMessage.length>0){
+                                        alertMessage = alertMessage+"\nPlease select at least one Port Speed.";
+                                    }
+                                    else{
+                                        alertMessage="Please select at least one Port Speed.";
+                                    }
+                                }
+                                break;
+                    case "Access": if('undefined' != typeof criteriaMap && criteriaMap != null && criteriaMap['Product'] == ''){
+                                    alertMessage="Please select at least one Product.";
+                                }
+                                if('undefined' != typeof criteriaMap && criteriaMap != null && criteriaMap['SP Tier'] == ''){
+                                    if(alertMessage.length>0){
+                                        alertMessage = alertMessage+"\nPlease select at least one SP Tier.";
+                                    }
+                                    else{
+                                        alertMessage="Please select at least one SP Tier.";
+                                    }
+                                }
+                                if('undefined' != typeof criteriaMap && criteriaMap != null && criteriaMap['Term'] == ''){
+                                    if(alertMessage.length>0){
+                                        alertMessage = alertMessage+"\nPlease select at least one Term.";
+                                    }
+                                    else{
+                                        alertMessage="Please select at least one Term.";
+                                    }
+                                }
+                                if('undefined' != typeof criteriaMap && criteriaMap != null && criteriaMap['Access Speed'] == ''){
+                                    if(alertMessage.length>0){
+                                        alertMessage = alertMessage+"\n";
+                                    }
+                                    alertMessage=alertMessage+"Please select at least one Access Speed.";
+                                }
+                                break;
+                    case "SP": if('undefined' != typeof criteriaMap && criteriaMap != null){
+                                    var list = $.map(criteriaMap, function(value, key) {
+                                        var selectedValueList = [];
+                                        if(value != null && value != ""){ selectedValueList.push(value);}
+                                        return selectedValueList;                                   
+                                    });
+                                    if("undefined" == typeof list || list.length==0)
+                                    {
+                                        alertMessage="At least one SP must be selected on promotion creation.";
+                                    }
+                                }
+                                break;
+                    case "Order": if('undefined' != typeof criteriaMap && criteriaMap != null){
+                                    var list = $.map(criteriaMap, function(value, key) {
+                                        var selectedValueList = [];
+                                        if(value != null && value != ""){ selectedValueList.push(value);}
+                                        return selectedValueList;                                   
+                                    }); 
+                                    if('undefined' != typeof criteriaMap && criteriaMap != null && (criteriaMap['NumberofSites'] == '' && criteriaMap['MRCValue'] == '')){
+                                        alertMessage="At least one section (No of sites or MRC value) should be provided with input for Promotion creation.";
+                                    }  
+                                    if('undefined' != typeof criteriaMap && criteriaMap != null && criteriaMap['Product'] == ''){
+                                        alertMessage="Please select at least one Product.";
+                                    }                             
+                                }
+                                break;
+                    case "Deal Reg": if('undefined' != typeof criteriaMap && criteriaMap != null){
+                                    var list = $.map(criteriaMap, function(value, key) {
+                                        var selectedValueList = [];
+                                        if(value != null && value != ""){ selectedValueList.push(value);}
+                                        return selectedValueList;                                   
+                                    });
+                                    if("undefined" == typeof list || list.length==0)
+                                    {
+                                        alertMessage="At least one section should be provided with input for Promotion creation.";
+                                    }   
+                                }
+                                break;
+                }
+                if(alertMessage.length>0){showAlert = true;}    
+                console.log('alert>>'+alertMessage);
+            }
+            var showAlert = false;
+            var selectAllSections = ["SP Tier", "Term", "Port Speed", "Access Speed"];
+            function prepareSave(){
+                showAlert = false;
+                setCriteriaInput();
+                var inputFieldsarray='';
+                var inputFieldsPassedCount = $('div .promoSection input[type=text]').filter(function() { return $(this).val(); }).length;
+                if(inputFieldsPassedCount == 'undefined'){inputFieldsPassedCount =0;}
+                console.log('inputFields.length>>> '+inputFields.length);
+                if('undefined' != typeof inputFields && (inputFields.length==0 || inputFields.length != inputFieldsPassedCount)){
+                    inputFields =[];
+                    inputFieldsValues = [];
+                    $('div .promoSection input[type=text]').each(function(){
+                        if($(this).val() != null && $(this).val() != '' && "undefined" != $(this).val()){
+                            inputFields.push($(this).prop('id'));
+                            inputFieldsValues.push($(this).val());
+                        }
+                    });
+                }
+                selectedFields= selectedFields.concat(inputFields);
+                for (let i=0; i<inputFields.length; i++){
+                    inputFieldsarray = inputFieldsarray + inputFields[i] + ':' + inputFieldsValues[i];
+                    if ( i != inputFields.length-1)
+                        inputFieldsarray = inputFieldsarray + "|";
+                }
+                console.log('input fields array is: ' + inputFieldsarray );
+                console.log('selectedFields: ' + selectedFields );
+                $("[id$='selectedFields']").val(selectedFields);
+                $("[id$='inputFields']").val(inputFields);
+                $("[id$='inputFieldsValues']").val(inputFieldsarray);
+                
+                var selectedPromoType= $('[id$=promoTypeDropdown]').val();
+                validateMandatorySectionData();            
+                if(showAlert){
+                    alert(alertMessage);
+                    return false;
+                }
+                else{
+                    checkDuplicateAction($('[id$=criteriaMap]').val());
+                }                
+            }
+            
+            function getCriteriaValue(){
+                var criteriaInput=[];
+
+                Object.keys(criteriaMap).map(function (key) {
+                    var inputData = key+":"+criteriaMap[key];
+                    criteriaInput.push(inputData);
+                });
+                $('[id$=criteriaMap]').val(JSON.stringify(criteriaInput.join(';')));
+            }
+            
+            function checkDuplicatePromotion() {
+                var duplicateRecord = $('[id$=duplicateRecord]').val();
+                console.log(''+duplicateRecord);
+                if('undefined' != typeof duplicateRecord && 'true' == duplicateRecord){
+                    /*$('#duplicateAlertModal').on('shown.bs.modal', function() {
+                        console.log('shown');
+                        $('.promotionDuplicateTable').addClass('promotionDuplicateTableScroll');
+                    })*/
+                    $('#duplicateAlertModal').on('show.bs.modal', function() {
+                        if($('.promotionDuplicateTable tbody tr').length>8){
+                        
+                            if(navigator.userAgent.indexOf("Chrome") == -1 )
+                            {
+                                $(".promotionDuplicateTable").addClass("promotionDuplicateTableScroll_moz promotionDuplicateTableScroll");
+                            }  
+                            else{
+                                $(".promotionDuplicateTable").addClass("promotionDuplicateTableScroll");
+                            }
+                        }
+                        else{
+                            $(".promotionDuplicateTable").removeClass("promotionDuplicateTableScroll promotionDuplicateTableScroll_moz");
+                        }
+                    });
+                
+                    $('#duplicateAlertModal').modal('show');
+                }             
+            }
+            function insertDuplicatePromo() {
+                savePromo();
+            }
+            function saveclose()
+                {
+                
+                     // var isTestAccountChecked = $('[id$=testAccountId]').val()?true:false;
+                      var isTestAccountChecked = $('[id$=testAccountId]').prop('checked');
+                      console.log("isTestAccountChecked"+isTestAccountChecked);
+                     // var isPromotionCertifiedChecked = $('[id$=testAccountId]').val()?true:false;
+                      var isPromotionCertifiedChecked = $('[id$=promoCertifiedId]').prop('checked');
+
+                      console.log("isPromotionCertifiedChecked"+isPromotionCertifiedChecked);
+                      if( isTestAccountChecked == false && isPromotionCertifiedChecked == false )
+                        {
+                        console.log("inside true");
+                          alert("Please select either 'Test Accounts Only' or 'Promotion Certified' flag to proceed");
+                         // document.location.reload();
+                         }
+                         else{
+                            return prepareSave();
+                         }
+               }
+            
+        </script>
+        
+        <apex:form id="frm_PromoEngineDetails">
+        <br/>
+        <apex:inputHidden id="criteriaMap" value="{!criteriaMap}" />
+        <apex:inputHidden id="selectedFields" value="{!selectedCheckbox}" />
+        <apex:inputHidden id="inputFields" value="{!inputFields}" />
+        <apex:inputHidden id="inputFieldsValues" value="{!inputFieldsValues}" />
+        <apex:inputHidden id="duplicateRecord" value="{!renderDuplicatePopup}" />
+            
+        <apex:outputPanel styleClass="promoEditPanel">
+            <apex:pageBlock id="pbs_PromoEngine">            
+                <apex:actionstatus id="loading">
+                    <apex:facet name="start">
+                        <div class="waitingSearchDiv" id="loading" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;"> 
+                                <div class="waitingHolder" style="top: 200px; left:600px; width: 91px; position: fixed;"> 
+                                <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait..." />
+                                <span class="waitingDescription">Please wait...</span> 
+                               </div> 
+                        </div>
+                    </apex:facet> 
+                </apex:actionstatus>
+                <fieldset>
+                    <legend>Wireline Promotion</legend>
+                    <ol style="padding:5px;">
+                        <li><label>To create new promotion, please fill all mandatory fields and click on the Save button.</label></li>
+                        <li><label>To view/edit promotions, please click the Promotion ID in the Promotion Rule Dashboard.</label></li>
+                    </ol>
+                </fieldset>
+                <br />
+
+                <center>
+                    <apex:commandButton id="cloneBtn" action="{!clonePromotion}" value="Make a new copy" styleClass="submitBtn" status="loading" style="width: auto;padding-right: 10px;padding-left: 10px;" rendered="{!IF(wirelinePromoRule.id != null && wirelinePromoRule.id != '' && cloneFlag == '',true,false)}" />
+                    <apex:commandButton action="{!cancel}" value="New" styleClass="submitBtn" status="loading" rendered="{!IF(readOnlyMode || (promoType != null && promoType != ''), true, false)}" />
+                    <apex:commandButton value="Save" styleClass="submitBtn" status="loading" onClick="saveclose();" rerender="null" >
+                        <apex:param name="criteriaMap" value="{!criteriaMap}" assignTo="{!criteriaMap}"/>
+                    </apex:commandButton>
+                    <apex:actionFunction name="checkDuplicateAction" action="{!checkDuplicatePromotions}" status="loading" rerender="duplicateRecord,promotionDuplicateList" oncomplete="{!IF(renderDuplicatePopup == false,'savePromo();','checkDuplicatePromotion();')}">
+                        <apex:param name="criteriaMap" value="{!criteriaMap}" assignTo="{!criteriaMap}"/>
+                    </apex:actionFunction>
+                    <apex:actionFunction name="savePromo" action="{!save}" status="loading" >
+                        <apex:param name="criteriaMap" value="{!criteriaMap}" assignTo="{!criteriaMap}"/>
+                        <apex:param name="selectedCheckbox" value="{!selectedCheckbox}" assignTo="{!selectedCheckbox}"/>
+                    </apex:actionFunction>
+                    <apex:commandButton action="{!cancel}" value="Cancel" styleClass="cancelBtn" status="loading" immediate="true" html-formnovalidate="formnovalidate"/>
+                </center>
+                    <apex:pageBlockSection id="pbs_PromoEngineDetails" title="{!promotionName}" collapsible="false">
+                        <!-- Promo type and & hierachy-->
+                        <apex:selectList id="promoTypeDropdown" style="height:22px;width:150px;" value="{!promoType}" multiselect="false" size="1" label="Promo Type" onchange="renderPromoSections(this);" >
+                            <apex:selectOptions value="{!promoTypeList}"/>
+                        </apex:selectList> 
+                        <apex:inputField value="{!wirelinePromoRule.Hierarchy__c}" html-disabled="true"/> 
+                        
+                        <!-- PromoName & promo Description -->
+                        <apex:inputField value="{!wirelinePromoRule.Promotion_Name__c}" styleClass="{!IF(wirelinePromoRule.Promotion_Certified__c == true || wirelinePromoRule.Active__c == true,'','editable')}"/>                 
+                        <apex:inputField value="{!wirelinePromoRule.Rule_Description__c}" styleClass="{!IF(wirelinePromoRule.Promotion_Certified__c == true || wirelinePromoRule.Active__c == true,'','editable')}" />
+                        
+                        <!-- Display only for Port Promo-->
+                        <apex:inputField rendered="{!IF(promoType != null && (promoType=='Port' || promoType=='Access'), true, false)}" value="{!wirelinePromoRule.Promotion_Tag__c}"  styleClass="{!IF(wirelinePromoRule.Promotion_Certified__c == true || wirelinePromoRule.Active__c == true,'','editable')}"/>  
+                        <apex:outputPanel rendered="{!IF(promoType != null && (promoType=='Port' || promoType=='Access'), true, false)}">
+                            <br/>       
+                        </apex:outputPanel>
+                        
+                        <!-- Priority & Rank -->
+                        <apex:inputField value="{!wirelinePromoRule.Priority__c}" html-disabled="true"/>
+                        <apex:inputField value="{!wirelinePromoRule.Rank__c}" styleClass="{!IF((wirelinePromoRule.Rank__c != null && wirelinePromoRule.Rank__c != 1) && (wirelinePromoRule.Promotion_Certified__c == true || wirelinePromoRule.Active__c == true),'','editable')} {!IF(wirelinePromoRule.Rank__c != null && wirelinePromoRule.Rank__c == 1,'disableRank','')}"/>
+                        
+                        
+                        
+                        <!-- Discount Percentage & Active -->
+                        <apex:inputField value="{!wirelinePromoRule.Discount_Percentage__c}"/> 
+                        <apex:inputField value="{!wirelinePromoRule.Active__c}" styleClass="promotionActiveFeild disableCheckBox" />
+                        
+                        <!-- Start and End Date-->
+                        <apex:inputField value="{!wirelinePromoRule.Start_Date__c}"/>
+                        <apex:inputField value="{!wirelinePromoRule.End_Date__c}"/>
+                        
+                        <!-- Promotion  end date and Stackable -->
+                        <apex:inputField value="{!wirelinePromoRule.Display_Promotion_End_Date__c}" styleClass="{!IF(wirelinePromoRule.Promotion_Certified__c == true || wirelinePromoRule.Active__c == true,'disableCheckBox','editable')} displayPromoEndDate"/>
+                        <apex:inputField value="{!wirelinePromoRule.Stackable__c}" styleClass="{!IF(wirelinePromoRule.Promotion_Certified__c == true || wirelinePromoRule.Active__c == true,'disableCheckBox','editable')}"/>   
+
+                        <!-- Dashboard Notification & Display Promo -->
+                        <apex:inputField value="{!wirelinePromoRule.Expiry_Notification__c}" styleClass="{!IF(wirelinePromoRule.Promotion_Certified__c == true || wirelinePromoRule.Active__c == true,'disableCheckBox','editable')}"/> 
+                        <apex:inputField value="{!wirelinePromoRule.Promotion_Notification__c}" styleClass="{!IF(wirelinePromoRule.Promotion_Certified__c == true || wirelinePromoRule.Active__c == true,'disableCheckBox','editable')} promotionNotificationFeild"/>  
+                        
+                        <!-- Test only & Stop Promotion Now -->
+                        <apex:inputField value="{!wirelinePromoRule.For_Testing__c}" id="testAccountId" styleClass="{!IF(wirelinePromoRule.Active__c == true,'disableCheckBox','editable')} testAccountField"/>
+                        <apex:inputField value="{!wirelinePromoRule.Do_Not_Run__c}" styleClass="{!IF(wirelinePromoRule.Do_Not_Run__c == false,'editable stopPromotionField','disableCheckBox stopPromotionField')} "/>
+                        
+                        <!-- Promotion Certified -->
+                       <apex:inputField value="{!wirelinePromoRule.Promotion_Certified__c}"  id="promoCertifiedId" styleClass="editable promoCertifiedField" rendered="{!!wirelinePromoRule.Promotion_Certified__c}"/>      
+                        <apex:inputField value="{!wirelinePromoRule.Promotion_Certified_By__c}" rendered="{!wirelinePromoRule.Promotion_Certified__c}"/> 
+                        <!-- Stop Promotion Date-->
+                        <apex:inputField value="{!wirelinePromoRule.Early_Stop_Date__c}" styleClass="{!IF(wirelinePromoRule.id == null || wirelinePromoRule.id == '' || cloneFlag != null || cloneFlag != '' || wirelinePromoRule.Do_Not_Run__c == true || (wirelinePromoRule.End_Date__c != null && currentDate >= wirelinePromoRule.End_Date__c),'earlyStopDate','editable earlyStopDate')}"/>
+                        
+                    </apex:pageBlockSection>
+            </apex:pageBlock>
+            <script type="text/javascript"> 
+                var criteriaMapInputOnLoad  = $('[id$=criteriaMap]').val();
+                if("undefined" != typeof criteriaMapInputOnLoad && criteriaMapInputOnLoad != null && criteriaMapInputOnLoad !=""){
+                    populateInputMapData();
+                }
+            </script>
+            
+            <apex:repeat value="{!sectionsNameList}" var="dirKey" rendered="true">
+                <apex:pageBlock >
+                    <apex:pageBlockSection title="{!dirKey}" collapsible="false" />
+                    <div id="{!dirKey}" class="fieldSection promoSection">
+                    <script type="text/javascript">
+                    var checkedBoxes=[];                
+                    var results;
+                    Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.WirelinePromotionController.getPromoListforSection}',
+                    '{!dirKey}', 
+                    function(result, event){
+                        if (event.status) {
+                            results=result;
+                            var sectionName = "{!dirKey}";
+                            var promoType = $('[id$=promoTypeDropdown]').val();
+                            criteriaMap['{!dirKey}']='';
+                            var selectFor ='';
+                            $("#loading").parent().show();
+                            if("undefined" != typeof sectionName && sectionName != null && (promoType != null && ("Port" == promoType || "Access" == promoType)) && (selectAllSections.indexOf(sectionName) > -1)){
+                                var selectAllDiv = document.createElement('div');
+                                var selectAllCheckBox = document.createElement('input');
+                                selectAllCheckBox.type = "checkbox";
+                                selectAllCheckBox.id = sectionName.replace(/ /g,'')+"_SelectAll";
+                                selectFor = sectionName.replace(/ /g,'')+"_SelectAll";
+                                selectAllCheckBox.value = "No";
+                                var label= document.createElement('label');
+                                var labelText = document.createTextNode("Select All");
+                                label.appendChild(labelText);
+                                $(selectAllDiv).addClass("selectAllDiv");
+                                selectAllDiv.appendChild(selectAllCheckBox);
+                                selectAllDiv.appendChild(label);
+                                document.getElementById('{!dirKey}').appendChild(selectAllDiv);
+                                selectAllCheckBox.onclick = function(){
+                                    if($(this)[0].checked){
+                                        $("."+selectFor).each(function(){
+                                            if(!($(this).is(":checked"))){                                      
+                                                $(this).click();
+                                            }                                       
+                                        });
+                                    }
+                                    else{
+                                        $("."+selectFor).each(function(){
+                                            if($(this).is(":checked")){
+                                                $(this).click();
+                                            }                                       
+                                        });
+                                    }                               
+                                }
+                            }
+                            if("undefined" != typeof sectionName && sectionName != null && (promoType != null && ("Feature" == promoType)) && sectionName == "Feature"){
+                                selectFor = sectionName.replace(/ /g,'')+"_Options";;
+                            }
+                            for (i=0;i<result.length;i++){
+                                var checkbox = document.createElement('input');
+                                checkbox.type = "checkbox";
+                                checkbox.name = result[i].WP_Field_Value__c;
+                                checkbox.id = result[i].Id;
+                                checkbox.value = result[i].WP_Field_Value__c;                           
+                                if(selectFor != null && selectFor != ''){
+                                    $(checkbox).prop("class",selectFor);
+                                }
+                                checkbox.onclick = function(){
+                                    if($(this)[0].checked){                                 
+                                        var currentVal = criteriaMap['{!dirKey}'];
+                                        currentVal= (typeof currentVal != 'undefined' && currentVal.length>0)? currentVal=(currentVal+','+this.value) : this.value;
+                                        criteriaMap['{!dirKey}'] = currentVal;
+                                        setTimeout(function(){
+                                            if(selectFor != "" && ($("."+selectFor+":checked").length == $("."+selectFor).length)){
+                                                if(!($("#"+selectFor).is(":checked"))){
+                                                    $("#"+selectFor).prop("checked","true");
+                                                }
+                                            }
+                                        },100);
+                                    }
+                                    else{
+                                            setTimeout(function(){
+                                                if($(selectFor != "" &&("."+selectFor+":checked").length == $("."+selectFor).length)){
+                                                    if($("#"+selectFor).is(":checked")){
+                                                        $("#"+selectFor).removeAttr("checked");
+                                                    }
+                                                }
+                                            },100);
+                                            var existingVal = criteriaMap['{!dirKey}'];
+                                            var currentVal = this.value;
+                                            var uniqueList=existingVal.split(',').filter(function(item,i,listItems){
+                                                if(currentVal != listItems[i]){
+                                                    return listItems[i];
+                                                }
+                                            }).join(',');
+                                            if(typeof uniqueList != 'undefined' && uniqueList != null && uniqueList != ''){
+                                                criteriaMap['{!dirKey}'] = uniqueList;
+                                            }
+                                            else{
+                                                criteriaMap['{!dirKey}'] = '';
+                                            }
+                                    }                                
+                                    if (selectedFields.indexOf(this.id)>-1){
+                                        selectedFields.splice(selectedFields.indexOf(this.id), 1);
+                                    }
+                                    else
+                                    {
+                                       selectedFields.push(this.id);
+                                    }
+                                    
+                                    if(checkedBoxes.indexOf(this.id)>-1){
+                                        checkedBoxes.splice( checkedBoxes.indexOf(this.id), 1 );
+                                    }
+                                    else{
+                                        checkedBoxes.push(this.value);
+                                    }   
+                                    if("undefined" != typeof sectionName && sectionName != null && (promoType != null && ("Port" == promoType || "Access" == promoType)) && sectionName.toUpperCase() && "PRODUCT"){
+                                        if($(this) != null && "undefined" != typeof $(this) && ((($(this).val()).toUpperCase() == "AVPN" && $(":checkbox[value=AVPN]").is(":checked")) || $(":checkbox[value=AVPN]").is(":checked"))){
+                                            if($(":checkbox[value=PLUS],:checkbox[value=Plus]").is(":checked")){
+                                                    $(":checkbox[value=PLUS],:checkbox[value=Plus]").click();
+                                            }
+                                            $(":checkbox[value=PLUS],:checkbox[value=Plus]").prop("disabled","true");
+                                        }
+                                        else{
+                                            $(":checkbox[value=PLUS],:checkbox[value=Plus]").removeAttr("disabled");
+                                        }
+                                    }
+                                    else if("undefined" != typeof sectionName && sectionName != null && (promoType != null && ("Feature" == promoType)) && sectionName.toUpperCase() && "PRODUCT"){
+                                        if($(this) != null && "undefined" != typeof $(this) && ((($(this).val()).toUpperCase() == "AVPN" && $(":checkbox[value=AVPN]").is(":checked")) || $(":checkbox[value=AVPN]").is(":checked")) ){
+                                            if($(":checkbox[value=Primary]").is(":checked")){
+                                                    $(":checkbox[value=Primary]").click();
+                                            }                                       
+                                            if($(":checkbox[value=Secondary]").is(":checked")){
+                                                    $(":checkbox[value=Secondary]").click();
+                                            }
+                                            $(":checkbox[value=Primary]").prop("disabled","true");
+                                            $(":checkbox[value=Secondary]").prop("disabled","true");
+                                        }
+                                        else{
+                                            $(":checkbox[value=Primary]").removeAttr("disabled");
+                                            $(":checkbox[value=Secondary]").removeAttr("disabled");
+                                        }
+                                        if($(this) != null && "undefined" != typeof $(this) && ((($(this).val()).toUpperCase() == "MIS" && $(":checkbox[value=MIS]").is(":checked")) || $(":checkbox[value=MIS]").is(":checked")) ){
+                                            if($(":checkbox[value=VLAN]").is(":checked")){
+                                                    $(":checkbox[value=VLAN]").click();
+                                            }                                                                               
+                                            $(":checkbox[value=VLAN]").prop("disabled","true");
+                                        }
+                                        else{
+                                            $(":checkbox[value=VLAN]").removeAttr("disabled");
+                                        }
+                                    }
+                                };
+                                if(result[i].WP_Requires_Input__c == false){
+                                    var label= document.createElement('label');
+                                    var labelText = document.createTextNode(result[i].WP_Field_Value__c);
+                                    label.appendChild(labelText);
+                                    if(result[i].WP_Field_Value__c != null && typeof result[i].WP_Field_Value__c != 'undefined' && (result[i].WP_Field_Value__c).indexOf('Hi-Cap')>=0){                                 
+                                        
+                                        var helpTextElement = $("<span>", {id: "hicap-title-_help", "class": "helpButton"});
+                                        var helpTextImg = $("<img>",{src:"/s.gif", "class":"helpOrb","style":"margin-left:8px;"});
+                                        $(helpTextElement).append(helpTextImg);
+                                        sfdcPage.setHelp("hicap-title", "IMPORTANT - For Hi-Cap Flex promos, you must individually select Basic or Managed. If a promotion is needed for both options please create two separate rules: one Basic and one Managed.");
+                                        $(label).append(helpTextElement);
+                                    }
+                                    document.getElementById('{!dirKey}').appendChild(checkbox);
+                                    document.getElementById('{!dirKey}').appendChild(label);  
+                                    if(typeof criteriaInputSaved['{!dirKey}'] != 'undefined' && criteriaInputSaved['{!dirKey}'] != null){
+                                        var checkBoxVal = (criteriaInputSaved['{!dirKey}']).split(",");
+                                        if(typeof checkBoxVal != 'undefined' && checkBoxVal != null && checkBoxVal.length>0){
+                                            $.each( checkBoxVal, function( index, value ) {
+                                              if(checkBoxVal[index] == result[i].WP_Field_Value__c){
+                                                    $(checkbox).click();
+                                                    return true;
+                                                }
+                                            });
+                                        }                                   
+                                    }                               
+                                }
+                                else if(result[i].WP_Requires_Input__c && '{!dirKey}' != 'SP List'){
+                                    var label= document.createElement('label');      
+                                    var labelText = document.createTextNode(result[i].WP_Field_Name__c);
+                                    if(result[i].WP_Field_Name__c != null && (result[i].WP_Field_Name__c == 'Number of Sites' || result[i].WP_Field_Name__c == 'MRC Value')){
+                                        labelText = document.createTextNode(result[i].WP_Field_Name__c+' (>=)');
+                                    }
+                                    label.appendChild(labelText);
+                                    
+                                    var varID = (result[i].WP_Field_Name__c).replace(/ /g,'');
+                                    var promoText = document.createElement('input');
+                                    promoText.type = "text";
+                                    promoText.name = varID;
+                                    promoText.id = result[i].Id;
+                                    promoText.onchange= function() {
+                                    if (inputFields.indexOf(this.id)>-1)
+                                       {
+                                              if(this.value == '')
+                                              {
+                                                  inputFieldsValues.splice(inputFields.indexOf(this.id),1);
+                                                  inputFields.splice(inputFields.indexOf(this.id), 1);    
+                                              }
+                                              else
+                                              {
+                                                  inputFieldsValues[inputFields.indexOf(this.id)]=this.value;
+                                              }
+                                       }
+                                       else if ( this.value != '')
+                                       {
+                                           inputFields.push(this.id);
+                                           inputFieldsValues.push(this.value);    
+                                       }
+
+                                    }
+                                    document.getElementById('{!dirKey}').appendChild(label);
+                                    document.getElementById('{!dirKey}').appendChild(promoText);
+                                    criteriaMap[varID]='';
+                                    if(result[i].WP_Field_Name__c != null && result[i].WP_Field_Name__c == 'Zip Code'){
+                                        $(promoText).attr('placeholder','#');
+                                        $(promoText).css("text-align","right");
+                                    }                               
+                                    delete criteriaMap['{!dirKey}'];
+                                    $('#'+result[i].Id).bind('change', function () {
+                                        criteriaMap[$(this).attr('name')] = $(this).val();
+                                    });
+                                    $(promoText).val(criteriaInputSaved[varID]).change();
+                                }
+                                else if(result[i].WP_Requires_Input__c && '{!dirKey}' == 'SP List'){
+                                    var label= document.createElement('label');      
+                                    label.id='multiselectLabel';
+                                    var labelText = document.createTextNode(result[i].WP_Field_Name__c);
+                                    label.appendChild(labelText);
+                                    var multiSelectInput = '<div class="text-center multiSelectField"><div style="width:30%;"><select class="form-control addOptions" id="accountSelect" multiple="multiple" style="height:100px;"></select></div><div class="addOrRemoveBtn" style="width:20%;"><div class="input-group"><button type="button" value="" class="" id="add">Add >></button></div><div class="input-group" style="padding-top:10px;"><button type="button" value="" class="" id="remove"><< Remove</button></div></div><div class="" style="width:30%;"><select class="form-control selectedOptions" id="selected_features" size="9" multiple="multiple" style="height:100px;"></select></div></div>';
+                                    document.getElementById('{!dirKey}').appendChild(label);
+                                    $('#multiselectLabel').append(multiSelectInput);
+                                    $({!accountNameList}).each(function( index,value ) {
+                                      $('#accountSelect').append('<option value="'+value+'">'+value+'</option>');
+                                    });
+                                    $('#add').click(function() {  
+                                            !$('#accountSelect option:selected').remove().appendTo('#selected_features'); 
+                                            var uniqueList=[];
+                                            $('.selectedOptions option').each(function(){
+                                                uniqueList.push($(this).val());
+                                            });
+                                            criteriaMap['{!dirKey}'] = uniqueList.join(",");
+                                            $('.selectedOptions option:selected').prop("selected", false);
+                                       });  
+                                       $('#remove').click(function() {  
+                                            !$('#selected_features option:selected').remove().appendTo('#accountSelect');  
+                                            var uniqueList=[];
+                                            $('.selectedOptions option').each(function(){
+                                                uniqueList.push($(this).val());
+                                            });
+                                            criteriaMap['{!dirKey}'] = uniqueList.join(",");
+                                            $('.selectedOptions option:selected').prop("selected", false);
+                                            $('#accountSelect option:selected').prop("selected", false);
+                                       });  
+                                        
+                                    function selectall()  {  
+                                    $('#selected_features').find('option').each(function() {  
+                                       $(this).attr('selected', 'selected');  
+                                        criteriaMap['{!dirKey}'] = $('.selectedOptions').val();
+                                      });  
+                                    }
+                                    if(criteriaInputSaved['{!dirKey}'] != null){
+                                        var multiSelectVal = (criteriaInputSaved['{!dirKey}']).split(",");
+                                        if(typeof multiSelectVal != 'undefined' && multiSelectVal != null && multiSelectVal.length>0){
+                                            var dropdownVal='';
+                                            $.each( multiSelectVal, function( index, value ) {
+                                                dropdownVal = dropdownVal.length>0 ? dropdownVal+','+multiSelectVal[index]:multiSelectVal[index];  
+                                                if(dropdownVal != null && dropdownVal != ''){
+                                                    if($('#accountSelect option[value="'+dropdownVal+'"]').length>0){
+                                                        $('#accountSelect option[value="'+dropdownVal+'"]').prop("selected", "selected");
+                                                        dropdownVal='';
+                                                    }                                               
+                                                    $('#add').click();
+                                                 }
+                                            });
+                                            criteriaMap['{!dirKey}'] = multiSelectVal;
+                                        }                                   
+                                    }
+                                }
+                                disableFields();
+                            }
+                            setTimeout(function() {$("#loading").parent().hide();},500);
+                            
+                        }
+                    });
+                    </script>
+                    </div>
+                </apex:pageBlock>
+            </apex:repeat>
+            </apex:outputPanel>
+            
+            <center>
+                <apex:commandButton value="Save" styleClass="submitBtn" status="loading" onClick="saveclose();" rerender="null" >
+                    <apex:param name="criteriaMap" value="{!criteriaMap}" assignTo="{!criteriaMap}"/>
+                </apex:commandButton>
+                <apex:commandButton action="{!cancel}" value="Cancel" styleClass="cancelBtn" status="loading" immediate="true" html-formnovalidate="formnovalidate"/>
+                <apex:actionFunction name="saveAction" action="{!save}" status="loading" rerender="showRequiredFields">
+                </apex:actionFunction>
+            </center>
+            <apex:pageBlock id="pbs_criteria">
+                <apex:pageBlockSection title="Promotion Rule Dashboard" collapsible="false">
+                </apex:pageBlockSection>
+                <div id="tabs" class="criteriaContainer">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="{!IF(promoType == '','active','')}"><a href="#all-tab" aria-controls="all-tab" role="tab" data-toggle="tab">{!$Label.ALL_TAB}</a></li>
+                        <li role="presentation" class="{!IF(promoType == $Label.RATE_CARD_TAB,'active','')}"><a href="#rate-tab" aria-controls="rate-tab" role="tab" data-toggle="tab">{!$Label.RATE_CARD_TAB}</a></li>
+                        <li role="presentation" class="{!IF(promoType == $Label.SP_TIER_DISC_TAB,'active','')}"><a href="#tierDiscount-tab" aria-controls="tierDiscount-tab" role="tab" data-toggle="tab">{!$Label.SP_TIER_DISC_TAB}</a></li>
+                        <li role="presentation" class="{!IF(promoType == $Label.PORT_TAB,'active','')}"><a href="#port-tab" aria-controls="port-tab" role="tab" data-toggle="tab">{!$Label.PORT_TAB}</a></li>
+                        <li role="presentation" class="{!IF(promoType == $Label.ACCESS_TAB,'active','')}"><a href="#access-tab" aria-controls="access-tab" role="tab" data-toggle="tab">{!$Label.ACCESS_TAB}</a></li>
+                        <li role="presentation" class="{!IF(promoType == $Label.FEATURE_TAB,'active','')}"><a href="#feature-tab" aria-controls="feature-tab" role="tab" data-toggle="tab">{!$Label.FEATURE_TAB}</a></li>
+                        <li role="presentation" disabled="true" class="{!IF(promoType == $Label.ONE_TIME_CHARGE_TAB,'active','')}"><a disabled="true" href="javascript:return false;" aria-controls="" role="tab" data-toggle="tab">{!$Label.ONE_TIME_CHARGE_TAB}</a></li>
+                        <li role="presentation" class="{!IF(promoType == $Label.SP_TAB,'active','')}"><a href="#sp-tab" aria-controls="sp-tab" role="tab" data-toggle="tab">{!$Label.SP_TAB}</a></li>
+                        <li role="presentation" class="{!IF(promoType == $Label.ORDER_TAB,'active','')}"><a href="#order-tab" aria-controls="order-tab" role="tab" data-toggle="tab">{!$Label.ORDER_TAB}</a></li>
+                        <li role="presentation" class="{!IF(promoType == $Label.DEAL_REG_TAB,'active','')}"><a href="#dealReg-tab" aria-controls="dealReg-tab" role="tab" data-toggle="tab">{!$Label.DEAL_REG_TAB}</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade {!IF(promoType == '','in active','')}" id="all-tab">
+                            <div>
+                                <label class="activePromotionsCheckbox">
+                                    <span class="check-label">
+                                        <input class="css-checkbox" id="checkboxFilterAllActiveId" type="radio" name="checkboxFilterAllActiveId" onchange="filterActivePromotions(this,'activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ACTIVE_PROMO}</label>                 
+                                        <input class="css-checkbox" id="checkboxFilterAllTestOnlyId"  type="radio" name="checkboxFilterAllActiveId" onchange="filterActivePromotions(this,'testOnlyCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_TEST_ONLY_PROMO}</label>
+                                        <input class="css-checkbox" id="checkboxFilterAllCertifiedId"  type="radio" name="checkboxFilterAllActiveId" onchange="filterPromoCertifiedNotActive(this,'promoCertifiedCheckBoxVal','activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_PROMOCERTIFIED_NOT_ACTIVE}</label>
+                                        <input class="css-checkbox" id="checkboxFilterAllStopId"  type="radio" name="checkboxFilterAllActiveId" onchange="filterActivePromotions(this,'stopPromotionCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_STOP_PROMO}</label>
+                                    </span>
+                                </label>
+                                <a href="/apex/ExportPromotionsInExcel?mode=All" download="All Promotions.xls" class="btn exportExcel" role="button">Export Excel</a>
+                            </div>
+                            <apex:dataTable value="{!allRuleList}" var="rule" id="allPromotionsTable" rowClasses="odd,even" styleClass="manageNetServiceDT table table-bordered table-striped table-hover tableClass">
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_ID_TITLE}</apex:facet>
+                                    <apex:outputLink value="#" onclick="return renderPromotionData('{!rule.id}');">{!rule.Name}</apex:outputLink>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_NAME_TITLE}</apex:facet>
+                                     <apex:outputText title="{!rule.Promotion_Name__c}" value="{!rule.Promotion_Name__c}" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.DISCOUNT_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Discount_Percentage__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.RANK_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Rank__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.STACKABLE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Stackable__c}" disabled="true" id="StackableCheckbox" />
+                                </apex:column>
+                                <apex:column >                           
+                                    <apex:facet name="header">{!$Label.START_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.Start_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.END_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.End_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_END_DATE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Display_Promotion_End_Date__c}" disabled="true" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.ACTIVE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Active__c}" disabled="true" />
+                                </apex:column>    
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_CERTIFIED_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Promotion_Certified__c}" disabled="true" />
+                                </apex:column>                          
+                                <apex:column styleClass="activeCheckBoxVal">
+                                    <apex:outputText value="{!rule.Active__c}" />
+                                </apex:column>
+                                <apex:column styleClass="promoCertifiedCheckBoxVal">
+                                    <apex:outputText value="{!rule.Promotion_Certified__c}" />
+                                </apex:column>
+                                <apex:column styleClass="stopPromotionCheckBoxVal">
+                                    <apex:outputText value="{!rule.Do_Not_Run__c}" />
+                                </apex:column>
+                                <apex:column styleClass="testOnlyCheckBoxVal">
+                                    <apex:outputText value="{!rule.For_Testing__c}" />
+                                </apex:column>
+                            </apex:dataTable>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade {!IF(promoType == $Label.RATE_CARD_TAB,'in active','')}" id="rate-tab">
+                            <div>
+                                <label class="activePromotionsCheckbox">
+                                    <span class="check-label">
+                                        <input class="css-checkbox" id="checkboxFilterActiveId" type="radio" name="checkboxFilterActiveId" onchange="filterActivePromotions(this,'activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ACTIVE_PROMO}</label>                 
+                                        <input class="css-checkbox" id="checkboxFilterTestOnlyId"  type="radio" name="checkboxFilterActiveId" onchange="filterActivePromotions(this,'testOnlyCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_TEST_ONLY_PROMO}</label>
+                                        <input class="css-checkbox" id="checkboxFilterCertifiedId"  type="radio" name="checkboxFilterActiveId" onchange="filterPromoCertifiedNotActive(this,'promoCertifiedCheckBoxVal','activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_PROMOCERTIFIED_NOT_ACTIVE}</label>
+                                        <input class="css-checkbox" id="checkboxFilterStopId"  type="radio" name="checkboxFilterActiveId" onchange="filterActivePromotions(this,'stopPromotionCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_STOP_PROMO}</label>
+                                    </span>
+                                </label>
+                                <a href="/apex/ExportPromotionsInExcel?mode=RateCardMap" download="Rate Card Promotions.xls" class="btn exportExcel" role="button">Export Excel</a>
+                            </div>
+                            <apex:dataTable value="{!rateCardMapRuleList}" var="rule" id="rateMapTable" rowClasses="odd,even" styleClass="manageNetServiceDT table table-bordered table-striped table-hover tableClass">
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_ID_TITLE}</apex:facet>
+                                    <apex:outputLink value="#" onclick="return renderPromotionData('{!rule.id}');">{!rule.Name}</apex:outputLink>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_NAME_TITLE}</apex:facet>
+                                     <apex:outputText title="{!rule.Promotion_Name__c}" value="{!rule.Promotion_Name__c}" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.DISCOUNT_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Discount_Percentage__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.RANK_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Rank__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.STACKABLE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Stackable__c}" disabled="true" id="StackableCheckbox" />
+                                </apex:column>
+                                <apex:column >                           
+                                    <apex:facet name="header">{!$Label.START_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.Start_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.END_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.End_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_END_DATE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Display_Promotion_End_Date__c}" disabled="true" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.ACTIVE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Active__c}" disabled="true" />
+                                </apex:column> 
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_CERTIFIED_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Promotion_Certified__c}" disabled="true" />
+                                </apex:column>                             
+                                 <apex:column styleClass="activeCheckBoxVal">
+                                    <apex:outputText value="{!rule.Active__c}" />
+                                </apex:column>
+                                <apex:column styleClass="promoCertifiedCheckBoxVal">
+                                    <apex:outputText value="{!rule.Promotion_Certified__c}" />
+                                </apex:column>
+                                <apex:column styleClass="stopPromotionCheckBoxVal">
+                                    <apex:outputText value="{!rule.Do_Not_Run__c}" />
+                                </apex:column>
+                                <apex:column styleClass="testOnlyCheckBoxVal">
+                                    <apex:outputText value="{!rule.For_Testing__c}" />
+                                </apex:column>
+                            </apex:dataTable>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade {!IF(promoType == $Label.SP_TIER_DISC_TAB,'in active','')}" id="tierDiscount-tab">
+                            <div>
+                                <label class="activePromotionsCheckbox">
+                                    <span class="check-label">
+                                        <input class="css-checkbox" id="checkboxFilterActiveIdTier" type="radio" name="checkboxFilterActiveIdTier" onchange="filterActivePromotions(this,'activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ACTIVE_PROMO}</label>                 
+                                        <input class="css-checkbox" id="checkboxFilterTestOnlyIdTier"  type="radio" name="checkboxFilterActiveIdTier" onchange="filterActivePromotions(this,'testOnlyCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_TEST_ONLY_PROMO}</label>
+                                        <input class="css-checkbox" id="checkboxFilterCertifiedIdTier"  type="radio" name="checkboxFilterActiveIdTier" onchange="filterPromoCertifiedNotActive(this,'promoCertifiedCheckBoxVal','activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_PROMOCERTIFIED_NOT_ACTIVE}</label>
+                                        <input class="css-checkbox" id="checkboxFilterStopIdTier"  type="radio" name="checkboxFilterActiveIdTier" onchange="filterActivePromotions(this,'stopPromotionCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_STOP_PROMO}</label>
+                                    </span>                                
+                                </label>
+                                <a href="/apex/ExportPromotionsInExcel?mode=SPTierDiscount" download="SP Tier Discount Promotions.xls" class="btn exportExcel" role="button">Export Excel</a>
+                            </div>
+                            <apex:dataTable value="{!spTierDiscountRuleList}" var="rule" id="discountTable" rowClasses="odd,even" styleClass="manageNetServiceDT table table-bordered table-striped table-hover tableClass">
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_ID_TITLE}</apex:facet>
+                                    <apex:outputLink value="#" onclick="return renderPromotionData('{!rule.id}');">{!rule.Name}</apex:outputLink>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_NAME_TITLE}</apex:facet>
+                                     <apex:outputText title="{!rule.Promotion_Name__c}" value="{!rule.Promotion_Name__c}" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.DISCOUNT_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Discount_Percentage__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.RANK_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Rank__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.STACKABLE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Stackable__c}" disabled="true" id="StackableCheckbox" />
+                                </apex:column>
+                                <apex:column >                           
+                                    <apex:facet name="header">{!$Label.START_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.Start_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.END_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.End_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_END_DATE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Display_Promotion_End_Date__c}" disabled="true" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.ACTIVE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Active__c}" disabled="true" />
+                                </apex:column> 
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_CERTIFIED_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Promotion_Certified__c}" disabled="true" />
+                                </apex:column>                         
+                                 <apex:column styleClass="activeCheckBoxVal">
+                                    <apex:outputText value="{!rule.Active__c}" />
+                                </apex:column>
+                                <apex:column styleClass="promoCertifiedCheckBoxVal">
+                                    <apex:outputText value="{!rule.Promotion_Certified__c}" />
+                                </apex:column>
+                                <apex:column styleClass="stopPromotionCheckBoxVal">
+                                    <apex:outputText value="{!rule.Do_Not_Run__c}" />
+                                </apex:column>
+                                <apex:column styleClass="testOnlyCheckBoxVal">
+                                    <apex:outputText value="{!rule.For_Testing__c}" />
+                                </apex:column>
+                            </apex:dataTable>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade {!IF(promoType == $Label.PORT_TAB,'in active','')}" id="port-tab">
+                            <div>
+                                <label class="activePromotionsCheckbox">
+                                    <span class="check-label">
+                                        <input class="css-checkbox" id="checkboxFilterActivePortId" type="radio" name="checkboxFilterActivePortId" onchange="filterActivePromotions(this,'activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ACTIVE_PROMO}</label>                 
+                                        <input class="css-checkbox" id="checkboxFilterTestOnlyPortId"  type="radio" name="checkboxFilterActivePortId" onchange="filterActivePromotions(this,'testOnlyCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_TEST_ONLY_PROMO}</label>
+                                        <input class="css-checkbox" id="checkboxFilterCertifiedPortId"  type="radio" name="checkboxFilterActivePortId" onchange="filterPromoCertifiedNotActive(this,'promoCertifiedCheckBoxVal','activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_PROMOCERTIFIED_NOT_ACTIVE}</label>
+                                        <input class="css-checkbox" id="checkboxFilterStopePortId"  type="radio" name="checkboxFilterActivePortId" onchange="filterActivePromotions(this,'stopPromotionCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_STOP_PROMO}</label>
+                                    </span>
+                                </label>
+                                <a href="/apex/ExportPromotionsInExcel?mode=Port" download="Port Promotions.xls" class="btn exportExcel" role="button">Export Excel</a>
+                            </div>
+                            <apex:dataTable value="{!portRuleList}" var="rule" id="portTable" rowClasses="odd,even" styleClass="manageNetServiceDT table table-bordered table-striped table-hover tableClass">
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_ID_TITLE}</apex:facet>
+                                    <apex:outputLink value="#" onclick="return renderPromotionData('{!rule.id}');">{!rule.Name}</apex:outputLink>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_NAME_TITLE}</apex:facet>
+                                     <apex:outputText title="{!rule.Promotion_Name__c}" value="{!rule.Promotion_Name__c}" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.DISCOUNT_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Discount_Percentage__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.RANK_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Rank__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.STACKABLE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Stackable__c}" disabled="true" id="StackableCheckbox" />
+                                </apex:column>
+                                <apex:column >                           
+                                    <apex:facet name="header">{!$Label.START_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.Start_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.END_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.End_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_END_DATE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Display_Promotion_End_Date__c}" disabled="true" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.ACTIVE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Active__c}" disabled="true" />
+                                </apex:column>      
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_CERTIFIED_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Promotion_Certified__c}" disabled="true" />
+                                </apex:column>                    
+                                <apex:column styleClass="activeCheckBoxVal">
+                                    <apex:outputText value="{!rule.Active__c}" />
+                                </apex:column>
+                                <apex:column styleClass="promoCertifiedCheckBoxVal">
+                                    <apex:outputText value="{!rule.Promotion_Certified__c}" />
+                                </apex:column>
+                                <apex:column styleClass="stopPromotionCheckBoxVal">
+                                    <apex:outputText value="{!rule.Do_Not_Run__c}" />
+                                </apex:column>
+                                <apex:column styleClass="testOnlyCheckBoxVal">
+                                    <apex:outputText value="{!rule.For_Testing__c}" />
+                                </apex:column>
+                                
+                            </apex:dataTable>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade {!IF(promoType == $Label.ACCESS_TAB,'in active','')}" id="access-tab">
+                            <div>
+                                <label class="activePromotionsCheckbox">
+                                    <span class="check-label">
+                                        <input class="css-checkbox" id="checkboxFilterActiveAccId" type="radio" name="checkboxFilterActiveAccId" onchange="filterActivePromotions(this,'activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ACTIVE_PROMO}</label>                 
+                                        <input class="css-checkbox" id="checkboxFilterTesOnlyAccId"  type="radio" name="checkboxFilterActiveAccId" onchange="filterActivePromotions(this,'testOnlyCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_TEST_ONLY_PROMO}</label>
+                                        <input class="css-checkbox" id="checkboxFilterCertifiedAccId"  type="radio" name="checkboxFilterActiveAccId" onchange="filterPromoCertifiedNotActive(this,'promoCertifiedCheckBoxVal','activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_PROMOCERTIFIED_NOT_ACTIVE}</label>
+                                        <input class="css-checkbox" id="checkboxFilterStopAccId"  type="radio" name="checkboxFilterActiveAccId" onchange="filterActivePromotions(this,'stopPromotionCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_STOP_PROMO}</label>
+                                    </span>                                
+                                </label>
+                                <a href="/apex/ExportPromotionsInExcel?mode=Access" download="Access Promotions.xls" class="btn exportExcel" role="button">Export Excel</a>
+                            </div>
+                            <apex:dataTable value="{!accessRuleList}" var="rule" id="accessTable" rowClasses="odd,even" styleClass="manageNetServiceDT table table-bordered table-striped table-hover tableClass">
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_ID_TITLE}</apex:facet>
+                                    <apex:outputLink value="#" onclick="return renderPromotionData('{!rule.id}');">{!rule.Name}</apex:outputLink>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_NAME_TITLE}</apex:facet>
+                                     <apex:outputText title="{!rule.Promotion_Name__c}" value="{!rule.Promotion_Name__c}" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.DISCOUNT_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Discount_Percentage__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.RANK_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Rank__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.STACKABLE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Stackable__c}" disabled="true" id="StackableCheckbox" />
+                                </apex:column>
+                                <apex:column >                           
+                                    <apex:facet name="header">{!$Label.START_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.Start_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.END_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.End_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_END_DATE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Display_Promotion_End_Date__c}" disabled="true" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.ACTIVE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Active__c}" disabled="true" />
+                                </apex:column>     
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_CERTIFIED_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Promotion_Certified__c}" disabled="true" />
+                                </apex:column>                     
+                                 <apex:column styleClass="activeCheckBoxVal">
+                                    <apex:outputText value="{!rule.Active__c}" />
+                                </apex:column>
+                                <apex:column styleClass="promoCertifiedCheckBoxVal">
+                                    <apex:outputText value="{!rule.Promotion_Certified__c}" />
+                                </apex:column>
+                                <apex:column styleClass="stopPromotionCheckBoxVal">
+                                    <apex:outputText value="{!rule.Do_Not_Run__c}" />
+                                </apex:column>
+                                <apex:column styleClass="testOnlyCheckBoxVal">
+                                    <apex:outputText value="{!rule.For_Testing__c}" />
+                                </apex:column>
+                            </apex:dataTable>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade {!IF(promoType == $Label.FEATURE_TAB,'in active','')}" id="feature-tab">
+                            <div>
+                                <label class="activePromotionsCheckbox">
+                                    <span class="check-label">
+                                        <input class="css-checkbox" id="checkboxFilterActiveFeatId" type="radio" name="checkboxFilterActiveFeatId" onchange="filterActivePromotions(this,'activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ACTIVE_PROMO}</label>                 
+                                        <input class="css-checkbox" id="checkboxFilterTestOnlyFeatId"  type="radio" name="checkboxFilterActiveFeatId" onchange="filterActivePromotions(this,'testOnlyCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_TEST_ONLY_PROMO}</label>
+                                        <input class="css-checkbox" id="checkboxFilterCertifiedFeatId"  type="radio" name="checkboxFilterActiveFeatId" onchange="filterPromoCertifiedNotActive(this,'promoCertifiedCheckBoxVal','activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_PROMOCERTIFIED_NOT_ACTIVE}</label>
+                                        <input class="css-checkbox" id="checkboxFilterStopFeatId"  type="radio" name="checkboxFilterActiveFeatId" onchange="filterActivePromotions(this,'stopPromotionCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_STOP_PROMO}</label>
+                                    </span>
+                                </label>
+                                <a href="/apex/ExportPromotionsInExcel?mode=Feature" download="Feature Promotions.xls" class="btn exportExcel" role="button">Export Excel</a>
+                            </div>
+                            <apex:dataTable value="{!featureRuleList}" var="rule" id="featureTable" rowClasses="odd,even" styleClass="manageNetServiceDT table table-bordered table-striped table-hover tableClass">
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_ID_TITLE}</apex:facet>
+                                    <apex:outputLink value="#" onclick="return renderPromotionData('{!rule.id}');">{!rule.Name}</apex:outputLink>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_NAME_TITLE}</apex:facet>
+                                     <apex:outputText title="{!rule.Promotion_Name__c}" value="{!rule.Promotion_Name__c}" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.DISCOUNT_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Discount_Percentage__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.RANK_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Rank__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.STACKABLE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Stackable__c}" disabled="true" id="StackableCheckbox" />
+                                </apex:column>
+                                <apex:column >                           
+                                    <apex:facet name="header">{!$Label.START_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.Start_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.END_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.End_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_END_DATE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Display_Promotion_End_Date__c}" disabled="true" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.ACTIVE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Active__c}" disabled="true" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_CERTIFIED_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Promotion_Certified__c}" disabled="true" />
+                                </apex:column>                          
+                                 <apex:column styleClass="activeCheckBoxVal">
+                                    <apex:outputText value="{!rule.Active__c}" />
+                                </apex:column>
+                                <apex:column styleClass="promoCertifiedCheckBoxVal">
+                                    <apex:outputText value="{!rule.Promotion_Certified__c}" />
+                                </apex:column>
+                                <apex:column styleClass="stopPromotionCheckBoxVal">
+                                    <apex:outputText value="{!rule.Do_Not_Run__c}" />
+                                </apex:column>
+                                <apex:column styleClass="testOnlyCheckBoxVal">
+                                    <apex:outputText value="{!rule.For_Testing__c}" />
+                                </apex:column>
+                            </apex:dataTable>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade {!IF(promoType == $Label.ONE_TIME_CHARGE_TAB,'in active','')}" id="oneTimeCharge-tab">
+                            <div>
+                                <label class="activePromotionsCheckbox">
+                                    <span class="check-label">
+                                        <input class="css-checkbox" id="checkboxFilterActiveOneTimeId" type="radio" name="checkboxFilterActiveOneTimeId" onchange="filterActivePromotions(this,'activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ACTIVE_PROMO}</label>                 
+                                        <input class="css-checkbox" id="checkboxFilterTestOnlyOneTimeId"  type="radio" name="checkboxFilterActiveOneTimeId" onchange="filterActivePromotions(this,'testOnlyCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_TEST_ONLY_PROMO}</label>
+                                        <input class="css-checkbox" id="checkboxFilterCertifiedOneTimeId"  type="radio" name="checkboxFilterActiveOneTimeId" onchange="filterPromoCertifiedNotActive(this,'promoCertifiedCheckBoxVal','activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_PROMOCERTIFIED_NOT_ACTIVE}</label>
+                                        <input class="css-checkbox" id="checkboxFilterStopeOneTimeId"  type="radio" name="checkboxFilterActiveOneTimeId" onchange="filterActivePromotions(this,'stopPromotionCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_STOP_PROMO}</label>
+                                    </span>                                
+                                </label>
+                                <a href="/apex/ExportPromotionsInExcel?mode=OneTimeCharge" download="One-Time Charge Promotions.xls" class="btn exportExcel" role="button">Export Excel</a>
+                            </div>
+                            <apex:dataTable value="{!oneTimeChargeRuleList}" var="rule" id="oneTimeChargeTable" rowClasses="odd,even" styleClass="manageNetServiceDT table table-bordered table-striped table-hover tableClass">
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_ID_TITLE}</apex:facet>
+                                    <apex:outputLink value="#" onclick="return renderPromotionData('{!rule.id}');">{!rule.Name}</apex:outputLink>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_NAME_TITLE}</apex:facet>
+                                     <apex:outputText title="{!rule.Promotion_Name__c}" value="{!rule.Promotion_Name__c}" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.DISCOUNT_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Discount_Percentage__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.RANK_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Rank__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.STACKABLE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Stackable__c}" disabled="true" id="StackableCheckbox" />
+                                </apex:column>
+                                <apex:column >                           
+                                    <apex:facet name="header">{!$Label.START_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.Start_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.END_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.End_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_END_DATE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Display_Promotion_End_Date__c}" disabled="true" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.ACTIVE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Active__c}" disabled="true" />
+                                </apex:column>        
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_CERTIFIED_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Promotion_Certified__c}" disabled="true" />
+                                </apex:column>                  
+                                 <apex:column styleClass="activeCheckBoxVal">
+                                    <apex:outputText value="{!rule.Active__c}" />
+                                </apex:column>
+                                <apex:column styleClass="promoCertifiedCheckBoxVal">
+                                    <apex:outputText value="{!rule.Promotion_Certified__c}" />
+                                </apex:column>
+                                <apex:column styleClass="stopPromotionCheckBoxVal">
+                                    <apex:outputText value="{!rule.Do_Not_Run__c}" />
+                                </apex:column>
+                                <apex:column styleClass="testOnlyCheckBoxVal">
+                                    <apex:outputText value="{!rule.For_Testing__c}" />
+                                </apex:column>
+                            </apex:dataTable>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade {!IF(promoType == $Label.SP_TAB,'in active','')}" id="sp-tab">
+                            <div>
+                                <label class="activePromotionsCheckbox">
+                                    <span class="check-label">
+                                        <input class="css-checkbox" id="checkboxFilterActiveSPId" type="radio" name="checkboxFilterActiveSPId" onchange="filterActivePromotions(this,'activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ACTIVE_PROMO}</label>                 
+                                        <input class="css-checkbox" id="checkboxFilterTestOnlySPId"  type="radio" name="checkboxFilterActiveSPId" onchange="filterActivePromotions(this,'testOnlyCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_TEST_ONLY_PROMO}</label>
+                                        <input class="css-checkbox" id="checkboxFilterCertifiedSPId"  type="radio" name="checkboxFilterActiveSPId" onchange="filterPromoCertifiedNotActive(this,'promoCertifiedCheckBoxVal','activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_PROMOCERTIFIED_NOT_ACTIVE}</label>
+                                        <input class="css-checkbox" id="checkboxFilterStopSPId"  type="radio" name="checkboxFilterActiveSPId" onchange="filterActivePromotions(this,'stopPromotionCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_STOP_PROMO}</label>
+                                    </span>                                
+                                </label>
+                                <a href="/apex/ExportPromotionsInExcel?mode=SP" download="SP Promotions.xls" class="btn exportExcel" role="button">Export Excel</a>
+                            </div>
+                            <apex:dataTable value="{!spRuleList}" var="rule" id="SPTable" rowClasses="odd,even" styleClass="manageNetServiceDT table table-bordered table-striped table-hover tableClass">
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_ID_TITLE}</apex:facet>
+                                    <apex:outputLink value="#" onclick="return renderPromotionData('{!rule.id}');">{!rule.Name}</apex:outputLink>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_NAME_TITLE}</apex:facet>
+                                     <apex:outputText title="{!rule.Promotion_Name__c}" value="{!rule.Promotion_Name__c}" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.DISCOUNT_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Discount_Percentage__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.RANK_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Rank__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.STACKABLE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Stackable__c}" disabled="true" id="StackableCheckbox" />
+                                </apex:column>
+                                <apex:column >                           
+                                    <apex:facet name="header">{!$Label.START_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.Start_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.END_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.End_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_END_DATE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Display_Promotion_End_Date__c}" disabled="true" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.ACTIVE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Active__c}" disabled="true" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_CERTIFIED_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Promotion_Certified__c}" disabled="true" />
+                                </apex:column>                          
+                                 <apex:column styleClass="activeCheckBoxVal">
+                                    <apex:outputText value="{!rule.Active__c}" />
+                                </apex:column>
+                                <apex:column styleClass="promoCertifiedCheckBoxVal">
+                                    <apex:outputText value="{!rule.Promotion_Certified__c}" />
+                                </apex:column>
+                                <apex:column styleClass="stopPromotionCheckBoxVal">
+                                    <apex:outputText value="{!rule.Do_Not_Run__c}" />
+                                </apex:column>
+                                <apex:column styleClass="testOnlyCheckBoxVal">
+                                    <apex:outputText value="{!rule.For_Testing__c}" />
+                                </apex:column>
+                            </apex:dataTable>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade {!IF(promoType == $Label.ORDER_TAB,'in active','')}" id="order-tab">
+                            <div>
+                                <label class="activePromotionsCheckbox">
+                                    <span class="check-label">
+                                        <input class="css-checkbox" id="checkboxFilterActiveOrderId" type="radio" name="checkboxFilterActiveOrderId" onchange="filterActivePromotions(this,'activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ACTIVE_PROMO}</label>                 
+                                        <input class="css-checkbox" id="checkboxFilterTestOnlyOrderId"  type="radio" name="checkboxFilterActiveOrderId" onchange="filterActivePromotions(this,'testOnlyCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_TEST_ONLY_PROMO}</label>
+                                        <input class="css-checkbox" id="checkboxFilterCertifiedOrderId"  type="radio" name="checkboxFilterActiveOrderId" onchange="filterPromoCertifiedNotActive(this,'promoCertifiedCheckBoxVal','activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_PROMOCERTIFIED_NOT_ACTIVE}</label>
+                                        <input class="css-checkbox" id="checkboxFilterStopOrderId"  type="radio" name="checkboxFilterActiveOrderId" onchange="filterActivePromotions(this,'stopPromotionCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_STOP_PROMO}</label>
+                                    </span>                                
+                                </label>
+                                <a href="/apex/ExportPromotionsInExcel?mode=Order" download="Order Promotions.xls" class="btn exportExcel" role="button">Export Excel</a>
+                            </div>
+                            <apex:dataTable value="{!orderRuleList}" var="rule" id="orderTable" rowClasses="odd,even" styleClass="manageNetServiceDT table table-bordered table-striped table-hover tableClass">
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_ID_TITLE}</apex:facet>
+                                    <apex:outputLink value="#" onclick="return renderPromotionData('{!rule.id}');">{!rule.Name}</apex:outputLink>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_NAME_TITLE}</apex:facet>
+                                     <apex:outputText title="{!rule.Promotion_Name__c}" value="{!rule.Promotion_Name__c}" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.DISCOUNT_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Discount_Percentage__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.RANK_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Rank__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.STACKABLE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Stackable__c}" disabled="true" id="StackableCheckbox" />
+                                </apex:column>
+                                <apex:column >                           
+                                    <apex:facet name="header">{!$Label.START_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.Start_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.END_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.End_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_END_DATE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Display_Promotion_End_Date__c}" disabled="true" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.ACTIVE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Active__c}" disabled="true" />
+                                </apex:column>   
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_CERTIFIED_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Promotion_Certified__c}" disabled="true" />
+                                </apex:column>                       
+                                 <apex:column styleClass="activeCheckBoxVal">
+                                    <apex:outputText value="{!rule.Active__c}" />
+                                </apex:column>
+                                <apex:column styleClass="promoCertifiedCheckBoxVal">
+                                    <apex:outputText value="{!rule.Promotion_Certified__c}" />
+                                </apex:column>
+                                <apex:column styleClass="stopPromotionCheckBoxVal">
+                                    <apex:outputText value="{!rule.Do_Not_Run__c}" />
+                                </apex:column>
+                                <apex:column styleClass="testOnlyCheckBoxVal">
+                                    <apex:outputText value="{!rule.For_Testing__c}" />
+                                </apex:column>
+                            </apex:dataTable>
+                        </div>
+                        <div role="tabpanel" class="tab-pane fade {!IF(promoType == $Label.DEAL_REG_TAB,'in active','')}" id="dealReg-tab">
+                            <div>
+                                <label class="activePromotionsCheckbox">
+                                    <span class="check-label">
+                                        <input class="css-checkbox" id="checkboxFilterActiveDealRegId"  type="radio" name="checkboxFilterActiveDealRegId" onchange="filterActivePromotions(this,'activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ACTIVE_PROMO}</label>
+                                         <input class="css-checkbox" id="checkboxFilterTestOnlyDealRegId"  type="radio" name="checkboxFilterActiveDealRegId" onchange="filterActivePromotions(this,'testOnlyCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_TEST_ONLY_PROMO}</label>
+                                         <input class="css-checkbox" id="checkboxFilterCertifiedDealRegId"  type="radio" name="checkboxFilterActiveDealRegId" onchange="filterPromoCertifiedNotActive(this,'promoCertifiedCheckBoxVal','activeCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_PROMOCERTIFIED_NOT_ACTIVE}</label>
+                                        <input class="css-checkbox" id="checkboxFilterStopDealRegId"  type="radio" name="checkboxFilterActiveDealRegId" onchange="filterActivePromotions(this,'stopPromotionCheckBoxVal')"></input>
+                                        <label class="checkbxLabel">{!$Label.SHOW_ONLY_STOP_PROMO}</label>
+                                    </span>                                
+                                </label>
+                                <a href="/apex/ExportPromotionsInExcel?mode=DealReg" download="Deal Reg Promotions.xls" class="btn exportExcel" role="button">Export Excel</a>
+                            </div>
+                            <apex:dataTable value="{!dealRegRuleList}" var="rule" id="dealRegTable" rowClasses="odd,even" styleClass="manageNetServiceDT table table-bordered table-striped table-hover tableClass">
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_ID_TITLE}</apex:facet>
+                                    <apex:outputLink value="#" onclick="return renderPromotionData('{!rule.id}')">{!rule.Name}</apex:outputLink>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_NAME_TITLE}</apex:facet>
+                                     <apex:outputText title="{!rule.Promotion_Name__c}" value="{!rule.Promotion_Name__c}" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.DISCOUNT_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Discount_Percentage__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.RANK_TITLE}</apex:facet>
+                                    <apex:outputText value="{!rule.Rank__c}"/>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.STACKABLE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Stackable__c}" disabled="true" id="StackableCheckbox" />
+                                </apex:column>
+                                <apex:column >                           
+                                    <apex:facet name="header">{!$Label.START_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.Start_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.END_DATE_TITLE}</apex:facet>
+                                    <apex:outputText value="{0, date, MM'/'dd'/'yyyy}">
+                                        <apex:param value="{!rule.End_Date__c}" /> 
+                                    </apex:outputText>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_END_DATE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Display_Promotion_End_Date__c}" disabled="true" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.ACTIVE_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Active__c}" disabled="true" />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROM_CERTIFIED_TITLE}</apex:facet>
+                                    <apex:inputCheckbox value="{!rule.Promotion_Certified__c}" disabled="true" />
+                                </apex:column>                      
+                                 <apex:column styleClass="activeCheckBoxVal">
+                                    <apex:outputText value="{!rule.Active__c}" />
+                                </apex:column>
+                                <apex:column styleClass="promoCertifiedCheckBoxVal">
+                                    <apex:outputText value="{!rule.Promotion_Certified__c}" />
+                                </apex:column>
+                                <apex:column styleClass="stopPromotionCheckBoxVal">
+                                    <apex:outputText value="{!rule.Do_Not_Run__c}" />
+                                </apex:column>
+                                <apex:column styleClass="testOnlyCheckBoxVal">
+                                    <apex:outputText value="{!rule.For_Testing__c}" />
+                                </apex:column>
+                            </apex:dataTable>
+                        </div>
+                    </div>            
+                </div>
+            </apex:pageBlock>
+            <div class="modal fade duplicateAlertModal" id="duplicateAlertModal" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h3 class="modal-title">{!$Label.Promotion_Alert}</h3>
+                        </div>
+                       <div class="modal-body">
+                        <div class="alertDesc">
+                            <span id="duplicateAlertp">{!$Label.Promotion_Alert_2}</span>
+                            <span style="padding-top:10px;padding-bottom: 5px;">{!$Label.Promotion_Alert_3}</span>
+                        </div>
+                         <div style="padding:10px 15px;">
+                            <apex:dataTable styleClass="table table-bordered table-striped table-hover tableClass promotionDuplicateTable" id="promotionDuplicateList" value="{!promotionDuplicateList}" var="item">
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_ID_TITLE}</apex:facet>
+                                    <apex:outputLink value="/apex/wirelinepromotion?id={!item.id}" target="_blank" id="promoLink">{!item.promoName}</apex:outputLink>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">{!$Label.PROMOTION_NAME_TITLE}</apex:facet>
+                                    <apex:outputText title="{!item.promotionDesc}" value="{!item.promotionDesc}" />
+                                </apex:column>
+                            </apex:dataTable>
+                         </div>                 
+                        </div>  
+                        <div class="modal-footer duplicateAlertModalFooter">
+                            <label class="confirmDuplication">{!$Label.CONFIRM_DUPLICATION_TXT}</label>
+                            <div id="confirmSave">
+                                <button type="button" class="alertBtn" data-dismiss="modal" onclick="insertDuplicatePromo();">YES</button>
+                                <button type="button" class="alertBtn" data-dismiss="modal">NO</button>                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:form>
+    </apex:page>

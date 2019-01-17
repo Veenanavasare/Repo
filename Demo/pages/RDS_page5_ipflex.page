@@ -1,0 +1,1789 @@
+<apex:page controller="RDSAVPNController" standardStylesheets="false" sidebar="false" showHeader="false" tabStyle="Apttus_Proposal__Proposal__c" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false">
+<apex:includeScript value="{!URLFOR($Resource.RDSInputValidationsJS)}" />
+<apex:includeScript value="{!URLFOR($Resource.fieldValidations)}" />  
+<apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+
+<script>
+    onload = function () {       
+        
+        initializeFieldValidations4();
+       
+        $(".calendarIcon").on("click", function () {
+            console.log("Calendar");
+            $('.dPicker').focus();
+        });
+
+        if(typeof page4Visited != 'undefined' && page4Visited == "true"){
+        requiredFieldValidation();validateOptionalFields();
+            if($('.cnamDropdownClass') != null && typeof $('.cnamDropdownClass') != "undefined" && $('.cnamDropdownClass').length>0){
+                $('.cnamDropdownClass').each(function() {
+                    var currentElement = $(this);
+                    var currentFieldVal = currentElement.val();
+                    showCustomerCNAM(this);
+                    if(currentFieldVal != null &&  currentFieldVal == 'Allow Customer Specified CNAM'){
+                        $('.customerSpecified').keyup();
+                    }
+                });
+                                                
+            }
+        }
+        
+    }
+    
+    
+    var $ = jQuery.noConflict();
+    page2AccordActive = false;
+    $(document).ready(function () {
+        page2AccordActive = false;
+        var vpnBlockObj = $('#vpnBlock');
+        if(vpnBlockObj != null ) {
+            vpnBlockObj.hide();
+            
+            if($('.inputVPNName_error') != null && typeof $('.inputVPNName_error') != 'undefined'){
+                $('.inputVPNName_error').remove();
+            }
+            if($('.VPNConnectionPolicySelector') != null && typeof $('.VPNConnectionPolicySelector') != 'undefined'){
+                $('.VPNConnectionPolicySelector').remove();
+            }
+            if($('.hubNspokeSelector_error') != null && typeof $('.hubNspokeSelector_error') != 'undefined'){
+                $('.hubNspokeSelector_error').remove();
+            }
+        } 
+        //testFunction('onLoad','{!portableNumbersOnExistingIPFlexPlan}');
+        var avpnCompletionBarBlockObj = $('#avpnCompletionBarBlock');
+        if(avpnCompletionBarBlockObj != null ){avpnCompletionBarBlockObj.hide();}
+         
+            $('[data-toggle="tooltip"]').tooltip({
+                container: 'body'
+            });
+            $('body').popover({ selector: '[data-popover]', trigger: 'click hover', placement: 'right', delay: {show: 50, hide: 2000}}); 
+            setTimeout(function(){
+                //validatePage2Submit();
+                var arrRequiredFields = $(".requiredInputField");
+                arrRequiredFields.each(function () {
+                var oRequiredField = $(this);
+                if(arrRequiredFields.length > 1){
+                        arrRequiredFields.each(function () {
+                            var oRequiredField = $(this);
+                            if (oRequiredField[0]) {
+                                if(typeof page4Visited != 'undefined' && page4Visited == "true"){
+                                    oRequiredField.keyup();
+                                }
+                            }
+                        });
+                }
+                            
+                });
+                arrRequiredFields = $(".requiredField");
+                arrRequiredFields.each(function () {
+                var oRequiredField = $(this);
+                if(arrRequiredFields.length > 1){
+                        arrRequiredFields.each(function () {
+                            var oRequiredField = $(this);
+                            if (oRequiredField[0]) {
+                                if(typeof page4Visited != 'undefined' && page4Visited == "true"){
+                                    oRequiredField.keyup();
+                                }
+                            }
+                        });
+                }
+                            
+                });
+                
+                
+                if(typeof page4Visited != 'undefined' && page4Visited == "true"){
+                    requiredFieldValidation();validateOptionalFields();
+                    if($('.cnamDropdownClass') != null && typeof $('.cnamDropdownClass') != "undefined" && $('.cnamDropdownClass').length>0){
+                        $('.cnamDropdownClass').each(function() {
+                            var currentElement = $(this);
+                            var currentFieldVal = currentElement.val();
+                            showCustomerCNAM(this);
+                            if(currentFieldVal != null &&  currentFieldVal == 'Allow Customer Specified CNAM'){
+                                $('.customerSpecified').keyup();
+                            }
+                            
+                        });
+                        
+                        
+                    }
+                }
+                    
+            },100);
+            
+            $('.noteException').attr('maxlength','50');
+            onFieldChange("Page4");
+            checkLastPage();
+            
+            CharLimit_Note('.noteExceptionClass', 50);
+            $(".noteExceptionClass").on('input propertychange', function() {
+                CharLimit_Note(this, 50);
+            });
+            
+    });
+    
+    function showWarningMsg(containerID,flag){
+        if(flag)       
+            $('#'+containerID).removeClass('visible-print-block');
+        else
+            $('#'+containerID).addClass('visible-print-block');
+    }
+        function radioBtnValidate(sClassName,btnSelectedValue){
+        btnSelectedValue = $("."+sClassName+" input:checked").val();
+    //console.log(sClassName+':::::'+btnSelectedValue);
+        if(btnSelectedValue != null && btnSelectedValue.length>0){
+        
+            $("." + sClassName).closest('div').removeClass("has-error");
+            $('.'+sClassName+'_error').remove();
+            
+        }else{
+        
+             /*$(".errorText." + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error").remove();
+             $("." + sClassName).parent().addClass("has-error").append("<p class='errorText " + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error'> Selection required</p>");  */
+             $(".errorText." + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error").remove();
+             $("." + sClassName).closest('div').addClass("has-error").append("<div class='errorText " + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error'> Selection required</div>"); 
+        }
+        if($('.inputVPNName_error') != null && typeof $('.inputVPNName_error') != 'undefined'){
+                    $('.inputVPNName_error').remove();
+        }
+        if($('.VPNConnectionPolicySelector') != null && typeof $('.VPNConnectionPolicySelector') != 'undefined'){
+                    $('.VPNConnectionPolicySelector').remove();
+        }
+        if($('.hubNspokeSelector_error') != null && typeof $('.hubNspokeSelector_error') != 'undefined'){
+                    $('.hubNspokeSelector_error').remove();
+        }
+        if($('.inputVPNName') != null ){$('.inputVPNName').removeClass('requiredInputField')};
+        validateRequiredFields1();
+        isSubmitEnable('');
+}
+    function requiredFieldValidation(){
+            var requiredFileds = $(".requiredField");
+            var enabledBtn=true;
+            requiredFileds.each(function () {
+                if($(this).val().length){
+                    enabledBtn=true;  
+                    return false;
+                 }   
+            });
+            
+            
+            
+            //console.log('enabledBtn   :::'+enabledBtn);
+            if(enabledBtn){
+                requiredFileds.each(function () {
+                    $(this).keyup();
+                    $(this).trigger('change');
+                });
+                radioBtnValidate("IPFlexibleReachPlan",'{!portableNumbersOnExistingIPFlexPlan}');
+                radioBtnValidate("includeFaxNumber",'{!willThePortIncludeFaxNumber}');
+                radioBtnValidate("listingForPhoneInfo",'{!Directory_Listing_for_Phone_NumberInfo}');
+                radioBtnValidate("listed_Address ",'{!Directory_Listing_and_Directory_Asistance_for_AddressInfo}');
+                radioBtnValidate("moveReqInfo",'{!Directory_Listing_and_Directory_Asistance_for_AddressInfo}');
+            }
+            
+            uploadedFileNames();
+        }  
+
+</script>
+
+    <style>
+
+        #rdsPagePanel .labelMargin {
+            margin: 10px 0 !important;
+        }
+        textarea{
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+        }
+        .addressFields li {
+            width: 31%;
+            display: inline-block;
+        }      
+        .PortableNumberSection{
+            float:left;
+            margin-top:10px;
+        }
+        .PortableNumbersMessage{
+            color: #ea7400;
+            font-weight: bold;
+        }
+       
+        .tooltipTrigger {
+            cursor: pointer;
+        }
+                
+        .sectionHeader-primary {
+            font-size: 22px;
+        }
+        .PortedNumFont{
+            font-weight:bold !important;
+        }
+
+        .p0 {
+            padding: 0 !important;
+        }
+        .col-xs-12 {
+            /*width: 100%;*/ 
+            /* not a good practice to overwrite a bootstrap class that computes for width divided by 12 */
+        }
+        .PortableNumbersMessage {
+            color: #ea7400;}
+            .sectionHeader-secondary {
+            font-weight: bold;
+        }
+        .form-control {
+            display: block;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+        }
+        .m-b-10 {
+            margin-bottom: 10px;}
+            .section-dividerHr {
+            width: 100%;
+            clear: both;
+            margin: 40px 0;
+            float: left;
+            border-bottom: 1px solid #d3d3d3;}
+            table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+            .addressFields1 {
+            margin-bottom: 15px;
+        }
+
+.errorText{
+                        color:#cf2a2a !important;
+                        font-weight:bold;
+                        float:left
+                        margin-top: 5px !important;
+                    }
+input {
+    font-family: omnesatt_iiregular;}
+ .PortableNumbersMessage {
+    color: #ea7400;} 
+      
+        .port_Type_error{
+                position: absolute;
+                }
+        .calling_For_3rd_Party_error{
+                position: absolute;
+                }
+        .listing_Options_error{
+                position: absolute;
+                }
+        .requestCSR {
+            background: #fff;
+            border: 1px solid #e5e5e5!important;
+            width: 182px!important;
+            height: 50px!important;
+            margin: 20px -1px;
+        }
+        img.CSRIcon {
+            margin: -7px 3px -13px -29px;
+        }       
+        .fileUpload{
+            position: relative;
+            overflow: hidden;
+            //margin-left: 219px;
+            width: 129px;
+        }
+        .fileUpload input.upload {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+        .fileUploadTN{
+            position: relative;
+            overflow: hidden;
+            //margin-left: 219px;
+            width: 129px;
+        }
+        .fileUploadTN input.upload {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+        .inputBoxCSR {
+            float:left;
+        }
+        
+        .uploadButton {
+            float: right;
+            margin-right: 58px;
+            margin-top: -32px;
+        }
+        
+        .addressFields1 {
+            margin-bottom: 15px;
+        }
+        
+        .removeLink {
+            color:#ea7400 !important;
+            padding-left: 25px;
+            font-weight: 600;
+        }
+                
+        .downloadLink {
+            line-height: 22px;
+            color: #0568ae!important;
+            font-weight: 600;
+            word-wrap: break-word;
+        }        
+        .uploadedFileNames {
+            line-height: 22px;
+        }
+        .popover{
+            max-width: 100%; /* Max Width of the popover (depending on the container!) */
+        }
+
+        .popover-title {
+             background-color: #fff; 
+             border-bottom: 0px solid #fff;
+             font-size : 12px !important;
+             margin-bottom: 0px !important;
+        }
+        .popover-content{
+             padding : 0px !important;
+        }
+        #chooseFileToUpload, #chooseFileToUploadTN, #chooseFileToUploadMoveReq, #chooseTechQuestFileToUpload{
+             display:none;
+        }
+        .form-errors,.techQuest-form-errors{
+             color:#cf2a2a;
+             font-weight: 600;
+        }
+        
+        .button-disabled {
+            background-color: #ccc !important;
+            border-color: #ccc !important;
+            pointer-events: none;
+        }
+        
+        .errorMessageDisplay {
+            margin-bottom: 9px;
+        }
+          .csrBtn{
+               display: inline-block;
+                padding: 10px 20px;
+                margin-bottom: 0;
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 1.42857143;
+                text-align: center;
+                white-space: nowrap;
+                vertical-align: middle;
+                cursor: pointer;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                background-image: none;
+                border: 1px solid transparent;
+                border-radius: 4px;
+                color: #3bc1f4;
+                outline: 0 !important;
+                text-decoration: none !important;
+                }
+                .errorFieldBorderColor{
+                    border-color:#a94442 !important;
+                    height:34px !important;
+                    }
+                .errorText{
+                        color:#cf2a2a !important;
+                        font-weight:bold;
+                        float:left
+                        margin-top: 5px !important;
+                    }
+                .styled-select select, .styled-select-small select{
+                    height: 32px;
+                    -moz-appearance: none;
+                }
+                
+               .radioFields .errorText.IPFlexibleReachPlan_error {
+                    margin-top: 5px !important;
+                }
+                
+              .radioFields .errorText.listingForPhoneInfo_error{
+                  margin-top: 5px !important;
+              }
+              .radioFields .errorText.moveReqInfo_error{
+                  margin-top: 5px !important;
+              }
+                  
+                hr.section-dividerHr {
+                    margin: 20px 0px;
+                }  
+                
+        .tooltipTrigger {
+            cursor: pointer;
+        }
+        .tooltip > .tooltip-inner {
+            background-color: #fff;
+            color: #000;
+            text-align:left;
+        }
+          .tooltip.right .tooltip-arrow{
+            border-right-color:#fff !important;
+        }
+        .tooltip.bottom .tooltip-arrow{
+            border-bottom-color:#fff !important;
+        }
+        .AVPNRDSPage5 label{
+            font-family:omnesatt_iiregular !important;  
+        }
+        #AVPNRDSPage5 input.radio{
+            top: 4px !important;
+            margin-right:5px !important;
+        }
+        .portNumberTitle{
+            display:inline;
+        }
+        #PortingTNSection a{
+            color: #70c4e8;
+            font-family:omnes_att_iimedium !important;
+        }
+        .labelLink{
+            font-family:omnes_att_iimedium !important;
+        }
+        hr.portingTNSection-dividerHr {
+            width: 100%;
+            clear: both;
+            float: left;
+            border-bottom: 1px solid #d3d3d3;
+            margin: 20px 0px 30px 0px;
+        }
+        .m-t-15{
+            margin-top:15px;
+        }
+        .techQuestFileUpload, .techQuestBtn {
+            width:160px;
+            padding: 7px 0;
+        }
+        .portNumberToolTip{
+            margin-left: 4px;
+        }
+        .portedToolTip{
+            margin-left: 6px;
+        }
+        .includeFaxNumber{
+            margin-top: 10px;
+        }
+               </style>
+    
+            <!---New Section Portable Numbers---->
+            <apex:form id="AVPNRDSPage5" styleClass="AVPNRDSPage5">
+             <script>
+             
+             initializeFieldValidations4();
+             </script>
+            <div>
+            <apex:outputLabel styleClass="f-s-larger labelMargin" value="Site Name: {!SiteNameSelected}" />
+            <apex:outputLabel value="{!SelectedSiteAddress}" styleClass="col-xs-12 p0 labelMargin" />
+            <div><hr class="section-dividerHr" /></div>
+        </div>
+        <apex:outputPanel id="PortableNumbersSection" >
+            <div><h3 class="m-t-20 portNumberTitle">Portable Numbers</h3>
+                <span class="tooltipTrigger glyphicon glyphicon-question-sign portNumberToolTip" data-popover="true" data-html="true" data-original-title="<div>{!$Label.RDS_Refer_LAB} <a href='{!$Resource.TN_Porting_Guide}' target='_blank'>TN Porting Guide</a> for help."></span>
+            </div>
+           
+            <div class="m-t-10"> It is critical you make sure you identify all of your phone numbers for proper porting to avoid porting issues on order. </div>
+            <div class="col-xs-12 p0 m-t-20 radioFields">
+            <div class="m-b-10" >{!$Label.RDS_PORT_YSNO}
+            <span class="tooltipTrigger glyphicon glyphicon-question-sign portedToolTip"  data-toggle="tooltip" data-placement="right" title="{!$Label.RDS_PORT_LAB_TT}"></span>
+               </div>
+                <apex:selectRadio styleClass="col-xs-2 IPFlexibleReachPlan" value="{!portableNumbersOnExistingIPFlexPlan}">
+                    <apex:selectOption itemLabel="Yes" itemValue="Yes" />
+                    <apex:selectOption itemLabel="No" itemValue="No" />
+                    <apex:actionSupport event="onchange" reRender="PortingTNSectionUploadBlock" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';radioBtnValidate('IPFlexibleReachPlan','{!portableNumbersOnExistingIPFlexPlan}');testFunction('{!portableNumbersOnExistingIPFlexPlan}');validateRequiredFields1();"/>                    
+                </apex:selectRadio>
+            </div>
+            <section>
+                <div class="row">
+                    <div class="col-xs-12 col-md-12 m-t-20">
+                        <div class="row">
+                            <div class="col-md-4 m-b-20">
+                                <apex:outputLabel value="Port Type" styleClass="labelMargin"/>
+                                <div class="styled-select">
+                                    <apex:selectList value="{!portType}" styleClass="form-control requiredField port_Type" multiselect="false" size="1" onchange="showPortTypePhnNum(this);">
+                                        <apex:selectOptions value="{!portTypeList}" />
+                                        <apex:actionSupport event="onchange" reRender="PortableNumbersInputFields,billingMessage" /> </apex:selectList>
+                                </div>
+                            </div>
+                            <div class="col-md-4 portTypeBillingPhnNum" style="display: none;">
+                           
+                                <apex:outputLabel value="Billing Phone Number" styleClass="labelMargin"/>
+                                <apex:inputText styleClass="form-control requiredField billingphnnumber" html-placeholder="0000000000" value="{!billingTelphoneNumber}"  /></div>
+                            <div class="col-md-4 portTypeNewPhnNum" style="display: none;">
+                           
+                                <apex:outputLabel value="New Billing Phone Number" styleClass="labelMargin"/>
+                                <apex:inputText styleClass="form-control requiredField new_billingphnnumber" html-placeholder="0000000000" value="{!newBillingTelephoneNumber}" /> </div>
+                        </div>
+                    </div>
+                </div>
+            </section> 
+            <div class="PortableNumbersMessage portTypeBillingPhnNum" style="display: none;"> 
+                Do not include Modem, Alarm, DSL, Elevator, Pay Phones, Credit Card Machines, Postage Meter, Crisis Link lines <br /> 
+                (used for disaster recovery), or POTS lines behind existing 800#'s in the telephone number range list. Toll-free numbers 
+                may not be ported due to IP Toll-Free restriction. 
+            </div> 
+            
+            <div class="PortableNumbersMessage portTypeNewPhnNum" style="display: none;"> 
+                If you are porting the main Billed Telephone Number (BTN), you must choose any remaining TN that is not being ported for new BTN.
+            </div>
+
+           <!-- <input type="button" value="Button Test" onclick="checkReqField();"/>-->
+           
+            <div class="m-t-10"> <apex:outputLabel value="Ported Numbers" styleClass="labelMargin PortedNumFont" /></div>
+            <div class="col-xs-12 p0 radioFields m-b-20">
+                <div class="">Will the port include fax number? &nbsp;
+                  <!-- <span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" data-popover="true" data-html="true" title="<div style='width:535px;font-family:omnes_att_iimedium;font-size:12px;'>For IP-PBX, refer to the Certified IP-PBX Equipment list and check the Fax Supported Column.
+                                                      CPE must support G.711 fax and G.729 voice CODECS to support T.38 fax or must use PSTN line.</div>
+                                                      Guidance to ensure you have the appropriate equipment configuration can be found at <div><a href='#' target='_blank'>http://
+                                                      www.corp.att.com/bvoip/ipflex/training/</a></div> Log in: Username = att Password = attvoip. Otherwise,
+                                                      it is recommended to order a Plain Old Telephone Service (POTS) line for your fax machine."></span>-->
+                    <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-popover="true" data-html="true" data-original-title="<div style='width:535px;font-family:omnes_att_iimedium;font-size:12px;'>For IP-PBX, refer to the <a href='{!certifiedIPPBXListDocumentId}' target='_blank'>Certified IP-PBX Equipment </a>list and check the Fax Supported Column.
+                                                      CPE must support G.711 fax and G.729 voice CODECS to support T.38 fax or must use PSTN line.
+                                                      Guidance to ensure you have the appropriate equipment configuration can be found at <div><a href='http://www.corp.att.com/bvoip/ipflex/training' target='_blank'>
+                                                      http://www.corp.att.com/bvoip/ipflex/training/</a></div> Log in: Username = att Password = attvoip. Otherwise,
+                                                      it is recommended to order a Plain Old Telephone Service (POTS) line for your fax machine."></span>
+                
+                    <apex:selectRadio styleClass="col-xs-2 includeFaxNumber" value="{!willThePortIncludeFaxNumber}" onchange="fieldValidation(event,this,'radioSelection');">
+                     <apex:selectOptions value="{!pickList5}" />
+                     <apex:actionSupport event="onclick" reRender="" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';radioBtnValidate('includeFaxNumber','{!willThePortIncludeFaxNumber}');"/>
+                    </apex:selectRadio>
+                </div>
+            </div>
+             
+             
+              <div class="CSRSection">
+            <div>
+                A Customer Service Record (CSR) should be requested from your Current Local Service Provider or may be available to request from the AT&amp;T Port-In request link below:<br />
+                <a type="button" class="requestCSR csrBtn secondary" href="http://www.corp.att.com/lnp/csir_port_in.html" target="_blank">
+                    <apex:image value="{!($Resource.request_CSR_Icon)}" styleClass="CSRIcon"/>Request CSR</a><br/>
+                <div class="m-b-10 m-t-20">
+                    Please upload each CSR that includes all the Telephone Numbers requesting to be ported.
+                </div>
+                <div class="m-b-10">
+                <strong> Upload File </strong>Supported file formats: .doc, .docx, .pdf Maximum file size: 1 MB</div>
+            </div> 
+             <ul class="col-xs-12 m-b-10 p0 errorMessageDisplay">
+                 <li class="m-r-3P" style="width:54%;float:left;">
+                    <div class="CSRFile">
+                        <input id="chooseFileToUpload" class="CSRUploadFileBtnBrowse" type="file" readonly="true" placeholder="No file selected" multiple="multiple" onchange="changePath()"/>
+                        <input type="text" id="filePath" placeholder="No file selected" onchange="changePath()" readonly="true"/>
+                    </div>
+                 </li>
+                 <li class="m-r-3P" style="width:20%;display:inline-block;">
+                     <div class="fileUpload btn btn-primary" onclick="CSRChooseFile();" style="width:160px;">Choose File</div>
+                 </li>
+                 <li class="m-r-3P" style="width:16%;display:inline-block;">
+                     <div id="CSR_Upload_btn" class="fileUpload btn btn-primary button-disabled" onclick="uploadFile('CSRSection','chooseFileToUpload','filePath', 'CSR_Upload_btn', 'CSR-form-errors');" style="width:160px;">Upload</div>
+                 </li>
+             </ul>
+            <div class="CSR-form-errors form-errors"></div>
+            <apex:outputPanel id="CSRUploadedFiles" styleClass="col-xs-12 p0">
+                <div class="sectionHeader-secondary m-b-15">Uploaded CSR files:</div>
+                        <ul class="col-xs-12 p0 uploadedFileList">
+                        <apex:repeat id="reloadOnRemove" value="{!csrUploadedFileNameURLMap}" var="key">    
+                            <li class="" style="">
+                            <apex:outputlink value="/servlet/servlet.FileDownload?file={!csrUploadedFileNameURLMap[key]}" target="_blank" styleClass="downloadLink">{!key}</apex:outputlink>
+                            <apex:commandLink id="CSRRemoveLink" value="Remove" rendered="{!IF(csrUploadedFileNameURLMap[key] != null || csrUploadedFileNameURLMap[key] != '',true,false)}" onclick="removeUploadedId('{!JSENCODE(key)}','CSRSection');" status="loading" immediate="true" styleClass="removeLink" reRender="reloadOnRemove">
+                               <apex:param assignTo="{!removeAttachmentId}" name="removeAttachmentId" value="{!csrUploadedFileNameURLMap[key]}" /> 
+                                <apex:param assignTo="{!removeAttachmentName}" name="removeAttachmentName" value="{!key}" /> 
+                            </apex:commandLink>
+                             </li>
+                        </apex:repeat>
+                        </ul>                    
+                </apex:outputPanel> 
+            </div>
+            
+            <div><hr class="portingTNSection-dividerHr" /></div>
+            <!-- Porting TN Spread Sheet Block-->
+            <apex:outputPanel id="PortingTNSectionUploadBlock">
+            <apex:outputPanel id="PortingTNSection" styleClass="PortingTNSection" rendered="{!IF(portableNumbersOnExistingIPFlexPlan == 'Yes',true,false)}">
+            <!--<div id="PortingTNSection" class="PortingTNSection">-->
+                    <div class="sectionHeader-primary m-t-10">{!$Label.PORT_TN_MSG1}</div>
+                    <div class="m-t-20">{!$Label.PORT_TN_MSG2}</div>
+                    <div class="m-t-20"><a type="button" class="requestPortTN portTNBtn secondary labelLink" href="{!$Resource.TN_Port_List}" target="_blank">{!$Label.PORT_TN_MSG_TEMPL}
+                        </a>
+                        </div>
+                    <div class="m-b-20 m-t-20">
+                        {!$Label.PORT_TN_MSG3}<a type="button" class="requestTN secondary labelLink" href="https://partnerexchange.att.com/apex/support_center" target="_blank">
+                        {!$Label.SUPPORT_CENT_LAB}</a>{!$Label.PORT_TN_MSG4}
+                    </div>
+                    <div class="m-b-10">
+                    <strong> Upload File </strong>{!$Label.PORT_TN_FILE_FORMAT}</div>
+                 <ul class="col-xs-12 m-b-10 p0 errorMessageDisplay">
+                     <li class="m-r-3P" style="width:54%;float:left;">
+                        <div class="PortTNFile">
+                            <input id="chooseFileToUploadTN" class="TNUploadFileBtnBrowse" type="file" readonly="true" placeholder="No file Selected" multiple="multiple" onchange="changePathOnFileSelect('TNUploadFileBtnBrowse','filePathTN','fileUploadTN');" />
+                            <input type="text" id="filePathTN" placeholder="No file Selected" onchange="changePathOnFileSelect('TNUploadFileBtnBrowse','filePathTN','fileUploadTN');" readonly="true" />
+                        </div>
+                     </li>
+                     <li class="m-r-3P" style="width:20%;display:inline-block;">
+                         
+                            <div class="fileUpload btn btn-primary {!IF(TNmapSize ==1,'button-disabled','')}" onclick="onClickOfChoose('TNUploadFileBtnBrowse','filePathTN','TN_Upload_btn');" style="width:160px;">Choose File</div>
+                        
+                     </li>
+                     <li class="m-r-3P" style="width:16%;display:inline-block;">
+                         <div id="TN_Upload_btn" class="fileUploadTN btn btn-primary button-disabled" onclick="uploadFile('portingTNSection','chooseFileToUploadTN','filePathTN', 'TN_Upload_btn', 'portingTNSectionError');" style="width:160px;">Upload</div>
+                     </li>
+                 </ul>
+                <div class="form-errors portingTNSectionError"></div>
+                <apex:outputPanel id="portTNUploadedFiles" styleClass="col-xs-12 p0">
+                <script>
+                    PortTNObject = ("{!TNGuideUploadedFileNameURLMap}").replace(/'/g, "\\'");
+                </script>
+                    <div class="m-t-20 sectionHeader-secondary uploadedFileNames"><strong>{!$Label.PORT_TN_MSG5}</strong></div>
+                            <ul class="col-xs-12 p0 uploadedFileList">
+                            <apex:repeat id="reloadTNOnRemove" value="{!TNGuideUploadedFileNameURLMap}" var="key">    
+                                <li class="" style="">
+                                <apex:outputlink value="/servlet/servlet.FileDownload?file={!TNGuideUploadedFileNameURLMap[key]}" target="_blank" styleClass="downloadLink">{!key}</apex:outputlink>
+                                <apex:commandLink id="PortTNRemoveLink" value="Remove" rendered="{!IF(TNGuideUploadedFileNameURLMap[key] != null || TNGuideUploadedFileNameURLMap[key] != '',true,false)}" onclick="removeUploadedId('{!JSENCODE(key)}','portingTNSection');" status="loading" immediate="true" styleClass="removeLink" reRender="reloadTNOnRemove">
+                                   <apex:param assignTo="{!removeAttachmentId}" name="removeAttachmentId" value="{!TNGuideUploadedFileNameURLMap[key]}" /> 
+                                    <apex:param assignTo="{!removeAttachmentName}" name="removeAttachmentName" value="{!key}" /> 
+                                </apex:commandLink>
+                                 </li>
+                            </apex:repeat>
+                            </ul>
+                        <hr class="section-dividerHr" />
+                    </apex:outputPanel> 
+            <!--</div>-->
+            </apex:outputPanel> 
+            </apex:outputPanel> 
+            </apex:outputPanel> 
+            <!-- End of Port TN -->
+            <apex:outputPanel id="NewTelephoneNumSection">
+            <div class="sectionHeader-primary">New Telephone Numbers</div>
+            <div class="m-t-20">
+                Please enter your desired NPA NXX for any new Local Phone Numbers and Virtual phone Numbers.<br />
+                The request is not guaranteed and is dependent upon availability.
+            </div>
+            <div class="m-t-20"><span class="sectionHeader-secondary">Number of Local Phone Numbers: </span><span>{!NoOfLocalPhoneNumbers}</span></div>
+            
+            <!--<apex:outputPanel id="LocalPhoneNumInputFields" rendered="{!IF(NoOfLocalPhoneNumbers == 0,false,true)}">-->
+           <apex:outputPanel id="LocalPhoneNumInputFields"  rendered="{!IF(NoOfLocalPhoneNumbers == 0,false,true)}" >
+               <div class="row">
+                   <div class="col-xs-12 m-t-20">
+                       <span class="sectionHeader-secondary labelMargin">NPA NXX (Area Code/Prefix)</span>
+                   </div>
+               </div>
+            <section>
+                <div class="row">
+                    <div class="col-xs-12 col-md-12 m-t-20">
+                        <div class="row m-b-10">
+                            <div class="col-md-4">
+                                <apex:outputLabel value="Requested Primary NPA/NXX" styleClass="labelMargin"/>
+                                <apex:inputtext styleClass="form-control reqLocalPNPA" label="Requested Primary NPA/NXX" value="{!Local_Phone_Number_PrimaryInfo}" html-placeholder="Optional" onkeyup="optionalFieldValidation(event,this,'NPANXXCode');"/> </div>
+                            <div class="col-md-4">
+                                <apex:outputLabel value="Requested Secondary NPA/NXX" styleClass="labelMargin"/>
+                                <apex:input styleClass="form-control reqLocalSNPA" value="{!Local_Phone_Number_SecondaryInfo}" html-placeholder="Optional" label="Requested Secondary NPA/NXX" onkeyup="optionalFieldValidation(event,this,'NPANXXCode');"/> </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            </apex:outputPanel>
+                    <div><span class="sectionHeader-secondary">Number of Virtual Phone Numbers: </span><span>{!NoOfVirtualPhoneNumbers}</span></div>
+                    <!-- <apex:outputPanel id="VirtualPhoneNumInputFields" rendered="{!IF(NoOfVirtualPhoneNumbers == 0,false,true)}">-->
+                    <apex:outputPanel id="VirtualPhoneNumInputFields" rendered="{!IF(NoOfVirtualPhoneNumbers == 0,false,true)}">
+                      <div class="row">
+                        <div class="col-xs-12 m-t-20">
+                            <apex:outputLabel value="NPA NXX (Area Code/Prefix)" styleClass="labelMargin"/>
+                        </div>
+                    </div>
+                    <section>
+                        <div class="row">
+                            <div class="col-xs-12 col-md-12">
+                                <div class="row m-b-10 m-t-20">
+                                    <div class="col-md-4">
+                                        <apex:outputLabel value="Requested Primary NPA/NXX" styleClass="labelMargin"/>
+                                        <apex:inputtext styleClass="form-control reqVirtualPNPA" label="Requested Primary NPA/NXX" value="{!Virtual_Phone_Number_PrimaryInfo}" html-placeholder="Optional" onkeyup="optionalFieldValidation(event,this,'NPANXXCode');"/> </div>
+                                    <div class="col-md-4">
+                                        <apex:outputLabel value="Requested Secondary NPA/NXX" styleClass="labelMargin"/>
+                                        <apex:input styleClass="form-control reqVirtualSNPA" value="{!Virtual_Phone_Number_SecondaryInfo}" html-placeholder="Optional" label="Requested Secondary NPA/NXX" onkeyup="optionalFieldValidation(event,this,'NPANXXCode');"/> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    </apex:outputPanel>
+            
+                <div class="m-t-20"><span class="sectionHeader-secondary labelMargin">PBX Restrictions</span></div>
+            <div>
+                By default, Collect Calling and 3rd Party Billing will apply to all of your telephone numbers.<br />
+                You can restrict these features by selecting a different option in the dropdown list.
+            </div> 
+
+            <div class="row">
+                <div class="col-xs-12 col-md-12 m-t-20">
+                    <div class="row m-b-10">
+                        <div class="col-md-4" style="width:39%">
+                            <apex:outputLabel value="Collect Calling and 3rd Party Billing" styleClass="labelMargin"/>
+                            <div class="styled-select">
+                                <apex:selectList value="{!Collect_Calling_and_3rd_Party_BillingInfo}" multiselect="false" size="1" styleClass="form-control requiredField calling_For_3rd_Party">
+                                    <apex:selectOptions value="{!CCPartyBillingInfo}" /> 
+                                </apex:selectList> 
+                           
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+            <div class="m-b-10 m-t-20">Please note any exceptions</div>
+            <apex:input id="myTextarea" value="{!Please_note_any_exceptionsInfo}" html-maxlength="50" styleClass="w100p form-control noteExceptionClass" style="height: 40px;margin-bottom:10px;" html-placeholder="Optional - up to 50 characters" onkeydown="CharLimit_Note" />
+            <apex:outputLabel value="50 characters remaining" styleClass="additionalInfoMsg1" style="display: block;margin-top: 6px !important;text-align: right;margin-bottom: 10px !important;font-size:12px;color:#000;"/>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="row">
+                        <div class="row col-xs-12 m0">
+                            <div class=" col-xs-12 p0">Please select a restriction option for your <span class="sectionHeader-secondary">Calling Name (CNAM)</span> Display.</div>
+                        </div>
+                        <div class="col-md-4 m-t-20">
+                            <apex:outputLabel value="Calling Name (CNAM) Display" styleClass="labelMargin"/>
+                            <span class="tooltipTrigger glyphicon glyphicon-question-sign" style="padding-left:5px;" data-toggle="tooltip" data-placement="right" title="This is the name that will appear on the caller ID display of the called party on an outbound call."></span>
+                            <div class="styled-select">
+                                <apex:selectList value="{!Calling_Name_DisplayInfo}" multiselect="false" size="1" styleClass="form-control requiredInputField cnamDropdownClass" onchange="showCustomerCNAM(this);">
+                                    <apex:selectOptions value="{!CNAMList }" />
+                                    <apex:actionSupport event="onchange" /> </apex:selectList>
+                            </div>
+                        </div>
+                        <div class="col-md-4 CustomerSpecifiedCNAM m-t-20" style="display: none;">
+                            <apex:outputLabel value="Customer Specified CNAM" styleClass="labelMargin"/>
+                            <apex:inputText value="{!Customer_Specified_CNAMInfo}" styleClass="form-control customerSpecified" html-placeholder="Up to 15 characters" /> </div>
+                    </div>
+                </div>
+            </div>                                  
+         <hr class="section-dividerHr" />     
+        </apex:outputPanel>      
+
+                <apex:outputPanel id="DirectoryListingSection">
+                    <div class="sectionHeader-primary">Directory Listing</div>
+                    <div class="col-xs-12 p0 m-t-20 radioFields">
+                        <div class="m-b-10">Directory Listing needed for Phone Number?</div>
+                        <apex:selectRadio value="{!Directory_Listing_for_Phone_NumberInfo}" styleClass="col-xs-2 listingForPhoneInfo" >
+                            <!-- <apex:selectOptions value="{!pickList5}" />-->
+                            <apex:selectOption itemLabel="Yes" itemValue="true" />
+                            <apex:selectOption itemLabel="No" itemValue="false" />
+                            <apex:actionSupport event="onchange" reRender="DirectoryListingInputFields" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';radioBtnValidate('listingForPhoneInfo','{!Directory_Listing_for_Phone_NumberInfo}');validateRequiredFields1();"/>
+                        </apex:selectRadio>
+                    </div>
+                    
+                    <apex:outputPanel id="DirectoryListingInputFields">
+                        <apex:outputPanel rendered="{!IF(Directory_Listing_for_Phone_NumberInfo =='true',true,false)}">
+                            <div class="DirectoryListingInputFields">
+                                <script>
+                                
+                                initializeFieldValidations4();
+                                </script>
+                                
+                                <section>
+                                    <div class="row">
+                                        
+                                        <div class="col-xs-12 col-md-12 m-t-20 PortablePhoneNumInputFields">
+                                            <div class="row m-b-10 ">
+                                                <div class="col-md-4">
+                                                    
+                                                    <apex:outputLabel value="Listing Category" styleClass="labelMargin"/>
+                                                    <apex:inputText label="Listing_Category" value="{!Listing_CategoryInfo}" html-placeholder="Up to 50 characters" styleClass="form-control requiredField listing_Category" onchange="validateRequiredFields1();isSubmitEnable();" /> </div>
+                                                <div class="col-md-4">
+                                                    <apex:outputLabel value="Listed Number" styleClass="labelMargin"/>
+                                                    <apex:inputText label="Listed_Number" value="{!Listed_NumberInfo}" html-placeholder="0000000000" styleClass="form-control requiredField listed_Number" onchange="validateRequiredFields1();isSubmitEnable();" /> </div>
+                                                <div class="col-md-4">
+                                                    <apex:outputLabel value="Listed Name" styleClass="labelMargin"/>
+                                                    <apex:inputText label="Listed_Name" value="{!Listed_NameInfo}" html-placeholder="Up to 75 characters" styleClass="form-control requiredField listed_Name" onchange="validateRequiredFields1();isSubmitEnable();" /> </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+                                <div class="col-xs-12 p0 radioFields ">
+                                    <div class="m-b-10">Do you want the Listed Address in the Directory Listing &amp; Directory Assistance?</div>
+                                    <apex:selectRadio value="{!Directory_Listing_and_Directory_Asistance_for_AddressInfo}" styleClass="m-b-10 listed_Address col-xs-2" onchange="fieldValidation(event,this,'radioSelection');">
+                                        <apex:selectOptions value="{!pickList5}" /> 
+                                        <apex:actionSupport event="onchange" reRender="" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';radioBtnValidate('listed_Address','{!Directory_Listing_and_Directory_Asistance_for_AddressInfo}');validateRequiredFields1();isSubmitEnable();"/>
+                                    </apex:selectRadio>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-12 m-t-20">
+                                        <div class="row m-b-10">
+                                            <div class="col-md-4" style="width:48%">
+                                                <apex:outputLabel value="Listing Options" styleClass="labelMargin"/>
+                                                <div class="styled-select">
+                                                    <apex:selectList value="{!Listing_OptionInfo}" multiselect="false" size="1" styleClass="form-control requiredField listing_Options" onchange="validateRequiredFields1();isSubmitEnable();">
+                                                        <apex:selectOptions value="{!ListingOptionList }" /> </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                <!-- Move Requirements Section -->
+            <hr class="section-dividerHr" />
+
+            <apex:outputPanel id="MoveRequirementSection">
+                <script>
+                initializeFieldValidations4();
+                </script>
+                <div class="sectionHeader-primary">{!$Label.MOVE_REQ_TITLE}</div>
+                <div class="col-xs-12 p0 m-t-20 m-b-20 radioFields">
+                    <div class="m-b-10">{!$Label.MOVE_SELECTQ}</div>
+                    <apex:selectRadio value="{!isMoveRequirementSelected}" styleClass="col-xs-2 moveReqInfo" >
+                    <!-- <apex:selectOptions value="{!pickList5}" />-->
+                        <apex:selectOption itemLabel="Yes" itemValue="true" />
+                        <apex:selectOption itemLabel="No" itemValue="false" />
+                        <apex:actionSupport event="onchange" reRender="MoveRequirementSectionUpload" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';radioBtnValidate('moveReqInfo','{!portableNumbersOnExistingIPFlexPlan}');validateRequiredFields1();"/>
+                    </apex:selectRadio>
+                </div>
+                <apex:outputPanel id="MoveRequirementSectionUpload">
+                    <apex:outputPanel rendered="{!IF(isMoveRequirementSelected == 'true',true,false)}">
+                    <div id="MoveRequirementUploadBlock" class="MoveRequirementSectionUpload">
+                        <div class="m-t-40"><strong>{!$Label.MOVE_FORM_DOWNLD_LABEL}</strong></div>
+                        <div><a type="button" class="requestMoveReq MoveReqBtn secondary labelLink" href="{!$Resource.Move_Form}" target="_blank">{!$Label.MOVE_FORM_TEMPL}
+                            </a>
+                        </div>
+                            <div><a type="button" class="requestMoveReq MoveReqBtn secondary labelLink" href="{!$Resource.Number_Reassignment_Agreement}" target="_blank">{!$Label.MOVE_REASSIGN_TEMPL}
+                            </a>
+                        </div>
+                        <div class="m-b-10 m-t-10">
+                            {!$Label.RDS_MOVE_REQ_MSG1}
+                        </div>
+                        <div class="m-b-10 m-t-20">
+                            <strong> {!$Label.UPLOAD_FILE_LAB} </strong>{!$Label.MOVE_FORM_FILE_FORMAT}
+                        </div>
+                        <ul class="col-xs-12 m-b-10 p0 errorMessageDisplay">
+                            <li class="m-r-3P" style="width:54%;float:left;">
+                                <div class="MoveReqFile">
+                                    <input id="chooseFileToUploadMoveReq" class="MoveReqUploadFileBtnBrowse" type="file" readonly="true" placeholder="No file Selected" multiple="multiple" onchange="changePathOnFileSelect('MoveReqUploadFileBtnBrowse','filePathMoveReq','fileUploadMoveReq');" />
+                                    <input type="text" id="filePathMoveReq" placeholder="No file Selected" onchange="changePathOnFileSelect('MoveReqUploadFileBtnBrowse','filePathMoveReq','fileUploadMoveReq');" readonly="true" />
+                                </div>
+                            </li>
+                            <li class="m-r-3P" style="width:20%;display:inline-block;">
+                                <apex:outputPanel id="moveReqChooseBtn">
+                                    <div class="fileUpload btn btn-primary {!IF(moveMapSize==2,'button-disabled','')}" onclick="onClickOfChoose('MoveReqUploadFileBtnBrowse','filePathMoveReq','MoveReq_Upload_btn');" style="width:160px;">Choose File</div>
+                                </apex:outputPanel>
+                            </li>
+                            <li class="m-r-3P" style="width:16%;display:inline-block;">
+                                <div id="MoveReq_Upload_btn" class="fileUploadMoveReq btn btn-primary button-disabled" onclick="uploadFile('MoveReqSection','chooseFileToUploadMoveReq','filePathMoveReq', 'MoveReq_Upload_btn', 'MoveReqSectionError');" style="width:160px;">Upload</div>
+                            </li>
+                        </ul>
+                        <div class="form-errors MoveReqSectionError"></div>
+                        <apex:outputPanel id="MoveReqUploadedFiles" styleClass="col-xs-12 p0">
+                            <div class="m-t-20 sectionHeader-secondary uploadedFileNames"><strong>{!$Label.UPLOADED_FILES}</strong></div>
+                            <ul class="col-xs-12 p0 uploadedFileList">
+                                <apex:repeat id="reloadMoveReqOnRemove" value="{!moveSectionUploadedFileNameURLMap}" var="key">    
+                                <li class="" style="">
+                                    <apex:outputlink value="/servlet/servlet.FileDownload?file={!moveSectionUploadedFileNameURLMap[key]}" target="_blank" styleClass="downloadLink">{!key}</apex:outputlink>
+                                    <apex:commandLink id="MoveReqRemoveLink" value="Remove" rendered="{!IF(moveSectionUploadedFileNameURLMap[key] != null || moveSectionUploadedFileNameURLMap[key] != '',true,false)}" onclick="removeUploadedId('{!JSENCODE(key)}','MoveReqSection');" status="loading" immediate="true" styleClass="removeLink" reRender="reloadMoveReqOnRemove">
+                                    <apex:param assignTo="{!removeAttachmentId}" name="removeAttachmentId" value="{!moveSectionUploadedFileNameURLMap[key]}" /> 
+                                    <apex:param assignTo="{!removeAttachmentName}" name="removeAttachmentName" value="{!key}" /> 
+                                    </apex:commandLink>
+                                </li>
+                            </apex:repeat>
+                            </ul>
+                        </apex:outputPanel> 
+                    </div>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:outputPanel>
+            <hr class="section-dividerHr" style="margin-bottom:40px;"/>
+
+                <apex:outputPanel id="TechnicalQuestionnaireSection">
+                    <div class="sectionHeader-primary m-b-25">Technical Questionnaire</div>
+                    <div class="sectionHeader-secondary m-b-15">A Technical Questionnaire can be downloaded from the link below:</div>
+                    <a href="{!techQFileId}" target="_blank" class="downloadLink">Technical Questionnaire</a>
+                    <div class="sectionHeader-secondary m-b-25 m-t-15">The Technical Questionnaire is a required form to complete the ordering process. You may attach the completed form here or if you need additional assistance, you may send via email to the order manager assigned to your order.</div>
+                    <strong> Upload File </strong>Supported file formats: .doc, .docx, .pdf Maximum file size: 1 MB
+                    <ul class="col-xs-12 m-b-10 m-t-15 p0 addressFields">
+                        <li class="m-r-3P" style="width:54%;float:left;">
+                            <div>
+                                <input id="chooseTechQuestFileToUpload" class="techQuestUploadFileBtnBrowse" type="file" readonly="true" placeholder="No file selected" multiple="multiple" onchange="techQuestChangePath();"/>
+                                <input type="text" id="techQuestFilePath" placeholder="No file selected" readonly="true"/>                         
+                            </div>
+                        </li>
+                        <li class="m-r-3P" style="width:20%;">
+                            <apex:outputPanel rendered="{!techQMapSize ==0}">
+                                <div class="techQuestBtn btn btn-primary" id="techQuestChooseBtn" onclick="techQuestChooseFile();">Choose File</div>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!techQMapSize !=0}">
+                                <div class="techQuestBtn btn btn-primary" disabled="true">Choose File</div>
+                            </apex:outputPanel>                        
+                        </li>
+                        <li class="m-r-3P" style="width:16%;">
+                            <div class="techQuestBtn btn btn-primary" id="techQuestUploadBtn" disabled="true" onclick="uploadTechQuestFile();">Upload</div>
+                        </li>
+                    </ul>
+                    <div class="techQuest-form-errors m-b-25"></div>
+                    <div class="col-xs-12 p0 m-b-25">
+                        <div class="sectionHeader-secondary m-b-15">Uploaded Technical Questionnaire files:</div>
+                        <apex:outputPanel rendered="{!IF(techQMapSize != 0,true,false)}">
+                            <apex:repeat value="{!techQUploadedFileNameURLMap}" var="key">              
+                                <apex:outputlink value="/servlet/servlet.FileDownload?file={!techQUploadedFileNameURLMap[key]}" target="_blank" styleClass="downloadLink">{!key}</apex:outputlink>
+                                <apex:commandLink value="Remove" rendered="{!IF(techQUploadedFileNameURLMap[key] != null || techQUploadedFileNameURLMap[key] != '',true,false)}" onclick="removeTechQuestDoc('{!JSENCODE(key)}');return false;" immediate="true" styleClass="removeLink"/><br />
+                            </apex:repeat>                  
+                        </apex:outputPanel>
+                    </div>           
+                </apex:outputPanel> 
+                
+                <apex:actionFunction name="setBestAvailDate" action="{!setBestAvailDate}" rerender="">
+                    <apex:param name="BestAvailDate" value="" assignTo="{!BestAvailDate}"/>
+                </apex:actionFunction> 
+                <apex:actionFunction name="reloadCSRMap" action="{!reloadCSRMap}" reRender="CSRUploadedFiles" status="loading"/>  
+                <apex:actionFunction name="reloadPortTNMap" action="{!reloadTNGuideMap}" reRender="PortingTNSectionUploadBlock,reloadTNOnRemove" oncomplete="validateRequiredFields1();" status="loading"/>  
+                <apex:actionFunction name="reloadMoveReqMap" action="{!reloadMoveSectionMap}" reRender="MoveRequirementSectionUpload,reloadMoveReqOnRemove" status="loading"/>  
+                <apex:actionFunction name="reloadTechQuestMap" action="{!reloadTechQMap}" reRender="TechnicalQuestionnaireSection" onComplete="" status="loading"/>  
+                <apex:actionFunction name="saveRdsAvpnData" action="{!saveRdsData}" rerender="portTypeBillingPhnNum,pageNo,BottomSectionAVPNRDS,vpnHeaderBlock" oncomplete="pageNavigation(this,'Page4',false);"  status="loading"  >
+                    <apex:param name="rdsFlag" value="" />
+                </apex:actionFunction> 
+                <apex:actionFunction name="saveandclose" action="{!SaveAndClose}" reRender="">                     
+                    <apex:param name="vpnname" value="vpnname" assignTo="{!vpnname}"/>
+                </apex:actionFunction>
+                <apex:actionFunction name="passSite" action="{!saveOnToggleSite}" reRender="leftPanelContainerForm"  status="loading" oncomplete="addLeftPanelScroll();validatePage3Submit();leftPanelFloat();">
+                    <apex:param name="goToSiteId" value="" />
+                    <apex:param name="rdsFlag" value="" />
+                </apex:actionFunction>
+                <apex:actionFunction name="SubmitRDS" action="{!submitRdsSite}" reRender="pagecontainer,ciError,crddoverlaycontainer" oncomplete="checkCIError();displaycrddoverlay();" status="loading" >                   
+                    <apex:param name="rdsFlag" value="" /> 
+                </apex:actionFunction> 
+       <script type="text/javascript"> 
+       
+        function optionalFieldValidation(event, currentField, typeOfField) {
+        var enteredValue = currentField.value;
+        var elementName = currentField.name;
+        var currentElement = $('input[name="' + elementName + '"]');
+        var parentElement = currentElement.parent();
+        var errorMsg = "<div class='m-t-10 errorText'></div>";
+        parentElement.find('.errorText').remove();
+        currentElement.removeClass('errorFieldBorderColor');
+        if (typeOfField == 'NPANXXCode') {
+            if (enteredValue.length > 0) {
+                if (enteredValue === " " || (enteredValue != enteredValue.trimLeft()) || (enteredValue != enteredValue.trimRight())) {
+                    parentElement.append(errorMsg);
+                    parentElement.find('.errorText').text('Invalid NPA/NXX');
+                    currentElement.addClass('errorFieldBorderColor');
+                } else if ($.isNumeric(enteredValue)) {
+                    if ((enteredValue.length > 0 && enteredValue.length < 6) || enteredValue.length > 6) {
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Must be 6 digits');
+                        currentElement.addClass('errorFieldBorderColor');
+                    } else {
+                        parentElement.find('.errorText').remove();
+                        currentElement.removeClass('errorFieldBorderColor');
+                    }
+                } else {
+                    parentElement.append(errorMsg);
+                    parentElement.find('.errorText').text('Invalid NPA/NXX');
+                    currentElement.addClass('errorFieldBorderColor');
+                }
+            } else {
+                parentElement.find('.errorText').remove();
+                currentElement.removeClass('errorFieldBorderColor');
+            }
+        }
+    }
+        
+        
+         function fieldValidation(event,currentField,typeOfField){
+            if(event.keyCode != 9){
+                var enteredValue = currentField.value;
+                var elementName = currentField.name;
+                var parentElement = $('input[name="' + elementName + '"]').parent();
+                parentElement.find('.errorText').remove();
+                var errorMsg = "<div class='m-t-10 errorText'></div>";
+                
+                if(typeOfField == 'firstName' || typeOfField == 'lastName'){
+                    if(enteredValue.length > 0){
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            if(typeOfField == 'firstName'){
+                                parentElement.find('.errorText').text('First Name should not begin with a space');
+                            }else{
+                                parentElement.find('.errorText').text('Last Name should not begin with a space');
+                            }
+                        }else if(checkNames(enteredValue)){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Numbers or special characters are not allowed');
+                        }else{
+                            parentElement.find('.errorText').remove();
+                        }                
+                    }else{
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Cannot be blank');
+                    }
+                }else if(typeOfField == 'email'){
+                    if(enteredValue.length > 0){
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Email Address should not begin with a space');
+                        }else{
+                            if($.isNumeric(enteredValue) || !validateEmail(enteredValue) || !(enteredValue.indexOf('@') >= 0 && enteredValue.indexOf('.com') >= 0)){
+                                parentElement.append(errorMsg);
+                                parentElement.find('.errorText').text('Invalid Email');
+                            }else{
+                                parentElement.find('.errorText').remove();
+                            }
+                        }                
+                    }else{
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Cannot be blank');
+                    }
+                }else if(typeOfField == 'phoneNumber' || typeOfField == 'optionalPhoneNumber'){
+                    if(enteredValue.length > 0){
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Phone Number should not begin with a space');
+                        }else if(!($.isNumeric(enteredValue)) || enteredValue.indexOf(' ') >= 0 || enteredValue.length > 10){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Invalid Phone number');
+                        }else if(enteredValue.length < 10){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Must be 10 digits');
+                        }else{
+                            parentElement.find('.errorText').remove();
+                        }                
+                    }else{
+                        if(typeOfField == 'phoneNumber'){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Cannot be blank');
+                        }
+                    }               
+                }else if(typeOfField == 'NPANXXCode'){
+                    if(enteredValue.length > 6){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Must be 6 digits');               
+                    }else if(checkNPANXX(enteredValue) || (enteredValue.split('/').length-1 > 1)){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Invalid Primary NPA/NXX');  
+                    }else{
+                        parentElement.find('.errorText').remove();
+                    }               
+                }else if(typeOfField == 'PBXTextArea'){
+                    if(enteredValue.length > 50){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Maximum 50 characters');               
+                    }else{
+                        parentElement.find('.errorText').remove();
+                    }               
+                }else if(typeOfField == 'CNAMFieldKeyUp' || typeOfField == 'CNAMFieldBlur'){
+                    if(enteredValue.length > 0){
+                        if(enteredValue.length > 15){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Maximum 15 characters');
+                        }else{
+                            parentElement.find('.errorText').remove();
+                        }
+                    }else{
+                        if(typeOfField == 'CNAMFieldBlur'){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Cannot be blank');                           
+                        }
+                    }
+                }else if(typeOfField == 'DirectoryListingCategory'){
+                    if(enteredValue.length > 50){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Maximum 50 characters');               
+                    }else{
+                        parentElement.find('.errorText').remove();
+                    }               
+                }else if(typeOfField == 'DirectoryListingNumber'){
+                    if(enteredValue.length == 0){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Cannot be blank');
+                    }else{
+                        parentElement.find('.errorText').remove();
+                    }               
+                }else if(typeOfField == 'DirectoryListingName'){
+                    if(enteredValue.length > 0){
+                        if(enteredValue.length > 75){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Maximum 75 characters');
+                        }else{
+                            parentElement.find('.errorText').remove();
+                        }
+                    }else{
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Cannot be blank');
+                    }
+                }else if(typeOfField == 'dropDownSelection'){
+                    var parentElement = $('select[name="' + elementName + '"]').parent();
+                    parentElement.find('.errorText').remove();
+                    if((enteredValue == 'Select') || (enteredValue == '')){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Selection required');
+                    }else{
+                        parentElement.find('.errorText').remove();
+                    }
+                }else if(typeOfField == 'radioSelection'){
+                    var parentElement = $('input[name="' + elementName + '"]').parents( "fieldset" ).parent();
+                    parentElement.find('.errorText').remove();
+                    
+                }else  if(typeOfField == 'StaticIP'){
+                    if(enteredValue > 20){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Number Must be a minimum of 1 and maximum of 20');               
+                    }else{
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Should not begin with a space');
+                        }else if(enteredValue < 1){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Number Must be a minimum of 1 and maximum of 20');
+                        } else if(enteredValue.val()){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Selection required');
+                        }
+                    }
+                }else if (typeOfField == 'PBXVendororManufacturer') {
+                    if(enteredValue.length > 20){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Maximum 20 Characters');               
+                    } else {
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Should not begin with a space');
+                        }
+                    }
+                }else if(typeOfField == 'PBXModel'){
+                    if(enteredValue.length > 20){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Maximum 20 Charactors');               
+                    }else{
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Should not begin with a space');
+                        }
+                    }
+                }else if(typeOfField == 'PBXSoftwareVersion'){
+                    if(enteredValue.length > 20){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Maximum 20 Charactors');               
+                    }else{
+                        if(enteredValue.charAt(0) === ' '){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Should not begin with a space');
+                        }
+                     }
+                }
+            }
+        }
+        var directoryPhoneNumNeeded = '{!Directory_Listing_for_Phone_NumberInfo}';
+        if(directoryPhoneNumNeeded == 'true'){
+            $(".DirectoryListingInputFields").css('display','block');
+            $(".DirectoryListingInputFields").find('.validationReq').addClass('required');
+        }else{
+            $(".DirectoryListingInputFields").css('display','none');
+            $(".DirectoryListingInputFields").find('.validationReq').removeClass('required');
+        }
+        function showDirectoryListing(currentField){
+            if(currentField.value == 'true'){
+                $(".DirectoryListingInputFields").css('display','block');
+                $(".DirectoryListingInputFields").find('.validationReq').addClass('required');
+            }else{
+                emptyDirectoryListingFields();
+            }
+        }
+        function hideDirectoryListingInputFields(){
+            $(".DirectoryListingInputFields").css('display','none');
+            $(".DirectoryListingInputFields").find('.validationReq').removeClass('required');        
+        }
+   
+        var callingCNAMDisplay = '{!Calling_Name_DisplayInfo}';
+        if(callingCNAMDisplay == 'Allow Customer Specified CNAM'){
+            $(".CustomerSpecifiedCNAM").css('display','block');
+            $(".CustomerSpecifiedCNAM").find('.validationReq').addClass('required');
+        }else{
+            $(".CustomerSpecifiedCNAM").css('display','none');
+            $(".CustomerSpecifiedCNAM").find('.validationReq').removeClass('required');
+        }
+         function showCustomerCNAM(currentField){
+            if(currentField.value == 'Allow Customer Specified CNAM'){
+                
+                $(".CustomerSpecifiedCNAM").css('display','block');
+                $(".CustomerSpecifiedCNAM").find('.validationReq').addClass('required');
+                $(".customerSpecified").addClass('requiredField');
+            }else{
+                $('.customerSpecified_error').remove();
+                $('.CustomerSpecifiedCNAM').removeClass('has-error');
+                $('.customerSpecified ').val("");
+                $(".CustomerSpecifiedCNAM").css('display','none')
+                $(".CustomerSpecifiedCNAM").find('.validationReq').removeClass('required');
+                $(".customerSpecified").removeClass('requiredField');
+            }
+        }
+        function hideCustomerCNAM(){
+            $('.customerSpecified_error').remove();
+            $('.CustomerSpecifiedCNAM').removeClass('has-error');
+            $('.customerSpecified ').val("");
+            $(".CustomerSpecifiedCNAM").css('display','none');
+            $(".CustomerSpecifiedCNAM").find('.validationReq').removeClass('required'); 
+            $(".customerSpecified").removeClass('requiredField');          
+        }    
+        </script>
+        <script>
+        //pageValidationForBlocks();
+
+        function pageValidationForBlocks(){
+            var portableNumbersValue1 = document.getElementsByClassName('IPFlexibleReachPlan')[0];
+            var radioInputValue1 = portableNumbersValue1.getElementsByTagName('input');
+            var portableNumbersOnExistingIPFlexPlanValue = '{!portableNumbersOnExistingIPFlexPlan}';
+            var errorMsg = "<div class='m-t-10 errorText'></div>";   
+            //parentElement.find('.errorText').remove();
+            for (var z=0; z<radioInputValue1.length; z++) {
+                //IPFlex reach plan phone number validation
+                if(radioInputValue1[z].value == 'Yes' && radioInputValue1[z].checked == true){
+                    var phnNumValidation;
+                    $('.PortablePhoneNumInputFields input').each(function() {
+                        if($(this).hasClass('required')){
+                            phnNumValidation = true;
+                            if(!$(this).val()){
+                                $(this).parent().append(errorMsg);
+                                $(this).parent().find('.errorText').text('Cannot be blank.');
+                                $(this).addClass('errorFieldBorderColor');  
+                            }
+                            return false;
+                        }else{
+                            if($(this).val()){
+                                phnNumValidation = true;
+                                return false;
+                            }else{
+                                phnNumValidation = false;
+                            }                    
+                        }
+                    });
+                    if(!phnNumValidation){
+                        var errorMsgToappendTo = $('.PortablePhoneNumInputFields input')[0];
+                        var elementName = errorMsgToappendTo.name;
+                        var currentElement = $('input[name="' + elementName + '"]');
+                        currentElement.parent().append(errorMsg);
+                        currentElement.parent().find('.errorText').text('Cannot be blank.');
+                        currentElement.addClass('required errorFieldBorderColor');                    
+                    }
+                };
+            } //for loop
+        }
+        function displaycrddoverlay(){
+                                      
+            if ( "{!CRDDPopUp}" == 'true')
+             document.getElementById(crddoverlaycontainerid).style.display = 'block';       
+         }
+    
+    </script>
+                
+    </apex:form>
+
+    <script>    
+    var PortTNObject = ("{!TNGuideUploadedFileNameURLMap}").replace(/'/g, "\\'");
+    var chunkSize = 950000;        //Maximum Javascript Remoting message size is 1,000,000 characters
+    var attachment;
+    var attachmentName;
+    var fileSize;
+    var positionIndex;
+    var siteId = "{!site}";
+    var optyId = "{!oppty[0].Id}";
+
+    function CSRChooseFile() {
+        $("#CSR_Upload_btn").addClass('button-disabled');
+        $(".CSRUploadFileBtnBrowse").val('');
+        $("#filePath").val('');
+        $(".CSRUploadFileBtnBrowse").click();
+    }
+    
+    function removeErrorMsg(){
+            /*$(".form-errors").hide();*/
+            var errorObj = $(".form-errors");
+            if(errorObj != null && errorObj.text() != null && errorObj.text().length>0){
+                //errorObj.remove();
+                errorObj.hide();
+                
+                $(".form-errors").text('');
+                 $("#CSR_Upload_btn").addClass('button-disabled'); 
+                // $("#filePath").val('');
+            }
+            document.getElementById("filePath").value = "";
+        }
+
+    function changePath(){
+        $("#CSR_Upload_btn").removeClass('button-disabled'); 
+        $("#filePath").val(
+            $(".CSRUploadFileBtnBrowse").val().substring(
+                $(".CSRUploadFileBtnBrowse").val().lastIndexOf('\\')+1));
+    }
+
+    function onClickOfChoose(buttonClass,filePath, uploadBtnObj) {
+            $("#"+uploadBtnObj).addClass('button-disabled');
+            $("."+buttonClass).val('');
+             document.getElementById(filePath).value = '';
+            $("."+buttonClass).click();
+        }
+        function changePathOnFileSelect(buttonClass,filePath,fileUpload){
+                $("."+fileUpload).removeClass('button-disabled'); 
+                $("#"+filePath).val(
+                $("."+buttonClass).val().substring(
+                $("."+buttonClass).val().lastIndexOf('\\')+1));
+       }    
+    
+    function uploadFile(uploadSection, uploadSectionClass, filePath, uploadBtnObj, errorDiv) { 
+    $('#loading').parent().show();
+    var maxFileSize = 1024000;      //After Base64 Encoding, this is the max file size
+    $("#"+uploadBtnObj).addClass('button-disabled'); 
+    console.log('uploadBtnObj ' +uploadBtnObj);
+    document.getElementById(filePath).focus();
+    var file = document.getElementById(uploadSectionClass).files[0];
+    if (file != undefined) {
+        var extensionNameNoCase = file.name.substring(file.name.lastIndexOf('.') + 1);
+        var extensionName= extensionNameNoCase.toLowerCase();
+        console.log('extensionName  '+extensionName+' uploadSection '+uploadSection);
+        if (file.size <= maxFileSize && uploadSection != null && ((uploadSection == 'CSRSection' && (extensionName == 'doc' || extensionName == 'docx' || extensionName == 'pdf'))
+        || (uploadSection == 'portingTNSection' && (extensionName == 'xls' || extensionName == 'xlsx'))
+        || (uploadSection == 'MoveReqSection' && (extensionName == 'doc' || extensionName == 'docx' || extensionName == 'pdf' || extensionName == 'xls' || extensionName == 'xlsx')))       
+        ) {
+            $("."+errorDiv).text('');
+            attachmentName = file.name;
+            var fileReader = new FileReader();
+            fileReader.onloadend = function(e) {
+                attachment = window.btoa(this.result); //Base 64 encode the file before sending it
+                positionIndex = 0;
+                fileSize = attachment.length;
+                maxFileSize += fileSize - file.size;
+                doneUploading = false;
+                if (fileSize < maxFileSize) {
+                    uploadAttachment(null,uploadSection, uploadBtnObj, errorDiv,filePath);
+                    $("."+errorDiv).hide();
+                      $("."+errorDiv).text('');
+                } else {
+                    $("."+errorDiv).text("The file exceeds the maximum limit size of 1 MB.").show();
+                    $("#"+uploadBtnObj).addClass('button-disabled');
+                    $('#loading').parent().hide();                  
+                }
+            }
+            fileReader.readAsBinaryString(file); //Read the body of the file
+        } else if (uploadSection != null && uploadSection == 'CSRSection' && (extensionName != 'doc' && extensionName != 'docx' && extensionName != 'pdf')) {
+            $("."+errorDiv).text("The file format isn't a supported format. Upload your file as a .doc, .docx or .pdf.").show();
+             
+            $("#"+uploadBtnObj).addClass('button-disabled'); 
+        }
+        else if (uploadSection != null && uploadSection == 'portingTNSection' && (extensionName != 'xls' && extensionName != 'xlsx')){
+            $("."+errorDiv).text("The file format isn't a supported format. Upload your file as a .xls or .xlsx.").show();
+             
+            $("#"+uploadBtnObj).addClass('button-disabled'); 
+        }else if (uploadSection != null && uploadSection == 'MoveReqSection' && (extensionName != 'doc' && extensionName != 'docx' && extensionName != 'pdf' && extensionName != 'xls' && extensionName != 'xlsx')){
+            $("."+errorDiv).text("The file format isn't a supported format. Upload your file as a .doc, .docx, .xls, .xlsx or .pdf.").show();
+             
+            $("#"+uploadBtnObj).addClass('button-disabled'); 
+        }
+        else if (file.size > maxFileSize) {
+            $("."+errorDiv).text("The file exceeds the maximum limit size of 1 MB.").show();
+            $("#"+uploadBtnObj).addClass('button-disabled'); 
+        }       
+        
+    } else {
+        $("."+errorDiv).text("One uploaded file is required.").show();
+        
+        $("#"+uploadBtnObj).addClass('button-disabled'); 
+        //console.log("upload size");
+    }
+    if('undefined' != ($("."+errorDiv).text().length) && ($("."+errorDiv).text().length > 0)){
+            $('#loading').parent().hide();
+        }    
+    
+}
+    function uploadAttachment(fileId,uploadSection, uploadBtnObj, errorDiv, filePath){
+        console.log('filePtah:: '+filePath+'errorDiv '+errorDiv);
+        var attachmentBody = "";
+        if(fileSize <= positionIndex + chunkSize) {
+            attachmentBody = attachment.substring(positionIndex);
+        } else {
+            attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+        }
+        RDSAVPNController.doUploadAttachment(
+            siteId, optyId, attachmentBody, attachmentName, fileId, uploadSection, 
+            function(result, event) {
+                if(event.statusCode == '200'){
+                    if(result=='Attachment already exists'){
+                        $("."+errorDiv).text("A file by this name has already been uploaded").show();
+                        $("#"+uploadBtnObj).addClass('button-disabled'); 
+                         $("#"+filePath).val('');
+                    }else{
+                        $("."+errorDiv).text('');
+                        $("#"+filePath).val('');
+                        if(uploadSection == 'CSRSection'){
+                            reloadCSRMap(); 
+                        }else if(uploadSection == 'portingTNSection'){
+                        console.log('inside port');
+                            reloadPortTNMap();
+                        }else if(uploadSection == 'MoveReqSection'){
+                            reloadMoveReqMap();                     } 
+                    }     
+                    $('#loading').parent().hide();
+                }                
+            },
+            {buffer: true, escape: true, timeout: 120000}
+        );
+    }
+
+    function removeUploadedId(key, uploadSection){
+        $(".CSR-form-errors").text('');
+        var removeFileOnClick = key;
+        Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.RDSAVPNController.removeAttachment}',
+            removeFileOnClick,
+            function(result, event){
+                if (result == "Delete Success") { 
+                    if(uploadSection == 'CSRSection'){
+                        reloadCSRMap(); 
+                    }else if(uploadSection == 'portingTNSection'){
+                        reloadPortTNMap();
+                    }else if(uploadSection == 'MoveReqSection'){
+                        reloadMoveReqMap();
+                    } 
+                }
+            }
+        );  
+    }   
+    
+    var blockValidationsSuccess = false;
+        var phnNumValidation;
+        
+        function phoneNumBlocksValidation(currentField){
+            
+            var elementName = currentField.name;
+            var currentElement = $('input[name="' + elementName + '"]');
+            var parentElement = currentElement.parent();
+            var errorMsg = "<div class='m-t-10 errorText'></div>";
+            parentElement.find('.errorText').remove();
+            var portableNumbersValue = document.getElementsByClassName('IPFlexibleReachPlan')[0];
+            var radioInputValue = portableNumbersValue.getElementsByTagName('input');
+            var portableNumbersValueYes = portableNumbersValue.innerHTML;
+            if(currentField.value)
+            if(currentField.value.length > 0 ){
+                $('.PortablePhoneNumInputFields input').each(function() {
+                    var portableNum = $(this).val();
+                    var numbers = portableNum.replace(/\D/g, ''), char = {10:'-'};
+                    portableNum = '';
+                    for (var i = 0; i < numbers.length; i++) {
+                        portableNum += (char[i]||'') + numbers[i];
+                    }
+                    $(this).val(portableNum);
+                });
+    
+            }
+    
+           for (var z=0; z<radioInputValue.length; z++) {
+            if(currentField.value.length > 0 && radioInputValue[z].value == "Yes" && radioInputValue[z].checked == true){
+                $('.PortablePhoneNumInputFields input').each(function() {
+                    if($(this).hasClass('required')){
+                        phnNumValidation = true;
+                        return false;
+                    }else{
+                        if($(this).val()){
+                            phnNumValidation = true;
+                            return false;
+                        }else{
+                            phnNumValidation = false;
+                        }                    
+                    }
+                });
+                if(phnNumValidation){
+                    currentField.className = "form-control required";
+                    //console.log(currentField.value.length);
+                    if(currentField.value.charAt(0) === ' '){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Phone Number should not begin with a space');
+                        //currentElement.addClass('errorFieldBorderColor');
+                    }else if(currentField.value.length != 10 && currentField.value.length != 15){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Must be 10 digits or 14 digits');
+                    }else{
+                        parentElement.find('.errorText').remove();
+                    }                
+                }else{
+                    console.log(phnNumValidation);
+                }
+            } 
+           }
+        }    
+    </script>
+    <!-- this fix is specific to the tooltip/popover -->
+        <script>
+        var blockOne = $('.blockOne')
+        var firstblocktrue = true;
+        var firstFlagTrue = "{!portableNumbersOnExistingIPFlexPlan}";
+        var inpcls;
+        var classname;
+        var parentclass;
+        var extraVar;
+        var originalLeave = $.fn.popover.Constructor.prototype.leave;
+        $.fn.popover.Constructor.prototype.leave = function(obj) {
+            var self = obj instanceof this.constructor ? obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type)
+            var container, timeout;
+            originalLeave.call(this, obj);
+            siteListPanel
+            if (obj.currentTarget) {
+                container = $(obj.currentTarget).siblings('.popover')
+                timeout = self.timeout;
+                container.one('mouseenter', function() {
+                    clearTimeout(timeout);
+                    container.one('mouseleave', function() {
+                        $.fn.popover.Constructor.prototype.leave.call(self, self);
+                    });
+                })
+            }
+        };
+        function calledFirst(inpObj) {
+            if (inpObj == 'true') {
+                firstFlagTrue = true;
+            }
+        }
+        
+        function validationOnBlock(inpclass) {
+            extraVar = inpclass;
+            classname = $("." + inpclass);
+            if (classname.val().length == 0) {
+                firstblocktrue = true;
+            } else {
+                firstFlagTrue = false;
+            }
+        }
+        
+        function checkReqField() {
+            if (firstblocktrue == true) {
+                if (firstFlagTrue == 'true') {
+                    //alert('firstFlagTrue' + firstFlagTrue);
+                    if (typeof classname != 'undefined') {
+                        parentClass = classname.parent();
+                        $(".errorText." + extraVar.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error").remove();
+                        parentClass.addClass("has-error").append("<p class='errorText " + extraVar.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error'>hello</p>");
+                    } else {
+                        var blockOne1 = $(".blockOne");
+                        parentClass = blockOne1.parent();
+                        $(".errorText." + "blockOne".replace(/\s/g, "_").replace(/["'()]/g, "") + "_error").remove();
+                        parentClass.addClass("has-error").append("<p class='errorText " + "blockOne".replace(/\s/g, "_").replace(/["'()]/g, "") + "_error'>hello11</p>");
+                    }
+                }
+            }
+        }
+            
+    </script>
+     <script>
+     var portTypeValue = '{!portType}';
+        if(portTypeValue == 'Full'){
+            $(".portTypeBillingPhnNum").css('display','block');
+            $(".portTypeNewPhnNum").css('display','none');
+            $(".CSRSection").css('display','block');
+            $(".portTypeBillingPhnNum").find('.validationReq').addClass('required');
+            $(".portTypeNewPhnNum").find('.validationReq').removeClass('required');
+            $(".CSRSection").find('.validationReq').addClass('required');
+            $('.new_billingphnnumber').val("");
+            $('.new_billingphnnumber_error').remove();
+            $('.new_billingphnnumber').removeClass('requiredField');
+        }else if(portTypeValue == 'Partial'){
+            $(".portTypeBillingPhnNum").css('display','none')
+            $(".portTypeNewPhnNum").css('display','block');
+            $(".CSRSection").css('display','block');
+            $(".portTypeNewPhnNum").find('.validationReq').addClass('required');
+            $(".portTypeBillingPhnNum").find('.validationReq').removeClass('required');
+            $(".CSRSection").find('.validationReq').addClass('required');
+            $('.billingphnnumber_error').remove();
+            $('.billingphnnumber').removeClass('requiredField');
+            $('.billingphnnumber').val('');
+        }else{
+            $(".portTypeBillingPhnNum").css('display','none')
+            $(".CSRSection").css('display','none');
+            $(".portTypeNewPhnNum").css('display','none');
+            $(".portTypeBillingPhnNum").find('.validationReq').removeClass('required');
+            $(".portTypeNewPhnNum").find('.validationReq').removeClass('required');
+            $(".CSRSection").find('.validationReq').removeClass('required');
+            $('.billingphnnumber').removeClass('requiredField');
+            $('.new_billingphnnumber').removeClass('requiredField');
+        }
+        function showPortTypePhnNum(currentField){
+            if(currentField.value == 'Full'){
+                $('.billingphnnumber_error').remove();
+                $('.portTypeBillingPhnNum ').removeClass('has-error');
+                $('.new_billingphnnumber').val("");
+                $('.new_billingphnnumber_error').remove();
+                $('.portTypeNewPhnNum').removeClass('has-error');
+                $(".portTypeBillingPhnNum").css('display','block');
+                $(".portTypeNewPhnNum").css('display','none');
+                $(".CSRSection").css('display','block');
+                $(".portTypeBillingPhnNum").find('.validationReq').addClass('required');
+                $(".portTypeNewPhnNum").find('.validationReq').removeClass('required');
+                $(".CSRSection").find('.validationReq').addClass('required');
+                $('.new_billingphnnumber').removeClass('requiredField');
+                //checkIfSubmitBtnCanBeEnabled();
+            }else if(currentField.value == 'Partial'){
+                $('.new_billingphnnumber_error').remove();
+                $('.portTypeNewPhnNum').removeClass('has-error');
+                $('.billingphnnumber').val("");
+                $('.billingphnnumber_error').remove();
+                $('.portTypeBillingPhnNum ').removeClass('has-error');
+                $(".portTypeBillingPhnNum").css('display','none')
+                $(".portTypeNewPhnNum").css('display','block');
+                $(".CSRSection").css('display','block');
+                $(".portTypeNewPhnNum").find('.validationReq').addClass('required');
+                $(".portTypeBillingPhnNum").find('.validationReq').removeClass('required');
+                $(".CSRSection").find('.validationReq').addClass('required');
+               // checkIfSubmitBtnCanBeEnabled();
+               $('.billingphnnumber').removeClass('requiredField');
+            }else{
+                $(".portTypeBillingPhnNum").css('display','none')
+                $(".portTypeNewPhnNum").css('display','none');
+                $(".CSRSection").css('display','none');
+                $(".portTypeNewPhnNum").find('.validationReq').removeClass('required');
+                $(".CSRSection").find('.validationReq').removeClass('required');
+                //checkIfSubmitBtnCanBeEnabled();
+                $('.billingphnnumber').removeClass('requiredField');
+                $('.new_billingphnnumber').removeClass('requiredField');
+                
+            }
+        }
+        var radioOption1;
+        var errorClassAdded = false ;
+        function testFunction(radioOption) {
+            
+            radioOption1 = radioOption;
+            if (radioOption == 'true' && blockValidationsSuccess  == false ) {
+                
+                $(".PortablePhoneNumInputFields").addClass('errorOnBlockDiv');
+                errorClassAdded = true;
+            } else {
+                $(".PortablePhoneNumInputFields").removeClass('errorOnBlockDiv');
+            }
+        }
+        
+        function toRemoveErrorClass() {
+         console.log('toRemoveErrorClass');
+         $(".PortablePhoneNumInputFields").removeClass('errorOnBlockDiv');
+         if (errorClassAdded) {
+                $(".PortablePhoneNumInputFields").removeClass('errorOnBlockDiv');
+            }
+        }
+        
+         
+          
+          function validateOptionalFields(){
+            $('[placeholder="Optional"]').each(function() {
+                var currentElement = $(this);
+                var value = currentElement.val();
+                if(value != null && value !='' && value.length > 0 ){
+                        currentElement.keyup();
+                            
+                }
+            });
+          }        
+        
+     </script>
+    <script>
+        function techQuestChooseFile() {
+            $(".techQuestUploadFileBtnBrowse").val('');
+            $("#techQuestFilePath").val('');
+            $('#techQuestUploadBtn').attr("disabled", "disabled");
+            $(".techQuestUploadFileBtnBrowse").click();
+        }
+
+        function techQuestChangePath(){
+            if($(".techQuestUploadFileBtnBrowse").val()){
+                $("#techQuestUploadBtn").removeAttr('disabled'); 
+                $("#techQuestFilePath").val(
+                    $(".techQuestUploadFileBtnBrowse").val().substring(
+                        $(".techQuestUploadFileBtnBrowse").val().lastIndexOf('\\')+1));
+            } 
+        } 
+
+        function uploadTechQuestFile(){
+            $('#loading').parent().show();
+            var maxFileSize = 1024000;      //After Base64 Encoding, this is the max file size
+            $('#techQuestUploadBtn').attr("disabled", "disabled");
+            var file = document.getElementById('chooseTechQuestFileToUpload').files[0];
+            if(file != undefined) {
+                var extensionNameNoCase = file.name.substring(file.name.lastIndexOf('.')+1);
+                var extensionName= extensionNameNoCase.toLowerCase();
+                if(file.size <= maxFileSize){
+                    if(extensionName == 'doc' || extensionName == 'docx' || extensionName == 'pdf'){
+                        attachmentName = 'TechQ_'+file.name;
+                        var fileReader = new FileReader();
+                        fileReader.onloadend = function(e) {
+                            attachment = window.btoa(this.result);  //Base 64 encode the file before sending it
+                            positionIndex=0;
+                            fileSize = attachment.length;
+                            maxFileSize += fileSize - file.size;
+                            if(fileSize < maxFileSize) {
+                                uploadTechQuestAttachment(null);
+                            } else {
+                                $(".techQuest-form-errors").text("The file exceeds the maximum limit size of 1 MB.").show();
+                                $('#loading').parent().hide();
+                            } 
+                        }
+                        fileReader.readAsBinaryString(file);  //Read the body of the file                    
+                    }else{
+                        $(".techQuest-form-errors").text("The file format isn't a supported format. Upload your file as a .doc, .docx or .pdf.").show();
+                        $('#loading').parent().hide();
+                    }
+                }else{
+                    $(".techQuest-form-errors").text("The file exceeds the maximum limit size of 1 MB.").show();
+                    $('#loading').parent().hide();
+                }
+            }       
+        }  
+    
+        function uploadTechQuestAttachment(fileId) {
+            var attachmentBody = "";
+            var uploadSection = "";
+            if(fileSize <= positionIndex + chunkSize) {
+                attachmentBody = attachment.substring(positionIndex);
+            } else {
+                attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+            }
+            RDSAVPNController.doUploadAttachment(
+                siteId, optyId, attachmentBody, attachmentName, fileId, uploadSection,
+                function(result, event) {
+                    if(event.statusCode == '200'){
+                        reloadTechQuestMap();
+                        $('#loading').parent().hide();
+                    }
+                },
+                {buffer: true, escape: true, timeout: 120000}
+            );
+        }
+
+        function removeTechQuestDoc(key){
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.RDSAVPNController.removeAttachment}',
+                key,
+                function(result, event){
+                    if (result == "Delete Success") { 
+                        reloadTechQuestMap();
+                    }
+                }
+            );
+        }   
+    </script>     
+ </apex:page>

@@ -1,0 +1,167 @@
+<!---
+     Requirement/User Story Number :US290900
+     Requirement Description:In SFDC, there should be a way to track the status of the process performed for API flow independent of each other such that it is obvious when a certain process completed successfully, or what error was produced if it failed or it is still in progress.           
+     Created Date:
+     Version:1.0:New
+     
+!--->
+
+<apex:page standardController="Opportunity" extensions="API_StatusProgressBarController" tabStyle="Opportunity" >
+<apex:form > 
+<apex:pageBlock >
+    <style>
+            body .bPageBlock .pbBody .grey .pbSubheader h3{
+                color:black;
+            }
+             
+
+    </style>
+    
+    <apex:outputPanel style="width:1000px;height:130px;" layout="block" styleClass="grey">
+        <!--- This section is to show the color bar with Red/Green/Grey status --> 
+            <apex:pageBlockSection showHeader="false">  
+                 <apex:pageblockTable width="100%" value="{!oppList}" var="Oppty">
+                    <style> {background-color:white;} </style>               
+                    <apex:column value="{!Oppty.Deal_Rate_Plan__c}" headerValue="Deal Rate Plan"  title="{!IF(Oppty.Deal_Rate_Plan_Status__c = 'Failure',Oppty.Deal_Rate_Plan_Error_Msg__c,'')}"/>
+                    <apex:column value="{!Oppty.CDG_SubAccount__c}" headerValue="CDG/Sub Account"  title="{!IF(Oppty.CDG_Sub_Account_Status__c = 'Failure',Oppty.CDG_Sub_Account_Last_Run_Error_Msg__c,'')}"/>
+                    <apex:column value="{!Oppty.RDS_Received__c}" headerValue="RDS Received"/>
+                    <apex:column value="{!Oppty.RDS_Review_Completed__c}" rendered="{!IF((Opportunity.RecordType.Name!='MACD' && Opportunity.Renewal_Contract__c == false),true,false)}">
+                        <apex:facet name="header">
+                            RDS Review<br/>Completed
+                        </apex:facet>
+                    </apex:column> 
+                    <apex:column value="{!Oppty.MACD_RDS_Review_Complete__c}" rendered="{!IF(NOT(Opportunity.RecordType.Name!='MACD' && Opportunity.Renewal_Contract__c == false),true,false)}">
+                        <apex:facet name="header">
+                            MACD RDS Review<br/>Completed
+                        </apex:facet>
+                    </apex:column>                  
+                    <apex:column value="{!Oppty.Circuit_ID_USO__c}" headerValue="Circuit ID/USO" title="{!IF(Oppty.Circuit_ID_USO_Status__c = 'Failure',Oppty.Circuit_ID_USO_Last_Run_Error_Msg__c,'')}"/>
+                    <apex:column value="{!Oppty.MD5__c}" headerValue="MD5 (Optional)"  title="{!IF(Oppty.MD5_Status__c = 'Failure',Oppty.MD5_Error_Msg__c,'')}"/>
+                    <apex:column value="{!Oppty.SA_Contract_Subscription__c}"  title="{!IF(Oppty.SA_Contract_Subscription_Status__c = 'Failure',Oppty.SA_Contract_Subscription_Error_Msg__c,'')}">
+                        <apex:facet name="header">
+                            SA Contract<br/>Subscription
+                        </apex:facet>
+                    </apex:column>
+                    <apex:column value="{!Oppty.Create_Deal_Hash__c}" headerValue="Create Deal Hash"  title="{!IF(Oppty.Create_Deal_Hash_Status__c = 'Failure',Oppty.Create_Deal_Hash_Error_Msg__c,'')}"  rendered="{!Opportunity.RecordType.Name!='MACD'}"/>          
+                    <apex:column value="{!Oppty.Update_deal_hash__c}" headerValue="Update Deal Hash"  title="{!IF(Oppty.Update_Deal_Hash_Status__c = 'Failure',Oppty.Update_Deal_Hash_Error_Msg__c,'')}" rendered="{!IF((Opportunity.RecordType.Name!='MACD' && Opportunity.Renewal_Contract__c == false),true,false)}"/>          
+                    <apex:column value="{!Oppty.MACD_Update_Deal_hash__c }"  title="{!IF(Oppty.MACD_Update_Deal_hash_Status__c = 'Failed',Oppty.MACD_Update_Deal_hash_Error_Msg__c,'')}" rendered="{!IF(NOT(Opportunity.RecordType.Name!='MACD' && Opportunity.Renewal_Contract__c == false),true,false)}"> 
+                        <apex:facet name="header">
+                            MACD Update<br/>Deal Hash
+                        </apex:facet>
+                    </apex:column>
+               </apex:pageblockTable>                
+            </apex:pageBlockSection> 
+            
+        <!--Color Bar section Ends here -->
+        
+        <!---- Legend section-->
+            <apex:pageBlockSection collapsible="false" columns="1" showHeader="false">   
+            <b><h2>Legend</h2></b>
+                <tr/>
+                <tr/>
+                <table>     
+                    <tr>
+                        <td/><td/><td/><td bgcolor="Grey">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>Not yet Initiated</td>
+                        <td bgcolor="Yellow">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>In Progress</td>
+                        <td bgcolor="Green">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>Successful</td>
+                        <td bgcolor="Red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>Failed</td>    
+                    </tr>    
+                </table>
+            </apex:pageBlockSection>
+                <br></br>
+                <br></br>
+        <!--- Legend Section Ends-->
+        
+        <!--The section for Master Oppty to show all related timestamp/error message/Status --->
+        
+            <apex:pageBlockSection collapsible="false" columns="2" showHeader="false" title="" id="MasterBlock" rendered="{!IF((Opportunity.RecordType.Name!='MACD' && Opportunity.Renewal_Contract__c == false),true,false)}"> 
+                <apex:outputField value="{!Opportunity.Deal_Rate_Plan_Status__c}"/>
+                <apex:outputField value="{!Opportunity.MD5_Status__c}"/>
+                
+                <apex:outputField value="{!Opportunity.Deal_Rate_Plan_Last_Time_Stamp__c}"/>                
+                <apex:outputField value="{!Opportunity.MD5_Last_Time_Stamp__c}"/>
+                
+                <apex:outputField value="{!Opportunity.Deal_Rate_Plan_Error_Msg__c}"/>
+                <apex:outputField value="{!Opportunity.MD5_Error_Msg__c}"/>
+                
+                <apex:outputField value="{!Opportunity.RDS_Received_Status__c}"/> 
+                <apex:outputField value="{!Opportunity.SA_Contract_Subscription_Status__c}"/>
+                
+                <apex:outputField value="{!Opportunity.RDS_Received_Last_Time_Stamp__c}"/> 
+                <apex:outputField value="{!Opportunity.SA_Contract_Subscription_Last_Time_Stamp__c}"/> 
+                
+                <apex:outputField value="{!Opportunity.RDS_Review_Complete_Status__c}"/>
+                <apex:outputField value="{!Opportunity.SA_Contract_Subscription_Error_Msg__c}"/>
+                
+                <apex:outputField value="{!Opportunity.RDS_Review_Complete_Last_Time_Stamp__c}"/>
+                <apex:outputField value="{!Opportunity.Create_Deal_Hash_Status__c}" />
+                
+                
+                <apex:outputField value="{!Opportunity.CDG_Sub_Account_Status__c}"/>                
+                <apex:outputField value="{!Opportunity.Create_Deal_Hash_Last_Time_Stamp__c}" />
+                
+                <apex:outputField value="{!Opportunity.CDG_Sub_Account_Last_timestamp__c}"/>
+                <apex:outputField value="{!Opportunity.Create_Deal_Hash_Error_Msg__c}" />
+                
+                <apex:outputField value="{!Opportunity.CDG_Sub_Account_Last_Run_Error_Msg__c}"/>
+                <apex:outputField value="{!Opportunity.Update_Deal_Hash_Status__c}"/>                
+                
+                <apex:outputField value="{!Opportunity.Circuit_ID_USO_Status__c}"/> 
+                <apex:outputField value="{!Opportunity.Update_Deal_Hash_Last_Time_Stamp__c}"/>
+                
+                <apex:outputField value="{!Opportunity.Circuit_ID_USO_Last_timestamp__c}"/>
+                <apex:outputField value="{!Opportunity.Update_Deal_Hash_Error_Msg__c}"/>
+                
+                <apex:outputField value="{!Opportunity.Circuit_ID_USO_Last_Run_Error_Msg__c}"/> 
+                <apex:outputText value=""/>  
+            </apex:pageBlockSection>   
+            
+             <apex:pageBlockSection collapsible="false" columns="2" showHeader="false" title="" id="MACDBlock" rendered="{!IF(NOT(Opportunity.RecordType.Name!='MACD' && Opportunity.Renewal_Contract__c == false),true,false)}"> 
+                <apex:outputField value="{!Opportunity.Deal_Rate_Plan_Status__c}"/>
+                <apex:outputField value="{!Opportunity.MD5_Status__c}"/>
+                
+                <apex:outputField value="{!Opportunity.Deal_Rate_Plan_Last_Time_Stamp__c}"/>                
+                <apex:outputField value="{!Opportunity.MD5_Last_Time_Stamp__c}"/>
+                
+                <apex:outputField value="{!Opportunity.Deal_Rate_Plan_Error_Msg__c}"/>
+                <apex:outputField value="{!Opportunity.MD5_Error_Msg__c}"/>
+                
+                <apex:outputField value="{!Opportunity.RDS_Received_Status__c}"/> 
+                <apex:outputField value="{!Opportunity.SA_Contract_Subscription_Status__c}"/>
+                
+                <apex:outputField value="{!Opportunity.RDS_Received_Last_Time_Stamp__c}"/> 
+                <apex:outputField value="{!Opportunity.SA_Contract_Subscription_Last_Time_Stamp__c}"/> 
+                
+                <apex:outputField value="{!Opportunity.MACD_RDS_Review_Completed_Status__c}" rendered="{!Opportunity.RecordType.Name=='MACD'}"/>
+                <apex:outputField value="{!Opportunity.SA_Contract_Subscription_Error_Msg__c}"/>                
+                
+                <apex:outputField value="{!Opportunity.MACD_RDS_Review_Complete_LastTimeStamp__c}" rendered="{!Opportunity.RecordType.Name=='MACD'}"/>
+                <apex:outputField value="{!Opportunity.MACD_Update_Deal_hash_Status__c}"/>
+                
+                
+                <apex:outputField value="{!Opportunity.CDG_Sub_Account_Status__c}"/>                
+                <apex:outputField value="{!Opportunity.MACD_Update_Deal_hash_Last_TimeStamp__c}"/>
+                
+                <apex:outputField value="{!Opportunity.CDG_Sub_Account_Last_timestamp__c}"/>
+                <apex:outputField value="{!Opportunity.MACD_Update_Deal_hash_Error_Msg__c}"/>
+                
+                <apex:outputField value="{!Opportunity.CDG_Sub_Account_Last_Run_Error_Msg__c}"/>
+                <apex:outputText value=""/>
+                
+                <apex:outputField value="{!Opportunity.Circuit_ID_USO_Status__c}"/> 
+                <apex:outputText value=""/>
+                
+                <apex:outputField value="{!Opportunity.Circuit_ID_USO_Last_timestamp__c}"/>
+                <apex:outputText value=""/>
+                
+                <apex:outputField value="{!Opportunity.Circuit_ID_USO_Last_Run_Error_Msg__c}"/> 
+                <apex:outputText value=""/>  
+            </apex:pageBlockSection> 
+        </apex:outputPanel>
+    </apex:pageBlock>    
+</apex:form>
+</apex:page>

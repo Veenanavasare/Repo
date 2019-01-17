@@ -1,0 +1,42 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" >
+    <apex:includeScript value="{!$Resource.atomjqueryjs}"/>
+    <apex:includeScript value="{!$Resource.atombootstrapminjs}"/>
+    
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/libs/jquery.dataTables.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/modernizr.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/bootstrap.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQueryForPopup, 'jQuery/jquery-1.8.2.min.js')}"/> 
+    <apex:includeScript value="{!URLFOR($Resource.jQueryForPopup, 'jQuery/ui/jquery-ui-1.9.1.custom.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jQueryForPopup, 'jQuery/postmessage/jquery.ba-postmessage.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jQueryForPopup, 'jQuery/bbq/jquery.ba-bbq.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jQueryCookie, 'carhartl-jquery-cookie-92b7715/jquery.cookie.js')}"/>
+
+    <apex:includeScript value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.js')}"/>
+    <apex:includeScript value="{!$Resource.atomjqueryjs}" />
+    <apex:includeScript value="{!URLFOR($Resource.bootstrapMin, 'js/bootstrap.min.js')}" />
+    <apex:includeScript value="{!$Resource.chartJSMin}" />
+    
+   <apex:form >
+        <apex:pageBlock >
+                <button type="button" id="crypto_btn" onclick="crypto();">Cryto</button>
+         </apex:pageBlock>
+         
+   </apex:form>
+   <script>
+       function crypto() {
+          ciphertext = "LXjmRy4w6n+vB0FCf7tDu+jkmRHE9ZPfrzrybeTP1jyIWHaev3+VWwSXQnvaiKyzpxJjxdo+Ir9kP9UshB0003JrlIyEUrLZyy2Mk32oTSlhv6UH2+cTSEKYdyp+n5RrTTKN2kU3JIajKi9FCWLM2QYmkh1DkyZJlcPcH2phlrCTEl0S3bQwiaTFt8RwV2yakWs9bwcz1xJgtu70xKQs3PrKOymnatr0TS8t1uV4hExq0QTt6yUhLANr7BPDBbg3Lm/8fD3wZJd1ccalfvtKmBXGFZNxjO7n3hL9FSJMHgSUB2M6RFYpvGBIYB3atxbfxa1G9a2EjnPJdGLDEwQZag==";
+        password = "v3erqY/EGg1NI0yFHYLsMt7IuqJksxNjo1dlhsOo6Zs="; 
+ 
+        var words= CryptoJS.enc.Base64.parse(ciphertext); 
+        var key = CryptoJS.enc.Base64.parse(password ); 
+       
+        var decryptedData = CryptoJS.AES.decrypt(ciphertext , key, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+    });
+    alert(1);
+    var decryptedText = decryptedData.toString(CryptoJS.enc.Utf8);
+    alert(decryptedText);
+       }
+   </script>
+</apex:page>

@@ -1,0 +1,869 @@
+<apex:page controller="RDSAVPNController" standardStylesheets="false" sidebar="false" showHeader="false"  docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" cache="false">
+<apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+<apex:includeScript value="{!URLFOR($Resource.RDSInputValidationsJS)}" />
+<apex:includeScript value="{!URLFOR($Resource.fieldValidations)}" />    
+
+<style>
+
+    .styled-select{
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        width:100%;
+    }
+    .has-error{
+        border-color:#a94442;
+    }
+    .errorFieldBorderColor{
+        border-color:#a94442;
+    }
+    #moveDateInfo {
+        white-space:nowrap;
+    }
+    .avpnMoveDate{
+        margin-right: 10px !important;
+    }
+    /*#manage_content label {
+        margin: 10px 0 !important;
+    }
+    #rdsPagePanel div{
+        margin-top:10px !important;
+    }*/
+    #ipflexInfoBlock span{
+        padding-left:5px;
+    }
+    
+    #ipflexInfoBlock label {
+        //margin: 10px 0 !important;
+    }
+    #ipflexInfoBlock div{
+        margin-top:10px !important;
+    }
+    
+    .sectionHr{
+        margin-top:40px;
+        margin-bottom:40px;
+    }
+    
+    #equipmentBlock label {
+        //margin: 10px 0 !important;
+    }
+    #equipmentBlock div{
+        margin-top:7px !important;
+    }
+    .errorText {
+           margin-bottom:0px !important;
+        }
+    
+    .sectionHr{
+        margin-top:40px;
+        margin-bottom:40px;
+    }
+    
+    
+    .labelMargin {
+        margin: 10px 0 !important;
+    }
+    .divMargin div{
+        margin-top:10px !important;
+    }
+    .spanClass span{
+        padding-left:5px;
+    }
+    
+
+    .radioFields label {
+        font-family: omnesatt_iiregular;
+        margin: 0 25px 0 0 !important;
+    }
+    .blockClass label {
+        margin: 10px 0 !important;
+    }
+    .blockClass {
+        margin-top:10px !important;
+    }
+    .blockClass  span{
+        padding-left:5px;
+    }
+    
+    .CPECertificationRadioFields td{
+            float:left;
+            margin-bottom:10px;
+        }
+        .CPECertificationRadioFields .errorText{
+            margin-top:0 !important
+        }
+    #enhancedFeatureBlock div{
+        // margin-top:10px !important;
+        margin-bottom:0px;
+    }
+    #routingInfoBlock div{
+         margin-top:10px !important;
+    }
+    #routingInfoBlock span{
+        padding:0 5px;
+    }
+    p.errorText.m-t-10.sitePOTSNumber_error {
+    margin-top: 5px !important;
+    }
+    .form-control {
+        font-size: 14px;
+    }
+    #reachSeviceAccountid .tooltip-inner{
+        max-width: 170px !important;
+    }
+    .extraStylesForMsg{
+        line-height: 8px;
+        margin-top: 10px;
+        display: block;
+        margin-bottom: 10px;
+    }
+</style>
+
+<script>
+    
+   
+    onload = function () {
+        initializeFieldValidations4();
+        $(".calendarIcon").on("click", function () {
+            console.log("Calendar");
+            $('.dPicker').focus();
+        });
+        if(typeof page3Visited != 'undefined' && page3Visited == "true"){
+            requiredFieldValidation();
+            
+                if($('.testCallPhNum2') != null && typeof $('.testCallPhNum2') != "undefined" && $('.testCallPhNum2').length>0){
+                        $('.testCallPhNum2').each(function() {
+                        var currentElement = $(this);
+                        optionalFieldValidation4("keyup",this,'OPTPhoneCode');
+                        });
+                        
+                        
+                }
+                
+             $('.emailAddress1').each(function() {
+                            var currentElement = $(this);
+                            emailValidation("keyup",this,'email');
+                        });   
+               
+                        
+        }
+    }
+    $(".calendarIcon").on("click", function () {
+            console.log("Calendar");
+            $('.avpnMoveDate').focus();
+        });
+    var $ = jQuery.noConflict();
+    page2AccordActive = false;
+    $(document).ready(function () {
+    page2AccordActive = false;
+       $('[data-toggle="tooltip"]').tooltip({
+            container: 'body'
+         });
+         onFieldChange("Page3");
+         
+         isSubmitEnable("Page3");
+        //$("body").tooltip({ selector: '[data-toggle="tooltip"]' });
+        //$('.tooltipTrigger').tooltip();
+        var vpnBlockObj = $('#vpnBlock');
+        if(vpnBlockObj != null ){vpnBlockObj.hide();}
+        var avpnCompletionBarBlockObj = $('#avpnCompletionBarBlock');
+        if(avpnCompletionBarBlockObj != null ){avpnCompletionBarBlockObj.hide();}
+        
+        /*$(".dPicker").datepicker({
+            numberOfMonths: 2,  
+            beforeShowDay: noWeekendsOrHolidays,
+            minDate: "{!minDate}",
+            maxDate: "{!maxDate}",
+            onClose: function () {
+                validateEmptyFields("inputRequestedServiceActDate", "Select a Service Activation Date", "Select a Service Activation Date", true);
+                
+            }
+    })*/
+     $(".avpnMoveDate").datepicker({
+        numberOfMonths: 2,
+        beforeShowDay: noWeekendsOrHolidays,
+        showOtherMonths: true,
+        minDate: "{!minDate}",
+        maxDate: "{!maxDate}"
+    });
+    $(".avpnMoveDate").on({
+        "change": function () {
+            throwErrorMessage("avpnMoveDate", "","Selection required","",true,"","","","","");
+        },
+        //"blur": function () {
+           // throwErrorMessage("avpnMoveDate", "","Selection required","",true,"","","","","");
+       // }
+    });
+    
+    
+    /*var ipflexReachMoveDate = new Date();
+    ipflexReachMoveDate.setDate(ipflexReachMoveDate.getDate()+45);
+                
+                        var ipflexMaxReachMoveDate  = new Date();
+                        ipflexMaxReachMoveDate.setMonth(ipflexMaxReachMoveDate.getMonth() + 6);*/
+    var ipflexReachMoveDate = new Date('{!ipflexReachMoveDateMinStr}');
+    var ipflexMaxReachMoveDate  = new Date('{!ipflexReachMoveDateMaxStr}');
+                      
+                             
+                        $(".avpnMoveDate").datepicker(
+                            {
+                                numberOfMonths: 2,
+                                beforeShowDay: noWeekendsOrHolidays,
+                                showOtherMonths: true,
+                                minDate: ipflexReachMoveDate,
+                                maxDate: ipflexMaxReachMoveDate,
+                                onClose: function () {
+                                    //console.log(selectedDate);
+                                    // Function to validate the date-picker after selecting a date
+                                    //validateEmptyFields("inputRequestedServiceActDate", "Select a Service Activation Date", "Select a Service Activation Date", true);
+                                    //validateEmptyFields("avpnMoveDate", "Selection required", "Selection required", true);
+                                    //validateRequiredFields();
+                                }
+                            });
+                            var pageNme = "{!AVPNRDSPageNumber}";
+
+                            
+    setTimeout(function(){
+                
+               /* var arrRequiredFields = $(".requiredInputField");
+                arrRequiredFields.each(function () {
+                var oRequiredField = $(this);
+                if(arrRequiredFields.length > 1){
+                        arrRequiredFields.each(function () {
+                            var oRequiredField = $(this);
+                            
+                            if (oRequiredField[0]) {
+                                if(typeof page3Visited != 'undefined' && page3Visited == "true"){
+                                    
+                                        oRequiredField.keyup();
+                                    
+                                }
+                                else{
+                                    if (0 < oRequiredField.val().length){
+                                        oRequiredField.keyup();
+                                    }
+                                }
+                                
+                            }
+                        });
+                }
+                            
+                });
+                arrRequiredFields = $(".requiredField");
+                arrRequiredFields.each(function () {
+                var oRequiredField = $(this);
+                if(arrRequiredFields.length > 1){
+                        arrRequiredFields.each(function () {
+                            var oRequiredField = $(this);
+                            if (oRequiredField[0]) {
+                                if(typeof page3Visited != 'undefined' && page3Visited == "true"){
+                                    
+                                        oRequiredField.keyup();
+                                    
+                                }
+                                else{
+                                    if (0 < oRequiredField.val().length){
+                                        oRequiredField.keyup();
+                                    }
+                                }
+                                
+                            }
+                        });
+                }
+                            
+                });*/
+                
+                if(typeof page3Visited != 'undefined' && page3Visited == "true"){
+                    requiredFieldValidation();
+                    if($('.testCallPhNum2') != null && typeof $('.testCallPhNum2') != "undefined" && $('.testCallPhNum2').length>0){
+                        $('.testCallPhNum2').each(function() {
+                            var currentElement = $(this);
+                            optionalFieldValidation4("keyup",this,'OPTPhoneCode');
+                        });
+                    }
+                    
+                     $('.emailAddress1').each(function() {
+                            var currentElement = $(this);
+                            emailValidation("keyup",this,'email');
+                        });
+                }
+                                    
+            },100);
+    if($(".noOfSBCSite") != null){
+        var value = $(".noOfSBCSite").val();
+        if(value != null && value.length>0){
+            var intVal = parseInt(value);
+            if(intVal >0){ 
+                 showSBCVendorBlock($(".noOfSBCSite"));
+            }       
+        }       
+    }
+   
+    
+        
+    });
+    function updateChildDiv(containerID,flag){
+        if(containerID != null && containerID == 'sitePOTSNum'){
+            var radioObj = $('.existinPOTSRadio input:checked').val();
+            if(radioObj != null && radioObj=="No")flag = false;
+            if(flag){
+                 $('.sitePOTSNumber').addClass('requiredField');
+            }
+               
+            else{
+                $('.sitePOTSNumber').removeClass('requiredField');
+            }
+        }
+        else if(containerID != null && containerID == 'moveDateInfo'){
+            if(flag)
+                $('.avpnMoveDate').addClass('requiredField');
+            else{
+                $('.avpnMoveDate').removeClass('requiredField');
+                if(typeof $('.avpnMoveDate_error') != "undefined" && $('.avpnMoveDate_error') != null )
+                    $('.avpnMoveDate_error').remove();
+            }
+        }
+        
+            
+        
+    }
+    
+    function showSBCVendorBlock(obj){
+        
+        var value = $(obj).val();
+        if(value != null && value.length>0){
+            var intVal = parseInt(value);
+            if(intVal >0){
+                $('#SBCVendorBlock').show();
+                //sbcVendor sbcName sbcSWVersion 
+                 $('.sbcVendor').addClass('requiredField').parent().removeClass('has-error');
+                 $('.sbcName').addClass('requiredField').parent().removeClass('has-error');
+                 $('.sbcSWVersion').addClass('requiredField').parent().removeClass('has-error');
+                 $('.sbcCascadeDropDown').parent().removeClass('has-error');
+                 $('#sbcCascadeDropDown').removeClass("visible-print-block");
+            }
+            else{
+                $('#SBCVendorBlock').hide();
+                $('.sbcVendor').removeClass('requiredField');
+                $('.sbcName').removeClass('requiredField');
+                $('.sbcSWVersion').removeClass('requiredField');
+                $('.sbcCascadeDropDown_error').remove();
+                $('.sbcVendor_error').remove();
+                $('.sbcName_error').remove();
+                $('.sbcSWVersion_error').remove();
+                $('#sbcCascadeDropDown').addClass("visible-print-block");
+            }
+            
+        }
+        else{
+                $('#SBCVendorBlock').hide();
+                $('.sbcVendor').removeClass('requiredField');
+                $('.sbcName').removeClass('requiredField');
+                $('.sbcSWVersion').removeClass('requiredField');
+                $('.sbcCascadeDropDown_error').remove();
+                $('.sbcVendor_error').remove();
+                $('.sbcName_error').remove();
+                $('.sbcSWVersion_error').remove();
+                $('#sbcCascadeDropDown').addClass("visible-print-block");
+            }
+        
+    }
+    function showWarningMsg(containerID,flag){
+        if(flag){
+            $('#'+containerID).removeClass('visible-print-block');
+        }
+        else
+            $('#'+containerID).addClass('visible-print-block');
+        updateChildDiv(containerID,flag);
+    }
+    function radioBtnValidate(sClassName,btnSelectedValue){
+   
+    btnSelectedValue = $("."+sClassName+" input:checked").val();
+    // console.log('sClassName::::'+sClassName+'    btnSelectedValue :::::'+btnSelectedValue);
+        if(typeof btnSelectedValue != "undefined" && btnSelectedValue != null && btnSelectedValue.length>0){
+        //alert(2);
+            $("." + sClassName).closest('div').removeClass("has-error");
+            $('.'+sClassName+'_error').remove();
+            
+        }else{
+            if(sClassName == 'pbxInterfaceTypeRadio'){
+                var PBXTypeClassVal = $(".PBXTypeClass input:checked").val();
+                if(PBXTypeClassVal =="TDM PBX"){
+                    $(".errorText." + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error").remove();
+                $("." + sClassName).closest('div').addClass("has-error").append("<div class='errorText " + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error'> Selection required</div>"); 
+                }
+                
+             }
+             else if(sClassName == 'cpeCertStatusRadio'){
+                 var PBXTypeClassVal = $(".PBXTypeClass input:checked").val();
+                if(PBXTypeClassVal == "IP PBX"){
+                    $(".errorText." + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error").remove();
+                    $("." + sClassName).closest('div').addClass("has-error").append("<div class='errorText " + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error'> Selection required</div>"); 
+                }
+             }
+             else{
+                $(".errorText." + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error").remove();
+                $("." + sClassName).closest('div').addClass("has-error").append("<div class='errorText " + sClassName.replace(/\s/g, "_").replace(/["'()]/g, "") + "_error'> Selection required</div>"); 
+             }
+        }
+        
+        if($('.inputVPNName_error') != null && typeof $('.inputVPNName_error') != 'undefined'){
+                    $('.inputVPNName_error').remove();
+        }
+        if($('.VPNConnectionPolicySelector') != null && typeof $('.VPNConnectionPolicySelector') != 'undefined'){
+                    $('.VPNConnectionPolicySelector').remove();
+        }
+        if($('.hubNspokeSelector_error') != null && typeof $('.hubNspokeSelector_error') != 'undefined'){
+                    $('.hubNspokeSelector_error').remove();
+        }
+        if($('.inputVPNName') != null ){$('.inputVPNName').removeClass('requiredInputField')};
+}
+function requiredFieldValidation(){
+    var requiredFileds = $(".requiredField");
+    var enabledBtn=true;
+    requiredFileds.each(function () {
+        if($(this).val().length){
+            enabledBtn=true;  
+            return false;
+         }   
+    });
+    if(enabledBtn){
+        if($(".newServiceAccountRadio") != null && $(".newServiceAccountRadio input:checked") != null && $(".newServiceAccountRadio input:checked").val()=='Yes'){
+            throwErrorMessage("avpnMoveDate", "","Selection required","",true,"","","","","");
+        }
+        
+        throwErrorMessage("pbxVendor", "Cannot begin with a space", "Cannot be blank","", true,"Maximum of 20 characters",20,"","","");        
+        throwErrorMessage("pbxModel", "Cannot begin with a space", "Cannot be blank","", true,"Maximum of 20 characters",20,"","","");
+        throwErrorMessage("pbxSwVersion", "Cannot begin with a space", "Cannot be blank","",true,"Maximum of 10 characters",10,"","","");
+        if($('.sitePOTSNumber') != null && $('.sitePOTSNumber') != undefined){
+            if($('.sitePOTSNumber').prop('class') != null && $('.sitePOTSNumber').prop('class').indexOf('requiredField') != -1){
+                throwErrorMessage("sitePOTSNumber", "Cannot begin with a space", "Cannot be blank","Must be 10 digits",true,"Must be 10 digits",10,"Invalid Phone number","","");
+            }
+            
+        }
+        
+        throwErrorMessage("ceVendor", "Cannot begin with a space", "Cannot be blank","",true,"Maximum of 20 characters",20,"","","");
+        throwErrorMessage("ceRouter", "Cannot begin with a space", "Cannot be blank","",true,"Maximum of 20 characters",20,"","","");
+        throwErrorMessage("ceRouterVersion", "Cannot begin with a space", "Cannot be blank","",true,"Maximum of 10 characters",10,"","","");
+        throwErrorMessage("noOfSBCSite", "Cannot begin with a space", "Cannot be blank","",true,"Maximum 5 digits",5,"Invalid number","","");
+        
+       
+        throwErrorMessage("ivrVendor", "Cannot begin with a space", "","",true,"Maximum of 20 characters",20,"","","");
+        
+        throwErrorMessage("firstName", "Cannot begin with a space", "Cannot be blank","",true,"Maximum of 40 characters",40,"","Numbers or special characters are not allowed","");
+        throwErrorMessage("lastName", "Cannot begin with a space", "Cannot be blank","",true,"Maximum of 40 characters",80,"","Numbers or special characters are not allowed","");
+       // throwErrorMessage("emailAddress", "Cannot begin with a space", "","",true,"Maximum of 80 characters",80,"","","Invalid Email");
+        throwErrorMessage("phoneNumber", "Cannot begin with a space", "Cannot be blank","Must be 10 digits",true,"Must be 10 digits",10,"Invalid Phone Number","","");
+        throwErrorMessage("testCallPhNum1", "Cannot begin with a space","Cannot be blank","Must be 10 digits",true,"Must be 10 digits",10,"Invalid Phone Number","","");
+        //throwErrorMessage("testCallPhNum2", "Cannot begin with a space","Cannot be blank","Must be 10 digits",false,"Must be 10 digits",10,"Invalid Phone Number","","");
+        throwErrorMessage("codecDropdown", "","Selection required","",true,"","","","","");
+        throwErrorMessage("altRoutingDropdown", "","Selection required","",true,"","","","","");
+        throwErrorMessage("backDoorLinkDropdown", "","Selection required","",true,"","","","","");
+        if($(".noOfSBCSite") != null){
+            var value = $(".noOfSBCSite").val();
+            if(value != null && value.length>0){
+                var intVal = parseInt(value);
+                if(intVal >0){
+                console.log('>>>>>>>>>>>>'+value);
+                    throwErrorMessage("sbcCascadeDropDown", "","Selection required","",true,"","","","","");
+                    throwErrorMessage("sbcVendor", "Cannot begin with a space", "Cannot be blank","",true,"Maximum of 20 characters",20,"","","");
+                    throwErrorMessage("sbcName", "Cannot begin with a space", "Cannot be blank","",true,"Maximum of 20 characters",20,"","Numbers or special characters are not allowed","");
+            throwErrorMessage("sbcSWVersion", "Cannot begin with a space", "Cannot be blank","",true,"Maximum of 10 characters",10,"","","");
+                }
+                else{
+                    //throwErrorMessage("sbcCascadeDropDown", "","Selection required","",false,"","","","","");
+                }
+            }
+        }
+        
+       
+        
+                    
+        radioBtnValidate("privateDialPlanRadio",'{!privateDialPlanInfoVal}');
+        radioBtnValidate("newServiceAccountRadio",'{!newServiceAccVal}' );
+        radioBtnValidate("vqmCustomRadio",'{!vqmCustomInfoVal}' );
+        radioBtnValidate("PBXTypeRadio",'{!PBXTypeVal}');
+        radioBtnValidate("pbxInterfaceTypeRadio",'{!PBXInterfaceTypeVal}');
+        radioBtnValidate("cpeCertStatusRadio",'{!CPEcertificationVal}');
+        radioBtnValidate("existinPOTSRadio",'{!existingPOTSVal}');
+        radioBtnValidate("ivrBehindRadio",'{!IVRbehindPBXVal}');
+        radioBtnValidate("callForwardRadio",'{!RequireCallForwardVal}');
+        radioBtnValidate("bgprResilliencyRadio",'{!BGPRResilliencyVal}');
+        radioBtnValidate("callPreservationRadio",'{!CallPreservationVal}');
+        
+       
+    }
+}  
+function optionalFieldValidation4(event,currentField,typeOfField) {
+    var enteredValue = currentField.value;
+    var elementName = currentField.name;
+    var currentElement = $('input[name="' + elementName + '"]');
+    var parentElement = currentElement.parent();
+    var errorMsg = "<div class='m-t-10 errorText'></div>";
+    parentElement.find('.errorText').remove();
+    currentElement.removeClass('errorFieldBorderColor');
+    if (typeOfField == 'OPTPhoneCode') {
+        if(enteredValue.length > 0){
+            if(enteredValue.charAt(0) === ' '){
+                parentElement.append(errorMsg);
+                parentElement.find('.errorText').text('Cannot begin with a space');
+                currentElement.addClass('errorFieldBorderColor');
+            }else if(!($.isNumeric(enteredValue)) || enteredValue.indexOf(' ') >= 0){
+                parentElement.append(errorMsg);
+                parentElement.find('.errorText').text('Invalid Phone number');
+                currentElement.addClass('errorFieldBorderColor');
+            }else if(enteredValue.length < 10 || enteredValue.length > 10){
+                parentElement.append(errorMsg);
+                parentElement.find('.errorText').text('Must be 10 digits');
+                currentElement.addClass('errorFieldBorderColor');
+            }else{
+                parentElement.find('.errorText').remove();
+                currentElement.removeClass('errorFieldBorderColor');
+                if(/^(\d)\1\1\1\1\1\1\1\1\1$/.test(enteredValue)){
+                    parentElement.append(errorMsg);
+                    parentElement.find('.errorText').text('Must be a valid number');
+                    currentElement.addClass('errorFieldBorderColor');
+                }
+            }                
+        }
+    }
+}
+
+function emailValidation(event,currentField,typeOfField){
+                 var enteredValue = currentField.value;
+                var elementName = currentField.name;
+                var currentElement = $('input[name="' + elementName + '"]');
+                var parentElement = currentElement.parent();
+                var errorMsg = "<div class='m-t-10 errorText'></div>";
+                parentElement.find('.errorText').remove();
+                currentElement.removeClass('errorFieldBorderColor');
+        if(typeOfField == 'email'){
+                if(enteredValue.length > 0){
+                    if(enteredValue.charAt(0) === ' '){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Cannot begin with a space');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }else{
+                        if($.isNumeric(enteredValue) || !validateEmail(enteredValue)){
+                            parentElement.append(errorMsg);
+                            parentElement.find('.errorText').text('Invalid Email');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }else{
+                            if(enteredValue.length > 80){
+                                parentElement.append(errorMsg);
+                                parentElement.find('.errorText').text('Maximum 80 characters');
+                                currentElement.addClass('errorFieldBorderColor');
+                            }else{
+                            parentElement.find('.errorText').remove();
+                            currentElement.removeClass('errorFieldBorderColor');
+                            }
+                        }
+                    }                
+                }else{
+                    parentElement.append(errorMsg);
+                    parentElement.find('.errorText').text('Cannot be blank');
+                    currentElement.addClass('errorFieldBorderColor');
+                }
+            }
+        }       
+            
+                
+function validateEmail($email) {
+    var emailReg = /^([\w-\.]+@([\w-]+\.)+[\w-]{1,6})?$/;
+    return emailReg.test( $email );
+}
+
+    function displaycrddoverlay(){
+                                          
+        if ( "{!CRDDPopUp}" == 'true')
+         document.getElementById(crddoverlaycontainerid).style.display = 'block';       
+    }
+
+</script>
+   <apex:form > 
+        <script>
+        initializeFieldValidations4();
+        </script>
+    <div class="blockClass">
+        <!-- <h3>Site Information - Page 4 of 5</h3> -->
+        <section>
+            <apex:outputLabel styleClass="labelMargin" value="Site Name: {!SiteNameSelected}" />
+            <span id="hiddenSelId" class="{!SiteNumber} spanClass" style="display:none;"></span>
+           
+            <p class="m-b-25">{!SelectedSiteAddress}</p>
+        </section>
+        
+    </div>
+    
+    <div class="col-xs-12 row" id="ipflexInfoBlock">
+        <h3 class="m-25-t">IP Flexible Reach Information</h3>
+        <label class="labelMargin" style="margin: 10px 0 !important;">IP Flexible Reach Calling Plan: </label><span>{!ipFlexReachCallingPlan}</span>
+        <div>IP Flexible Reach Private Dial Plan </div>
+        <div class="radioFields">
+            <apex:selectRadio styleClass="col-xs-2 privateDialPlanRadio" value="{!privateDialPlanInfoVal}">
+                <apex:selectOptions value="{!privateDialPlanInfo}" />
+                <apex:actionSupport event="onchange" reRender="privateDialPlanInfo" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';radioBtnValidate('privateDialPlanRadio','{!privateDialPlanInfoVal}');"/>
+            </apex:selectRadio>
+            <apex:outputPanel id="privateDialPlanInfo" styleClass="warningText {!IF(privateDialPlanInfoVal == 'Yes','','visible-print-block')}" style="padding:0px;"><div class="m-t-20">Expect follow-up discussions with the TSC and the Provisioning to confirm the TN digit-lengths to be represented in the private dial plan from the designated PBX equipment</div></apex:outputPanel>
+        </div>
+        <div class="col-xs-12 row" style="margin-top: 0px !important;">
+            <div><label class="" >How many Concurrent Calls?</label><span> {!noOfConcurrentCalls}</span></div>
+            <div><label class="" style="margin: 10px 0 !important;">Rate Center: </label><span>{!rateCenter}</span></div>
+        </div>
+    </div>
+
+    <div class="col-xs-12 row"><hr class="sectionHr"/></div>
+    <div class="col-xs-12 row" id="equipmentBlock">
+        <h3 class="m0">Equipment</h3>
+        <div class="m-b-10 radioFields">
+        <div class="m-b-10">VQM Type: </div>
+        <apex:selectRadio styleClass="col-xs-3 vqmCustomRadio" value="{!vqmCustomInfoVal}">
+            <apex:selectOptions value="{!vqmCustomInfo}" />
+                <apex:actionSupport event="onchange" reRender="vqmCustomInfo" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';radioBtnValidate('vqmCustomRadio','{!vqmCustomInfoVal}');"/>
+        </apex:selectRadio>
+        </div>
+        <apex:outputPanel id="vqmCustomInfo" styleClass="warningText {!IF(vqmCustomInfoVal == 'Custom','','visible-print-block')}">Expect follow-up discussions with TSC and Provisioning to confirm the custom design requirements.</apex:outputPanel>
+        <div class="col-xs-12 row">CODEC</div>
+        <div class="col-xs-3 row" style="width: 260px;">
+             <apex:selectList styleClass="requiredField codecDropdown styled-select form-control" size="1" value="{!codecInfoVal}" style="padding: 5px !important">
+                <apex:selectOptions value="{!codecInfo}" />
+                    <apex:actionSupport event="onchange" reRender="codecInfo" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';showWarningMsg('codecInfo','{!codecInfoVal}'=='Custom/Other');"/>
+            </apex:selectList>
+         </div>
+         
+         <apex:outputPanel id="codecInfo" styleClass="col-xs-12 row warningText {!IF(codecInfoVal == 'Custom/Other','','visible-print-block')}"><div class="m-t-10">Expect follow-up discussions with TSC and Provisioning to confirm the custom design requirements.</div></apex:outputPanel>
+         
+        <div class="col-xs-12 row radioFields">    
+            <div class="col-xs-4 p0">
+                <span>PBXType</span>
+                <span class="tooltipTrigger glyphicon glyphicon-question-sign" rel="tooltip" data-toggle="tooltip" data-placement="right" title="IP-PBX for IP Handoff and TDM PBX for PRI Handoff" style="padding-left:5px;font-size: 17px;"></span>
+                <apex:selectRadio styleClass="m-t-10 col-xs-12 PBXTypeRadio PBXTypeClass" value="{!PBXTypeVal}" >
+                    <apex:selectOptions value="{!PBXType}" />
+                    <apex:actionSupport event="onchange" reRender="cpeCertStatus,pbxInterfaceType,certifiedIPPBXListBlock" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';radioBtnValidate('PBXTypeRadio','{!PBXTypeVal}');"/>
+                </apex:selectRadio>
+            </div>
+            <apex:outputPanel id="cpeCertStatus" styleClass="col-xs-8 p0 {!IF(PBXTypeVal=='IP PBX','','visible-print-block')} CPECertificationRadioFields">
+                <div class="">
+                    <span>CPE Certification Status</span>
+            <!--<div id="cpeCertStatus" class="col-xs-4 p0 {!IF(PBXTypeVal=='TDM PBX','','visible-print-block')}">CPE Certification Status
+                --><apex:selectRadio value="{!CPEcertificationVal}" styleClass="m-t-10 col-xs-12 cpeCertStatusRadio" layout="pageDirection" onchange="radioBtnValidate('cpeCertStatusRadio','{!CPEcertificationVal}')">
+                    <apex:selectOptions value="{!CPEcertification}" />
+                </apex:selectRadio>
+            <!--</div>-->
+                </div>
+            </apex:outputPanel>
+           <apex:outputPanel id="pbxInterfaceType" styleClass="col-xs-4 p0 {!IF(PBXTypeVal=='TDM PBX','','visible-print-block')}">
+                <div> <span>PBXInterface Type</span>
+            <!--<div id="pbxInterfaceType" class="col-xs-4 p0 {!IF(PBXTypeVal=='IP PBX','','visible-print-block')}">PBXInterface Type
+                -->
+                <apex:selectRadio value="{!PBXInterfaceTypeVal}" styleClass="m-t-10 col-xs-12 pbxInterfaceTypeRadio" onchange="radioBtnValidate('pbxInterfaceTypeRadio','{!PBXInterfaceTypeVal}')">
+                    <apex:selectOptions value="{!PBXInterfaceType}" />
+                </apex:selectRadio>
+            <!--</div>-->
+                </div>
+            </apex:outputPanel>
+            
+        </div>
+        
+        <apex:outputPanel id="certifiedIPPBXListBlock" styleClass="{!IF(PBXTypeVal=='IP PBX','','visible-print-block')}"><div class="col-xs-12 row">Check the <a href="{!certifiedIPPBXListDocumentId}" target="_blank">Certified IP-PBX List</a> to verify that the IP-PBX on location is compatible with the IP Flexible Reach Service. Uncertified IP-PBX is still acceptable to be provisioned for IP Flexible Reach Service. A Self-certificaiton waiver form is no longer required.</div></apex:outputPanel>
+        
+        <div class="col-xs-12 p0 row">
+            
+            <div class="col-xs-4">PBX Vendor or Manufacturer
+                <apex:inputText html-placeholder="Up to 20 characters" value="{!PBX_Vendor_Mfg}" styleClass="form-control requiredField pbxVendor m-t-10"/>
+            </div>
+            <div class="col-xs-4">PBX Model and Session Manager
+                <apex:inputText html-placeholder="Up to 20 characters" value="{!PBX_Model}" styleClass="form-control  requiredField pbxModel m-t-10"/>
+            </div>
+            <div class="col-xs-4">PBX Software Version
+                <apex:inputtext html-placeholder="Up to 10 characters" value="{!PBX_Software_Version}" styleClass="form-control requiredField pbxSwVersion m-t-10"/>
+            </div>
+         </div>
+         <div class="col-xs-12 p0 row radioFields">
+            <div class="col-xs-7">
+                <div><label style="font-family:omnesatt_iiregular;">Do you have an existing POTS (Plain Old Telephone Service)</label><span style="white-space:nowrap;">for Testing Router?</span><span class="tooltipTrigger glyphicon glyphicon-question-sign " style="padding-left:5px;font-size:17px;" rel="tooltip" data-toggle="tooltip" data-placement="right" title="Line that will be used for Out of Band Access, providing AT&T a way to access your router during turn up and maintenance of the router."></span></div>
+                <apex:selectRadio styleClass="existinPOTSRadio" value="{!existingPOTSVal}" style="width:29%">
+                    <apex:selectOptions value="{!existingPOTS}" />
+                        <apex:actionSupport event="onchange" reRender="sitePOTSNum,sitePOTSNumWarn" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';;radioBtnValidate('existinPOTSRadio','{!existingPOTSVal}');"/>
+                </apex:selectRadio>
+                
+                <apex:outputPanel id="sitePOTSNumWarn" styleClass="warningText {!IF(existingPOTSVal== 'Yes','extraStylesForMsg','visible-print-block')}"> <div>POTS is required to troublshoot and test your router.</div><div>If you need to establish POTS, please contact your CAM.</div></apex:outputPanel>
+            </div>
+            <div style=""><apex:outputPanel id="sitePOTSNum" styleClass="col-xs-4 pull-right {!IF(existingPOTSVal== 'Yes','','visible-print-block')}">
+            <div class="m-b-10">Site POTS Phone Number</div >
+           <script>initializeFieldValidations4();</script>
+                <apex:inputtext html-placeholder="0000000000" styleClass="{!IF(existingPOTSVal== 'Yes','requiredField','')} m-t-10 form-control sitePOTSNumber" value="{!Site_POTS_Phone_Number}"/>
+                <span class="noteData">Landline number only</span>
+            </apex:outputPanel>
+            </div>
+        </div>
+        <div class="col-xs-12 p0 row">
+            
+            <div class="col-xs-4">CE Vendor or Manufacturer
+                <apex:inputText html-placeholder="Up to 20 characters" styleClass="form-control requiredField ceVendor m-t-10" value="{!CE_Vendor}" />
+            </div>
+            <div class="col-xs-4">CE Router Model
+                <apex:inputText html-placeholder="Up to 20 characters" styleClass="form-control requiredField ceRouter m-t-10" value="{!CE_Router_Model}"/>
+            </div>
+            <div class="col-xs-4">CE Router Version
+                <apex:inputtext html-placeholder="Up to 10 characters" styleClass="form-control  requiredField ceRouterVersion m-t-10" value="{!CE_Router_Version}"/>
+            </div>
+        </div>
+        <div class="col-xs-12 p0 row">
+            
+            <div class="col-xs-4">How many SBCs for the site?
+                <!-- <apex:inputtext styleClass="requiredField noOfSBCSite m-t-10"/>-->
+                <apex:inputtext html-placeholder="Up to 5 digits" onkeyup="showWarningMsg('sbcCascadeDropDown',$(this).val()>0);showSBCVendorBlock(this);" styleClass="form-control noOfSBCSite m-t-10" value="{!How_Many_SBCs_for_the_site_str}"/>
+            </div>
+            
+                <div class="col-xs-8 visible-print-block" id="sbcCascadeDropDown">Is the SBC cascaded or integrated with the CE Router?
+                    <div class="col-xs-6 row">
+                        <apex:selectList value="{!sbcCascadeDropDownVal}" styleClass="form-control sbcCascadeDropDown styled-select form-control" size="1" style="padding: 5px !important;width:260px;"> 
+                            <apex:selectOptions value="{!sbcCascadeDropDown}" /> 
+                        </apex:selectList>
+                    </div> 
+                </div>
+            
+        </div>
+        <div class="col-xs-12 p0 row" id="SBCVendorBlock" style="display:none">
+            
+            <div class="col-xs-4">SBC Vendor
+                <apex:inputText html-placeholder="Up to 20 characters" value="{!SBC_Vendor}" styleClass="form-control sbcVendor m-t-10" />
+            </div>
+            <div class="col-xs-4">SBC Name
+                <apex:inputText html-placeholder="Up to 20 characters" value="{!SBC_Name}" styleClass="form-control sbcName m-t-10"/>
+            </div>
+            <div class="col-xs-4">SBC Software Version
+                <apex:inputtext html-placeholder="Up to 10 characters" value="{!SBC_Software_Version}" styleClass="form-control sbcSWVersion m-t-10"/>
+            </div>
+         </div>
+         <div class="col-xs-12 p0 row">
+             
+            <div class="col-xs-4">IVR Vendor/Model Name/Release Version
+                <apex:inputtext html-placeholder="Optional - Up to 20 characters" value="{!IVR_Vendor}" styleClass="form-control ivrVendor m-t-10"/>
+            </div>
+            <div class="col-xs-8">Is the IVR behind the PBX or Standalone?
+                <apex:selectRadio value="{!IVRbehindPBXVal}" styleClass="col-xs-6 m-t-10 ivrBehindRadio radioFields" onchange="radioBtnValidate('ivrBehindRadio','{!IVRbehindPBXVal}')">
+                    <apex:selectOptions value="{!IVRbehindPBX}" />
+                </apex:selectRadio>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-xs-12 row"><hr class="sectionHr"/></div>
+    <div class="col-xs-12 row" id="enhancedFeatureBlock">
+        <h3 class="m0">Enhanced Features Information</h3>
+        <label class="" style="margin: 10px 0 !important;">Enhanced Features Services: </label><span>{!enhancedFeaturesServices}</span>
+        <apex:outputPanel id="portalAdministrator" styleClass="col-xs-12 row" rendered="{!IF(enhancedFeaturesServices='Yes',true,false)}">
+            <label class="" style="margin: 10px 0 !important;">Portal Administrator </label>
+            <div class="col-xs-12 p0 row">
+                <div class="col-xs-4">
+                <div class="m-b-10">First Name</div>
+                        <apex:inputText html-placeholder="Up to 40 characters" value="{!Portal_Administrator_First_NameInfo}" styleClass="form-control requiredField firstName m-t-10" />
+                </div>
+                <div class="col-xs-4">
+                <div class="m-b-10">Last Name</div>
+                    <apex:inputText html-placeholder="Up to 80 characters" value="{!Portal_Administrator_Last_NameInfo}" styleClass="form-control  requiredField lastName m-t-10"/>
+                </div>
+                <div class="col-xs-4">
+                <div class="m-b-10">Email Address</div>       
+                    <apex:inputtext html-placeholder="Up to 80 characters" value="{!Portal_Administrator_Email_AddressInfo}" styleClass="form-control emailAddress1 requiredField m-t-10" onblur="emailValidation(event,this,'email');" onkeyup="emailValidation(event,this,'email');"/>
+                </div> 
+            </div>
+            <div class="col-xs-12 p0 row divMargin">
+                <div class="col-xs-4">
+                <div class="m-b-10">Phone Number</div>
+                    <apex:inputtext html-placeholder="0000000000" value="{!Portal_Administrator_Phone_NumberInfo}" styleClass="form-control  requiredField phoneNumber m-t-10"/>
+                </div>
+            </div>
+            <div class="col-xs-12 p0 row divMargin">
+                <div class="col-xs-4">
+                <div class="m-b-10">Test Call Phone Number (1)</div>
+                        <apex:inputText html-placeholder="0000000000" value="{!Test_Call_Phone_Number1Info}" styleClass="form-control requiredField testCallPhNum1 m-t-10" />
+                </div>
+                <div class="col-xs-4">
+                <div class="m-b-10">Test Call Phone Number (2)</div>
+                    <apex:inputText html-placeholder="Optional - 0000000000" value="{!Test_Call_Phone_Number2Info}" styleClass="m-t-10 form-control testCallPhNum2" onkeyup="optionalFieldValidation4(event,this,'OPTPhoneCode');" />
+                </div>
+            </div>
+            <div class="col-xs-12 p0 row divMargin">
+               <div class="col-xs-6">
+               <div class="m-b-10">Will you be requiring Call Forwarding?</div>
+                    <apex:selectRadio value="{!RequireCallForwardVal}" styleClass="col-xs-4 m-t-10 callForwardRadio radioFields" onchange="radioBtnValidate('callForwardRadio','{!RequireCallForwardVal}')">
+                        <apex:selectOptions value="{!RequireCallForward}" />
+                    </apex:selectRadio>
+                </div>
+             </div>
+         </apex:outputPanel>        
+    </div>
+    
+    <div class="col-xs-12 row"><hr class="sectionHr"/></div>
+<div id="routingInfoBlock">
+    <div class="col-xs-12 row radioFields">
+        <h3 class="m0">Call Routing Information</h3>
+        <label class="" style="margin: 10px 0 !important;">Trunk Call Routing Management Required?: </label><span>{!isTrunkCallRoutingRequired}</span>
+        <div>Inbound Alternate Call Routing (IAR) cannot be used if you have Enhanced Features, Trunk Call Routing or only one site.</div>
+        <apex:outputPanel rendered="{!!IF(enhancedFeaturesServices=='Yes' || isTrunkCallRoutingRequired == 'Yes' || TotalSitesCount == 1,true,false)}" styleClass="col-xs-6 p0">
+             <div class="m-b-10 p0" style="white-space:nowrap;">Please specify the Inbound Alternate Routing availability set-up.</div>
+             <div class="col-xs-3 row" style="width: 260px;">
+                 <apex:selectList value="{!InboundAlternateRoutingVal}" styleClass="altRoutingDropdown styled-select form-control" size="1" style="padding: 5px !important"> 
+                     <apex:selectOptions value="{!InboundAlternateRouting}" /> 
+                 </apex:selectList>
+             </div>
+        </apex:outputPanel> 
+    </div>
+    
+    <apex:outputPanel rendered="{!isBGPSelected}" styleClass="col-xs-6 p0">
+        <div class="col-xs-12 row radioFields">
+       
+         <div>
+            <p style="padding:0px !important;margin-bottom:0px;">Are you using BGP-R (Resilliency)?<span class="tooltipTrigger glyphicon glyphicon-question-sign btn-lg" rel="tooltip" data-toggle="tooltip" data-placement="right" title="AVPN router must be BGP Enabled."></span></p>
+            <apex:selectRadio styleClass="col-xs-4 m-t-10 bgprResilliencyRadio" value="{!BGPRResilliencyVal}">
+                <apex:selectOptions value="{!BGPRResilliency}" />
+                    <!--<apex:actionSupport event="onchange" reRender="" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';showWarningMsg('bgpr','{!BGPRResilliencyVal}'=='Yes');radioBtnValidate('bgprResilliencyRadio','{!BGPRResilliencyVal}')"/>-->
+                        <apex:actionSupport event="onchange" reRender="bgpr" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';radioBtnValidate('bgprResilliencyRadio','{!BGPRResilliencyVal}')"/>
+            </apex:selectRadio> 
+            <apex:outputPanel id="bgpr" styleClass="warningText p0 m-t-10 {!IF(BGPRResilliencyVal== 'Yes','','visible-print-block')}"> The BGP will need to be ordered first before the IAR.</apex:outputPanel>
+        </div>
+    </div>  
+    <div class="col-xs-12 row">
+    <div>Any Backdoor links between CERs?</div>
+        
+       <div class="col-xs-6 row">
+            <apex:selectList size="1" styleClass="col-xs-6 p0 backDoorLinkDropdown styled-select form-control" value="{!BackdoorlinksCERsVal}" style="padding: 5px !important;width:240px;">
+                <apex:selectOptions value="{!BackdoorlinksCERs}" />
+                    <apex:actionSupport event="onchange" reRender="" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';showWarningMsg('callPreserveDiv','{!BackdoorlinksCERsVal}'=='Yes L2');"/>
+            </apex:selectList> 
+         </div>
+    </div>
+    <div class="col-xs-12 row radioFields">
+        
+       <div id="callPreserveDiv" class="col-xs-12 p0 {!IF(BackdoorlinksCERsVal == 'Yes L2','','visible-print-block')}" style="">
+            <p style="margin-bottom:10px;">Is Call Preservation Required?<span class="tooltipTrigger glyphicon glyphicon-question-sign btn-lg" rel="tooltip" data-toggle="tooltip" data-placement="right" title="Call preservation requires L2 or L3 backdoor link."></span></p>
+            <apex:selectRadio styleClass="col-xs-4 callPreservationRadio" value="{!CallPreservationVal}" onchange="radioBtnValidate('callPreservationRadio',this)">
+                <apex:selectOptions value="{!CallPreservation}" />
+              <apex:actionSupport event="onchange" reRender="callPreserve" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';"/>    
+            </apex:selectRadio> 
+            <apex:outputPanel id="callPreserve"  styleClass="warningText p0 m-t-10 {!IF(CallPreservationVal== 'Yes','','visible-print-block')}">Call preservation requires L2 or L3 backdoor link.</apex:outputPanel>
+        </div>
+        
+     </div>
+     </apex:outputPanel>
+    </div>
+     <!--  <input type="button" id="page5" class="btn-primary pull-right" value="Page5" onclick="requiredFieldValidation()"/>
+   <apex:commandButton styleClass="btn-primary pull-right"  value="Page5" onclick="requiredFieldValidation()"/>-->
+    <apex:actionFunction name="passSite" action="{!saveOnToggleSite}" reRender="leftPanelContainerForm"  status="loading" oncomplete="addLeftPanelScroll();validateRequiredFields1();leftPanelFloat();">
+                        <apex:param name="goToSiteId" value="" />
+                        <apex:param name="rdsFlag" value="" />
+            </apex:actionFunction>
+    <apex:actionFunction name="saveRdsAvpnData" action="{!saveRdsData}" rerender="portTypeBillingPhnNum,pageNo,BottomSectionAVPNRDS,vpnHeaderBlock" oncomplete="pageNavigation(this,'Page3',true);"  status="loading"  >
+                 <apex:param name="rdsFlag" value="" />
+            </apex:actionFunction>
+    <apex:actionFunction name="SubmitRDS" action="{!submitRdsSite}" reRender="pagecontainer,ciError,crddoverlaycontainer" oncomplete="checkCIError();displaycrddoverlay();" status="loading" >     
+                 <apex:param name="rdsFlag" value="" />
+    </apex:actionFunction>
+    <apex:actionFunction name="saveandclose" action="{!SaveAndClose}" reRender="">                     
+           <apex:param name="vpnname" value="vpnname" assignTo="{!vpnname}"/>
+    </apex:actionFunction>          
+    </apex:form>
+</apex:page>

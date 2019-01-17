@@ -1,0 +1,913 @@
+<apex:page controller="ProviderDirectoryLandingController" sidebar="false" showHeader="false" cache="true" tabStyle="Account" Controller="ProviderDirectoryLandingController" standardStylesheets="true" >
+<script src="{!$Label.DTMHeader}"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<style>
+    .inpuTypeField{
+            background-image: url({!($Resource.Search_bar_middle_img)});"    
+            background-repeat:repeat; 
+            border:none; 
+            height:18px;
+    }
+    .inputTextArea{
+            width: 237px; padding: 5px; height:18px; margin-left:-4px; border-radius:3px 0 0 3px; border-left:1px solid #CACAC4;
+    }
+    
+     .inpuTypeFieldComm{
+            background-image: url({!($Resource.Search_bar_middle_img)});"    
+            background-repeat:repeat; 
+            border:none; 
+            height:18px;
+    }
+    .inputTextAreaComm {
+        border-left: 1px solid #cacac4;
+        border-radius: 3px 0 0 3px;
+        height: 18px;
+        margin-left: 660px;
+        margin-top: 20px;
+        padding: 5px;
+        width: 237px;
+    }
+    
+    #nav{
+        width:975px;
+        margin-left:0px;
+    }
+    .TopicPin {
+        border: 2px solid #3380AF;
+        border-radius: 8px 8px 8px 8px;
+        cursor: pointer;
+        display: inline-block;
+        height: 70px;
+        margin: -5px 8px 10px 10px;
+        vertical-align: top;
+        width: 205px;
+    }
+    .artImageStyle{
+        float: right;
+        width: 125px;
+        height: 125px;
+        margin-right: 10px;
+    }
+    .TitleHeadline {
+        margin-top: 0px;
+    }
+    .storyStandArt {
+        color: #333333;
+        font-family: Arial;
+        font-size: 14px;
+        line-height: 17px;
+        padding-left: 12px;
+        word-break: keep-all;
+        padding-right:0px;
+    }
+    
+    div#imageFrame img{
+        min-width:100%;
+    }
+    .footer_logo{
+        margin-left: -4% !important;
+        position: absolute;
+    }
+    .footer_copy {
+        width: 59%;
+    }
+</style>
+<style type="text/css">
+    .highlightWord { background-color: #ff2; }
+</style>
+
+<script type='text/javascript'>
+    function noenter(ev) {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+            doSearchAF();
+            return false;
+         } else {
+              return true;
+         }
+     }
+     
+     function noenterCommunity(ev) {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+         
+           var querystring = document.getElementById("pgblcktbl").value;
+           
+           if(querystring.length<2){
+            alert("Your search term must have 2 or more characters.");
+            return false;
+           }
+          
+           var name = '{!$Profile.Name}'; 
+               location.replace ("/Connect/SI_SearchResultsPage?objType=&strValue="+querystring);
+           return false;
+         } else {
+              return true;
+         }
+     }
+     
+     function strSearchComm(){
+         //alert('Hello');
+         var querystring = document.getElementById("pgblcktbl").value;
+         if(querystring.length<2){
+            alert("Your search term must have 2 or more characters.");
+            return false;
+           }
+          var name = '{!$Profile.Name}';  
+          location.replace ("/Connect/SI_SearchResultsPage?objType=&strValue="+querystring);  
+     }
+</script>
+<apex:pageBlock mode="maindetail">
+<style>
+    div#si_primaryMenu ul, div#si_primaryMenu ul li {margin:0; padding:0; list-style-type: none}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}}') no-repeat scroll 5px -40px; width: 982px; height: 40px;}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}') no-repeat scroll -5px -150px transparent; width: 982px; height: 92px;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem:hover,
+    li#programOverviewTab.programOverviewTabActive,
+    li#Connect.programOverviewTabActive,
+    li#productsTab.productsTabActive,
+    li#newsTab.newsTabActive
+    {
+        background-image: url('{!$Resource.ConnectHeader_top_Img}'); 
+        background-repeat:no-repeat;
+        background-attachment:scroll;
+        background-color:transparent;
+        height:63px;
+        position:relative; 
+        top:0px; 
+        left:-70px;
+    }
+    
+    </style>
+    <apex:stylesheet value="{!$Resource.newsroomStyleSheet}"/>
+    <apex:stylesheet value="{!$Resource.Newsroom_hover}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-1.9.1.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.masonry, 'masonry-site/jquery.masonry.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js')}"  />
+    <!-- <script type="text/javascript"  src="{!URLFOR($Resource.newsroomplayer, 'amp/amp.min.js')}?amp-defaults={!$Resource.vidPlayerXML2}"></script>  -->
+    <script type="text/javascript"  src="{!URLFOR($Resource.newsroomplayer2, 'amp/amp.min.js')}?amp-defaults={!$Resource.prodVideoXML3}"></script>
+    <!-- USE THIS CommunitiesVideoXML for Videos for Communities -->
+<!--<apex:outputPanel rendered="{!isCommunityUser}"> -->
+        <script type="text/javascript"  src="{!URLFOR($Resource.newsroomplayer2, 'amp/amp.min.js')}?amp-defaults={!$Resource.prodVideoXML3}"></script>
+ <!--  </apex:outputPanel> -->
+    
+     <!-- USE THIS prodVideoXML3 for sandbox/Production -->
+    <script type="text/javascript">
+        $j = jQuery.noConflict();
+        $j(window).load(function() {
+            $j('#wrapper').masonry({
+              itemSelector: '.pin'
+            });
+            
+            $j("#videoArticlePopUp").dialog({ 
+            autoOpen: false,
+            width: 506,
+            modal:true
+                 
+            });
+            
+            $j('#wrapper').masonry({
+              itemSelector: '.ActiveTopic'
+        });
+            
+        });
+      
+       
+        
+       function opener(Title, HLSURL, HDSURL, Summary)
+       {
+    
+          
+          $j("#videoSummary").html(Summary);
+          $j("#videoArticlePopUp").dialog("open", vidPlayer(Title, HLSURL, HDSURL, Summary));
+          //$j('#videoArticlePopUp').dialog("option" , "title" , Title);
+          $j('#videoArticlePopUp').dialog('option', 'position', 'center');
+          $j('#videoArticlePopUp').dialog('option', 'draggable', false);
+          $j('#videoArticlePopUp').dialog('option', 'closeOnEscape', true);
+          $j( "#closeVideo" ).click(function() {
+           
+            $j("#videoArticlePopUp").dialog("close");
+            akClose();
+            }); 
+         
+          
+          return false;
+       }
+         
+        var amp;
+        function vidPlayer(Title, HLSURL, HDSURL, Summary)
+        {   
+            $j('#videoArticlePopUp').on( "dialogclose", function( event, ui ) {} );
+    
+            var config_overrides = 
+            {
+                autoplay: true,
+                media: 
+                {
+                    title: Title ,
+                    source:
+                    [
+    
+                       {src: HDSURL, type: "video/f4m"},
+                       {src: HLSURL, type: "application/x-mpegURL"}
+                    ] 
+                }
+            };
+            amp = new akamai.amp.AMP("akvideo", config_overrides);
+            //console.log(amp);
+        }
+        
+        function akClose()
+        {
+       
+        amp = null;
+        } 
+    
+        function myFunction(val)
+         {
+            //alert(vrArticleId);
+             vrArticleId.value=val;
+             urlName.value=val;
+           //alert('Hai12345');
+           //ViewUpdate();
+         } 
+   
+      $j(window).ready(function() {  
+            $j("#events >a ").addClass("linkInActive");
+            $j("#news >a ").addClass("linkInActive");
+            $j("#provider >a ").addClass("linkInActive");   
+            $j('.blogs_heading').hover(
+            function () {
+                $j('#blogsContainer').show();
+                $j('.blogs_hover').css('background-color','#fff');
+                $j('.blogs_hover').css('border-radius','6px;');
+                $j('#btext').css('color','#EF6F00'); 
+                $j('#orange').show();
+                $j('#blue').hide();
+            }, 
+            function () {
+                $j('#blogsContainer').hide();
+                $j('.blogs_hover').css('border-radius','6px;'); 
+                $j('.blogs_hover').css('background-color','#EDF5F8');
+                $j('#btext').css('color','#0C2577');
+                $j('#blue').show();
+                $j('#orange').hide();
+            }  
+        );
+    $j('#blogsContainer').hover(
+        function () {
+            $j(this).show();
+            $j('.blogs_heading').css('border-radius','6px;');
+            $j('.blogs_heading').css('background-color','#fff');
+            $j('.blogs_hover').css('background-color','#fff');
+            $j('#btext').css('color','#EF6F00');
+            $j('#orange').show();
+            $j('#blue').hide();
+
+        }, 
+        function () {
+            $j('.blogs_hover').css('border-radius','6px;'); 
+            $j('.blogs_heading').css('background-color','#EDF5F8');
+            $j('#btext').css('color','#0C2577');
+            $j(this).hide();
+            $j('#blue').show();
+            $j('#orange').hide();
+        }  
+    );
+
+    // topics hover
+    $j('.topics_heading').hover(
+        function () {
+            $j('#topicsContainer').show();
+            $j('.topics_hover').css('border-radius','6px;');
+            $j('.topics_hover').css('background-color','#fff');
+            $j('#topic_bText').css('color','#EF6F00'); 
+            $j('#topic_orange').show();
+            $j('#topic_blue').hide();
+        }, 
+        function () {
+            $j('#topicsContainer').hide();
+            $j('.topics_hover').css('border-radius','6px;'); 
+            $j('.topics_hover').css('background-color','#EDF5F8');
+            $j('#topic_bText').css('color','#0C2577');
+            $j('#topic_blue').show();
+            $j('#topic_orange').hide();
+        }  
+    );
+    $j('#topicsContainer').hover(
+        function () {
+            $j(this).show();
+            $j('.topics_heading').css('border-radius','2px;');
+            $j('.topics_heading').css('background-color','#fff');
+            $j('.topics_hover').css('background-color','#fff');
+            $j('#topic_bText').css('color','#EF6F00');
+            $j('#topic_orange').show();
+            $j('#topic_blue').hide();
+        }, 
+        function () {
+            $j('.topics_hover').css('border-radius','2px;'); 
+            $j('.topics_heading').css('background-color','#EDF5F8');
+            $j('#topic_bText').css('color','#0C2577');
+            $j(this).hide();
+            $j('#topic_blue').show();
+            $j('#topic_orange').hide();
+        }  
+    );
+    
+    $j('.ProviderLogo >a > img').error(function() {
+         $j(this).attr('src', '{!URLFOR($Resource.ListImage)}');
+    });
+    
+});
+</script> 
+<script type="text/javascript">
+function myFunction(val)
+ {
+    //alert(vrArticleId);
+     vrArticleId.value=val;
+     urlName.value=val;
+   //alert('Hai12345');
+   //ViewUpdate();
+ } 
+</script> 
+<html>
+<!--Somanna styles -->
+<style>
+
+.search_container {
+width:950px;
+  padding:20px;
+}
+.contact_container { 
+    width:950px;
+    
+    padding-top:20px;
+    padding-bottom:50px;
+    padding-right:20px;
+    padding-left:10px;
+  }   
+ 
+ .newsTile {
+    display: block;
+    float: left;
+    padding: 1px 15px 15px 8px;
+    position: relative;
+    width: 425px;
+}
+ .eventsTile {
+  display:block;
+  width:425px;
+  position:relative;
+  padding: 1px 40px 40px 8px;
+  float :left;
+ }
+ .middleTile {
+  display:block;
+  width:425px;
+  position:relative;
+  padding: 1px 15px 50px 8px;
+  float :left;
+ }
+ .container_top {
+  display:block;
+  width:455px;
+  position:relative;
+  float :left;
+  padding-top:2px;
+  padding-left:65px;
+  }
+  .container_top_down {
+  display:block;
+  width:425px;
+   //padding:22px;
+ position:relative;
+  float :left;
+  }
+ 
+ .feature_article {
+  display:block;
+  width:450px;
+  height:50px;
+ background-image:url('{!$Resource.GrayGradient}');
+  // background:#F9F9F9;
+  border-radius:5px 5px 0px 0px;
+  border:1px solid #ccc;
+  float:left;
+  font-family: Arial;
+   font-size: 20px;
+ // line-height: 130%;
+  font-style: regular;
+  color: #333 ;
+  padding:15px 0px 0px 20px;
+//color: #EF6F00;
+ }
+ 
+ feature_event {
+ display:block;
+  width:425px;
+  // padding:25px;
+  background:#F9F9F9;
+  border-radius:5px;
+  
+  border:1px solid #ccc;
+  float:left;
+ }
+ .articleSection {
+  padding:12px 10px 20px 20px;
+ }
+ .articleSection1 {
+    padding:12px 20px 20px 7px;
+ }
+ 
+ .TitleHeadline {
+    color: rgb(6, 122, 180);
+    font-family: Arial;
+    font-size: 18px;
+    padding-right: 20px;
+    border: 0px none;
+}
+
+ .providerSection {
+  padding:12px 10px 20px 20px;
+ }
+.featureSubSection {
+  background:#fff;
+  border:1px solid #ccc;
+  display:inline-block;
+  border-bottom-right-radius:5px;
+  border-bottom-left-radius:5px;
+  width:450px; 
+  border-top:0;
+  font:14px arial; 
+  line-height:17px; 
+  color:#333; 
+  }
+ .fonth3 {
+    font-family: Arial;
+    font-size: 18px;
+    font-style: regular;
+    color: #333333;
+    }
+ .fonth4 {
+      padding-top:5px;
+      padding-bottom:15px;
+      Font Family: Arial;
+      Font-Size: 16px;
+      Line-Height: 130%;
+      Font-Style: Regular;
+      Color: #333333;
+  }
+ 
+  .view-details {
+  font:14px arial; 
+  line-height:17px; 
+  padding-top:10px;
+  color:#067AB4;
+  text-decoration:none;
+   }
+ .view-detailsPT20 {
+   font:14px arial; 
+   line-height:17px; 
+   padding-top:10px;
+   color:#067AB4;
+   } 
+  .orangeHeader {
+      width:450px;
+      padding-top:15px;
+      padding-bottom:7px;
+      Font Family: Arial;
+      Font-Size: 20px;
+      Line-Height: 130% ;
+      Font-Style: Regular;
+      Color: #EF6F00;
+   }
+  .headerSection {
+   width:450px; 
+   padding-bottom:15px;
+   display:block;
+   Font Family: Arial;
+   Font-Size: 26px;
+   Line-Height: 130%;
+   Font-Style: Regular;
+   Color: #333333;
+ }
+ .headerSection1 {
+   width:450px; 
+   padding-bottom:15px;
+   display:block;
+   Font Family: Arial;
+   Font-Size: 26px;
+   Line-Height: 130%;
+   Font-Style: Regular;
+   Color: #333333;
+ }
+.middleTileDown {
+  display:block; 
+  width:450px;
+  position:relative;
+  padding-right:25px;
+  padding-top:15px;
+  padding-bottom:15px;
+  float:left;
+ }  
+.seperatorImg {
+    display:inline-block;
+     margin-left:15px;
+     margin-top:20px;
+     //height:8px;
+  }
+.solution_blue {
+color: #333;
+font-family: Arial;
+font-size: 14px;
+text-decoration:none;
+ }
+.companyName {
+color: #067ab4;
+font-family: Arial;
+font-size: 18px;
+text-decoration:none;
+padding-top:6px;
+ }
+.eventsdate {
+    font-family: Arial;
+    font-size: 14px;
+    font-weight: bold;
+}   
+.linkActive
+     {
+        color:#369 !Important;
+        text-decoration:underline;
+        font-size: 13px ;
+    }
+    
+    .linkInActive
+     {
+        text-decoration:none;
+        font-size: 13px ;
+    }
+  .imageOverlay{
+     background-color: rgba(0, 0, 0, 0.5);
+    padding-left: 18px;
+    padding-right: 18px;
+   
+    min-height: 200px;
+}
+.playIconbackground {
+    min-height: 205px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.imageOverlayBGCSS {
+    background-repeat: no-repeat;
+    background-size:100% 100%;
+    
+    border-radius:0px;
+}
+MainTitle{
+    margin-left:20px;
+    margin-top:15px;
+    padding:0;
+    width:260px;
+}
+iframe {
+    border: none;
+    background-color: #000000;
+    width: 100%;
+    height: 117%;
+}
+
+</style>
+
+
+
+<!-- Somanna Styles ends -->
+<body>
+    <apex:outputPanel rendered="{!isGuest}">
+         {!newsroomName}
+    </apex:outputPanel> 
+<div class="row">
+    <!--<apex:include pageName="PortalDesignHeaderUnAuth" id="PortalDesignHeaderUnAuth" rendered="{!(Contains($CurrentPage.URL, 'attpartnerexchange')) && (Contains($CurrentPage.URL, 'Connect')) && (isCommunityUser || isInternalUser)}"/>-->
+    
+    <apex:include pageName="PortalDesignHeaderUnAuth" id="PortalDesignHeaderUnAuth" rendered="{!(Contains($CurrentPage.URL, 'partnerexchange')) && (Contains($CurrentPage.URL, 'Connect')) && (isCommunityUser || isInternalUser)}"/>
+    <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" rendered="{!(Contains($CurrentPage.URL, 'partnerexchange')) && (!Contains($CurrentPage.URL, 'Connect')) && (isPartnerUser || isInternalUser)}"/>
+    <apex:include pageName="PortalDesignHomeUnauth" id="PortalDesignHomeUnauth" rendered="{!(Contains($CurrentPage.URL, 'partnerexchange')) && (Contains($User.LastName, 'Guest'))}"/> 
+</div>
+    <apex:form >
+     <apex:stylesheet value="{!$Resource.eventarrowlink}"/>
+     <title>Connect</title>
+<!-- MAIN DIV -->
+<!-- START PAGE -->
+        <div class="mainDiv">
+        
+   
+    <!--        <c:LoggedInUser ></c:LoggedInUser>
+                
+            <div id="menuContainer" style="padding-top:11px;">
+              <c:navconnectheaderwithlinks ></c:navconnectheaderwithlinks>
+            </div> -->
+               
+            <!--- END OF LOGO HEADER -->
+            <!-- END OF NEWSROOM HEADLINE --> 
+            <!-- START OF BODY HERE -->
+                        
+                        <div style=" width:950px;position:relative; margin:5px 5px 50px 5px; padding:10px 10px 100px 10px; border-radius:6px;"> 
+                                <!--<div id="banner" style=" padding:10px 1px 20px 1px;width:950px; font-family:arial;font-size:26px;font-style:regular;color:#333;">
+                                     Connect
+                                </div>
+                               <div id="banner" style="width:950px;height:185px;">
+                                    <apex:image value="{!$Resource.heroBannerTallProviders}" style="width:950px;height:185px;"/> 
+                               </div>-->
+                          <!-- ------------Search button div----------------------------------- -->
+                           
+                               <!--<apex:outputPanel style="float:right; padding-top:8px;" rendered="{!$Profile.Name != 'SI Customer Community User'}">
+                                   <apex:inputText value="{!strValue}" styleClass="inpuTypeField inputTextArea" onkeypress="return noenter(event);" id="pgblcktbl"/>
+                                    <apex:actionFunction name="doSearchAF" action="{!searchFound}"/> 
+                                    <apex:commandLink action="{!searchFound}" id="h1">
+                                        <apex:image value="{!URLFOR($Resource.searchButton)}" style="margin-bottom:-8.8px; margin-left: -8px; padding-right:15px;"/>
+                                    </apex:commandLink>
+                             </apex:outputPanel>
+                             <apex:outputPanel style="float:right;margin-top:-5px;" rendered="{!$Profile.Name == 'SI Customer Community User'}">
+                                 <input type="text" value="{!strValue}" id="pgblcktbl" class="inpuTypeFieldComm inputTextAreaComm" onkeypress=" return noenterCommunity(event);" />
+                                 <apex:image value="{!URLFOR($Resource.searchButton)}" style="margin-bottom:-8.8px; margin-left: -8px; padding-right:15px;cursor:pointer" onclick="strSearchComm()"/>
+                             </apex:outputPanel>
+                         <div style="padding-bottom:20px;"></div>
+                      <div style="margin-left: 683px; margin-right:20px; margin-top:20px;"> <apex:pageMessages id="pagemessage"/></div>-->
+                  <!-- ----------------- End of Search button div----------------------------------- -- >     
+                               
+                         <!---------- section 1------------------------ -->
+                            <apex:outputPanel rendered="{!news !=null}">
+                           <div class="contact_container">
+                                   <div class="newsTile" >
+                                      <div class="headerSection1"> More ways to stay up to date</div>
+                                        <div class="orangeHeader">In the Newsroom</div>
+                                        <div class="fonth4">Stay on top of emerging news across a range of topics curated by AT&amp;T Partner Exchange and other Solutions Providers.</div>
+                                        <div class="view-details">
+                                             <apex:outputLink style="font-family:arial;font-size:14px;color:#067ab4; text-decoration:none;" styleClass="linkInActive" value="/apex/newsroomListView?Flag=R"> Newsroom                                                
+                                                  <img src="{!URLFOR($Resource.eventarrowlink)}" alt="arrow" id="arrow" style="margin-bottom:-2px; padding-left:10px;"/>                                                 
+                                             </apex:outputLink>
+                                        </div>                                       
+                                    </div>
+                                  <div>
+                                      <div class="container_top">
+                                          <div class="feature_article">Featured Article</div>                                    
+                                          <div id="wrapper">                        
+                            
+                    <apex:outputPanel >
+                    
+                    <!-- Standard Article Template -->                        
+                        <div class="featureSubSection" >
+                             <div class="articleSection1"> 
+                             <div style="float:left; width:275px;">                          
+                                 <p class="TitleHeadline">                                
+                                    <apex:outputLink target="_self" value="/apex/articleDetails?articletitle={!news.urlName}" style="text-decoration:none;">
+                                        <apex:outPutText value="{!news.Title}" styleClass="headlineStandArt"/>                                                                       
+                                    </apex:outputLink>
+                                 </p>                                                                                                                 
+                                 <p>
+                                     <div class="publishDateStandArt">
+                                          <apex:outputPanel rendered="{!news.Author__r.Author_Link__c !=null}"> 
+                                            <div id="imageFrame">
+                                                <apex:outputLink target="_self" value="" style="text-decoration:none; float:left;">                                             
+                                                   <!--<apex:outputText value="{!news.Author__r.Author_Link__c}" escape="false" style="width:30px; height:30px; padding-right:20px; margin-top:3px;"  />-->
+                                                   <apex:image value="/Connect{!news.Author__r.Author_Link__c}" style="width:30px; height:30px; margin-top:3px;"/>                        
+                                                </apex:outputLink>
+                                            </div>                               
+                                            <div>                                
+                                                <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}" style="padding-left: 10px;">
+                                                    <apex:param value="{!IF(news.Original_Publish_Date__c = null, news.LastPublishedDate, news.Original_Publish_Date__c)}"/> 
+                                                </apex:OutputText>
+                                                <br />
+                                                <apex:outputLink value="/apex/NewsroomBlogArticleTrayView?Id={!news.Author__c}&type=Author" style="text-decoration:none;">
+                                                    <span class="authorStandArt" style="padding-left: 10px;">{!news.Author__r.Name}</span>
+                                                </apex:outputLink>
+                                            </div>
+                                          </apex:outputPanel>
+                                          <apex:outputPanel rendered="{!news.Author__r.Author_Link__c ==null}">                                            
+                                                <div>                                
+                                                    <apex:outputText value="{0,date,MMMMM' 'd', 'yyyy}">
+                                                        <apex:param value="{!IF(news.Original_Publish_Date__c = null, news.LastPublishedDate, news.Original_Publish_Date__c)}"/> 
+                                                    </apex:OutputText>
+                                                    <br />
+                                                    <apex:outputLink value="/apex/NewsroomBlogArticleTrayView?Id={!news.Author__c}&type=Author" style="text-decoration:none;">
+                                                        <span class="authorStandArt" style="padding-left: 0px;">{!news.Author__r.Name}</span>
+                                                    </apex:outputLink>
+                                                </div>
+                                          </apex:outputPanel>
+                                    </div>                                                                                                
+                                </p> 
+                                </div>
+                                <div id="imageFrame" style="float:right; width:125px; height:125px; margin-top:5px;">                               
+                                    <apex:outputLink target="_self" value="/apex/articleDetails?articletitle={!news.urlName}" style="text-decoration:none;">
+                                        <apex:outputText value="{!news.Article_Image__c}" escape="false"/>
+                                    </apex:outputLink>                                
+                                </div> 
+                                <div style="clear:both;"></div>                         
+                                <p class="storyStandArt">
+                                    <!-- Use this output text when Summary is less than 200 characters -->
+                                    <apex:outputText rendered="{!IF(LEN(news.Summary)<201, true, false)}">
+                                    {!news.Summary}
+                                    </apex:outputText>
+                                    <apex:outputText rendered="{!IF(LEN(news.Summary)>200, true, false)}">
+                                    <apex:variable value="{!FIND(" ", MID(news.Summary, 201, 200))}" var="trim"/>
+                                    {!Left(news.Summary,200+trim-1)}...
+                                    </apex:outputText>                               
+                                </p>
+                            </div>                                  
+                        </div>
+                    <!-- END of Standard Article Template -->
+                </apex:outputPanel>   
+          </div>
+        </div>
+        </div>
+     </div>
+       </apex:outputPanel>
+                  <!-- section 2-->
+                  <apex:outputPanel rendered="{!engagement!=null}">
+                      
+                      <div class="seperatorImg" ><apex:image value="{!$Resource.separatorBg}"/></div>
+                     <div class="contact_container">
+                        <div class="eventsTile" >
+                          <div class="headerSection">More ways to meet industry professionals</div>
+                           <div class="orangeHeader">Events and  Sponsorships</div>
+                               <div class="fonth4"> Attend different reseller opportunities and learn more about our program.</div>
+                                   <div class="view-details">
+                                      <apex:outputLink styleClass="linkInActive" style="font-family:arial;font-size:14px;color:#067ab4; text-decoration:none;" value="/apex/EventsAndSponsorships">
+                                      <div style="display:table-cell;">
+                                              View Upcoming Events and Program Sponsorships
+                                    </div>
+                                    <div style="display:table-cell; padding-left:10px;">
+                                       <img src="{!URLFOR($Resource.eventarrowlink)}" alt="arrow" id="arrow" style="margin-bottom:-2px; padding-left:-3px;" />
+                                    </div>
+                                      </apex:outputLink> 
+                                    </div>
+                               </div> 
+                               <div class="container_top" >
+                                 <div class="feature_article">Featured Event</div>
+                                 <div class="featureSubSection">
+                                       <div class="articleSection">
+                                         <div style="width:270px; float:left;">
+                                            <div>
+                                            <apex:outputLink value="/apex/EventsAndSponsorships?id={!engagement.Id}&bidID={!bidID}&type=" style="text-decoration:none;">
+                                                <apex:outPutText value="{!engagement.Name}"  styleClass="headlineStandArt"/>
+                                                </apex:outputLink>
+                                            </div>
+                                            <div style="float:left;line-height:24px; padding-top:10px;">
+                                                <div title="When information" >
+                                                    <apex:outputText value="When: " styleClass="eventsdate"/>  
+                                                        <apex:outputPanel rendered="{!IF((engagement.Start_Date__c !=engagement.End_Date__c), true, false)}" >                                         
+                                                            <apex:OutputText value="{0,date,M'/'d}">
+                                                            <apex:param value="{!engagement.Start_Date__c}"/>
+                                                         </apex:outputText>                                                                                   
+                                
+                                                  <apex:OutputText value="-" styleClass="font-weight:bold;"/>                                         
+                                                     <apex:OutputText value="{0,date,M'/'d}" >
+                                                        <apex:param value="{!engagement.End_Date__c}"  />
+                                                    </apex:outputText> 
+                                                  </apex:outputPanel>
+                            
+                                                  <apex:outputPanel rendered="{!IF((engagement.Start_Date__c ==engagement.End_Date__c), true, false)}" >                                         
+                                                    <apex:OutputText value="{0,date,M'/'d}">
+                                                        <apex:param value="{!engagement.Start_Date__c}"/>
+                                                    </apex:outputText>
+                                                 </apex:outputPanel>
+                                         </div> 
+                                         <div title="Where Information">
+                                            <apex:outputText value="Where: " styleClass="eventsdate"/>
+                                            <apex:outPutText value="{!engagement.City__c}" />
+                                            <apex:outputText value=", "/>
+                                            <apex:outPutText value="{!engagement.State__c}" /> 
+                                        </div>
+                                 </div> 
+                             </div> 
+                             <div style="min-width:150px;float:left; padding-top:2px; padding-bottom:10px;min-height:130px; ">
+                                 <apex:outputLink value="/apex/EventsAndSponsorships?id={!engagement.Id}&bidID={!bidID}&type=" style="text-decoration:none;">
+                                  <apex:image value="{!engagement.Event_Image_Link__c}" style="width:150px; height:120px;"/> 
+                                 </apex:outputLink> 
+                             </div>
+                             <div title="Description Information">
+                                <apex:outputText value="{!engagement.Description__c}"/>
+                             </div>
+                           </div>
+                         </div> 
+                      </div>
+                  </div> 
+                  </apex:outputPanel>
+     
+     <!-- section 3
+     <apex:outputPanel rendered="{!directory !=null}">
+     <div class="seperatorImg" ><apex:image value="{!$Resource.separatorBg}"/></div>
+                      <div class="contact_container"> 
+                        <div class="middleTile" >
+                          <div class="headerSection">More ways to connect</div>
+                          <div class="orangeHeader">Look up Providers</div>
+                          
+                          <!-- More ways to Connect Description to be used for non-authenticated users only 
+                          <apex:outputText rendered="{!(Contains($User.LastName, 'Guest'))}">
+                              <div class="fonth4">Find Solution Providers who are members of the AT&amp;T Partner Exchange program.</div>
+                          </apex:outputText>
+                          
+                          <!-- More ways to Connect Description to be used for authenticated users only
+                          <apex:outputText rendered="{!NOT(Contains($User.LastName, 'Guest'))}">
+                              <div class="fonth4">Promote your business and connect with our Solution Providers using a public, searchable profile. Customize yours now to ensure everyone knows all you can do.</div>
+                          </apex:outputText>
+                          <div class="view-details"> 
+
+                          </div> 
+                        
+                       </div> 
+                       <div class="container_top">
+                          <div class="feature_article">Featured Provider Profile</div>
+                              <div class="featureSubSection">
+                                   <div class="providerSection">
+                                   <div style="float:left; padding-right:15px;" class="ProviderLogo"> 
+                                         <apex:outputLink value="/apex/SI_ProviderDetailsPage?id={!directory.Id}&bidID={!bidID}&Flag=O" style="text-decoration:none;"> 
+                                            <apex:image value="{!directory.Logo_Link__c}" rendered="{!directory.Logo_Link__c !=null}" style="width:60px; height:60px; margin-top:10px; -webkit-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); -moz-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); box-shadow: 0px 0px 5px rgba(36,36,36,0.8);"/>
+                                            <apex:image value="{!URLFOR($Resource.ListImage)}" rendered="{!directory.Logo_Link__c ==null}" style="width:60px; height:60px; margin-top:10px; -webkit-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); -moz-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); box-shadow: 0px 0px 5px rgba(36,36,36,0.8);"/>
+                                         </apex:outputLink>  
+                                     </div>
+                                         <div style="margin-left:73px;">
+                                            <apex:outputPanel rendered="{!if((directory.Company_Display_Name__c!=null || directory.Tagline__c!=null),true,false)}">
+                                              <div class="companyName">
+                                               <apex:outputPanel >
+                                                  <apex:outputLink value="/apex/SI_ProviderDetailsPage?id={!directory.Id}&bidID={!bidID}&Flag=O" style="text-decoration:none;">
+                                                  <apex:outputText value="{!directory.Company_Display_Name__c}" escape="false" styleClass="headlineStandArt" style="width:275px; padding-right:10px; word-wrap: break-word;"/> 
+                                                  </apex:outputLink>
+                                                  <br/>
+                                                  <apex:outputText value="{!directory.Tagline__c}" escape="false" style="font-size:16px; color:#333333; word-wrap: break-word;"/>
+                                               </apex:outputPanel>
+                                              </div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!directory.Summary__c!=null}"> 
+                                              <div style="color: #ababab; font:14px Arial, line-height:17px; font-weight:bold;padding-top:20px; padding-bottom:10px;" >Summary</div>
+                                              <div style="padding-left:3px;"><apex:outputText value="{!directory.Summary__c}" style="color: #333333; font:12px Arial, line-height:17px; width:275px; padding-right:10px; word-wrap: break-word;"/></div>
+                                            </apex:outputPanel> 
+                                            <apex:outputPanel rendered="{!solutions!=null}"> 
+                                                <div style="color: #ababab; font:14px Arial, line-height:17px; font-weight:bold; padding-top:20px; padding-bottom:10px;">Solutions</div>
+                                                <div class="solution_blue">
+                                                    <apex:variable value="{!0}" var="NumRows"/>
+                                                        <apex:variable value="{!solutions.size}" var="strCount"/>                               
+                                                        <apex:repeat value="{!solutions}" var="sol">
+                                                            <apex:variable value="{!NumRows+ 1}" var="NumRows"/>
+                                                            <apex:outputPanel >                                                                       
+                                                                <apex:outputLink value="/apex/SI_HomeProviderDirectory?SName={!SUBSTITUTE(sol,'&','^')}&bidID={!bidID}&type=Solution" style="text-decoration:none;" >
+                                                                  <apex:outPutText value="{!sol}" style="color:#067ab4;" rendered="{!FLOOR(NumRows)==strCount}"/>
+                                                                  <apex:outPutText value="{!sol}, " style="color:#067ab4;" rendered="{!FLOOR(NumRows)<strCount}"/>
+                                                                </apex:outputLink>                       
+                                                            </apex:outputPanel>
+                                                       </apex:repeat>
+                                                </div>
+                                             </apex:outputPanel>
+                                             <apex:outputPanel rendered="{!if((directory.Company_Display_Name__c==null && directory.Tagline__c==null && directory.Summary__c==null && solutions==null),true,false)}">
+                                                 <div style="padding-bottom:70px;"></div>
+                                             </apex:outputPanel>
+                                     </div>
+                                  </div> 
+                              </div>
+                        </div>
+               </div> 
+                </apex:outputPanel>-->
+            </div>
+           
+           
+       <!-- somanna landing page ends -->
+       <!--- START OF Footer--->
+        <div id="videoArticlePopUp" class="overlaybox" style="width: 506px;display: none; position: relative; top:50%; ">
+            <div id="closeVideo" > <!-- onclick="return close()">-->
+                <apex:image value="{!$Resource.btnClose}" style="float:right; height: 28px; width:28px; border:0;"/>
+            </div>
+            <div class="vidHeader" style="padding-top:10; background: url({!$Resource.bgSection}); width:506px; ">
+                <apex:image value="{!$Resource.attFooter}" style="padding:10px;" />
+            </div>
+            <div class="sample-player">
+                <div id="akvideo"></div>
+            </div>
+            <br/>
+            <div id="videoSummary" ></div>
+        </div>
+       
+ <!--      <div>
+        <c:newsroomFooter ></c:newsroomFooter>
+       </div> --> 
+       
+     <br/><br/><br/>
+     <apex:outputPanel > 
+          <apex:include pageName="PortalDesignFooter" id="PortalDesignFootertop" />
+     </apex:outputPanel> 
+       
+       <!--- END OF Footer--->
+     </div>
+     
+     
+      
+        <script>
+        vrArticleId=document.getElementById('{!$Component.ArticleId}');
+        </script> 
+     
+     </apex:form>
+    </body>
+    </html>
+    </apex:pageBlock>
+</apex:page>

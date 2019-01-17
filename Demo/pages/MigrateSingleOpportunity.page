@@ -1,0 +1,92 @@
+<apex:page controller="MigrateSingleOpportunityController" showHeader="false" sidebar="false" tabStyle="Opportunity" standardStylesheets="true" >
+
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+
+   
+    <script type="text/javascript">
+        function oneCheck(a){
+        //alert("in oneCheck");
+        $('.isSelected').removeClass("isSelected");
+        if($(a).is(":checked")){
+        $(a).addClass("isSelected");
+        }
+        $(".chk").each(function() {
+        if($(this).hasClass('isSelected') == false){
+        $(this).attr("checked",false);
+        }else{
+        $(this).attr("checked",true);
+        }
+        });
+        }
+ 
+     </script>
+     <style>
+     .loadingBackground{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+}
+.loadingImgStyle{top: 50%;left: 50%;position: absolute;}
+     </style>
+
+<apex:actionstatus id="loading">
+    <apex:facet name="start">
+        <div id="loading" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;z-index:999999">
+            <div style="position: fixed;top:50%;left:50%;">
+                <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+            </div>
+        </div>
+    </apex:facet>
+</apex:actionstatus>  
+    <apex:form >
+
+
+        <apex:pageBlock id="pgBlk">
+                   
+                    <b>Enter Opportunity Name : </b><apex:inputText id="searchInput" label="Enter Opportunity Name" value="{!searchCard}" required="true"/>
+                    <apex:commandButton value="Search" action="{!searchOpportunity}" id="btnSearch"/>
+             
+                <apex:pageBlockTable id="pbtOppty" value="{!listOpptyWrapper}" var="eachOppty" rendered="{!isOpptyFound}" width="100%" >
+                    <apex:column headerValue="Select" >
+                        <apex:inputCheckbox id="looped" value="{!eachOppty.isSelected}" styleClass="chk" onChange="oneCheck(this);">
+                           <!-- <apex:actionSupport event="onchange" action="{!checkOutWithTheSelectedOppty}" status="loader" oncomplete="reloadCurrentLocation();"/>--->
+                        </apex:inputCheckbox>
+                    </apex:column>
+                    <apex:column headerValue="Opportunity Name">
+                        <apex:outputLink value="/{!eachOppty.oppty.Id}" target="_blank"><apex:outputField value="{!eachOppty.oppty.Name}"/></apex:outputLink>
+                    </apex:column>
+                    <apex:column headerValue="Stage Name" value="{!eachOppty.oppty.StageName}" />
+                    <apex:column headerValue="Account Name" value="{!eachOppty.oppty.AccountId}"/>
+               </apex:pageBlockTable>
+               
+                 <apex:selectList label="Selected Page" value="{!selectedPage}" size="1" id="slPaging" multiselect="false" rendered="{!isOpptyFound}">
+                     <apex:selectOptions value="{!pagesOfOppty}" >
+                         
+                     </apex:selectOptions>
+                     <apex:actionSupport event="onchange" action="{!recordTheSelection}" status="loader" rerender="pbtOppty,slPaging,opSup" />
+                 </apex:selectList> 
+                 <apex:outputPanel id="opSup" rendered="{!isOpptyFound}"><b><sup>{!posRank}</sup></b></apex:outputPanel>&nbsp;
+                 <apex:selectList label="Selected Page" value="{!maxPageSize}" size="1" id="slPerPaging" multiselect="false" rendered="{!isOpptyFound}">
+                     <apex:selectOptions value="{!sizePerPage}" >
+                         
+                     </apex:selectOptions>
+                     <apex:actionSupport event="onchange" action="{!paginateOpportunitySearchResult}" status="loader" rerender="pbtOppty,slPaging,opSup,slPerPaging" />
+                 </apex:selectList><apex:outputPanel id="opSupPP" rendered="{!isOpptyFound}"><b>per page</b></apex:outputPanel>
+              
+               <!--- <div style="clear:both;"></div>
+                <div style="clear:both;"></div>-->
+                <apex:commandButton id="migrateButtonId" value="Migrate Opportunity" action="{!submitRecords}" rendered="{!isOpptyFound}" reRender="pgBlk,stepspanel" status="loading"/> 
+              
+                </apex:pageBlock>
+                <apex:outputPanel id="stepspanel" >
+                    <div style="color:#E60000; font-weight:bold;font-size:14px;  margin-top: -15px;">
+                    <apex:messages id="erMessage"  />
+                    </div>
+                </apex:outputPanel>
+  
+        </apex:form>
+               
+</apex:page>

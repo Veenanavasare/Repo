@@ -1,0 +1,291 @@
+<apex:page controller="AddNewCustomerController" showChat="false" name="Add New Customer" cache="true" showHeader="false">
+<apex:includeScript value="{!$Resource.atomjqueryjs}" />
+
+<html>
+ 
+ <body>
+    <apex:form id="theForm">
+        <apex:pageMessages ></apex:pageMessages><br/>
+                  
+        
+    <h1>Add New Customer </h1>
+        <apex:pageBlock id="pg">
+            <apex:pageBlockSection columns="3" collapsible="false" id="pageBlockSection1"> 
+                
+                
+                <apex:outputText value="Contact First Name"/>
+                <apex:outputText value="Business Name"/>
+                <apex:outputText value="Business Website"/>
+            
+            
+                <apex:inputText value="{!FirstName}">
+                    <apex:actionsupport action="{!ACTION1}" event="onchange" rerender="Complete,ThecmpltButton">
+                        </apex:actionsupport>
+                </apex:inputText>
+                <apex:inputText value="{!BusinessName}">
+                    <apex:actionsupport action="{!ACTION2}" event="onchange" rerender="Complete,ThecmpltButton">
+                        </apex:actionsupport>
+                </apex:inputText>
+                <apex:inputText value="{!BusinessWebsite}" html-placeholder="Optional"/>
+                
+                <apex:outputText value="Contact Last Name"/>
+                <apex:outputText value="Address"/>
+                <apex:outputText value="DUNS#"/>
+                
+                <apex:inputText value="{!LastName}">
+                    <apex:actionsupport action="{!ACTION3}" event="onchange" rerender="Complete,ThecmpltButton">
+                        </apex:actionsupport>
+                </apex:inputText>
+                <apex:inputText value="{!Address}">
+                    <apex:actionsupport action="{!ACTION4}" event="onchange" rerender="Complete,ThecmpltButton">
+                        </apex:actionsupport>
+                </apex:inputText>
+                <apex:inputText value="{!DUNS}" html-placeholder="Optional"/>
+                    
+                
+                <apex:outputText value="Contact Email"/>
+                <apex:outputText value="Suite"/>
+                <apex:outputText value="Floor"/>
+                
+                <apex:inputText value="{!Email}">
+                    <apex:actionsupport action="{!ACTION5}" event="onchange" rerender="Complete,ThecmpltButton">
+                    </apex:actionsupport>
+                </apex:inputText>
+                <apex:inputText value="{!Suite}" html-placeholder="Optional"/>
+                <apex:inputText value="{!Floor}" html-placeholder="Optional"/>
+                    
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="2" collapsible="false" id="pageBlockSection2">
+            
+                <apex:outputText value="Contact Phone"/>
+                <apex:outputText value="City"/>
+            
+                <apex:inputText value="{!Phone}">
+                    <apex:actionsupport action="{!ACTION6}" event="onchange" rerender="Complete,ThecmpltButton">
+                    </apex:actionsupport>
+                </apex:inputText>
+                <apex:inputText value="{!City}">
+                    <apex:actionsupport action="{!ACTION7}" event="onchange" rerender="Complete,ThecmpltButton">
+                    </apex:actionsupport>
+                </apex:inputText>
+                
+                <apex:outputText value="State"/>
+                <apex:outputText value="{!$Label.ZIP}"/>
+            
+                <apex:selectList id="state" value="{!state}" size="1"  multiselect="false">
+                    <apex:selectOptions value="{!pickList}"/> 
+                </apex:selectList>
+                <apex:inputText value="{!ZIP}">
+                    <apex:actionsupport action="{!ACTION8}" event="onchange" rerender="Complete,ThecmpltButton">
+                    </apex:actionsupport>
+                </apex:inputText>
+                
+            </apex:pageBlockSection> 
+            
+                
+                <apex:inputCheckbox value="{!checkbox}" onChange="cbx();">
+                    <apex:actionFunction name="cbx" reRender="page2,pb1,Form2"/>   
+                </apex:inputCheckbox>
+                <apex:outputText value="Use this Business Address as the Site Address in the  next step."/>
+                <br></br>
+                <br></br>
+                <!--<apex:commandButton value="Save" action="{!Save}" id="Save" reRender="pg,page1,pb1,page2,pageBlockSection1,pageBlockSection2,theForm" disabled="{!!completeButton}"/>--> 
+                <br></br>
+
+        </apex:pageBlock>
+    </apex:form>
+            
+            <h3>Add Customer Sites (Optional)</h3>
+            <br></br>
+        <h4>Complete the information to add sites for this customer. You can also add sites later.</h4>
+        <div class="row">
+            <div class="col-xs-12 col-md-12">
+                <div class="manage_user_search_row">
+                    <form action="" method="get" id="search_users_form" class="">
+                        <div class="search_user_container">
+                            <div class="search_button"></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div> 
+                    <apex:form id="form-bulk-input2">
+                        <apex:inputFile value="{!contentFile}" contentType="{!fileContentType}" filename="{!nameFile}" styleClass="btn m-l-10"/>
+                        <apex:commandButton action="{!ReadFile}" value="Upload" styleClass="btn btn-primary m-l-10" style="width:auto;"/>
+                    </apex:form>
+                
+            <!--<div class="row" id="search" style="margin-bottom: 5px;">
+                <div class="col-xs-12 p0 m0">
+                    <div class="input-group w50p">
+                        <input type="text" id="firstName" onkeyup="doSearch();" class="form-control" placeholder="Search by Name or Location"></input>
+                        <apex:commandButton value="Search" onclick="doSearch();" styleClass="btn btn-primary m-l-10 disabled" style="margin-left: 10px !important;"/>
+                        <apex:actionFunction name="searchServer" action="{!runSearch}" rerender="pb1" oncomplete="isCustomerSelected();">
+                            <apex:param name="firstName" value="" />
+                        </apex:actionFunction>
+                        <!--<apex:commandButton value="Bulk Upload" action="BulkUpload" styleClass="btn btn-primary m-l-10 disabled" style="margin-left: 10px !important;"/>
+                        <apex:actionStatus id="cInfoStatusId" startText="Processing...!!"></apex:actionStatus>
+                        <span class="input-group-addon b0 bggblue"><span class="b0 glyphicon glyphicon-search"></span></span>
+                    </div>
+                </div>
+            </div>
+        </apex:pageBlock>-->
+    
+    <!--<apex:form id="form-bulk-input2">
+        <apex:inputFile value="{!contentFile}" contentType="{!fileContentType}" filename="{!nameFile}" styleClass="btn m-l-10"/>
+        <apex:commandButton action="{!ReadFile}" value="Upload" styleClass="btn btn-primary m-l-10" style="width:auto;" rerender="page2"/>
+    </apex:form> -->
+    
+    <apex:form id="Form2">
+        <apex:pageBlock id="page2">
+
+            <apex:pageBlockSection id="pb1" collapsible="false" >
+            
+                <apex:panelGrid columns="8" id="theGrid">
+                    <apex:panelGrid id="radioSelected">
+                        <apex:facet name="header">
+                            <input type="checkbox"/>
+                            Site ID
+                        </apex:facet>
+                        <apex:inputText value="{!custsiteInst.ATT_Site_ID__c}"/>
+                    </apex:panelGrid>
+                    <apex:panelGrid >
+                        <apex:facet name="header">Site Name</apex:facet> 
+                        <apex:inputText value="{!custsiteInst.Site_Name__c}"/>
+                    </apex:panelGrid>
+                    <apex:panelGrid >
+                        <apex:facet name="header">Address</apex:facet>
+                        <apex:inputText value="{!custsiteInst.Address_Line__c}" rendered="{!IF(checkbox!=true,true,false)}"/>
+                        <!--<br></br>
+                        <apex:inputText value="{!custsiteInst.Address_Line__c}" rendered="{!IF(checkbox!=true,true,false)}"/>-->
+                        <apex:outputText value="{!Address}" rendered="{!IF(checkbox!=true,false,true)}"/>
+                    </apex:panelGrid>
+                    <apex:panelGrid >
+                        <apex:facet name="header">Location</apex:facet>
+                        <apex:selectList value="{!custsiteInst.Location__c}" size="1"  multiselect="false">
+                            <apex:selectOptions value="{!pickList1}"/> 
+                        </apex:selectList>
+                    </apex:panelGrid> 
+                    <apex:panelGrid >
+                        <apex:facet name="header"> No </apex:facet> 
+                        <apex:inputText value="{!custsiteInst.Location_Number__c}" html-placeholder="#"/>
+                    </apex:panelGrid>
+                    <apex:panelGrid >
+                        <apex:facet name="header">City</apex:facet>
+                        <apex:inputText value="{!custsiteInst.City__c}"/>
+                    </apex:panelGrid>
+                    <apex:panelGrid >
+                        <apex:facet name="header">State</apex:facet>
+                        <apex:selectList value="{!custsiteInst.State__c}" size="1"  multiselect="false">
+                            <apex:selectOptions value="{!pickList}"/> 
+                        </apex:selectList>
+                    </apex:panelGrid>
+                    <apex:panelGrid >
+                        <apex:facet name="header">Zip</apex:facet>
+                        <apex:inputText value="{!custsiteInst.Zip_Code__c}"/>
+                    </apex:panelGrid>
+                    <apex:panelGrid >
+                    <apex:commandButton action="{!AddSite}" value="Add Site" rerender="pb1,page2"/>
+                    </apex:panelGrid>
+                </apex:panelGrid> 
+            </apex:pageBlockSection>
+            
+                <!--<apex:pageBlockTable value="{!EndCustomerSite}" var="r" rendered="{!IF(EndCustomerSite.size>0,'true','false')}">-->
+                <!--<apex:pageBlockTable value="{!EndCustomerSite}" var="r" rendered="{!EndCustomerSite.size>0}">-->
+                <apex:pageBlockTable value="{!EndCustomerSite}" var="r" rendered="{!IF((EndCustomerSite!=null && EndCustomerSite.size>0),'true','false')}">
+                
+                    <apex:column value="{!r.Name}" />
+                    <apex:column value="{!r.Site_Name__c}" />
+                    <apex:column value="{!r.Address_Line__c}" />
+                    <!--<span>{!r.Address_Line1__c}</span><span> , </span><span>{!r.Address_Line__c}</span>-->
+                    <apex:column value="{!r.Location__c}" />
+                    <apex:column value="{!r.Location_Number__c}" />
+                    <apex:column value="{!r.City__c}" />
+                    <apex:column value="{!r.State__c}" />
+                    <apex:column value="{!r.Zip_Code__c}"/>     
+                </apex:pageBlockTable>
+                
+                <apex:outputPanel id="ThecmpltButton">
+                <apex:commandButton value="Complete" action="{!Save}" id="Complete" disabled="{!!completeButton}" rerender="hiddenBlock"> 
+                    <apex:param name="Message" value="{!BusinessName}" assignTo="{!Msg}"/>
+                </apex:commandButton>
+                
+                </apex:outputPanel>
+            
+        </apex:pageBlock>
+                
+        
+
+        <apex:pageBlock id="hiddenBlock" rendered="false"></apex:pageBlock>
+                
+       
+   
+    </apex:form>
+</body>
+<script>
+        
+        
+        $(document).ready(function(){
+            pageRefreshed();
+                             
+        });
+        function pageRefreshed(){
+        $('.dataTable th.headerRow').each(function() {
+                var thText = $(this).text();
+                var newHeadTd = '<td role="columnheader" rowspan="1" colspan="1"><a>'+thText+'</a><div class="reorder_btn"></div></td>';
+                $(this).replaceWith(newHeadTd);
+            });
+            $('.dataTable thead tr td:eq(1)').addClass('manage_user_name sorting_asc');
+            $('.dataTable thead tr td:eq(2)').addClass('manage_user_contact_name sorting');
+            $('.dataTable thead tr td:eq(3)').addClass('manage_user_address sorting');
+            $('.dataTable thead tr td:eq(4)').addClass('manage_user_city sorting');
+            $('.dataTable thead tr td:eq(5)').addClass('manage_user_state sorting');
+            $('.dataTable thead tr td:eq(6)').addClass('manage_user_zip sorting');
+            $('.dataTable thead tr td:first-child').html('<div class="check-label"><input class="css-checkbox" id="checkboxAll" name="checkboxAll" type="checkbox"><label class="css-label radGroup1 clr" for="checkboxAll"></label></div>');
+            $('.dataTable').DataTable({
+                "oLanguage": {
+                    "sInfo": "_START_ - _END_ of _TOTAL_"
+                },
+               "oPaginate": {
+                   "sNext": ">",
+                   "sPrevious": "<"
+                 },
+               "fnDrawCallback": function (oSettings) {                          
+                    $('.checkbox:checkbox').prop('checked', checkboxAll.checked);
+                    $('.check-label').each(function(){
+                        var inputChkId = $(this).children('label').attr('for');
+                        $(this).children('input').attr('id', inputChkId);
+                    });
+                 }
+             });
+
+             var searchBTN = $('.dataTables_filter > label > input[type="text"]').attr({'id':'search_input', 'name':'search_users', 'placeholder':'Search by Name or Location'});
+             $('#search_input').remove();
+             $(searchBTN).prependTo('.search_user_container');
+             $('.dataTables_filter').hide();
+             $('.dataTables_paginate').addClass('pagination');
+             
+             $('.checkbox').on('click', function(){
+                if ($(".checkbox:checked").length > 0) {
+                   $('.btn_deactivate_user').removeClass('hide').addClass('show');
+                } else {
+                    $('.btn_deactivate_user').removeClass('show').addClass('hide');
+                }
+                 
+             });
+             
+             $('#checkboxAll').on('click', function(){
+                if ($(".checkbox:checked").length > 0) {
+                   $('.btn_deactivate_user').removeClass('show').addClass('hide');
+                } else {
+                    $('.btn_deactivate_user').removeClass('hide').addClass('show');
+                }
+                 
+             });
+        }
+        function deleteModalShow(){
+            $('#deleteModal').modal('show');
+        }
+    </script>
+</html> 
+</apex:page>

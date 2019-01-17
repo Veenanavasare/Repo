@@ -1,0 +1,1019 @@
+<apex:page controller="SI_Enablementcontroller" sidebar="false" applyBodyTag="false" showHeader="false" cache="true" tabStyle="Account" standardStylesheets="true" >   
+<script src="{!$Label.DTMHeader}"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js')}"  />
+<apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-1.9.1.js')}"/>
+<style>
+    .inpuTypeField{
+            background-image: url({!($Resource.Search_bar_middle_img)});"    
+            background-repeat:repeat; 
+            border:none; 
+            height:18px;
+    }
+    .inputTextArea{
+            width: 237px; padding: 5px; height:18px; margin-left:-4px; border-radius:3px 0 0 3px; border-left:1px solid #CACAC4;
+    }
+    #nav{
+        width:975px;
+        margin-left:0px;
+        position:inherit;
+    }
+    .TopicPin {
+        border: 2px solid #3380AF;
+        border-radius: 8px 8px 8px 8px;
+        cursor: pointer;
+        display: inline-block;
+        height: 70px;
+        margin: -5px 8px 10px 10px;
+        vertical-align: top;
+        width: 205px;
+    }
+    .dividerR{
+        position:absolute;
+        color: #9a9a9a;
+        line-height: 17px;
+        padding-left: 89px;
+        padding-right: 5px;
+        vertical-align: text-top;
+        
+    }
+    .dividerRevDes{
+        position:absolute;
+        color: #ABABAB;
+        line-height: 17px;
+        padding-right: 5px;
+        vertical-align: text-top;
+        
+    }
+    .reviewCountCss{
+        color: #067ab4;
+        margin-left: 101px;
+        margin-top: 2px;
+        position: absolute;
+    }
+    .MT-10{
+         margin-top:10px;
+    }
+    .EnablementResources_hover{
+         border-radius: 0px 0px 4px 4px;
+         padding-left: 10px;
+    }
+    #menu li {
+    border-bottom: 5px solid rgba(0, 0, 0, 0);
+    border-radius: 4px 4px 0px 0px;
+    float: left;
+    margin-bottom: -5px;
+    text-align: center;
+}
+.directoryHeadlineDiv { padding-left:20px; padding-top: 5px;}
+</style>
+<style type="text/css">
+    .highlightWord { background-color: #ff2; }
+</style>
+<script type="text/javascript">
+    jQuery.fn.highlight = function (str, className) {
+        var regex = new RegExp(str, "gi");
+        return this.each(function () {
+            $(this).contents().filter(function() {
+                return this.nodeType == 3;
+            }).replaceWith(function() {
+                return (this.nodeValue || "").replace(regex, function(match) {
+                    return "<span class=\"" + className + "\">" + match + "</span>";
+                });
+            });
+        });
+    };
+    $j = jQuery.noConflict();
+    $j(document).ready(function() {
+        $j("#body *").highlight("{!strValue}", "highlightWord");
+        $j('#hl').click(function(e) {
+            e.preventDefault();
+            $j("#body *").highlight("{!strValue}", "highlightWord");
+        });
+
+       $j('#unhl').click(function(e) {
+            e.preventDefault();
+            $j(".highlightWord").replaceWith(function() { return $j(this).contents(); });
+        }); 
+    }); 
+</script>
+<script type='text/javascript'>
+    function noenter(ev) {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+            doSearchAF();
+            return false;
+         } else {
+              return true;
+         }
+     }
+</script>
+
+<script type='text/javascript'>
+
+ $( window ).load(function() {
+    $x.fn.generateStars = function() {
+                return this.each(function(i,e){$x(e).html($('<span/>').width($x(e).text()*16));});
+            };
+            // Function call to convert the rating number to stars.
+            $x('.star-prototype').generateStars();
+});
+</script>
+<style>
+    span.star-prototype, span.star-prototype > * {
+    height: 16px; 
+    background: url('{!$Resource.StarRatingIcon}') 0 -16px repeat-x;
+    width: 80px;
+    display: inline-block;
+    }
+     
+    span.star-prototype > * {
+       background-position: 0 0;
+       width:80px; 
+    }
+</style>
+<apex:pageBlock mode="maindetail">
+<style>
+    div#si_primaryMenu ul, div#si_primaryMenu ul li {margin:0; padding:0; list-style-type: none}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}}') no-repeat scroll 5px -40px; width: 982px; height: 40px;}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}') no-repeat scroll -5px -150px transparent; width: 982px; height: 92px;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem:hover,
+    li#programOverviewTab.programOverviewTabActive,
+    li#Connect.programOverviewTabActive,
+    li#productsTab.productsTabActive,
+    li#newsTab.newsTabActive
+    {
+        background-image: url('{!$Resource.NavConnect}'); 
+        background-repeat:no-repeat;
+        background-attachment:scroll;
+        background-color:transparent;
+        height:63px;
+        position:relative; 
+        top:0px; 
+        left:-70px;
+    }
+    
+    </style>
+    
+<style>
+        div.roundedDirectory{
+        background-image: url({!($Resource.GrayGradient)});"    
+        background-repeat:repeat; 
+        border-radius:5px 5px 0px 0px;
+        border-top: 1px solid #c4c4c4;  
+        border-left: 1px solid #c4c4c4;  
+        border-right: 1px solid #c4c4c4;
+        border-bottom: 1px solid #c4c4c4;       
+        height: 57px;
+        width: 904px; 
+        margin-top:25px; 
+        margin-left:20px;   
+    }
+element.style {
+    background-color: #FFFFFF;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px 0 #D3D3D3;
+    display: none;
+    margin: -6px 5px 5px 100px;
+    min-width: 61%;
+    position: absolute;
+    width: 730px;
+    z-index: 1;
+}
+
+    #menu1 li {  
+    border-bottom:5px solid transparent;
+    float: left;
+    margin-bottom: -5px;
+    text-align:center; 
+    -webkit-transition: opacity ease-in-out 2s;
+    -moz-transition: opacity ease-in-out 2s;
+    -o-transition: opacity ease-in-out 2s;
+    transition: opacity ease-in-out 2s;
+    -ms-transition: all 300ms ease-in-out 0s;
+    }  
+    
+    #providerSection {
+      padding:6px 10px 20px 20px; width:250px; height:170px; display:none;
+     }
+     
+     .more-info{
+         display:inline-block;
+         }
+         
+   .listTrayView{
+       width:100%;
+       float:right;
+       padding-bottom:15px; 
+       padding-top:20px;
+    }
+    
+    .scrollToTop{ cursor:pointer; padding:10px; text-align:center; font-weight: bold; color: #444; text-decoration: none; position:fixed; top:80%; right:40px; display:none; .background: url(url('!$Resource.scrollTop') no-repeat center;) no-repeat 0px 20px; width:60px;}
+    .scrollToTop:hover{ text-decoration:none; }
+    .switchImage{ padding-top:30px; position:static; }
+</style>
+   
+    <apex:stylesheet value="{!$Resource.newsroomStyleSheet}"/>
+    <apex:stylesheet value="{!$Resource.Newsroom_hover}"/>
+    <apex:stylesheet value="{!$Resource.ProviderDirectory}"/>
+    <apex:stylesheet value="{!$Resource.ProviderDirectoryOnlyCSS}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-1.9.1.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.masonry, 'masonry-site/jquery.masonry.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js')}"  />
+    
+    <script>
+       $j = jQuery.noConflict();
+       $j(window).load(function() {
+         $j('#wrapper').masonry({
+              itemSelector: '.pin'
+            });
+        $j('#wrapper').masonry({
+              itemSelector: '.ActiveTopic'
+        });           
+        });       
+
+        
+</script>
+
+ 
+<script>
+$j = jQuery.noConflict(); 
+    $j(window).ready(function() {  
+            
+        $j('.Industry_heading').hover(
+        function () {
+            $j('#IndustryContainer').show();
+            $j('table.detailList').removeClass('detailList').addClass('detailList1');
+            $j('.Industry_hover').css('background-color','#fff');
+            $j('.Industry_hover').css('border-radius','6px;');
+            $j('#btext').css('color','#EF6F00'); 
+            $j('#orange').show();
+            $j('#blue').hide();
+        }, 
+        function () {
+            $j('#IndustryContainer').hide();
+            $j('.Industry_hover').css('border-radius','6px;'); 
+            $j('.Industry_hover').css('background-color','#EDF5F8');
+            $j('#btext').css('color','#0C2577');
+            $j('#blue').show();
+            $j('#orange').hide();
+        }  
+    );
+    $j('#IndustryContainer').hover(
+        function () {
+            $j(this).show();
+            $j('.Industry_heading').css('border-radius','6px;');
+            $j('.Industry_heading').css('background-color','#fff');
+            $j('.Industry_hover').css('background-color','#fff');
+            $j('#btext').css('color','#EF6F00');
+            $j('#orange').show();
+            $j('#blue').hide();
+
+        }, 
+        function () {
+            $j('.Industry_hover').css('border-radius','6px;'); 
+            $j('.Industry_heading').css('background-color','#EDF5F8');
+            $j('#btext').css('color','#0C2577');
+            $j(this).hide();
+            $j('#blue').show();
+            $j('#orange').hide();
+        }  
+    );
+    //EnablmentResources
+$j('.EnablementResources_heading').hover(
+        function () {
+            $j('#EnablementResourcesContainer').show();
+            $j('table.detailList').removeClass('detailList').addClass('detailList1');
+            $j('.EnablementResources_hover').css('background-color','#fff');
+            $j('.EnablementResources_hover').css('border-radius','6px;');
+        }, 
+        function () {
+            $j('#EnablementResourcesContainer').hide();
+            $j('.EnablementResources_hover').css('border-radius','6px;'); 
+            $j('.EnablementResources_hover').css('background-color','#EDF5F8');
+        }  
+    );
+    $j('#EnablementResourcesContainer').hover(
+        function () {
+            $j(this).show();
+            $j('.EnablementResources_heading').css('border-radius','6px;');
+            $j('.EnablementResources_heading').css('background-color','#fff');
+            $j('.EnablementResources_hover').css('background-color','#fff');
+        }, 
+        function () {
+            $j('.EnablementResources_hover').css('border-radius','6px;'); 
+            $j('.EnablementResources_heading').css('background-color','#EDF5F8');
+            $j(this).hide();
+        }  
+    );
+
+    //start Region
+    $j('.region_heading').hover(
+        function () {
+            $j('#regionContainer').show();
+            $j('table.detailList').removeClass('detailList').addClass('detailList1');
+            $j('.region_hover').css('border-radius','6px;');
+            $j('.region_hover').css('background-color','#fff');
+            $j('#regionText').css('color','#EF6F00'); 
+            $j('#region_orange').show();
+            $j('#region_blue').hide();
+        }, 
+        function () {
+           $j('#regionContainer').hide();
+            $j('.region_hover').css('border-radius','6px;'); 
+            $j('.region_hover').css('background-color','#EDF5F8');
+            $j('#regionText').css('color','#0C2577');
+            $j('#region_blue').show();
+            $j('#region_orange').hide();
+        }  
+    );
+    $j('#regionContainer').hover(
+        function () {
+            $j(this).show();
+            $j('.region_heading').css('border-radius','2px;');
+            $j('.region_heading').css('background-color','#fff');
+            $j('.region_hover').css('background-color','#fff');
+            $j('#regionText').css('color','#EF6F00');
+            $j('#region_orange').show();
+            $j('#region_blue').hide();
+        }, 
+        function () {
+            $j('.region_hover').css('border-radius','2px;'); 
+            $j('.region_heading').css('background-color','#EDF5F8');
+            $j('#regionText').css('color','#0C2577');
+            $j(this).hide();
+            $j('#region_blue').show();
+            $j('#region_orange').hide();
+        }  
+    );
+    //end region
+    
+    // Solutions hover
+    $j('.Solutions_heading').hover(
+        function () {
+            $j('#SolutionsContainer').show();
+            $j('.Solutions_hover').css('border-radius','6px;');
+            $j('.Solutions_hover').css('background-color','#fff');
+            $j('.Solutions_hover').css('margin-left:-4px','#fff');
+            $j('.Solutions_hover').css('padding-left','-5px;');
+            $j('#Solutions_bText').css('color','#EF6F00'); 
+            
+            $j('#Solutions_orange').show();
+            $j('#Solutions_blue').hide();
+        }, 
+        function () {
+           $j('#SolutionsContainer').hide();
+            $j('.Solutions_hover').css('border-radius','6px;'); 
+            $j('.Solutions_hover').css('background-color','#EDF5F8');
+            $j('#Solutions_bText').css('color','#0C2577');
+            $j('#Solutions_blue').show();
+            $j('#Solutions_orange').hide();
+        }  
+    );
+    $j('#SolutionsContainer').hover(
+        function () {
+            $j(this).show();
+            $j('.Solutions_heading').css('border-radius','2px;');
+            $j('.Solutions_heading').css('background-color','#fff');
+            $j('.Solutions_hover').css('background-color','#fff');
+            $j('#Solutions_bText').css('color','#EF6F00');
+            $j('#Solutions_orange').show();
+            $j('#Solutions_blue').hide();
+        }, 
+        function () {
+            $j('.Solutions_hover').css('border-radius','2px;'); 
+            $j('.Solutions_heading').css('background-color','#EDF5F8');
+            $j('#Solutions_bText').css('color','#0C2577');
+            $j(this).hide();
+            $j('#Solutions_blue').show();
+            $j('#Solutions_orange').hide();
+        }  
+    );
+ });
+ 
+</script>  
+<script>
+ 
+ $j(function(){
+    $j("[id$=imageHoverAlternate]").hover(function(){
+        $j(this).find("[id$=providerSectionDefault]").css('display','block');
+        $j(this).find("[id$=imageHoverDefault]").css('display','none');
+    },
+    function(){
+        $j(this).find("[id$=providerSectionDefault]").css('display','none');
+        $j(this).find("[id$=imageHoverDefault]").css('display','block');
+    });
+    
+    $j("[id$=imageHoverId]").hover(function(){
+        $j(this).find("[id$=providerSection]").css('display','block');
+        $j(this).find("[id$=mainImage]").css('display','none');
+    },
+    function(){
+        $j(this).find("[id$=providerSection]").css('display','none');
+        $j(this).find("[id$=mainImage]").css('display','block');
+    }); 
+    
+    $j('#solutionProviderImage > span > img').error(function() {
+         $j(this).attr('src', '{!URLFOR($Resource.TrayImage)}');
+    });
+    
+    $j('.LogoContainer > img').error(function() {
+         $j(this).attr('src', '{!URLFOR($Resource.ListImage)}');
+    });    
+    
+ });
+ 
+</script>  
+<script>
+$j(function () {
+    
+    var summaryTitle = $j('.summaryText').text();
+    if (summaryTitle .length > 200) {
+      var chopText = summaryTitle .trim().substring(0, 200).split(" ").slice(0, -1).join(" ") + "…";
+      $j('.summaryText').text(chopText);
+    }
+     
+      var summaryDefTitle = $j('.summaryDefaultText').text();
+    if (summaryDefTitle .length > 200) {
+      var chopTextDefault = summaryDefTitle .trim().substring(0, 200).split(" ").slice(0, -1).join(" ") + "…";
+      $j('.summaryDefaultText').text(chopTextDefault);
+    }
+    //Mouse Scroll Events
+   $j(window).scroll(function() {   
+   if($j(window).scrollTop() + $j(window).height() == $j(document).height()) {
+       //$j('#mouseScroll').css('display','block');
+       mouseScrollFind(); 
+       window.onload=toBottom;         
+    } 
+    $j("[id$=imageHoverAlternate]").hover(function(){
+        $j(this).find("[id$=providerSectionDefault]").css('display','block');
+        $j(this).find("[id$=imageHoverDefault]").css('display','none');
+    },
+    function(){
+        $j(this).find("[id$=providerSectionDefault]").css('display','none');
+        $j(this).find("[id$=imageHoverDefault]").css('display','block');
+    });
+    
+    $j("[id$=imageHoverId]").hover(function(){
+        $j(this).find("[id$=providerSection]").css('display','block');
+        $j(this).find("[id$=mainImage]").css('display','none');
+    },
+    function(){
+        $j(this).find("[id$=providerSection]").css('display','none');
+        $j(this).find("[id$=mainImage]").css('display','block');
+    });      
+    });
+     })
+ 
+    function mouseScrollFind(){
+        callfind(); 
+    }
+    function toBottom(){
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+    function toTop(){
+        window.scrollTop(0);
+    }
+
+<!--scroll top start-->
+
+     $j(document).ready(function(){
+        $j(window).scroll(function(){
+        if ($j(this).scrollTop() > 100) {
+            $j('.scrollToTop').fadeIn();
+        } else {
+            $j('.scrollToTop').fadeOut();
+        }
+    });
+    $j('.scrollToTop').click(function(){
+        $j('html, body').animate({scrollTop : 0},500);
+        return false;
+    }); 
+    });
+</script>
+<html>
+<body onload="abc()">
+    <apex:form id="ProviderFormId">
+     <title>Provider Directory</title>   
+    <!-- MAIN DIV -->
+    <!-- START PAGE -->
+    <!-- start menu link -->
+    <div class="mainDiv"> 
+         <div style="position:fixed; margin-top:-160px; background-color:#FFFFFF;">
+             <c:LoggedInUser ></c:LoggedInUser>
+             <div id="menuContainer" style="padding-top:11px; width: 976px;">
+                 <c:navconnectheaderwithlinks ></c:navconnectheaderwithlinks>
+             </div>
+         </div>
+        <!-- end menu link -->
+        <div class="newsroomDiv" >
+              <div style="margin:160px 20px 0px 10px;">
+                <apex:outputLink value="/apex/Connect/Connect?bidID={!bidID}"  target="_self" style="text-decoration:none;">
+                    <apex:outputLabel value="Connect" styleClass="breadcomActive"/>
+                </apex:outputLink>
+                <apex:outputPanel rendered="{!if(type='ALL', true ,false)}">
+                    <apex:outputLabel value="/" styleClass="deActive"/>
+                    <apex:outputLabel value="Provider Directory" styleClass="deActive"/>
+               </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!if(type='NEW', true ,false)}">
+                   <apex:outputLabel value="/" styleClass="deActive"/>
+                   <apex:outputLink value="/apex/SI_EnablementResources"  target="_self" style="text-decoration:none;">
+                       <apex:outputLabel value="Provider Directory" styleClass="breadcomActive"/>
+                    </apex:outputLink>
+                   <apex:outputLabel value="/" styleClass="deActive"/>
+                   <apex:outputLabel value="New" styleClass="deActive"/>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!if((type='EnablementResources'), true ,false)}">
+                   <apex:outputLabel value="/" styleClass="deActive"/>
+                   <apex:outputLink value="/apex/SI_EnablementResources"  target="_self" style="text-decoration:none;">
+                       <apex:outputLabel value="Provider Directory" styleClass="deActive"/>
+                   </apex:outputLink>
+                   
+                   <!-- start Breadcom for solution provider detail page---------------- -->
+                  <!--
+                  <apex:outputLabel value="{!type }" rendered="{!FilterName ==null}" styleClass="deActive"/>
+                   <apex:outputLabel value="/" rendered="{!FilterName !=null}" styleClass="deActive"/>
+                   <apex:outputLabel value="{!FilterName}" styleClass="deActive"/> 
+                   -->
+               </apex:outputPanel>
+               <!-- ------------Search button div----------------------------------- -->
+               <apex:outputPanel style="float:right;"> 
+                    <apex:inputText value="{!strValue}" styleClass="inpuTypeField inputTextArea" onkeypress="return noenter(event);" id="pgblcktbl"/>
+                    <apex:actionFunction name="doSearchAF" action="{!searchFound}"/> 
+                    <apex:commandLink action="{!searchFound}" id="h1">
+                        <apex:image value="{!URLFOR($Resource.searchButton)}" style="margin-bottom:-9.3px; margin-left: -4px;"/>
+                    </apex:commandLink>
+                </apex:outputPanel>
+                <!-- ----------End--Search button div----------------------------------- --> 
+            </div>
+            <div style="margin-left: 683px; margin-right:20px; margin-top:20px;"> <apex:pageMessages id="pagemessage"/> </div>
+            <!-- NEWSROOM HEADLINE-->
+            <div class="directoryHeadlineDiv"> Provider Directory </div>
+            <div style="padding-top:20px; padding-bottom:20px;">
+                <c:directoryBanner ></c:directoryBanner>
+            </div> 
+            
+            <!-- END OF NEWSROOM HEADLINE --> 
+            
+            <!-- START OF BODY HERE---------------------------------------------------------------->
+            
+            <div class="container">
+                <ul id="nav" class="nav-provider">
+                    <!-- Active ALL -->
+                    <apex:outputText rendered="{!if(type='ALL', true ,false)}" >
+                        <li class='active'>
+                            <apex:outputLink value="/apex/SI_EnablementResources?type=ALL" target="_self" style="margin-left:-17px;" >
+                              All
+                            </apex:outputLink>
+                        </li>
+                    </apex:outputText>
+                          
+                    <!-- InActive ALL -->
+                    <apex:outputText rendered="{!if(type='ALL',false,true)}" >
+                        <li >
+                            <apex:outputLink value="/apex/SI_EnablementResources?type=ALL" target="_self" style="margin-left:-17px;" >
+                                All
+                            </apex:outputLink>
+                        </li>
+                    </apex:outputText>
+                                            
+                    <!-- Active New --------------------------------------->
+                    <apex:outputText rendered="{!if(type='NEW', true ,false)}">
+                        <li class='active'>
+                            <apex:outputLink value="/apex/SI_EnablementResources?type=NEW" target="_self"  style="margin-left:-31px;">
+                               New
+                            </apex:outputLink>
+                        </li>
+                    </apex:outputText>
+                            
+                    <!-- InActive New --------------------------------------------->
+                    <apex:outputText rendered="{!if(type='NEW', FALSE,TRUE)}">
+                        <li >
+                            <apex:outputLink value="/apex/SI_EnablementResources?type=NEW" target="_self"  style="margin-left:-31px;">
+                                New
+                            </apex:outputLink>
+                        </li>
+                    </apex:outputText>
+                   <!------------------------------------- menu for solution ------>   
+                   
+              <!-- <apex:outputText rendered="{!SName=null && (activeSolutions!=null || NS || MS || CH) && type!='EnablementResources'}">
+                       <ul id="menu" style="position:inherit;">
+                           <li class="Solutions_heading Solutions_hover " id="Solutions_hover" style="margin:5px 0px 0px 0px; padding-left:17px;">
+                             <apex:outputLabel styleClass="providerMenu">
+                                <div id="Solutions_bText" style="float:left; margin-left:-31px;">                                
+                                 <apex:outPutText value="Solutions"/>                                                        
+                               </div>
+                              <img width="9px" id="Solutions_blue" src=" {!URLFOR($Resource.bluearrow)}" Class="activeDropDown"></img>
+                              <img src="{!URLFOR($Resource.orangearrow)}" id="Solutions_orange" Class="inactiveDropDown" style="display:none" />
+                            </apex:outputLabel>
+                         </li>  
+                        </ul>
+                 </apex:outputText> 
+                 
+                  <apex:outputText rendered="{!SName!=null && (activeSolutions!=null || NS || MS || CH)}" >
+                       <ul id="menu" style="position:inherit;">
+                           <li class="Solutions_heading Solutions_hover" id="Solutions_hover" style="margin:5px 0px 0px 0px; padding-left:17px;">
+                             <apex:outputLabel styleClass="providerMenu">
+                                <div style="float:left; margin-left:-31px;color:#EF6F00;">                                
+                                 <apex:outPutText value="{!SName}"/>                                                        
+                               </div>
+                              
+                              <img src="{!URLFOR($Resource.orangearrow)}" Class="activeDropDown" />
+                            </apex:outputLabel>
+                         </li>  
+                        </ul>
+                 </apex:outputText>-->
+                 
+                
+                 <apex:outputText >
+                       <ul id="menu" style="position:inherit;">
+                           <li  style="margin:5px 0px 0px 0px; padding-left:17px;">
+                             <apex:outputLabel styleClass="providerMenu">
+                                <div  style="float:left; margin-left:-31px;Color:#ababab;">                                
+                                   <apex:outputText value="{!SName}" rendered="{!SName!=null}" />  
+                                   <apex:outputText value="Solutions" rendered="{!SName=null}" />                                                        
+                               </div>
+                              <img width="9px" id="Solutions_blue" src=" {!URLFOR($Resource.bluearrow)}" Class="activeDropDown"></img>
+                            </apex:outputLabel>
+                         </li>  
+                        </ul>
+                </apex:outputText>
+                    
+                <!-- start region -- menu -->
+               <apex:outputText >
+                   <ul id="menu" style="position:inherit;">
+                       <li style="margin:5px 0px 0px 0px; padding-left:17px;">
+                        <apex:outputLabel styleClass="providerMenu">
+                            <div style="float:left; margin-left:-31px;Color:#ababab;">
+                              <apex:outputText value="Region" rendered="{!RName=null}"/>
+                              <apex:outputText value="{!RName}" rendered="{!RName!=null}"/>
+                           </div>
+                          <img width="9px" id="region_blue" src="{!URLFOR($Resource.bluearrow)}" class="activeDropDown"></img>
+                           
+                        </apex:outputLabel>
+                     </li>  
+                    </ul>
+                </apex:outputText>
+             <!----------------------------------------- end region menu -- -->  
+                          
+                 <!-- -------------------------------menu for Industry -------------------------------------------------->                                          
+                <apex:outputText >
+                   <ul id="menu" style="position:inherit;">
+                       <li  style="margin:5px 0px 0px 0px; padding-left:17px;">
+                         <apex:outputLabel styleClass="providerMenu">
+                            <div  style="float:left; margin-left:-31px;color:#ababab;">
+                              <apex:outputText value="{!IName}" rendered="{!IName!=null}"/>
+                              <apex:outputText value="Industry" rendered="{!IName=null}"/> 
+                           </div>
+                          <img width="9px" id="blue" src="{!URLFOR($Resource.bluearrow)}" class="activeDropDown"></img>
+                       </apex:outputLabel>
+                     </li>  
+                    </ul>
+                 </apex:outputText>
+                 <!-------------------------end menu for Industry------------------------------------------------>
+ 
+ 
+ <!-- -------------------------------menu for EnablementResource -------------------------------------------------->                          
+                 <apex:outputText rendered="{!EName=null && totalEnablementResources!=0}" >
+                   <ul id="menu" style="position:inherit;">
+                       <li class="EnablementResources_heading EnablementResources_hover" id="EnablementResources_hover" style="margin:5px 0px 0px 0px; padding-left:17px;">
+                         <apex:outputLabel styleClass="providerMenu">
+                            <div id="btext1" style="float:left; margin-left:-31px; color:#EF6F00;">
+                              <apex:outputText value="Enablement Resources" /> 
+                           </div>
+                         <!-- <img width="9px" id="blue1" src="{!URLFOR($Resource.bluearrow)}" class="activeDropDown"></img>-->
+                          <img src="{!URLFOR($Resource.orangearrow)}" id="orange1" class="activeDropDown"/>  
+                       </apex:outputLabel>
+                     </li>  
+                    </ul>
+                 </apex:outputText>
+                 <apex:outputText rendered="{!EName!=null && totalEnablementResources!=0}" >
+                   <ul id="menu" style="position:inherit;">
+                       <li class="EnablementResources_heading EnablementResources_hover" id="EnablementResources_hover" style="margin:5px 0px 0px 0px; padding-left:17px;">
+                         <apex:outputLabel styleClass="providerMenu">
+                            <div style="float:left; margin-left:-31px;Color:#EF6F00;">
+                              <apex:outputText value="{!EName}"/> 
+                           </div>
+                          <img src="{!URLFOR($Resource.orangearrow)}" class="activeDropDown"  />  
+                       </apex:outputLabel>
+                     </li>  
+                    </ul>
+                 </apex:outputText>
+                 <apex:outputText rendered="{!totalEnablementResources=0}" >
+                   <ul id="menu" style="position:inherit;">
+                       <li  style="margin:5px 0px 0px 0px; padding-left:17px;">
+                         <apex:outputLabel styleClass="providerMenu">
+                            <div  style="float:left; margin-left:-31px;color:#ababab;">
+                              <apex:outputText value="{!EName}" rendered="{!EName!=null}"/>
+                              <apex:outputText value="Enablement Resources" rendered="{!EName=null}"/> 
+                           </div>
+                            <img src="{!URLFOR($Resource.orangearrow)}" class="activeDropDown"  />
+                        
+                       </apex:outputLabel>
+                     </li>  
+                    </ul>
+                 </apex:outputText>
+                 <!-------------------------end menu for EnablementResource------------------------------------------------>
+                
+                 <!-- -------------------------------Reset button on menu bar -------------------------------------------------->          
+                <div style="text-decoration:none; float:right; margin-top:13px; margin-right:20px;">   
+                    <apex:outputLink value="/apex/SI_HomeProviderDirectory?type=ALL">
+                        <apex:image url="{!URLFOR($Resource.Reset_Button)}"/>
+                    </apex:outputLink>
+                </div>    
+                
+            </ul>
+        </div> 
+         
+    <div class="newsroomDiv" style="margin-top:25px;">                            
+        <div id="SolutionsContainer" class="Solutions_hover" style="z-index:1; position:absolute; min-width:540px; max-width:768px; display:none; margin:-30px 5px 5px 70px;border-radius:6px;box-shadow: 0px 2px 5px 0px #d3d3d3;padding:right:5px;padding:left:5px;">                       
+            <div style="padding:25px 0px 0px 10px; float:left;">                                
+                <apex:outputPanel rendered="{!(NS)}">
+                    <div class="TopicPin" id="TopicPin" style="width:223px;">
+                      <apex:outputLink value="/apex/SI_EnablementResources?&type=EnablementResources" style="text-decoration:none;" >
+                    <!-- start hiperlink on Solutions -->                    
+                    <div style="display:block;cursor:pointer;">                                  
+                        <span id="FeatureTopicImage" style="float:left;margin:5px 5px 0px 5px;">                                                  
+                            <img width="61px" id="topic_blue" src="{!URLFOR($Resource.NetworkServices)}"></img>   
+                        </span>                                            
+                        <span class="TopicHeadline" style="float:right;min-height:40px; margin-top:5px;">  
+                            <apex:outputText value="Network Services" style="color:#ef6f00;"></apex:outputText>                                                        
+                        </span>                                           
+                    </div>
+                    <!-- End hiperlink on Solutions -->
+               </apex:outputLink>
+               </div>                                 
+           </apex:outputPanel>                              
+        </div>
+        <div style="padding:25px 0px 0px 0px; float:left;">                                
+            <apex:outputPanel rendered="{!(MS)}">
+                <div class="TopicPin" id="TopicPin" style="width:223px;">
+                 <apex:outputLink value="/apex/SI_EnablementResources?SName={!SUBSTITUTE('Mobile Services','&','^')}&RName={!SUBSTITUTE(RName,'&','^')}&IName={!SUBSTITUTE(IName,'&','^')}&type=Solution" style="text-decoration:none;" >
+                <!-- start hiperlink on featured Topic -->
+                  <div style="display:block;cursor:pointer;">
+                                                                  
+                     <span id="FeatureTopicImage" style="float:left;margin:5px 5px 0px 5px;">                                                  
+                            <img width="68px" id="topic_blue" src="{!URLFOR($Resource.MobileSerivces)}"></img>
+                      </span>                                            
+                        <span class="TopicHeadline" style="float:right;min-height:40px; margin-top:5px;"> 
+                          <apex:outputtext value="Mobile Services" style="color:#ef6f00;"></apex:outputtext>                                                     
+                        </span>                                           
+                    </div>
+                 <!-- End hiperlink on featured Topic -->
+                 </apex:outputLink>
+                </div>                                 
+            </apex:outputPanel>                              
+        </div> 
+         <div style="padding:25px 5px 0px 20px;">                                
+            <apex:outputPanel rendered="{!(CH)}">
+                <div class="TopicPin" id="TopicPin" style="width:223px;">
+                <apex:outputLink value="/apex/SI_EnablementResources?SName={!SUBSTITUTE('Cloud & Hosting','&','^')}&RName={!SUBSTITUTE(RName,'&','^')}&IName={!SUBSTITUTE(IName,'&','^')}&type=Solution" style="text-decoration:none;" >
+                <!-- start hiperlink on featured Topic -->
+                  <div style="display:block;cursor:pointer;">
+                                                                  
+                     <span id="FeatureTopicImage" style="float:left;margin:5px 5px 0px 5px;">                                                  
+                            <img width="68px" id="topic_blue" src="{!URLFOR($Resource.CloudImage)}"></img>
+                      </span>                                            
+                        <span class="TopicHeadline" style="float:right;min-height:40px; margin-top:5px;"> 
+                              <apex:outputText value="Cloud & Hosting" style="color:#ef6f00;"></apex:outputText>                                             
+                        </span>                                           
+                    </div>
+                 <!-- End hiperlink on featured Topic -->
+                 </apex:outputLink>
+                </div>                                 
+            </apex:outputPanel>                              
+        </div>    
+        <br/>   
+   </div> 
+  <!-- ------------------------------------start EnablementResource hover ---------------------------------------------->
+    <div id="EnablementResourcesContainer" class="EnablementResources_hover" style="z-index:1;position:absolute;min-width:200px;max-width:710px;display:none; margin:-29px 7px 22px 440px; border-style:none;border-radius:-2px;box-shadow: 0px 2px 5px 0px #d3d3d3; padding-bottom:20px; -webkit-margin-start: 438px; -webkit-min-logical-width: 194px;">                         
+        <div style="padding:5px 25px 25px 5px; margin-top:12px; margin-bottom:-36px;">
+            <apex:pageblocksection columns="1" showHeader="false">                                 
+               <apex:repeat value="{!totalEnablementResources}" var="rec">
+                  <apex:pageBlockSectionItem >
+                       <apex:outputPanel >                                                                                                
+                            <div style="margin-top:-7px;">
+                                                                                      
+                                     <apex:outputLink target="_self" value="/apex/SI_EnablementResources?EName={!SUBSTITUTE(rec.Name,'&','^')}&type=EnablementResources" style="text-decoration:none;">                                                  
+                                         <apex:outPutText value="{!rec.Name}" style="line-height:21px;color:#067ab4;font-family: Arial;font-size:14px;width:165px"/>
+                                     </apex:outputLink>                                                         
+                               
+                            </div>                                                                                                  
+                       </apex:outputPanel>
+                   </apex:pageBlockSectionItem>
+               </apex:repeat>                                
+             </apex:pageblocksection>
+        </div>
+    </div>  
+
+    <!-- ---------------------------------------end EnablementResource hover ---------------------------------------------->                   
+        <!----------------------------Start Enablment Resources Provider Solution Grey Panel----------------------------------------------------------------->
+                <apex:outputPanel rendered="{!IF(isEnable,true,false)}">      
+                <div class="roundedDirectory"> 
+                     <div class="solutionProviderCss">
+                          <apex:outputText value="Enablement Resources" escape="false"/> 
+                         <!-- <apex:outputText value="View All" escape="false" style="margin-left:50px;color: #3381b7;cursor: pointer;font-family: Arial;font-size:12px;line-height:25px;" />-->                            
+                    </div>
+                    
+                    <div class="switchImage">
+                        <apex:outputLink value="/apex/SI_EnablementResources?type={!type}&EName={!SUBSTITUTE(EName,'&','^')}" target="_self" style="text-decoration:none;" >
+                             <apex:image url="{!URLFOR($Resource.newsroombanners, '32066-Slices-and-Guide/Slices/icon-grid-view-active.png')}" title="Tray View" style="padding-right:5px;" />
+                        </apex:outputLink>
+                    
+                         <apex:outputLink value="/apex/SI_EnablementResourcesListView?type={!type}&EName={!SUBSTITUTE(EName,'&','^')}" target="_self" style="text-decoration:none;">
+
+                            <apex:image url="{!URLFOR($Resource.newsroombanners, '32066-Slices-and-Guide/Slices/icon-list-view.png')}" title="List View" style="padding-right:5px;"/>
+                        </apex:outputLink>
+                    </div>                                                
+                 </div> 
+            </apex:outputPanel>         
+       <!-------------------------------End Enablement Resoures Provider Solution Grey Panel-------------------------------------------------->   
+    <div id="Wrapper">         
+         <!-- gradient -->        
+            <!-- start tray view -->
+            <div style="margin-top:7px;" > 
+            <apex:outputPanel id="Testing">                 
+                <apex:repeat value="{!directoryShortEnablement}" var="dir" > 
+               <apex:outputPanel rendered="{!dir.Full_Size_Logo__c!=null}" style="float:left; width:290px; height:225px; padding-left: 20px;" id="imageHoverId">
+                   <apex:outputLink value="/apex/SI_EnablementProviderDetailsPage?PName={!SUBSTITUTE(FilterName,'&','^')}&type={!type}&id={!dir.Id}&bidID={!bidID}&Flag=O" target="_self" style="text-decoration:none;" >
+                        <div  id="solutionProviderImage">
+                            <apex:outputPanel id="imageHoverAlternate" style="float:left; margin-top:9px;">
+                                <apex:image id="mainImage" value="{!dir.Full_Size_Logo__c}" styleClass="trayDefaultImage" style="float:left; border:1px solid #ababab;"/>
+                            </apex:outputPanel>
+                            
+                            <!-- --------------------------mouse hover provider profile ------------- -->                       
+                            <apex:variable value="{!dir.Id}" var="providerSection"/> 
+                            <apex:outputPanel id="providerSection" style="display:none; float: none; width:265px; height:190px; border:1px solid #ababab; padding-top:15px; padding-left:15px;">                            
+                                <div style="padding-right:15px;  display:block;"> 
+                                    <div>
+                                        <div style="display:table;">
+                                            <div style="display:table-row">
+                                                <div style="display:table-cell; vertical-align:top;">
+  
+                                                    <apex:image value="{!dir.Logo_Link__c}" styleClass="listDefaultImage" style="width:60px; height:60px; float:left; margin-right:15px; margin-top:0px;-webkit-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); -moz-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); box-shadow: 0px 0px 5px rgba(36,36,36,0.8);"/>                                       
+                                                </div> 
+                                                <div style="display:table-cell; vartical-align:top; word-wrap:break-word;">   
+                                                    <div class="companyName" style="margin-top:8px;">
+                                                        <apex:outputPanel style="font-size:14px; word-wrap:break-word; font-weight:bold; line-height:17px; color:#4d4d4d;">
+                                                            <apex:outputText value="{!dir.Company_Display_Name__c}" escape="false"/> 
+                                                        </apex:outputPanel>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>             
+                                    </div> 
+                                    <br style="clear:both;" />
+                                     <div style="color: #1a1a1a; height:86px; font:12px Arial, line-height:15px;">                                 
+                                       <apex:outputText rendered="{!IF(LEN(dir.Summary__c)<151, true, false)}">
+                                            <apex:outPutText value="{!dir.Summary__c}" styleClass="dirorySummary"/>
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(LEN(dir.Summary__c)>150, true, false)}">
+                                            <apex:variable value="{!FIND(" ", MID(dir.Summary__c, 151, 250))}" var="trim"/>
+                                            <apex:outPutText value="{!Left(dir.Summary__c,150+trim-1)}..."  escape="false"/>
+                                        </apex:outputText>
+                                    </div>
+                                    
+                                        <apex:outputPanel rendered="{!allEnablementScore[dir.id]!=0}">                                      
+                                            <span class="star-prototype" style="position:absolute;">{!allEnablementScore[dir.id]}</span> 
+                                         </apex:outputPanel>
+                                          
+                                         <apex:outputPanel rendered="{!allEnablementReviewCount[dir.id]!=0}"> 
+                                             <apex:outputPanel rendered="{!allEnablementReviewCount[dir.id]=1}"> 
+                                                 <span class="dividerR">|</span><span class="reviewCountCss">{!allEnablementReviewCount[dir.id]} Review</span>
+                                             </apex:outputPanel>
+                                             <apex:outputPanel rendered="{!allEnablementReviewCount[dir.id]>1}"> 
+                                                 <span class="dividerR">|</span><span class="reviewCountCss">{!allEnablementReviewCount[dir.id]} Reviews</span>
+                                             </apex:outputPanel>
+                                         </apex:outputPanel> 
+                                         
+                                         <apex:outputPanel rendered="{!allEnablementReviewCount[dir.id]=0}"> 
+                                             <span class="dividerRevDes">{!allEnablementReviewCount[dir.id]} Reviews</span>
+                                         </apex:outputPanel>                                                                       
+                                </div>                                
+                            </apex:outputPanel>
+                  <!-------------------------End of mouse hover provider profile ------------- -->  
+                        </div>
+                    </apex:outputLink>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!dir.Full_Size_Logo__c==null}" style="float:left; width:290px; height:225px; padding-left:20px;" id="imageHoverAlternate1">
+                   <apex:outputLink value="/apex/SI_EnablementProviderDetailsPage?PName={!SUBSTITUTE(FilterName,'&','^')}&type={!type}&id={!dir.Id}&bidID={!bidID}&Flag=O" target="_self" style="text-decoration:none;" >
+                        <div  id="solutionProviderImage">
+                                <apex:image id="imageHoverDefault" value="{!URLFOR($Resource.TrayImage)}" style="float:left;border:1px solid #ababab; margin-top:0px"/>
+
+                            <!-- --------------------------mouse hover provider profile default-image------------ -->                                                                
+                            <apex:variable value="{!dir.Id}" var="providerSectionDefault"/> 
+                            <apex:outputPanel id="providerSectionDefault" style="display:none; float: none; width:265px; height:190px; border:1px solid #ababab; padding-top:15px; padding-left:15px;">                            
+                                <div style="padding-right:15px;  display:block;"> 
+                                    <div style="">
+                                        <div style="display:table;">
+                                            <div style="display:table-row">
+                                                <div style="display:table-cell; vertical-align:top;">
+                                                    <apex:image value="{!URLFOR($Resource.ListImage)}" style="margin-top: 0px; width:60px; height:60px; float:left; margin-right:15px; -webkit-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); -moz-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); box-shadow: 0px 0px 5px rgba(36,36,36,0.8);"/>                                       
+                                                </div>
+                                                <div style="display:table-cell; vartical-align:top;">                                           
+                                                    <div class="companyName" style="margin-top:8px;">
+                                                        <apex:outputPanel style="font-size:14px; font-weight:bold; line-height:17px; color:#4d4d4d;">
+                                                            <apex:outputText value="{!dir.Company_Display_Name__c}" escape="false" styleClass="CDN"/> 
+                                                        </apex:outputPanel>
+                                                    </div>
+                                                </div>    
+                                        </div> 
+                                    </div>
+                                 </div>             
+                                    <br style="clear:both;" />
+                                     <div style="color: #1a1a1a; height:86px; font:12px Arial, line-height:15px;">                                 
+                                       <apex:outputText rendered="{!IF(LEN(dir.Summary__c)<151, true, false)}">
+                                            <apex:outPutText value="{!dir.Summary__c}" styleClass="dirorySummary"/>
+                                        </apex:outputText>
+                                        <apex:outputText rendered="{!IF(LEN(dir.Summary__c)>150, true, false)}">
+                                            <apex:variable value="{!FIND(" ", MID(dir.Summary__c, 151, 250))}" var="trim"/>
+                                            <apex:outPutText value="{!Left(dir.Summary__c,150+trim-1)}..."  escape="false"/>
+                                        </apex:outputText>
+                                    </div>
+                                     <apex:outputPanel rendered="{!allEnablementScore[dir.id]!=0}"> 
+                                        <span class="star-prototype" style="position:absolute;">{!allEnablementScore[dir.id]}</span> 
+                                     </apex:outputPanel>
+                                                                     
+                                     <apex:outputPanel rendered="{!allEnablementReviewCount[dir.id]!=0}"> 
+                                         <apex:outputPanel rendered="{!allEnablementReviewCount[dir.id]=1}"> 
+                                             <span class="dividerR">|</span><span class="reviewCountCss">{!allEnablementReviewCount[dir.id]} Review</span>
+                                         </apex:outputPanel>
+                                         <apex:outputPanel rendered="{!allEnablementReviewCount[dir.id]>1}"> 
+                                             <span class="dividerR">|</span><span class="reviewCountCss">{!allEnablementReviewCount[dir.id]} Reviews</span>
+                                         </apex:outputPanel>
+                                     </apex:outputPanel> 
+                                     
+                                     <apex:outputPanel rendered="{!allEnablementReviewCount[dir.id]=0}"> 
+                                         <span class="dividerRevDes">{!allEnablementReviewCount[dir.id]} Reviews</span>
+                                     </apex:outputPanel>                                                                                                       
+                                </div>   
+                            </apex:outputPanel>
+                  <!-------------------------End of mouse hover provider profile default-image--------------- --> 
+                            
+                        </div>
+                    </apex:outputLink>
+                </apex:outputPanel>
+            </apex:repeat>    
+                <br/>
+                <br/>
+                <apex:outputPanel >
+                    <apex:outputPanel rendered="{!directoryShortEnablement.size ==  EnablementResources.size}">
+                        <c:providerdirectoryfooter ></c:providerdirectoryfooter>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!directoryShortEnablement.size !=  EnablementResources.size}">
+                        <div>
+                           <apex:actionFunction name="callfind" action="{!loadMore}" status="statusLoader" rendered="{!moreData}" reRender="Testing"/>     
+                        </div>
+                        <apex:actionstatus id="statusLoader">
+                            <apex:facet name="start">
+                                <div class="waitingSearchDiv" id="loading" style="background-color: #fbfbfb;position: fixed;"> 
+                                    <div class="waitingHolder" style="top:520px; left:600px; width: 91px;"> 
+                                        <img class="waitingImage" src="{!$Resource.LoadingGif}"/>
+                                    </div> 
+                                </div>
+                            </apex:facet>
+                        </apex:actionstatus>
+               </apex:outputPanel>
+              </apex:outputPanel>  
+              <script type='text/javascript'>
+                $x = jQuery.noConflict();
+                $x(document).ready(function() {
+                $x.fn.generateStars = function() {
+                    return this.each(function(i,e){$x(e).html($x('<span/>').width($x(e).text()*16));});
+                };    
+                // Function call to convert the rating number to stars.
+                $x('.star-prototype').generateStars();
+                });  
+            
+            </script>
+              </apex:outputPanel> 
+            </div>
+             <div>
+        </div> 
+        </div><br style="clear:both;" />
+        <!--<center><apex:commandButton action="{!loadMore}" title="Click to Load More Directory" value="Show More" rendered="{!moreData}" styleClass="showMoreButton"/></center>-->
+        <!-------------------------------------------------------- end tray view --- -->            
+        <apex:inputhidden id="imageHoverId"/>
+        <script>
+            vrArticleId=document.getElementById('{!$Component.imageHoverId}');
+        </script>
+        <apex:image value="{!($Resource.BackToTopIcon)}" styleClass="scrollToTop"/>
+     <div style="margin-top:10px;">
+        <center><apex:outputLabel rendered="{!noProvider}" value="No results found." styleClass="noArticleMessage"/></Center>
+     </div>           
+     <!-- end of profider feature ----------- -->     
+    <!---------------------------------------------------- end container on page ---- --- -->                                        
+    </div>       
+    </div>
+    </div>
+    </apex:form>
+    </body>
+    </html>
+    </apex:pageBlock>
+</apex:page>

@@ -1,0 +1,1246 @@
+<apex:page controller="RDSAVPNController" name="RDS Order Provisioning" cache="true" sidebar="false" showChat="false" showHeader="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" docType="html-5.0">
+    <apex:includeScript value="{!URLFOR($Resource.RDS_FieldValidationJS)}" />
+    <apex:includeScript value="{!URLFOR($Resource.RDS_AVPN_Page2JS)}" />
+    
+    <style type="text/css">
+        .tickImage{background-image: url("{!$Resource.GreenCheck}");background-repeat: no-repeat;padding: 0 10px 25px 15px;margin-top:-5px; margin-left: 4px; -webkit-padding-before: 4px;}
+        .closeImage{background-image: url("{!$Resource.RedCheck}");background-repeat: no-repeat; padding: 0 10px 25px 15px;margin-top:-5px; margin-left: 4px; -webkit-padding-before: 4px;}     
+        .top-m-25{margin-top:25px;}
+        .noteData{font-family:omnes_light;font-size:12px;color:#000;}
+        .tooltipTrigger {
+            cursor: pointer;
+        }
+        .pwdMatchStyle {
+            color: #000000;
+            font-size: 14px;
+            width: 260px;
+            font-weight:bold;
+        }  
+        .changeinterface2{    
+            background-image: url("{!$Resource.GreyDropdown}");
+            background-size:35px 32px !important;
+        }
+        .dPicker_error{
+            width:285px !important;
+        }
+        .radioSpacer label{padding-left: 6px;font-family: omnes_light !important;}
+        #v6ConfirmSign, #v4ConfirmSign{
+            font-size: initial !important;
+        }
+        .form-group {font-family: omnes_light;}
+        .tooltip.right{
+            width: 250px;
+        }
+        .errorStyle, .errorText {
+            color: #a94442;
+            font-size: 14px;
+            width: 260px;
+            font-weight:bold;
+        }
+        .btn-default.disabled {
+            color: white;
+            background-color: #056fab;
+        }
+        .btn-complete-parent-disabled {
+            cursor: not-allowed;
+        }
+        div.errorMessages {
+            margin-top: 10px;
+            margin-bottom: 10px;
+            color: #cc0000;
+            font-weight: bold;
+        }
+        .custEdgeIPAddr_error, .attEdgeIPAddr_error, .inputAltPhone_error, .inputAltMobile_error, .sitePhoneNumber_error{    margin: 0px; } 
+        span.calendarIcon,
+        span.calendarToolTip {
+            height: 100% !important;
+            font-size: 16px;
+            margin-left: 10px;
+            cursor: pointer;    
+        }
+        .ui-widget {
+            font-family: inherit !important;
+            font-size: inherit !important;
+        }
+        .ui-widget-header { 
+            background: cornflowerblue !important;
+            color: Black;
+            font-weight: bold;
+        }
+        .siteInfoTxtSty{
+            color:#ea7400;
+            font-size:16px;
+            line-height:23px;
+        }
+        .select-small select {
+            -moz-appearance: none;
+        }
+        textarea.form-control {
+            color: #555;
+            font-size: 14px;
+            resize: none; /* Robyn 6/8/16: Defect 26709 */
+        }
+        .sectionHeader-primary{
+            font-size:22px!important;
+        }    
+        .sectionHeader-secondary{
+            font-weight:bold!important;
+        }
+        .IPType fieldset label{
+            margin-right: 21px !important;
+        }        
+        .IPType fieldset input[type="radio"]{
+            margin: 10px 10px 0 0 !important;
+        } 
+        .intractiveIcon {
+            margin-left: 7px;
+        }   
+        .routingProtocol {
+            padding-left: 16px!important;
+        }    
+        .routingProtocol {
+            width: 38% !important;
+        }
+        .AutonomousSystem {
+            width: 26% !important;
+        }
+        .autonomousSystemNumber {
+            padding-left: 37px !important;
+            width: 39% !important;
+        }
+        .addressFields li{
+            width:31%;
+            display: inline-block;
+        }
+        .interfaceJackType {
+            padding: 6px 42px 6px 9px !important;
+        }
+        .adjust-select-small{
+            width:100%;
+        }
+        .errorText1 {
+            color: #cf2a2a !important;
+            font-weight: bold;
+            float: left;
+            width: 450px;
+        }
+        .section-dividerHr{
+            width:100%;
+            clear:both;
+            margin:20px 0px 35px 0px;
+            float:left;
+            border-bottom:1px solid #d3d3d3;
+        }
+        .typePrivate {
+            margin-bottom: 17px !important;
+        }
+        .portOptions {
+            margin-bottom: 20px !important;
+        }
+        .vpnConnection {
+            margin-bottom: 10px !important;
+        }
+        .jackTypeDrop {
+            margin-top: -24px !important;
+        }
+        .jackValue {
+            margin-bottom: 0px !important;
+        }
+        .ipTypeDivider {
+            margin: 2px 0 31px 0 !important;
+        }
+        .ipTypeSelection {
+            margin-bottom: 0px !important;
+        }
+        .installationInfo {
+            margin-top: 2px !important;
+        }
+        .cosSliderLabelsProgress {
+            position: absolute;
+            left: 20px;
+            z-index: 1;
+            color: Black;
+            margin-top: 6px;
+            font-weight:500;
+            font-family: omnes_att_iimedium;
+            line-height:21px;
+            font-size: 15px;
+        }
+        .cosSliderLabelsMax {
+            position: absolute;
+            top: 6px;
+            right: 20px;
+            color: #4ca90c;
+            font-weight:500;
+            font-family: omnes_att_iimedium;
+            line-height:21px;
+            font-size: 15px;
+        }
+        .ui-slider .ui-slider-handle {            
+            height: 2.5em;
+            margin-left: -4px;
+            width: 10px;
+        }
+        .AVPNRDSConfigPage .styled-select-small{
+            height: 34px !important;
+            background-size: 35px 32px;
+            
+            -moz-appearance: none;
+            -webkit-appearance: none;
+        }
+        .ui-slider-horizontal .ui-slider-range-min{
+            background: #4ca90c !important;
+        }
+        .inputRequestedServiceActDate_error{
+                white-space: nowrap;
+        }
+        .interfaceType{
+            width:100%;
+            padding-right: 40px;
+        }
+        .addressInfoSectionLabel {
+            font-family: omnes_att_iimedium !important;
+            font-size:15px !important;
+            line-height:21px;
+        }
+        div.addressInfoSection .errorStyle {
+            font-family: omnes_light !important;
+        }
+        .addressInfoSection{
+            margin-top: 16px !important;
+            margin-bottom: 25px;
+            position: relative;
+            
+        }
+        /* Site Info placeholder font*/
+        div.addressInfoSection input::-webkit-input-placeholder {
+           font-size: 13px;
+        }
+        
+        div.addressInfoSection input::-moz-placeholder { /* Firefox 19+ */
+          font-size: 13px;
+        }
+        
+        div.addressInfoSection input:-ms-input-placeholder { /* IE 10+ */
+          font-size: 13px;
+        }
+        
+        div.addressInfoSection input:-moz-placeholder { /* Firefox 18- */
+          font-size: 13px;
+        }
+        .siteContactSectionLabel{
+        font-size: 15px;
+        }
+        .siteContactSectionHeaderLabel{
+            font-family: omnesatt_iiregular ;
+            font-size: 16px;
+            line-height:23px;
+            font-weight:700;
+        }
+        .lineHeightForSitePhNum{
+            line-height:21px !important;
+            font-size: 15px;
+        }
+        .fontWeight{
+            font-weight: 400 !important;
+        }
+        .axisPlacementStyle{
+            font-weight: 500;
+            font-family: omnes_att_iimedium;
+            line-height:21px; 
+            color: #000000;
+            font-size: 15px;
+        }
+    </style>
+    <script>
+    function initializeIPAddress(){
+        $(".custEdgeIPAddr").on({
+            "keyup blur change": function () {
+                validateEdgeIPAddress('custEdgeIPAddr'+'','errorText'+'','_{!siteselected}');
+            }
+        });
+        $(".attEdgeIPAddr").on({
+            "keyup blur change": function () {
+                validateEdgeIPAddress('attEdgeIPAddr'+'','errorText'+'','');
+            }
+        });
+    }
+    </script>
+    
+    <apex:form styleClass="AVPNRDSConfigPage" id="formid">
+        <div class="errorMessages">
+            <apex:pageMessages escape="true"></apex:pageMessages>
+        </div>
+        <div>
+            <section>
+                <apex:outputLabel styleClass="f-s-larger omesregular" style="font-size: 16px; line-height: 18px; font-weight: 500" value="Site Name: {!SiteNameSelected}" />
+                <span id="hiddenSelId" class="{!SiteNumber}" style="display:none;"></span>
+                <br/>
+                <apex:outputLabel value="{!SelectedSiteAddress}" styleClass="omesregular" style="line-height: 18px;" />
+            </section><br/>
+            <apex:outputText styleClass="siteInfoTxtSty" style="font-weight:bold;" value="{!$Label.RDS_BUILDING_STATICMSG}"></apex:outputText>
+            <br/>
+            <div class="row addressInfoSection">
+                <div class="col-md-4 validataionSelector">
+                    <div class="m-b-10 addressInfoSectionLabel">Building</div>
+                    <apex:inputText id="buildingID" styleClass="form-control requiredInputField inputBuildingName" Label="Building" maxlength="10" html-placeholder="Ex: Bldg #, Bldg name, or Main" value="{!inpBuilding}" />
+                </div>
+                <div class="col-md-4 validataionSelector">
+                    <div class="m-b-10 addressInfoSectionLabel">Floor</div>
+                    <apex:inputText id="floorID" styleClass="form-control requiredInputField inputFloor" label="Floor" maxlength="9" html-placeholder="Ex: Floor #" value="{!inpFloor}"/>
+                </div>
+                <div class="col-md-4 validataionSelector">
+                    <div class="m-b-10 addressInfoSectionLabel">Room</div>
+                    <apex:inputText id="roomID" styleClass="form-control requiredInputField inputRoom" label="Room" maxlength="9" html-placeholder="Ex: Room #, Telco, IT Closet, Basement" value="{!inpRoom}"/>
+                </div>
+                
+            </div>
+            <div class="row" style="position:relative;">
+                <div class="form-group col-md-4 validataionSelector lineHeightForSitePhNum">
+                    <apex:outputLabel value="Site Phone Number" />
+                    <apex:inputText styleClass="form-control sitePhoneNumber requiredInputField" html-placeholder="0000000000" value="{!sitephonenumber}" />
+                </div>
+            </div>
+            <hr class="section-dividerHr" />            
+            <div class="row" style="margin-left:0px; margin-top:16px !important;">
+                <div>
+                    <h3 class="f-s-larger fontWeight">Site Contact</h3>
+                </div>
+                <section class="col-xs-12 col-md-12">
+                    <div class="row p-b-10">
+                       <strong class="siteContactSectionHeaderLabel">Primary Contact&nbsp;&nbsp;</strong>
+                        <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Tell us about the primary local contact for this site." style="font-size: 16px !important;"></span>
+                    </div>
+                    <div class="row rowAligned">
+                        <div class="form-group col-md-4 validataionSelector siteContactSectionLabel">
+                            <apex:outputLabel value="First Name" />
+                            <apex:inputText styleClass="form-control inputPriFirstName requiredInputField" value="{!sitecontactfirstname}" id="FirstName" label="First Name" />
+                        </div>
+                        <div class="form-group col-md-4 validataionSelector siteContactSectionLabel">
+                            <apex:outputLabel value="Last Name" />
+                            <apex:inputText styleClass="form-control inputPriLastName requiredInputField" value="{!sitecontactlastname}" label="Last Name" />
+                        </div>
+                        <div class="form-group col-md-4 validataionSelector siteContactSectionLabel">
+                            <apex:outputLabel value="Email Address" />
+                            <apex:inputtext styleClass="form-control inputPriEmail requiredInputField" value="{!sitecontactemailaddress}" label="Email Address" title="Please enter an valid email address" />
+                        </div>
+                    </div>
+                    <div class="row rowAligned">
+                        <div class="form-group col-md-4 validataionSelector siteContactSectionLabel">
+                            <apex:outputLabel value="Business Phone Number" />
+                            <apex:input styleClass="form-control inputPriPhone requiredInputField" value="{!sitecontactphonenumber}" label="Phone Number" type="tel" />
+                        </div>
+                        <div class="form-group col-md-4 validataionSelector siteContactSectionLabel">
+                            <apex:outputLabel value="Mobile Phone Number" />
+                            <apex:inputText styleClass="form-control inputPriMobile requiredInputField" value="{!sitecontactmobile}" label="Mobile Phone Number" />
+                        </div>
+                    </div>
+                </section>
+                <section class="col-xs-12 col-md-12">
+                    <div class="row p-b-10">
+                        <strong class="siteContactSectionHeaderLabel">Alternate Contact&nbsp;&nbsp;</strong>
+                        <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Enter a backup local contact for this site." style="font-size: 16px !important;"></span>
+                        
+                    </div>
+                    <div class="row rowAligned">
+                        <div class="form-group col-md-4 validataionSelector siteContactSectionLabel">
+                            <apex:outputLabel value="First Name" />
+                            <apex:inputText styleClass="form-control inputAltFirstName requiredInputField" value="{!sitealtcontactfirstname}" Label="First Name" />
+                        </div>
+                        <div class="form-group col-md-4 validataionSelector siteContactSectionLabel">
+                            <apex:outputLabel value="Last Name" />
+                            <apex:inputText styleClass="form-control inputAltLastName requiredInputField" value="{!sitealtcontactlastname}" label="Last Name" />
+                        </div>
+                        <div class="form-group col-md-4 validataionSelector siteContactSectionLabel">
+                            <apex:outputLabel value="Email Address" />
+                            <apex:inputText styleClass="form-control inputAltEmail requiredInputField" value="{!sitealtcontactemailaddress}" label="Email Address" />
+                        </div>
+                    </div>
+                    <div class="row rowAligned">
+                        <div class="form-group col-md-4 validataionSelector siteContactSectionLabel">
+                            <apex:outputLabel value="Business Phone Number" />
+                            <apex:inputText styleClass="form-control inputAltPhone requiredInputField" value="{!sitealtcontactphonenumber}" label="Phone Number" />
+                        </div>
+                        <div class="form-group col-md-4 validataionSelector siteContactSectionLabel">
+                            <apex:outputLabel value="Mobile Phone Number" />
+                            <apex:inputText styleClass="form-control inputAltMobile requiredInputField" value="{!sitealtcontactmobile}" label="Mobile Phone Number" />
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <hr class="section-dividerHr" style="margin-bottom:0px;"/>
+            
+            <!----------   Port Information    --------------------->
+            <div class="col-xs-12 col-md-12 p0">   
+                <apex:outputPanel rendered="{!PrivateLine}">
+                    <div class="form-group">
+                        <div>
+                            <h3 class="f-s-larger">Port/Access Information</h3>
+                        </div>
+                        <div class="form-group"><label>Type:</label>&nbsp;<apex:outputText value="{!porttypeselected}" /></div>
+                        <div class="form-group"><label>Port Speed:</label>&nbsp;<apex:outputText value="{!productOption}" /></div>
+                        <div class="form-group"><label>Access Speed: </label>&nbsp;
+                            <apex:outputText value="{!AccessSpeedSelected}" />
+                        </div>
+                        <div class="form-group"><label>VPN Status:</label>&nbsp;<apex:outputText value="New" /></div>
+                    </div>
+                    
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!SwitchedEthernet}">
+                    <div class="form-group">
+                        <h3 class="f-s-larger">Port Information</h3>
+                    </div>
+                    <div class="form-group"><label>Type:</label>&nbsp;<apex:outputText value="{!porttypeselected}" /></div>
+                    <div class="form-group"><label>Speed:</label>&nbsp;<apex:outputText value="{!productOption}" /></div>
+                    <div class="form-group"><label>VPN Status:</label>&nbsp;<apex:outputText value="New" /></div>
+                </apex:outputPanel>
+            </div>
+            <apex:outputPanel rendered="{!ubbFlag}">
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label>Billing Type: </label>&nbsp;
+                        <apex:outputText value="Usage-Based Billing" />
+                    </div>
+                    
+                    <div class="form-group col-md-6 p0">
+                        <label>Minimum Bandwidth Commitment (MBC): </label>
+                        &nbsp;<apex:outputText value="{!ubbSpeedValue}" />
+                    </div>
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!!ubbFlag}">
+                <div class="form-group"><label>Billing Type:</label>&nbsp;<apex:outputText value="Fixed" /></div>
+                
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!!PrivateLine}">
+                <div class="form-group"><label>Physical Interface:</label>&nbsp;<apex:outputText value="{!InterfaceSelected}" /></div>
+            </apex:outputPanel>
+            <div class="form-group"><label>Class of Service:</label>&nbsp;<apex:outputText value="{!CosSelected}" /></div>
+            
+            <div class="row">
+                <apex:outputPanel rendered="{!!PrivateLine}">
+                    <div class="form-group col-md-4" style="width:35%;">
+                        <label>Interface Type </label> <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Distance Limitations on 100BaseT = 100 Meters. (So a 50M service more than 100 Meters from the Demarcation must be Optical." style="font-size: 16px !important;"></span>
+                        <apex:outputPanel rendered="{!!isInRegion}">
+                            <apex:selectList size="1" value="{!interface_Type}" multiselect="false" styleClass="form-control disabled-styled-select-small interfaceType" disabled="true">
+                                <apex:selectOptions value="{!interfaceTypeOptionList}" />
+                            </apex:selectList>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!isInRegion}">
+                            <apex:selectList id="interfaceTypeId" size="1" value="{!interface_Type}" multiselect="false" styleClass="form-control interfaceType requiredInputField styled-select-small">
+                                <apex:selectOptions value="{!interfaceTypeOptionList}" />
+                            </apex:selectList>
+                            <div class="col-xs-12 noteData p0" style="margin-top:10px">Option from configuration page can be changed</div>           
+                        </apex:outputPanel>
+                    </div>
+                </apex:outputPanel>
+                <div class="form-group col-md-4">
+                    <label>Jack Type </label>
+                    <apex:selectList id="JackType" size="1" value="{!jack_Type}" multiselect="false" styleClass="form-control inputJackType requiredInputField styled-select-small none-appearance" style="width:268px" >
+                        <apex:selectOptions value="{!jackTypeOptionList}" />
+                    </apex:selectList>
+                </div>
+            </div>
+            <apex:outputPanel rendered="{!!PrivateLine}">
+                <div class="row">
+                    <div class="form-group col-md-4" style="{!IF(vlanchannels,'margin-bottom:40px;','')} width:35%;">
+                        <label>VLAN Tag Control </label>
+                        <apex:selectList id="VLANTagControl" size="1" value="{!selectedId1}" multiselect="false" styleClass="form-control inputVLANTagControl requiredInputField styled-select-small none-appearance" style="width:100%">
+                            <apex:selectOptions value="{!pickList1}" />
+                        </apex:selectList>
+                    </div>
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!!VlanChannels || PrivateLine }">
+                <div class="row">
+                    <div class="form-group col-xs-12 m0">
+                        <label>IP Type </label> <span class="tooltipTrigger glyphicon glyphicon-question-sign m-l-10" data-toggle="tooltip" data-placement="right" title="Dual Stack supports both IPv4 and IPv6." style="font-size: 16px !important;"></span>
+                        <apex:selectRadio value="{!selectedId2}" styleClass="col-xs-5">
+                            <apex:selectOptions value="{!IpTypePicklistOptions}" />
+                            <apex:actionSupport event="onchange" action="{!renderipv6blocks}" reRender="ipv4block,ipv6block" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';onFiledChangeValidation();isSubmitEnable('oNRouting');onFieldChange('oNRouting');initializeIPAddress();reInitiateToolTip();" />
+                        </apex:selectRadio>
+                    </div>
+                </div>
+                <div>
+                    <hr class="section-dividerHr" />     
+                    <div class="warningText">Sites with any routing protocol as a <b>Static</b> arrangement require AT&amp;T Technical Sales to complete. You will be able to submit the RDS as long as all other information is complete; however, you will be contacted by a technical consultant to finish the order.</div>
+                    <apex:outputPanel id="ipv4block">
+                        <apex:outputPanel rendered="{!showipv4block}">
+                            <div class="col-xs-12 row">
+                                <h3 class="f-s-larger">IPv4 Information</h3>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <apex:outputLabel value="Routing Protocol" />
+                                    <apex:selectRadio styleClass="col-xs-12 onSelect" value="{!DefaultBGP}">
+                                        <apex:selectOption itemLabel="BGP (Recommended)" itemValue="BGP"></apex:selectOption>
+                                        <apex:selectOption itemLabel="Static" itemValue="STATICROUTING" itemDisabled="{!VlanChannels}"></apex:selectOption>
+                                        <apex:actionSupport event="onchange" action="{!ResetBGPStaticValues4}" reRender="BGPdisplay,Staticdisplay,CIRData,CIRData2" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';onFiledChangeValidation();isSubmitEnable('oNRouting');onFieldChange('oNRouting');reInitiateToolTip();initializeIPAddress();" status="loading"/>
+                                    </apex:selectRadio>
+                                </div>
+                                
+                                <apex:outputPanel id="BGPdisplay">
+                                    <apex:outputPanel rendered="{!DefaultBGP='BGP'}"><!--rendered="{!!StaticDisplayBoolean}"-->
+                                        <div class="form-group col-md-4" style=" margin-left: -13px; width: 284px; ">
+                                            <apex:outputLabel value="Autonomous System Number" /><br />
+                                            <apex:inputText value="{!AutonomousSystemNumber}" styleClass="form-control requiredInputField asnNumberV4"  onchange="" />
+                                            <span class="noteData"><br/>{!$Label.ASN_Range}</span>
+                                            
+                                        </div>
+                                        <div class="form-group col-md-4 ">
+                                            <apex:outputLabel value="Autonomous System Number Override" style=" white-space: nowrap; "/>
+                                            <apex:selectRadio styleClass="col-xs-7" value="{!ASNOverride4}">
+                                                <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                            </apex:selectRadio>   
+                                        </div>
+                                        <div class="row col-md-12">
+                                            <div class="form-group col-md-4">
+                                                <apex:outputLabel value="Restrictive Routing" />
+                                                <apex:selectRadio styleClass="col-xs-8" value="{!RestrictiveRouting4}">
+                                                    <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                                </apex:selectRadio>
+                                            </div>
+                                        </div>
+                                        <div class="row col-md-12">
+                                            <div class="form-group col-md-4">
+                                                <apex:outputLabel value="MD5 Authentication" />
+                                                <span class="tooltipTrigger glyphicon glyphicon-question-sign calendarToolTip" data-toggle="tooltip" data-placement="right"  title="If your routers use MD5 Authentication, denote here. If you are unsure, check with your technical team."></span><br />
+                                                <apex:selectRadio styleClass="col-xs-8" value="{!ipv4MD5Flag}">
+                                                    <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                                    <apex:actionSupport event="onchange" action="{!togglePwd}" reRender="ipv4MD5PwdPanel,ipv4MD5PwdPanel2" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';onFiledChangeValidation();isSubmitEnable('Page1');" />
+                                                </apex:selectRadio>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <apex:outputPanel id="ipv4MD5PwdPanel">
+                                                    <apex:outputPanel rendered="{!ipv4MD5Flag}">
+                                                        <apex:outputLabel value="MD5 Password" /><span class="tooltipTrigger glyphicon glyphicon-question-sign calendarToolTip" data-toggle="tooltip" data-placement="right"  title="Password must be at least 8 characters, no more than 16 characters and contain at least 1 number and 1 uppercase letter." ></span><br />
+                                                        <apex:inputSecret value="{!MD5Authenticationpassword1}" html-placeholder="Password" styleClass="form-control ipv4MD5Pass {!IF(ipv4MD5Flag == true,'requiredInputField','')}" onkeypress="return restrictSpaceBar(event);isSubmitEnable('Page1');onFiledChangeValidation();" onkeyup="isSubmitEnable('Page1');" maxlength="16" onchange="isSubmitEnable('Page1');" />
+                                                        <script>
+                                                        reInitiateToolTip();
+                                                        </script>
+                                                    </apex:outputPanel>
+                                                </apex:outputPanel>
+                                            </div>
+                                            <div id="md5ErrorMsg" style="position:relative;bottom:30px;color:#a94442;font-size:15px;"></div>
+                                            <div class="form-group col-md-4">
+                                                <apex:outputPanel id="ipv4MD5PwdPanel2">
+                                                    <apex:outputPanel rendered="{!ipv4MD5Flag}">
+                                                        <apex:outputLabel >Re-enter MD5 Password</apex:outputLabel>
+                                                        <span id="v4ConfirmSign"></span>
+                                                        <apex:inputSecret html-placeholder="Re-enter Password" disabled="true" styleClass="form-control ipv4MD5RePass {!IF(ipv4MD5Flag == true,'requiredInputField','')}" onkeyup="checkLastPage();isSubmitEnable('Page1')" maxlength="16" />
+                                                        <span id="textMsg"></span>
+                                                        
+                                                    </apex:outputPanel>
+                                                </apex:outputPanel>
+                                            </div>
+                                        </div>
+                                        <div class="row col-md-12 m-b-20">
+                                            <div class="form-group col-md-4">
+                                                <div>
+                                                    <apex:outputLabel value="Customer Edge IP Address(CER)" />
+                                                </div>
+                                                <div>
+                                                    <apex:inputText value="{!custid}" styleClass="form-control requiredInputField customIPRange custEdgeIPAddr" onchange="validateEdgeIPAddress('custEdgeIPAddr','errorText','_{!siteselected}')" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <div>
+                                                    <apex:outputLabel value="AT&T Edge IP Address(PER)" />
+                                                </div>
+                                                <div class="">
+                                                    <apex:inputText value="{!atid}" styleClass="form-control requiredInputField customIPRange attEdgeIPAddr" onchange="validateEdgeIPAddress('attEdgeIPAddr','errorText','')" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <div>
+                                                    <apex:outputLabel value="Subnet Mask" />
+                                                </div>
+                                                <div>
+                                                    <apex:inputText html-placeholder="255.255.255.252"  disabled="true"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                <apex:outputPanel id="Staticdisplay">
+                                    <apex:outputPanel rendered="{!DefaultBGP='STATICROUTING'}"><!--rendered="{!!StaticDisplayBoolean}"-->
+                                        <div class="col-md-12 m-b-20" style="color: #FFA500;font-family: omnes_att_iimedium;">
+                                            ATTENTION!
+                                            <p>Selecting <b>Static</b> as the routing protocol will require AT&amp;T Technical Sales to complete the order.
+                                                Complete all required information and submit the RDS. You will be contacted by a technical consultant to complete the order.</p>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </div>
+                            <script>
+                            initializeIPAddress();
+                            </script>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </div>
+                <div>
+                    <apex:outputPanel id="ipv6block">
+                        <apex:outputPanel rendered="{!showipv6block}">
+                            <hr class="section-dividerHr m0" />     
+                            <div class="col-xs-12 row">
+                                <h3 class="f-s-larger">IPv6 Information</h3>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <apex:outputLabel value="Routing Protocol" />
+                                    <apex:selectRadio styleClass="col-xs-12" value="{!DefaultBGP1}">
+                                        <apex:selectOption itemLabel="BGP (Recommended)" itemValue="BGP1"></apex:selectOption>
+                                        <apex:selectOption itemLabel="Static" itemValue="STATICROUTING1" itemDisabled="{!VlanChannels}"></apex:selectOption>
+                                        <apex:actionSupport event="onchange" action="{!ResetBGPStaticValues6}" reRender="BGPdisplay2,Staticdisplay2" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';onFiledChangeValidation();initializeFieldValidationsPage2();checkForErrorsPage2();isSubmitEnable('oNRouting');onFieldChange('oNRouting');reInitiateToolTip();" status="loading" />
+                                    </apex:selectRadio>
+                                </div>
+                                <apex:outputPanel id="BGPdisplay2">
+                                    <apex:outputPanel rendered="{!DefaultBGP1='BGP1'}">
+                                        <div class="form-group col-md-4" style=" margin-left: -13px; width: 284px; ">
+                                            <apex:outputLabel value="Autonomous System Number" /><br />
+                                            <apex:inputText value="{!AutonomousSystemNumber2}" styleClass="form-control requiredInputField asnNumberV6"  onchange="" />
+                                            <span class="noteData"><br/>{!$Label.ASN_Range}</span>
+                                        </div>
+                                        <div class="form-group col-md-4 ">
+                                            <apex:outputLabel value="Autonomous System Number Override" style=" white-space: nowrap; " />
+                                            <apex:selectRadio styleClass="col-xs-7" value="{!ASNOverride6}">
+                                                <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                            </apex:selectRadio>   
+                                        </div>
+                                        <div class="row col-md-12">
+                                            <div class="form-group col-md-4">
+                                                <apex:outputLabel value="Restrictive Routing" />
+                                                <apex:selectRadio styleClass="col-xs-8" value="{!RestrictiveRouting6}">
+                                                    <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                                </apex:selectRadio>
+                                            </div>
+                                        </div>
+                                        <div class="row col-md-12 m-b-10">
+                                            <div class="form-group col-md-4">
+                                                <apex:outputLabel value="MD5 Authentication" /> <span class="tooltipTrigger glyphicon glyphicon-question-sign calendarToolTip" data-toggle="tooltip" data-placement="right"  title="If your routers use MD5 Authentication, denote here. If you are unsure, check with your technical team."></span><br />
+                                                <apex:selectRadio styleClass="col-xs-8" value="{!ipv6MD5Flag}">
+                                                    <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                                    <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                                    <apex:actionSupport event="onchange" action="{!togglePwd}" reRender="ipv6MD5PwdPanel,ipv6MD5PwdPanel2" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';onFiledChangeValidation();isSubmitEnable('Page1');initializeFieldValidationsPage2();checkForErrorsPage2();reInitiateToolTip();" />
+                                                </apex:selectRadio>
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <apex:outputPanel id="ipv6MD5PwdPanel">
+                                                    <apex:outputPanel rendered="{!ipv6MD5Flag}">
+                                                        <apex:outputLabel value="MD5 Password" />
+                                                        <span class="tooltipTrigger glyphicon glyphicon-question-sign calendarToolTip" data-toggle="tooltip" data-placement="right"  title="Password must be at least 8 characters, no more than 16 characters and contain at least 1 number and 1 uppercase letter."></span><br />
+                                                        <apex:inputSecret html-type="password" id="pwdv6" styleClass="form-control ipv6MD5Pass {!IF(ipv6MD5Flag == true,'requiredInputField','')}" html-placeholder="Password" value="{!MD5Authenticationpassword2}"  maxlength="16" onkeypress="return restrictSpaceBar(event);isSubmitEnable('Page1');"  onkeyup="isSubmitEnable('Page1');" onchange="isSubmitEnable('Page1')"/>
+                                                        <script>
+                                                        <!-- reInitiateToolTip();-->
+                                                            </script>
+                                                    </apex:outputPanel>
+                                                </apex:outputPanel>
+                                            </div>
+                                            <div id="md5ErrorMsg" style="position:relative;bottom:30px;color:#a94442;font-size:15px;"></div>
+                                            <div class="form-group col-md-4">
+                                                <apex:outputPanel id="ipv6MD5PwdPanel2">
+                                                    <apex:outputPanel rendered="{!ipv6MD5Flag}">
+                                                        <apex:outputLabel >Re-enter MD5 Password</apex:outputLabel>
+                                                        <span id="v6ConfirmSign"></span>
+                                                        <apex:inputSecret html-placeholder="Re-enter Password" disabled="true" styleClass="form-control ipv6MD5RePass {!IF(ipv6MD5Flag == true,'requiredInputField','')}" onkeyup="checkLastPage();isSubmitEnable('Page1')" maxlength="16"/>
+                                                        <span id="textMsg"></span>                                                        
+                                                    </apex:outputPanel>
+                                                </apex:outputPanel>  
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                <apex:outputPanel id="Staticdisplay2">
+                                    <apex:outputPanel rendered="{!DefaultBGP1='STATICROUTING1'}"><!--rendered="{!!StaticDisplayBoolean}"-->
+                                        <div class="col-md-12 m-b-20" style="color: #FFA500;font-family: omnes_att_iimedium;">
+                                            ATTENTION!
+                                            <p>Selecting <b>Static</b> as the routing protocol will require AT&amp;T Technical Sales to complete the order.
+                                                Complete all required information and submit the RDS. You will be contacted by a technical consultant to complete the order.</p>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </div>                
+            </apex:outputPanel>
+            <apex:outputPanel id="CoSBlock" rendered="{!(!VlanChannels) && classofserviceflag}">
+                <hr class="section-dividerHr m0"/>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <h3  class="f-s-larger">Class of Service</h3>
+                    </div>
+                </div>
+                <div class="m-t-10">
+                    <p>Class of Service allows the network to prioritize different types of internet traffic. Select a percentage for each Class of Service (CoS).</p>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 m-b-10">
+                        <div class="row">
+                            <div class="m-t-10 col-xs-12 col-md-12">
+                                <div class="col-xs-12 col-md-12 p0"><label><b>Step 1:</b> Select Real-Time Percentage</label></div>
+                                <div class="row" style="margin-top: 28px">
+                                    <div class="col-xs-12 col-md-12">
+                                        <div class="col-xs-12 p0" >
+                                            <div class="col-xs-12 col-md-12" id="cosSlider" style="height:32px" >
+                                            </div>
+                                            <div class="cosSliderLabelsProgress">
+                                                <span id="cosSliderPrgs"><apex:outputLabel rendered="true"/></span>
+                                            </div>
+                                            <div class="cosSliderLabelsMax">
+                                                <span id="cosSliderMax">100%</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <span class="col-xs-1 axisPlacementStyle" style="text-align: left;">|</span>
+                                            <span class="col-xs-10 axisPlacementStyle" style="text-align:center;">|</span>
+                                            <span class="col-xs-1 axisPlacementStyle" style="text-align:right;">|</span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-xs-1 axisPlacementStyle" style="text-align: left;">0</span>
+                                            <span class="col-xs-10 axisPlacementStyle" style="text-align:center;">50</span>
+                                            <span class="col-xs-1 axisPlacementStyle" style="text-align:right;">100</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-12"  style="margin-top: 16px;"><label><b>Step 2:</b> Select Profile ID</label>
+                                    </div>
+                                    <div class="col-xs-12 col-md-12 m-t-20 m-b-20">
+                                        <apex:outputPanel id="misprofileSelect">
+                                            <apex:selectList id="profileSelect" value="{!selectedmisprofile}" styleclass="form-control requiredInputField styled-select-small cosProfileDropDown" multiselect="false" size="1" style="-moz-appearance: none;-webkit-appearance: none;font-size:16px;width: 100%;height: 30px;padding-top: 0px;background-size: 30px 35px !important;">
+                                                <apex:selectOptions value="{!misprofileoptions}" />
+                                                <apex:actionSupport event="onchange" action="{!get_page2_coschartvalues}" reRender="updatecoschart" oncomplete="onFiledChangeValidation();isSubmitEnable('Page1');"/>
+                                            </apex:selectList>
+                                        </apex:outputPanel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <apex:actionFunction name="getmisprofiles" action="{!getmisprofiles}" reRender="misprofileSelect" status="loading" oncomplete="onFiledChangeValidation();isSubmitEnable('Page1');">
+                            <apex:param name="slidervalue" value="" assignTo="{!SelectedSliderValue}" />
+                        </apex:actionFunction>
+                        <script type="text/javascript">                            
+                        function updateSlider() {   
+                            $("span#cosSliderPrgs").text('{!SelectedSliderValue}' + '%');       
+                            $("#cosSlider").slider({
+                                value: parseInt('{!SelectedSliderValue}'),
+                                range: "min",
+                                animate: true,
+                                step: 5,
+                                change: function (event, ui) {
+                                    $("span#cosSliderPrgs").text(ui.value + '%');
+                                    getmisprofiles(ui.value);
+                                    if(ui.value == 55){
+                                        ui.value = ui.value -5;
+                                        getmisprofiles(ui.value);  
+                                        $("#cosSlider").slider({
+                                            value: 50,
+                                        });        
+                                        $("span#cosSliderPrgs").text(ui.value + '%');
+                                    }else if(ui.value == 95){
+                                        ui.value = ui.value -5;
+                                        getmisprofiles(ui.value);  
+                                        $("#cosSlider").slider({
+                                            value: 90,
+                                        });     
+                                        $("span#cosSliderPrgs").text(ui.value + '%');   
+                                    }else if(ui.value == 100){
+                                        ui.value = ui.value -10;
+                                        getmisprofiles(ui.value);  
+                                        $("#cosSlider").slider({
+                                            value: 90,
+                                        }); 
+                                        $("span#cosSliderPrgs").text(ui.value + '%');       
+                                    }else if(ui.value == 65){
+                                        ui.value = ui.value -5;
+                                        getmisprofiles(ui.value);  
+                                        $("#cosSlider").slider({
+                                            value: 60,
+                                        });        
+                                        $("span#cosSliderPrgs").text(ui.value + '%');
+                                    }else if(ui.value ==75){
+                                        ui.value = ui.value -5;
+                                        getmisprofiles(ui.value);  
+                                        $("#cosSlider").slider({
+                                            value: 70,
+                                        });        
+                                        $("span#cosSliderPrgs").text(ui.value + '%');
+                                    }else if(ui.value ==85){
+                                        ui.value = ui.value -5;
+                                        getmisprofiles(ui.value);  
+                                        $("#cosSlider").slider({
+                                            value: 80
+                                        });        
+                                        $("span#cosSliderPrgs").text(ui.value + '%');
+                                    }
+                                }
+                            });
+                        }
+                        </script>
+                    </div>
+                </div>
+            </apex:outputPanel>     
+            <apex:outputPanel rendered="{!SwitchedEthernet}">
+                <hr class="section-dividerHr m0" />       
+                <div>   
+                    <h3 class="f-s-larger">Access Information</h3>
+                </div>
+                <div class="form-group"><label>Type: </label>&nbsp;
+                    <apex:outputText value="{!porttypeselected}" />
+                </div>
+                <div class="form-group"><label>Speed: </label>&nbsp;
+                    <apex:outputText value="{!AccessSpeedSelected}" />
+                </div>
+                <div class="form-group" style="margin-bottom: 5px;"><label>Provisioning Access Arrangement: </label>&nbsp;
+                    <apex:outputText value="Total Service" />
+                </div>     
+            </apex:outputPanel>
+            <hr class="section-dividerHr" /> 
+            <div>
+                <h3 class="f-s-larger">Installation Information</h3>
+            </div>
+            <div>
+                <section class="row">
+                    <div class="col-xs-12 col-md-12 form-group">
+                        <apex:outputLabel styleClass="f-s-large" style="font-size:16px;" value="Purchase Decision Date:" />&nbsp; &nbsp;
+                        <apex:outputText value="{!PurchaseDecisionDate}" />&nbsp; &nbsp;
+                        <!--<span class="tooltipTrigger glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Select the date on which your customer requests their AT&T VPN service to be installed and activated."></span>-->
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-md-5 form-group">
+                            <apex:outputLabel styleClass="f-s-large" style="font-size:16px;" value="Requested Due Date" />&nbsp; &nbsp;
+                            <div style="display:flex" class="requestedDueDateDiv">
+                                <div style="width:100%">
+                                    <apex:input styleClass="dPicker requiredInputField inputRequestedServiceActDate" style=" margin-bottom: 5px; " html-readonly="readonly" value="{!RequestedServiceActivationDate}" label="Requested Service Activation Date" type="text" id="RequestedServiceActivationDate" onchange="" />
+                                    <div class="col-xs-12 noteData p0">Note: Requested delivery date is not guaranteed.</div>           
+                                </div>
+                                <span class="glyphicon glyphicon-calendar calendarIcon"></span>
+                                <span class="tooltipTrigger glyphicon glyphicon-question-sign calendarToolTip" data-toggle="tooltip" data-placement="right" title="Select the date on which your customer requests their AT&T Virtual Private Network service to be installed and activated."></span>
+                            </div>
+                            <apex:actionFunction name="setRequestedSActivationDate" reRender="RequestedServiceActivationDate">
+                                <apex:param name="actdate" value="" assignTo="{!RequestedServiceActivationDate}" />
+                            </apex:actionFunction>
+                        </div>
+                        <div class="form-group col-md-5" style="margin-left: 50px;">
+                            <apex:outputLabel value="Would you accept early turn up?" />
+                            <apex:selectRadio styleClass="col-xs-8 radioSpacer" value="{!EarlyServiceTurnuponDueDate}" label="Refuse Early Service, Turn up on Due Date?" >
+                                <apex:selectOption itemLabel="Yes" itemValue="true"/>
+                                <apex:selectOption itemLabel="No" itemValue="false"/>
+                            </apex:selectRadio>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <hr class="section-dividerHr" />
+            <div>
+                <h3 class="f-s-larger">Additional Information</h3>
+            </div>
+            <div>
+                <section class="m-t-10">
+                    <apex:outputPanel rendered="{!IF(isIPFlexEnabled == false,true,false)}">
+                        <apex:outputLabel value="Tell us anything else we need to know about this site. (eg: Please call Local Contact 24 hours prior to dispatch.)(Optional)" styleClass="breather" />
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(isIPFlexEnabled == true,true,false)}">
+                        <apex:outputLabel value="Tell us anything the installer will need to know about this site such as New Construction, New Block of Local DID number, and any other requirements for your site. (Optional)" styleClass="breather" />
+                    </apex:outputPanel>
+                    <div>
+                        <apex:inputTextarea id="myTextarea" value="{!siteadditionalinfo}" html-maxlength="68" rows="2" cols="90" styleClass="w100p form-control myTextareaClass additionalInfo" style="height: 40px;" html-placeholder="No special characters allowed. Max 68 characters." onkeydown="CharLimit" onkeyup="isSubmitEnable();"/>
+                        <apex:outputLabel value="68 characters remaining" styleClass="additionalInfoMsg" style="display: block;margin-top: 3px !important;text-align: right;font-size:12px;color:#000;"/>
+                    </div>
+                </section>
+            </div>
+            <apex:actionFunction name="setBestAvailDate" action="{!setBestAvailDate}" rerender="">
+                <apex:param name="BestAvailDate" value="" assignTo="{!BestAvailDate}"/>
+            </apex:actionFunction>
+            <apex:actionFunction name="passSite" action="{!saveOnToggleSite}" reRender="leftPanelContainerForm,ciError"  status="loading" oncomplete="checkCIError();addLeftPanelScroll();validateRequiredFields1();leftPanelFloat();">
+                <apex:param name="goToSiteId" value="" />
+                <apex:param name="rdsFlag" value="" />
+                <apex:param name="vpnname" value="vpnname" assignTo="{!vpnname}"/> 
+            </apex:actionFunction>
+            <apex:actionFunction name="saveRdsAvpnData" action="{!saveRdsData}" oncomplete="pageNavigation(this,'page1',true);" reRender="formid,BottomSectionAVPNRDS" status="loading" >
+                <apex:param name="rdsFlag" value="" />
+                <apex:param name="vpnname" value="vpnname" assignTo="{!vpnname}"/>
+            </apex:actionFunction>
+            <apex:actionFunction name="SubmitRDS" action="{!submitRdsSite}" reRender="pagecontainer,ciError,crddoverlaycontainer" oncomplete="checkCIError();displaycrddoverlay();" status="loading" >
+                <apex:param name="rdsFlag" value="" />
+                <apex:param name="vpnname" value="vpnname" assignTo="{!vpnname}"/>
+            </apex:actionFunction>
+            <apex:actionFunction name="saveandclose" action="{!SaveAndClose}" reRender="">                     
+                <apex:param name="vpnname" value="vpnname" assignTo="{!vpnname}"/>
+            </apex:actionFunction>
+        </div>
+    </apex:form>
+    
+    <script type="text/javascript">
+    var $ = jQuery.noConflict();
+    function restrictSpaceBar(e){
+        if((e ? e.which : window.e.keyCode)== 32) return false;
+    }
+    
+    var isPage1Filled=false;
+    var region = '{!VASARegion}';
+    var maxDateValue = 0;
+    var attHolidays = {!Holidays};
+    var attHolidaysLength = attHolidays.length;
+    
+    function requiredFieldValidation() {
+        var requiredFileds = $(".requiredInputField");
+        var enabledBtn=true;
+        requiredFileds.each(function () {
+            if($(this).val().length){
+                enabledBtn=true;  
+                return false;
+            }   
+        });
+        if(enabledBtn){
+            requiredFileds.each(function () {
+                $(this).keyup();
+            });
+        }
+    } 
+    
+    function initializeCustomIPValidationFor(sClassName) {
+        var comp = $("." + sClassName);
+        comp.on({
+            "focus": function () {
+                setValidValues(sClassName);
+            },
+            "keyup": function () {
+                validateCustomIP(sClassName, 'IP range should not begin with a space', 'IP range cannot be blank', true);
+                checkForErrorsPage2();
+            },
+            "blur": function () {
+                validateCustomIP(sClassName, 'IP range should not begin with a space', 'IP range cannot be blank', true);
+                checkForErrorsPage2();
+            }
+        });
+    }
+    
+    function holidays(date) {
+        for (i = 0; i < attHolidaysLength; i++) {
+            if (date.getMonth() == attHolidays[i][0] - 1 && date.getDate() == attHolidays[i][1] && date.getFullYear() == attHolidays[i][2]) {
+                return [false, '', attHolidays[i][3]];
+            }
+        }
+        return [true, ''];
+    }
+    
+    function isHoliday(date) {
+        for (i = 0; i < attHolidaysLength; i++) {
+            if (date.getMonth() == attHolidays[i][0] - 1 && date.getDate() == attHolidays[i][1] && date.getFullYear() == attHolidays[i][2]) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    function noWeekendsOrHolidays(date) {
+        var noWeekend = j$.datepicker.noWeekends(date);
+        if (noWeekend[0]) {
+            return holidays(date);
+        } else {
+            return noWeekend;
+        }
+    }
+    
+    if (region === 'In Region')
+        maxDateValue = 19;
+    else 
+        maxDateValue = 24;
+    
+    // Function to enable trimLeft in IE
+    String.prototype.trimLeft = function () {
+        return this.replace(/^\s+/, "");
+    }
+
+    page2AccordActive = false;
+    $(document).ready(function () {
+        initializeIPAddress();
+        page2AccordActive = false;
+        var vpnBlockObj = $('#vpnBlock');
+        if(vpnBlockObj != null ){vpnBlockObj.show();}
+        var avpnCompletionBarBlockObj = $('#avpnCompletionBarBlock');
+        if(avpnCompletionBarBlockObj != null ){avpnCompletionBarBlockObj.show();}
+        if($('.inputVPNName') != null ){$('.inputVPNName').addClass('requiredInputField');$('.inputVPNName').keyup();};
+        onFieldChange("Page1");
+        checkLastPage();
+        
+        var page1Visited = false;
+        var pageNameOnLoad = '{!page1Visited}';
+        if(pageNameOnLoad != null && pageNameOnLoad  != '' && pageNameOnLoad == 'true'){
+            page1Visited = true;                
+        }
+        
+        setTimeout(function(){
+            var arrRequiredFields = $(".requiredInputField");
+            arrRequiredFields.each(function () {
+                var oRequiredField = $(this);
+                if(arrRequiredFields.length > 1){
+                    arrRequiredFields.each(function () {
+                        var oRequiredField = $(this);
+                        if (oRequiredField[0]) {
+                            if(typeof page1Visited != 'undefined' && page1Visited== true){
+                                oRequiredField.keyup();
+                                validateVPN('inputVPNName');
+                            }
+                        }
+                    });
+                }
+            });
+        },100);
+        
+        $('.myTextareaClass').attr('maxlength','68');
+        CharLimit('.myTextareaClass', 68);
+        
+        $(".myTextareaClass").on('input propertychange', function() {
+            CharLimit(this, 68);
+        });
+        
+        onFiledChangeValidation();
+        if($('.additionalInfo').text().length > 0){
+            $('.additionalInfo').trigger('change');
+        }
+        isSubmitEnable("Page1");
+        $(".calendarIcon").on("click", function () {
+            $('.dPicker').focus();
+        });
+        reInitiateToolTip();
+        var VlanChannels = {!VlanChannels};
+        var classofserviceflag = {!classofserviceflag};
+        if(!VlanChannels && classofserviceflag){
+            updateSlider();
+        }
+        //updateSlider(); // Defect Fix for Cos Slider 156416.
+        //Removing it from here and placed it above as it is conflicting with defect 206375
+    });
+    
+    /*Custom function to support IE11, TDP245868*/
+    function CustomObjectKeysFn(obj){
+        var ret = [];
+        for (var prop in obj) if (obj.hasOwnProperty(prop)) ret.push(prop)
+        return ret;    
+    }    
+    
+    function validateEdgeIPAddress(sClassName,errorClassName,suffix) {
+        if(typeof errorClassName === "undefined"){
+            errorClassName = '';
+        }
+        var sValue = "",
+            oField = $("." + sClassName),
+            oParent = oField.parent(),
+            isValid, messageValue='';
+        if (oParent[0] && !oParent.hasClass("has-error")) {
+            sValue = oField.val();
+            
+            var isValidIPFlag = ipRegex.test(sValue);
+            if(sClassName != null && sClassName == 'custEdgeIPAddr'){
+                if($('.custEdgeIPAddr').val().length ==0){
+                    messageValue = "IP range cannot be blank";
+                }else if($('.custEdgeIPAddr').val() !== $('.custEdgeIPAddr').val().trimLeft()){
+                    messageValue = "IP range should not begin with a space";
+                }else if(!ipRegex.test($('.custEdgeIPAddr').val())){
+                    messageValue = "Invalid IP range";
+                }
+            }
+            
+            if(sClassName != null && sClassName == 'attEdgeIPAddr'){
+                if($('.attEdgeIPAddr').val().length ==0){
+                    messageValue = "IP range cannot be blank";
+                }else if($('.attEdgeIPAddr').val() !== $('.attEdgeIPAddr').val().trimLeft()){
+                    messageValue = "IP range should not begin with a space";
+                }else if(!ipRegex.test($('.attEdgeIPAddr').val())){
+                    messageValue = "Invalid IP range";
+                }
+            }
+            
+            if (isValidIPFlag && messageValue.length==0){                
+                var lastOctet = sValue.split('.')[3];                   
+                if (sClassName === 'attEdgeIPAddr')
+                    lastOctet = lastOctet - 1;
+                else if (sClassName === 'custEdgeIPAddr')
+                    lastOctet = lastOctet - 2;
+                
+                if ((lastOctet % 4) === 0) {
+                    var classList = oField[0].classList;
+                    var uniqueClassName = classList[classList.length - 1]+'_'+"{!siteselected}";
+                    var existingData='';
+                    uniqueIPVals = $('.ipVlauesSelector').text().split('[')[1].split(']')[0].replace(/[ ]+/g,"").split(',');
+                    jsonData = $('.ipVlauesSelectorStr').text().trim().replace(/[ ]+/g,"").replace(/=+/g,"\":\"").replace(/,+/g,"\",\"").replace(/{+/g,"{\"").replace(/}+/g,"\"}");
+                    
+                    if(CustomObjectKeysFn(jsonData).length>4){
+                        jsonParseData = jQuery.parseJSON(jsonData);
+                        existingData = jsonParseData[uniqueClassName];
+                    }
+                    
+                    if (uniqueIPVals.indexOf(sValue) == -1 || (sValue == existingData  )) {                          
+                        isValid = true;                            
+                    } else if(uniqueIPVals.indexOf(sValue) > -1){
+                        messageValue = 'Invalid! LAN in use'
+                    }else {
+                        isValid = true;
+                        prevSClassName = '';
+                        prevSValue = '';
+                    }
+                } else {
+                    messageValue = 'Invalid Input! IP Range invalid';
+                }
+            } else {
+                isValid = true;
+            }
+            
+            var errorJSONMSG={
+                VALIDATION_RULE_A1:{CONDITION:messageValue.length>0,ERROR_MSG:messageValue}
+            };
+            displayErrorMessage(sClassName, errorJSONMSG);
+        }
+    }
+
+    function reInitiateToolTip(){
+        $("body").tooltip({ selector: '[rel=tooltip]' });
+        $(".tooltipTrigger").tooltip();        
+    }
+
+    function findMaxDate() {
+        var today = new Date();
+        var weekends = [0, 6];
+        var maximumDays = maxDateValue;
+        var i = 0;
+        while (i < maximumDays) {
+            today.setDate(today.getDate() + 1);
+            var todayWeekday = today.getDay();
+            if (jQuery.inArray(todayWeekday, weekends) < 0 && isHoliday(today))
+                i++;
+        }
+        return today;
+    }
+    
+    $(".dPicker").datepicker({
+        numberOfMonths: 2,
+        beforeShowDay: noWeekendsOrHolidays,
+        showOtherMonths: true,
+        minDate: "{!minDate}",
+        maxDate: "{!maxDate}",
+        onClose: function () {
+            // validateEmptyFields("inputRequestedServiceActDate", "Select a Customer Request Due Date (CRDD)", "Select a Customer Request Due Date (CRDD)", true);
+        }
+    })
+    onload = function () {
+        //inititalize_RDS_AVPN_Page1JS();
+        validateRequiredFields();
+        // Function to display the calendar on click of the Calendar Icon
+        $(".calendarIcon").on("click", function () {
+            $('.dPicker').focus();
+        });
+        var page1Visited = false;
+        var pageNameOnLoad = '{!page1Visited}';
+        if(pageNameOnLoad != null && pageNameOnLoad  != '' && pageNameOnLoad == 'true'){
+            page1Visited = true;                
+        }
+        if(typeof page1Visited != 'undefined' && page1Visited == true) {
+            requiredFieldValidation();
+            validateVPN('inputVPNName');
+        }
+    }
+    
+    //inititalize_RDS_AVPN_Page1JS();
+    validateRequiredFields();
+    $(".calendarIcon").on("click", function () {
+        $('.dPicker').focus();
+    });
+    var BDDStr = findMaxDate().getMonth()+1+'/'+findMaxDate().getDate()+'/'+findMaxDate().getFullYear();
+    
+    setBestAvailDate(BDDStr);
+    
+    function AddressInfoValue(thisEle){
+        var x = thisEle.value;
+        if ( x == ''){
+        }else{
+            selectPosition(valId);
+        }  
+    }  
+    
+    function selectPosition(id){
+        var pos = document.getElementById(id).value;        
+    }
+    
+    function SaveAndClose(siteId){
+        saveSiteId=siteId;
+        ajaxSaveAndClose(saveSiteId.toString(),rdsFlag.toString());
+    }
+    
+    var specialChars = "<>@!#$%^&*()+[]{}?:;|'\"\\,./~`-="
+    function checkNames(string){
+        for(i = 0; i < specialChars.length;i++){
+            if(string.indexOf(specialChars[i]) > -1){
+                return true
+            }
+        }
+        return false;
+    }
+    
+    function displaycrddoverlay(){
+        if ( "{!CRDDPopUp}" == 'true')
+            document.getElementById(crddoverlaycontainerid).style.display = 'block';        
+    }
+    
+    function fieldValidationForFirstPage(event,currentField,typeOfField){
+        if(event.keyCode != 9){
+            var enteredValue = currentField.value;
+            var elementName = currentField.name;
+            var currentElement = $('input[name="' + elementName + '"]');
+            var parentElement = currentElement.parent();
+            var errorMsg = "<div class='m-t-10 errorText'></div>";
+            var errorMsgVpnName = "<div class='m-t-10 errorText1'></div>";
+            parentElement.find('.errorText').remove();
+            parentElement.find('.errorText1').remove();
+            currentElement.removeClass('errorFieldBorderColor');
+            if(typeOfField == 'vpnNameField'){
+                if(enteredValue.length > 0){
+                    if(enteredValue.length > 26){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Max 26 characters.');
+                    }else if(checkNames(enteredValue)){
+                        parentElement.append(errorMsgVpnName);
+                        parentElement.find('.errorText1').text('ALL CAPS, alphanumeric, only special character allowed is _.');
+                    }               
+                }else{
+                    parentElement.append(errorMsg);
+                    parentElement.find('.errorText').text('Cannot be left blank');
+                }                 
+            }else if(typeOfField == 'dropDownSelection'){
+                var currentElement = $('select[name="' + elementName + '"]');
+                var parentElement = currentElement.parent();
+                parentElement.find('.errorText').remove();
+                currentElement.removeClass('errorFieldBorderColor');
+                if((enteredValue == 'Select') || (enteredValue == '')){
+                    parentElement.append(errorMsg);
+                    parentElement.find('.errorText').text('Selection required');
+                    currentElement.addClass('errorFieldBorderColor');
+                }else{
+                    parentElement.find('.errorText').remove();
+                    currentElement.removeClass('errorFieldBorderColor');
+                }
+            }    
+        }
+    }
+    
+    $(".onSelect").on({
+        "keyup blur change": function () {
+            isSubmitEnable("OnSelect");
+        }
+    });
+    
+    function keyBlurr(obj){
+        setTimeout(function(){
+            $(this).trigger('keyup'); 
+        },100);
+        
+    }
+    
+    </script>
+</apex:page>

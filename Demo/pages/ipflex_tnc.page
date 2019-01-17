@@ -1,0 +1,608 @@
+<apex:page controller="submitOrderController" standardStylesheets="false" sidebar="false" showHeader="false" tabStyle="Apttus_Proposal__Proposal__c" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false" >
+    
+    <style>
+        .m-t-15 {
+            margin-top:15px;
+        }
+        .m-t-25{
+            margin-top:25px;
+        }
+        .overlay {  
+            background-color:#EFEFEF;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            top: 0px;
+            left: 0px;
+            opacity: .5; /* in FireFox */ 
+            filter: alpha(opacity=50); /* in IE */
+        }
+        
+        h3{
+            font-family:omnesatt_iiregular;
+            font-weight:normal;
+        }
+        .footer_copy p{
+            font-weight:normal;
+        }
+        
+        .hrBlueClass{
+            page-break-after: always;
+            height: 3px;
+            background-color: #1B81AD;
+            border: 0px;
+            margin: 0px;
+            margin-top:20px;
+            width: 100%;
+            clear: both;
+        }
+        .hrGrayClass{
+            page-break-after: always;
+            height: 1px;
+            background-color: #000;
+            border: 0px;
+            margin: 0px;
+            margin-top:20px;
+            width: 100%;
+            clear: both;
+            
+        }
+        #termsAndConditionDiv{
+            margin-top:20px;
+        }
+        #termsAndConditionDiv p, span{
+            font-size:16px;
+            font-weight:bold;
+            font-family:omnes_light;
+            line-height:1.5em;
+        }
+        #termsAndConditionDiv h5{
+            font-family:omnes_att_iimedium;
+            font-size:1.375em;
+            color:#231F20;
+            font-weight:bold;
+        }
+        #e9Div{
+            margin-top:40px;
+        }
+        #e9DivPara{
+            margin-top:20px;
+        }
+        #e9Div p{
+            font-size:16px;
+            font-weight:bold;
+            font-family:omnes_light;
+            line-height:18px;
+        }
+        .titleLabel{
+            font-family:omnes_att_iimedium !important;
+            font-size:15px;
+            letter-spacing:0;
+            font-weight:bold;
+            line-height: 30px !important;
+        }
+        
+        #uploadSection{
+        margin-top:30px;
+        }
+        
+        .mainDiv{
+            border:1px solid #ddd;
+            padding: 10px;
+            display:inline-block;
+            width:90% !important;
+        }
+    
+        .labelDiv{
+            float: left;
+            margin-right: 5px;
+            margin-top: 5px;
+        }
+        
+        .labelDiv span{
+            display: inline;
+            margin-top: 20px !important;
+        }
+        
+        .pdfImageDiv {
+            float:left;
+            border: none !important;
+        }
+        
+        .imageClass{
+            height: 25px !important;
+            width: auto;
+            border: none;
+        }
+        .details{
+            padding: 5px;
+            //float: right;
+            margin: -5px 0px 0 30px; 
+        }
+        
+        .details a{
+            font-family:omnes_att_iimedium;
+            font-size:16px;
+            color:#0568ad;
+        }
+        
+        a:hover{
+            color:#70c4e8 !important;
+        }
+        
+        .downloadLink{
+            font-family:omnes_att_iimedium;
+            font-size:16px;
+            color:#0568ad;
+        }
+        
+        .file {
+          visibility: hidden;
+          position: absolute;
+        }
+        .LOAFile {
+          visibility: hidden;
+          position: absolute;
+        }
+        .btn-primary{
+            width:175px !important;
+            background-color: #067ab4 !important;
+            font-family:omnes_att_iimedium;
+            font-size:16px;
+            color:#fff;
+            text-align:center;
+        }
+        
+        .btn-secondary{
+            width:175px !important;
+            background-color: #fff !important;
+            font-family:omnes_att_iimedium;
+            font-size:16px;
+            color:#666;
+            text-align:center;
+            border:1px solid #666 !important;
+        }
+        
+        .btn-primary[disabled]{
+            background-color:#cecece !important;
+        }
+        .btn-primary:hover{
+            background-color:#44c8f5 !important;
+        }
+        
+        .form-control-format{
+            font-size:16px;
+            font-family:omnesatt_iiregular;
+            line-height:18px;
+        }
+        .browseFile[readonly]{
+            background-color:#fff;
+        }
+        .e9UploadBtnCls{
+            margin-left:10px !important;
+            position:absolute !important;
+            width: 175px !important;
+            height: 40px !important;
+        }
+        
+        .LOAUploadBtnCls{
+            margin-left:10px !important;
+            position:absolute !important;
+            width: 175px !important;
+            height: 40px !important;
+        }
+        
+        #e9UploadFiles{
+            margin-bottom:20px !important;
+            width: 800px;
+        }
+        
+        #LOADiv{
+            margin-top:40px;
+        }
+        #LOADivPara{
+            margin-top:20px;
+        }
+        #LOADiv p{
+            font-size:16px;
+            font-weight:bold;
+            font-family:omnes_light;
+            line-height:18px;
+        }
+        #LOAUploadFiles{
+            //margin-bottom:40px !important;
+            width: 800px;
+        }
+        #submitSectionTc{
+            margin-top:40px !important;
+        }
+        
+        .removeLink{
+            color: #ea7200;
+            margin-left: 10px;
+            font-family:omnes_att_iimedium;
+            font-size:16px;
+        }
+        .removeLink a:hover{
+            color: #ffb71c;
+            
+        }
+        .errorMessage{
+            font-family:omnes_att_iimedium;
+            font-size:16px;
+            color:#ce2828 !important;
+        }
+    
+    </style>
+    
+
+    <apex:form id="tncFileUploads">
+        <h3 style="font-size:32px;margin-bottom: 30px;">{!$Label.SubmitOrder_Label6}</h3>
+        <c:Dealreg_QuoteInfoTable quoteObj="{!quoteObj}"></c:Dealreg_QuoteInfoTable>
+        <div class="p20">
+            <hr class="hrBlueClass" />
+            <div class="row" style="margin-bottom:30px;">
+                <apex:pageMessages ></apex:pageMessages>
+                <div id="termsAndConditionDiv">
+                    <p>{!$Label.IpFlexTnc_Label1}</p>
+                    <div id="e9Div">
+                        <h5>{!$Label.IpFlexTnc_Label2}</h5>
+                        <div id="e9DivPara">
+                            <p>{!$Label.IpFlexTnc_Label3}</p>
+                            <p>{!$Label.IpFlexTnc_Label4}</p>
+                            <p>{!$Label.IpFlexTnc_Label4_1}</p>
+                        </div>
+                        <div id="uploadSection" class="col-xs-12 p0 m0">
+                            <div id="e9Template" class="col-xs-4 p0">
+                                <div><label class="titleLabel">{!$Label.IpFlexTnc_Label5}</label></div>
+                                <div class="mainDiv">
+                                    <div class="pdfImageDiv">
+                                        <a href="{!$Label.E911_Document_Link}" target="_blank">
+                                            <apex:image value="{!($Resource.pdfSmallIcon)}" styleClass="imageClass"/>
+                                        </a>    
+                                    </div>
+                                    <div class="details" style="">
+                                        <span>
+                                            <a href="{!$Label.E911_Document_Link}" target="_blank" style="">{!$Label.IpFlexTnc_Label2} </a>
+                                        </span>
+                                    </div>  
+                                </div>
+                            </div>
+                            <div id="e9Uplaod" class="col-xs-8 p0">
+                                <label class="titleLabel">{!$Label.IpFlexTnc_Label6}</label>
+                                <span>{!$Label.IpFlexTnc_Format_Desc}</span>
+                                 <div class="form-group input-group col-xs-12" style="margin-left:-15px;">
+                                    <apex:inputFile value="{!uploadE911FileBody}" fileName="{!uploadE911FileName}" contentType="{!uploadE911ContentType}" styleClass="file"></apex:inputFile>
+                                    <div class="input-group col-xs-12">
+                                        <div class="col-xs-6" style="width:54.6%;">
+                                            <input type="text" readonly='true' id="e9BrowseFile" class="browseFile form-control input-lg form-control-format" placeholder="No file Selected"/>
+                                            <span id="uploadInfo">{!$Label.IpFlexTnc_Label71}</span>
+                                        </div>
+                                        <span class="input-group-btn col-xs-6 p0">
+                                            <button id="e9ChooseBtn" class="browse btn btn-primary input-lg" type="button">Choose File</button>
+                                            <!--<button id="e9UploadBtn" class="browse btn btn-primary input-lg"  disabled="disabled" type="button">Upload</button>-->
+                                            <!--<apex:commandButton id="e9UploadBtn" action="{!uploadE911}" value="Upload" styleClass="browse btn btn-primary input-lg e9UploadBtnCls"  status="loading" style="width:175px !important;" rerender="" />-->
+                                            <button id="e9UploadBtn" class="browse btn btn-primary input-lg e9UploadBtnCls" type="button" style="width:175px !important;" onclick="uploadFile('e911');this.disabled=true;">Upload</button>
+                                        </span>
+                                    </div>  
+                                </div>
+                                <div id="e9UploadFiles" class="col-xs-8 p0">
+                                    <label class="titleLabel">{!$Label.IpFlexTnc_Label8} </label>
+                                    <apex:outputlink value="/{!e911AttachmentLink}" styleClass="downloadLink" target="_blank"> {!e911FileName}</apex:outputlink>
+                                    <apex:commandLink id="e9RemoveLink" value="{!$Label.Remove_Button}" rendered="{!quoteObj.E911_Attachment_Link__c != null}" action="{!removeE911Attachment}" status="loading" rerender=""  immediate="true" styleClass="removeLink"></apex:commandLink>
+                                    <apex:outputPanel rendered="{!IF(e911FormatErrorMessage != null || e911FormatErrorMessage != '',true,false)}">
+                                        <apex:outputPanel rendered="{!IF(e911FormatErrorMessage != e911FilesizeErrorMessage,true,false)}">
+                                            <div class="errorMessage e911FormatErrorMessage">{!e911FormatErrorMessage}</div> 
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!IF(e911FilesizeErrorMessage != null || e911FilesizeErrorMessage != '',true,false)}">  
+                                        <div class="errorMessage e911FilesizeErrorMessage">{!e911FilesizeErrorMessage}</div> 
+                                    </apex:outputPanel>
+                                </div>
+                                
+                                <apex:actionFunction name="uploadFileAction" action="{!uploadE911}" status="loading" />
+                                    
+                            </div>                            
+                        </div>
+                    </div>  
+                    
+                    <!-- LOA section -->
+                    <apex:outputPanel rendered="{!loaRequired}">
+                        <hr class="hrGrayClass" />
+                        <div id="LOADiv">
+                            <h5>{!$Label.IpFlexTnc_Label9}</h5>
+                            <div id="LOADivPara">
+                                <p>{!$Label.IpFlexTnc_Label10}</p>
+                            </div>
+                            <div id="uploadSection" class="col-xs-12 p0 m0">
+                                <div id="LOATemplate" class="col-xs-4 p0">
+                                    <div><label class="titleLabel">{!$Label.IpFlexTnc_Label5}</label></div>
+                                    <div class="mainDiv">
+                                        <div class="pdfImageDiv">
+                                            <a href="{!($Label.LOA_Document_Link)}" download="Letter of Authorization Form" target="_blank">
+                                                <apex:image value="{!($Resource.docSmallIcon)}" styleClass="imageClass"/>
+                                            </a>    
+                                        </div>
+                                        <div class="details" style="">
+                                            <span>
+                                                <a href="{!($Label.LOA_Document_Link)}" download="Letter of Authorization Form" target="_blank" style="">{!$Label.IpFlexTnc_Label9_1} </a>
+                                            </span>
+                                        </div>  
+                                    </div>
+                                </div>
+                                <div id="LOAUplaod" class="col-xs-8 p0">
+                                    <label class="titleLabel">{!$Label.IpFlexTnc_Label11}</label>
+                                    <span>{!$Label.IpFlexTnc_Label11_Format}</span>
+                                     <div class="form-group input-group col-xs-12" style="margin-left:-15px;">
+                                        
+                                        <apex:inputFile value="{!uploadLOAFileBody}" styleClass="LOAFile" fileName="{!uploadLOAFileName}" contentType="{!uploadLOAContentType}"></apex:inputFile>
+                                        <div class="input-group col-xs-12">
+                                            <div class="col-xs-6" style="width:54.6%;">
+                                                <input type="text" readonly='true' id="LOABrowseFile" class="browseFile form-control input-lg form-control-format" placeholder="No file Selected"/>
+                                                <span id="uploadInfo">{!$Label.IpFlexTnc_Label71}</span>
+                                            </div>
+                                            <span class="input-group-btn col-xs-6 p0">
+                                                <button id="LOAChooseBtn" class="browse btn btn-primary input-lg" type="button">Choose File</button>
+                                                <!--<apex:commandButton id="LOAUploadBtn" action="{!uploadLOA}" value="Upload" styleClass="browse btn btn-primary input-lg LOAUploadBtnCls"  status="loading" style="width:175px !important;" rerender="" />-->
+                                                <button id="LOAUploadBtn" class="browse btn btn-primary input-lg LOAUploadBtnCls" type="button" style="width:175px !important;" onclick="uploadFile('LOA');this.disabled=true;">Upload</button>
+                                            </span>
+                                        </div>  
+                                    </div>
+                                    <div id="LOAUploadFiles" class="col-xs-8 p0">
+                                        <label class="titleLabel">{!$Label.IpFlexTnc_Label8} </label>
+                                        <apex:outputlink value="/{!loaAttachmentLink}" target="_blank" styleClass="downloadLink"> {!loaFileName}</apex:outputlink>
+                                        <apex:commandLink id="loaRemoveLink" value="{!$Label.Remove_Button}" rendered="{!quoteObj.LOA_Attachment_Link__c != null}" action="{!removeLOAAttachment}" status="loading" immediate="true" styleClass="removeLink" rerender="" ></apex:commandLink>
+                                        <apex:outputPanel rendered="{!IF(loaFormatErrorMessage != null || loaFormatErrorMessage != '',true,false)}">
+                                            <apex:outputPanel rendered="{!IF(loaFormatErrorMessage != loaFilesizeErrorMessage ,true,false)}">
+                                                <div class="errorMessage loaFormatErrorMessage">{!loaFormatErrorMessage}</div> 
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(loaFilesizeErrorMessage != null || loaFilesizeErrorMessage != '',true,false)}">
+                                            <div class="errorMessage loaFilesizeErrorMessage">{!loaFilesizeErrorMessage}</div>
+                                        </apex:outputPanel>
+                                    </div>     
+                                    <apex:actionFunction name="uploadFileActionLOA" action="{!uploadLOA}" status="loading" />
+                                </div>                             
+                            </div>
+                        </div>  
+                    </apex:outputPanel>
+                </div>
+             </div>
+             <hr class="hrBlueClass" />
+             <div id="submitSectionTc" class="col-xs-12 p0 m0">
+                <div  style="float:right;margin-right:-10px;">
+                    <apex:commandButton id="tncSaveAndExit" action="{!tncSaveAndExit}" value="{!$Label.Save_And_Exit_Button}" styleClass="browse btn btn-secondary input-lg" style="width:175px !important;color:#666;border:1px solid #666 !important;"/>
+                    <apex:outputPanel rendered="{!IF((contractSigned == true && isApprover == true) ||(isApprover == false),true,false)}">
+                        <apex:commandButton id="tncSubmitBtn" action="{!goToIpflexThankYou}" value="{!submitIpflexLabel}" styleClass="browse btn btn-primary input-lg m0 tncSubmitBtnClass" style="width:175px !important;" onclick="showProcessingLabel(this);" status="loading" immediate="true" />
+                    </apex:outputPanel>
+                    
+                </div>
+             </div>
+        </div>   
+    </apex:form>  
+    <apex:form id="newForm">
+        <apex:actionFunction name="uploadTNCE911ErrorMsgAction" action="{!uploadTNCE911ErrorMsg}" status="loading" rerender="tncFileUploads">
+            <apex:param name="errorTypeStr" value="" assignTo="{!errorTypeStr}"/>
+            <apex:param name="fileNameStr" value="" assignTo="{!fileNameStr}"/>
+        </apex:actionFunction> 
+        <apex:actionFunction name="uploadTNCLOAErrorMsgAction" action="{!uploadTNCLOAErrorMsg}" status="loading" rerender="tncFileUploads">
+             <apex:param name="errorTypeStr" value="" assignTo="{!errorTypeStr}"/>
+             <apex:param name="fileNameStr" value="" assignTo="{!fileNameStr}"/>
+        </apex:actionFunction> 
+    </apex:form>  
+    
+    <script>
+        var e911FileName=false;
+        var loaFileName=false;
+        $(document).on('click', '#e9ChooseBtn', function(){
+          var file = $(this).parent().parent().parent().find('.file');
+          file.trigger('click');
+        });
+        
+        $(document).on('click', '#LOAChooseBtn', function(){
+          var file = $(this).parent().parent().parent().find('.LOAFile');
+          file.trigger('click');
+        });
+        
+        $(document).on('change', '.file', function(){
+        
+            var fileName = $('.file').val();
+            
+            if(fileName != null&& fileName !='undefined' && fileName.length>0){
+                $(this).parent().find('.form-control').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+                $('.e9UploadBtnCls').removeAttr("disabled");
+                e911FileName = true;
+            }  
+            else{
+                $(this).parent().find('.form-control').val('');
+                if(e911FileName)
+                    $('.e9UploadBtnCls').attr("disabled",true);
+            }
+        });
+        
+        $(document).on('change', '.LOAFile', function(){
+            var fileName = $('.LOAFile').val();
+            if(fileName != null&& fileName !='undefined' && fileName.length>0){
+                $(this).parent().find('.form-control').val($(this).val().replace(/C:\\fakepath\\/i, ''));
+                loaFileName = true;
+                $('.LOAUploadBtnCls').removeAttr("disabled");
+                
+            }  
+            else{
+                $(this).parent().find('.form-control').val('');
+                if(loaFileName)
+                    $('.LOAUploadBtnCls').attr("disabled",true);
+            }
+            
+        });
+        
+        /*$(document).on('focus', '#e9BrowseFile', function(){
+          if(e9Attached == null || e9Attached == ''){
+            var file = $(this).parent().parent().parent().find('.file');
+            file.trigger('click');
+          }
+          
+        });*/
+        
+        /*$(document).on('focus', '#LOABrowseFile', function(){
+            if(loaAttached == null || loaAttached == ''){
+                var file = $(this).parent().parent().parent().find('.LOAFile');
+                file.trigger('click');
+            }
+         
+        });*/
+        var isApprover = false;
+        var loaAttached ='';
+        var e9Attached ='';
+        var loaRequired = false;
+        $(document).ready(function(){
+             isApprover = {!isApprover};
+             loaAttached ='{!quoteObj.LOA_Attachment_Link__c}';
+             e9Attached ='{!quoteObj.E911_Attachment_Link__c}';
+             loaRequired = {!loaRequired};
+             var e9Flag = false;
+             var loaFalg= false;
+            
+             if(loaAttached != null && loaAttached != ''){                
+                $('#LOAChooseBtn').attr("disabled", "disabled");
+                $('.LOAUploadBtnCls').attr("disabled","disabled");
+                loaFalg = true;
+             }
+             else{
+                $('.LOAUploadBtnCls').attr("disabled","disabled");
+             }
+             
+             if(e9Attached != null && e9Attached != ''){
+                $('#e9ChooseBtn').attr("disabled", "disabled");
+                $('.e9UploadBtnCls').attr("disabled", "disabled");
+                e9Flag = true;
+             }
+             else{
+                $('.e9UploadBtnCls').attr("disabled", "disabled");
+             }
+
+             if(loaRequired == true)
+             {
+                 if(!e9Flag || !loaFalg){
+                     $('.tncSubmitBtnClass').attr("disabled", "disabled");
+                 }
+             }
+             else{
+                 if(!e9Flag){
+                     $('.tncSubmitBtnClass').attr("disabled", "disabled");
+                 }
+             } 
+
+             var errorMsg = false;
+             $('.errorMessage').each(function(){
+                 var currentElement = $(this);
+                 var data = currentElement.text();
+                 if(data != null && data.length>0){
+                    errorMsg = true;
+                    return;
+                 }
+             });
+             
+             if(errorMsg == true){
+                 $('.tncSubmitBtnClass').attr("disabled", "disabled");
+             }
+                                        
+            var e911ErrorFileName = '{!e911ErrorFileName}'; 
+            var loaErrorFileName = '{!loaErrorFileName}';
+            
+            if(e911ErrorFileName != null && e911ErrorFileName != ''){
+                $('#e9BrowseFile').val(e911ErrorFileName);
+            }
+            if(loaErrorFileName != null && loaErrorFileName != ''){
+                $('#LOABrowseFile').val(loaErrorFileName);
+            }
+            
+        });
+        function showProcessingLabel(inpObj){
+            //inpObj.value = 'Processing....';  
+            $(".overlay").show();
+        }
+        
+        var maxFileSize = 1024000;      //After Base64 Encoding, this is the max file size       
+        var attachment;
+        var attachmentName;
+        var fileSize;
+        var positionIndex;
+        var doneUploading;
+        var extensionNameCS;
+        var extensionName;
+        var errorTypeStr;
+        var isUploadHasError = false;
+        var fileNameStr;
+        
+        function uploadFile(fileType) {
+            var file;
+            if(fileType != null && fileType =='e911'){
+                file = $('.file').get(0).files[0];
+            }
+            else if(fileType != null && fileType =='LOA'){
+                file = $('.LOAFile').get(0).files[0];
+            }
+            fileNameStr='';
+            errorTypeStr='';
+            if(file != undefined) {
+                extensionNameCS = file.name.substring(file.name.lastIndexOf('.')+1);
+                extensionName = extensionNameCS.toLowerCase();
+                fileNameStr = file.name;
+                if(fileType != null && fileType =='e911'){
+                    if(file.size > maxFileSize) {
+                        if(extensionName != 'doc' && extensionName != 'pdf'  && extensionName != 'docx' && extensionName != 'tif' && extensionName != 'tiff' && extensionName != 'jpg' && extensionName != 'jpeg' && extensionName != 'png'){
+                            errorTypeStr = 'errorTypeTwo';
+                        }
+                        else{
+                            errorTypeStr = 'errorTypeFour';
+                        }
+                        isUploadHasError = true;
+                    }
+                    else if(extensionName != 'doc' && extensionName != 'pdf'  && extensionName != 'docx' && extensionName != 'tif' && extensionName != 'tiff' && extensionName != 'jpg' && extensionName != 'jpeg' && extensionName != 'png'){
+                        errorTypeStr = 'errorTypeThree';
+                        isUploadHasError = true;
+                    } 
+                }
+                else if(fileType != null && fileType=='LOA'){
+                    if(file.size > maxFileSize) {
+                    if(extensionName != 'doc' && extensionName != 'pdf'  && extensionName != 'docx' && extensionName != 'tif' && extensionName != 'tiff' && extensionName != 'jpg' && extensionName != 'jpeg' && extensionName != 'png'){
+                        errorTypeStr = 'errorTypeTwo';
+                    }
+                    else{
+                        errorTypeStr = 'errorTypeFour';
+                    }
+                    isUploadHasError = true;
+                }
+                else if(extensionName != 'doc' && extensionName != 'pdf'  && extensionName != 'docx' && extensionName != 'tif' && extensionName != 'tiff' && extensionName != 'jpg' && extensionName != 'jpeg' && extensionName != 'png'){
+                    errorTypeStr = 'errorTypeThree';
+                    isUploadHasError = true;
+                }
+                }
+            } else {
+                errorTypeStr = 'errorTypeOne';
+                isUploadHasError = true;
+            }           
+            
+            if(!isUploadHasError){
+                if(fileType != null && fileType =='e911'){
+                    uploadFileAction();
+                }
+                else if(fileType != null && fileType =='LOA'){
+                    uploadFileActionLOA();
+                }
+            }
+            else{           
+                if(fileType != null && fileType =='e911'){
+                    console.log('before calling e911 method'+errorTypeStr.toString());
+                    uploadTNCE911ErrorMsgAction(errorTypeStr.toString(),fileNameStr.toString());
+                }
+                else if(fileType != null && fileType =='LOA'){
+                    uploadTNCLOAErrorMsgAction(errorTypeStr.toString(),fileNameStr.toString());
+                }
+            }
+           
+        }
+    </script>
+</apex:page>

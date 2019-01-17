@@ -1,0 +1,57 @@
+<apex:page standardController="Opportunity" extensions="AutomatedContractOrderingController" >
+    <apex:form rendered="{!IF((rdsCheck==false),false,true)}">
+            <apex:outputLabel >
+                <font size="4" color="Red"><p>You are not authorized to counter sign the documents unless opportunity is order submitted.</p></font>
+            </apex:outputLabel>
+            <apex:commandButton action="{!cancel}" value="Back" id="cancelButton" />
+    </apex:form>
+    
+   <apex:form rendered="{!IF((rdsCheck==true),false,true)}">
+   <apex:outputLabel >
+       <font size="4" color="Gray"><p>Provide your signature in the form of First and Last Name for the document(s) you wish to countersign. Enable the “EBM Signed” checkbox and click the Save button.</p></font>
+   </apex:outputLabel>
+   <apex:pageMessages id="pagemessage" />
+    <apex:pageBlock id="theBlock">
+        <apex:pageBlockSection >
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel >EBM Name:</apex:outputLabel>
+                <apex:inputText value="{!ebmName}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel >EBM Sign Date:</apex:outputLabel>
+                <apex:outputText value="{!NOW()}"/>
+            </apex:pageBlockSectionItem> 
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel >EBM ATTUID:</apex:outputLabel>
+                <apex:outputText value="{!ebmATTUID}"/>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputLabel >EBM Title:</apex:outputLabel>
+                <apex:outputText value="{!ebmTitle}"/>
+            </apex:pageBlockSectionItem>          
+        </apex:pageBlockSection>
+        <apex:pageBlockTable value="{!rdsPricing}" var="rds">
+            <apex:column headerValue="File Name">
+                <apex:outputField value="{!rds.File_Name__c}"/>
+            </apex:column>  
+            <apex:column headerValue="File Type">
+                <apex:outputField value="{!rds.File_Type__c}"/>
+            </apex:column>
+            <apex:column headerValue="Link to the document">
+                <apex:outputField value="{!rds.Link_to_the_document__c}"/>
+            </apex:column>
+            <apex:column headerValue="EBM Signed">
+                <apex:outputField value="{!rds.EBM_Signed__c}">
+                    <apex:inlineEditSupport showOnEdit="saveButton, cancelButton" hideOnEdit="saveButton"/>
+                </apex:outputfield>
+            </apex:column>     
+        </apex:pageBlockTable>
+        <apex:pageBlockSection >
+             <apex:pageBlockSectionItem >
+                 <apex:commandButton action="{!save}" value="Save" id="saveButton" style="display:none" />
+                 <apex:commandButton action="{!cancel}" value="Close" id="cancelButton" />
+             </apex:pageBlockSectionItem>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,350 @@
+<apex:page controller="QuoteInfoController"  standardStylesheets="false" sidebar="false" showHeader="false" action="{!setupCartWithSelectedSites}">
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:includeScript value="{!$Resource.atomjqueryjs}"/>     
+    <apex:includeScript value="{!$Resource.atombootstrapminjs}"/>
+    <apex:stylesheet value="{!$Resource.ConfigurSiteCss}"/>
+    <apex:includeScript value="{!$Resource.ConfigureSitesJs}"/>
+    <script type="text/javascript">
+        function completePricing() {
+            var quoteId = document.getElementById('{!$Component.form1.selectedQuote}').value;            
+            var cartId = document.getElementById('{!$Component.form1.selectedCart}').value;
+            var siteId = document.getElementById('{!$Component.form1.selectedSite}').value;            
+            if(quoteId != null && cartId != null && siteId != null){
+                document.getElementById('remotingScroll').style = 'display:inline-block';
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.QuoteInfoController.IsPricingUpdateRequired}', quoteId, cartId, siteId, 
+                function(result, event){
+                    if (event.status) {
+                        if(result === true){
+                            completePricing();
+                        }else{ 
+                            document.getElementById('remotingScroll').style = 'display:none';                                                     
+                            handleApplyEligibleConfigUI(quoteId, cartId, siteId);
+                        }    
+                    } else if (event.type === 'exception') {
+                        document.getElementById('remotingScroll').style = 'display:none';                                         
+                        alert(event.message);
+                    } else {
+                        document.getElementById('remotingScroll').style = 'display:none';                           
+                        alert(event.message);
+                    }
+                }, 
+                {escape: true}
+                );
+            }
+        $('.addaddressConfig').modal('hide');    
+        }
+    </script>
+    <apex:form id="frmUp"> 
+    <style type="text/css">
+    #configaddedsites { margin-top: 20px; background: #fff !important; height: 370px; overflow-y: auto; border: 1px solid #ddd; }
+    #configaddedsites tr { border-bottom: 1px dashed #ddd; }
+    #configaddedsites td { border: 0 !important; }
+    #configaddedsites td:nth-child(odd) { display: none; }
+    #configaddedsites td:nth-child(even) { width: 100%; padding: 10px 20px; }
+    #theTable1 td { border: none !important; padding: 15px; }
+   
+    .monthlyprice { font-family: 'omnes_att_iimedium'; background: #fff; border-radius: 4px; padding: 6px 12px; text-align: right; width: 100%; line-height: 1.42857143; }
+    .noborders td { border: 0 !important; }
+    </style>
+        
+        <apex:outputPanel rendered="true">
+            <div class="container">
+                <div class="col-xs-12">
+                    <div class="tab-pane ng-scope active" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab">
+                        <div class="ng-scope">
+                            <div class="p10 ng-scope">
+                                <apex:pageMessages escape="true" id="errmsg"></apex:pageMessages>
+                                <!--<div class="row">    
+                                    <div class="col-xs-5"></div>
+                                    <div class="col-xs-7 text-right">
+                                        <apex:outputText value="${0, number, ###,###,##0.00}" id="grandTot" styleClass="font21">
+                                            <h3 class="p0 m0" style="color: #ef6f00 !important;">Total for all sites: <apex:param value="{!grandTot}" />
+                                            </h3>
+                                        </apex:outputText> 
+                                    </div>
+                                </div>-->
+                            </div>
+
+                            <div class="panel-group" ng-transclude="">
+                                <div class="br-1">
+                                    <div id="configBlock" class="panel-collapse collapse in" style="height: auto;">
+                                        <div class="panel-body" style="padding: 0; padding: 0; border-bottom: 1px dashed #ddd;">
+                                            <h3>Subway</h3>
+                                            <div class="row p0" style="margin-bottom: 20px; margin-top: 10px;">
+                                                <div class="col-xs-3 p0">
+                                                <label style="margin-right: 10px !important;"><apex:outputText value="Quote Name" /></label>
+                                                <apex:outputText value="{!custSiteQuoteIns.AT_T_Quote__r.Apttus_Proposal__Proposal_Name__c}" />
+                                                </div>
+                                                <div class="col-xs-3 p0">
+                                                <label style="margin-right: 10px !important;"><apex:outputText value="Quote Id" /></label>
+                                                <apex:outputText value="{!custSiteQuoteIns.AT_T_Quote__r.Name}" />
+                                                </div>
+                                                <div class="col-xs-4 p0">
+                                                <label style="margin-right: 10px !important;"><apex:outputText value="Product" /></label>
+                                                <apex:outputText value="{!custSiteQuoteIns.AT_T_Quote__r.Product__r.Name}" />
+                                                </div>
+                                                <div class="col-xs-2">
+                                                <label style="margin-right: 10px !important;"><apex:outputText value="Term" /></label>
+                                                <apex:outputText value="{!custSiteQuoteIns.AT_T_Quote__r.Apttus_Proposal__Payment_Term__c}" />
+                                                </div>
+                                            </div>
+                                            <hr class="blue_hr" />
+                                            <div class="row m0 p0 ng-scope">
+                                                <div class="col-xs-12 m0 p10">
+                                                    <p class="pull-right">
+                                                      <button class="btn btn-primary disabled">Add Address</button>
+                                                    </p>
+                                                    <p>Select a site below, then configure your product.</p>
+                                                </div>
+                                                <div class="row" style="border: none;">
+                                                
+                                                <div class="col-xs-12">
+                                                    <div class="add_state_input_div">
+                                                        <div class="add_site_location_adjust">
+                                                            <div class="styled-select-small adjust-select-small">
+                                                                <apex:selectList id="optgrp" styleClass="form-control" style="width: 250px;" value="{!selectedFilter}" size="1" rendered="true" onchange="handlefilterSites()">
+                                                                    <apex:selectOptions value="{!FilterOptions}"/>
+                                                                </apex:selectList>
+                                                            </div>
+                                                       </div>
+                                                </div>       
+                                                </div>
+                                                </div>
+                                            </div>
+                                           
+                                            <div vertical="true" type="pills border-r-0" class="ng-isolate-scope">
+                                                <div class="col-xs-6">
+                                                <div class="siteTrigger" id="configaddedsites">
+                                                    <apex:pageBlock id="PageBlockSelectSite">  
+                                                        <!-- In our table we are displaying the cContact records -->
+                                                        <apex:pageBlockTable value="{!ListCustomerSite}" var="c" id="pbtable" styleclass="table">  
+                                                            <apex:column id="Column1">
+                                                                <apex:facet name="header" >
+                                                                    <apex:inputCheckbox onclick="headSynchFun(this)"  onchange="javascript:updateNextBtn(this);" id="chk1" disabled="false"/> 
+                                                                </apex:facet>
+                                                                <apex:outputText value="Select All" />
+                                                            </apex:column>
+
+                                                            <apex:column id="Column2" style="padding: 10px 8px;">
+                                                                <apex:inputCheckbox value="{!c.selected}" id="chk2" onchange="javascript: synchFun(this,tick{!c.custSiteIns.Id});" onselect="javascript: synchFun(this,tick{!c.custSiteIns.Id});" disabled="false" rendered="{!c.showSites}"/>
+
+                                                                <apex:commandLink value="{!c.custSiteIns.Site_Name__c}" action="{!showDetail}" reRender="detail,addaddress,form1,grandTot,thetable1" 
+                                                                                  oncomplete="addYearRadio();linkRefreshed();setRadioButtonValue();linkRefreshed();" styleClass="{!c.custSiteIns.Id}" status="loading" style="font-size: 14px; color: #333;" rendered="{!c.showSites}">       
+                                                                    <apex:param assignTo="{!siteid}" name="siteid" value="{!c.custSiteIns.Id}"/>                    
+                                                                </apex:commandLink>    
+                                                                <span id="tick{!c.custSiteIns.Id}" class="glyphicon glyphicon-ok" style="{!c.spanClass} float: right;"></span>
+                                                                <br/><apex:outputText value="{!c.custSiteIns.Address_Line__c}, {!c.custSiteIns.City__c} {!c.custSiteIns.State__c}" style="margin-left: 18px;" rendered="{!c.showSites}" />
+                                                            </apex:column>
+                                                            <!-- This is how we access the contact values within our cContact container/wrapper -->
+                                                        </apex:pageBlockTable>
+                                                    </apex:pageBlock>
+                                                </div>
+                                                                                           
+                                                </div>
+
+                                                        <!-- products container -->
+                                                        <div class="products-container col-xs-6 bglightgrey2 ng-scope">
+                                                            <form class="form-horizontal ng-pristine ng-valid" role="form">
+                                                                <div class="row m0 p0">
+                                                                    <div class="col-xs-6"></div>
+                                                                    <div class="col-xs-6 text-right" style="margin-bottom: 20px;">
+                                                                        <apex:actionFunction id="af2" name="selectedValue" action="{!grandTotalPopulate}" status="loading"
+                                                                                             reRender="grandTot,grandTot2,hiddenValId,radio1,radio2" onComplete="setRadioButtonValue();linkRefreshed();">
+                                                                            <apex:param name="selectRadioVal" value=""/>
+                                                                        </apex:actionFunction>
+                                                                    </div>
+                                                                </div>  
+                                                                                             
+                                                                <apex:outputpanel id="detail">  
+                                                                    <div style="maring-bottom: 20px;">
+                                                                        <div class="pull-right text-right">
+                                                                            <h5 style="margin-bottom: 10px;"><a href="javascript:void(0);" onclick="handleClearUI()">Clear Form</a></h5>
+                                                                            <h5><strong>Monthly</strong></h5>
+                                                                        </div>
+                                                                        <h3>AT&amp;T VPN Configuration</h3>
+                                                                    </div>
+                                                                    <!-- <apex:pageMessages escape="true" id="errmsg"></apex:pageMessages>   -->                                                         
+                                                                    <apex:dataTable value="{!sPricingWrap.optionsList}" var="opg" styleClass="table noborders" id="theTable1">
+                                                                        <apex:column style="width: 50%; padding-left: 0;">
+                                                                            <apex:outputPanel id="op1a">
+                                                                                <apex:inputCheckbox value="{!opg.isSelected}" id="checkdone1" rendered="{!opg.showOption}"  onchange="getSelCheckVal('{!JSENCODE(opg.name)}','{!JSENCODE(opg.productId)}')">                                                                  
+                                                                                </apex:inputCheckbox>   
+                                                                                <apex:outputText value="{!opg.name}" rendered="{!opg.showOption}" style="font-size: 16px;"/>                                            
+                                                                            </apex:outputPanel>
+                                                                            <apex:outputPanel id="op1" rendered="{!opg.showListOption}">
+                                                                                <div class="add_state_input_div"><div class="add_site_location_adjust"><div class="styled-select-small adjust-select-large">
+                                                                                    <apex:selectList id="optgrp" styleClass="form-control"  value="{!opg.selectedProduct}" onchange="getSelectedOptGroup('{!$Component.optgrp}','{!JSENCODE(opg.name)}'); " size="1" rendered="{!opg.showListOption}">
+                                                                                        <apex:selectOptions value="{!opg.prodOptnsLst}"/>
+                                                                                    </apex:selectList>   
+                                                                                </div></div></div>                                  
+                                                                            </apex:outputPanel>                                         
+                                                                        </apex:column>
+                                                                        <apex:column styleClass="text-right bglightgrey yearBlock" style="padding-right: 0;">                               
+                                                                            <apex:outputText value="${0, number, ###,###,##0.00}" styleClass="monthlyprice" style="width: 100%; display: block;">
+                                                                                <apex:param value="{!opg.price}" />
+                                                                            </apex:outputText>
+                                                                        </apex:column>                                  
+                                                                    </apex:dataTable>                                                                     
+                                                                </apex:outputpanel>
+                                                                
+                                                                <div class="row" style="margin: 15px 0;">
+                                                                    <div class="col-xs-12 p0">
+                                                                        <label>Site Pricing Summary</label>
+                                                                    </div>
+                                                                </div>
+                                                              
+                                                                <div class="row" style="margin: 10px 0;">
+                                                                    <div class="col-xs-6 p0 text-left">
+                                                                        One-Time Pricing
+                                                                    </div>
+                                                                    <div class="col-xs-6 text-right">
+                                                                        $0.00
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="row" style="margin: 10px 0;">
+                                                                    <div class="col-xs-6 p0 text-left">
+                                                                        Site Total
+                                                                    </div>
+                                                                    <div class="col-xs-6 text-right">
+                                                                        <apex:outputText value="${0, number, ###,###,##0.00} /mo" id="siteTot">
+                                                                            <apex:param value="{!siteTotal}" />
+                                                                        </apex:outputText>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <apex:commandButton id="applyBtn" value="Apply" styleClass="btn btn-primary pull-right m-r-20" style="padding: 7px 20px !important;" action="{!applyProdOpt}" rerender="errmsg, pbtable, detail, siteTot, grandTot,grandTot2,applyBtn , PageBlockSelectSite, btnId" status="loading" disabled="{!sPricingWrap.disableApplyBtn}"/>
+
+                                                                <apex:commandLink action="{!eligibleSitesPop}" value="Apply Configuration To Eligible Sites" rerender="addaddress,form1" styleClass="addaddressTrigger pull-right m-r-10 m-t-10 font14" style="display: block; width: 100%; text-align: right;" oncomplete="linkRefreshed();"/>
+                                                                <div class="clear"></div>
+                                                                <div class="row" style="margin: 20px 0; padding-bottom: 10px; border-bottom: 1px dashed #ddd;">
+                                                                    <div class="pull-right">
+                                                                        <a href="#" class="btn" style="border: 1px solid #ddd !important; padding: 5px 10px !important; color: #056fab !important; font-weight: bold; background: #fff !important; font-size: 16px;">&#60;</a>                                                                                       
+                                                                        <apex:commandLink value=" Previous Site" action="{!siteTraverseMethodPrevious}" rendered="true" reRender="detail,addaddress,form1,grandTot,thetable1" 
+                                                                                          oncomplete="linkRefreshed();" status="loading" style="padding: 0 10px; border-right: 1px solid #ddd;">   
+                                                                        </apex:commandLink> &nbsp;&nbsp;
+                                                                        <apex:commandLink value="Next Site " action="{!siteTraverseMethodNext}" rendered="{!NOT(disableNext)}" reRender="detail,addaddress,form1,grandTot,thetable1" oncomplete="linkRefreshed();" status="loading" style="padding: 0 10px;">                                                
+                                                                        </apex:commandLink>  
+                                                                        <a href="#" class="btn" style="border: 1px solid #ddd !important; padding: 5px 10px !important; color: #056fab !important; background: #fff !important; font-weight: bold; font-size: 16px;">&#62;</a>                   
+                                                                    </div>
+                                                                </div>
+
+                                                                <apex:actionFunction id="af7" name="selectOptGrpAF" action="{!selectedOptGrpQuery}" reRender="detail,grandTot,grandTot2,siteTot,theTable2,pbtable,theTable2a,form-2,applyBtn" status="loading" oncomplete="disableFirstOpt();">
+                                                                    <apex:param name="selectOptGrp" assignTo="{!selectOptGrp}" value=""/>
+                                                                    <apex:param name="selectOptGrpVal" assignTo="{!selectOptGrpVal}" value=""/>
+                                                                </apex:actionFunction>
+                                                                <apex:actionFunction id="af1" name="handleConfigureSitePage" action="{!setupCartWithSelectedSites}" reRender="frmUp,detail,grandTot,grandTot2,siteTot,theTable2,PageBlockSelectSite,pbtable,theTable2a,form-2,applyBtn,form1" status="loading" oncomplete="linkRefreshed();activeFirstSite('false');">
+                                                                    <apex:param name="quoteId" value=""/>
+                                                                </apex:actionFunction>
+                                                                <apex:actionFunction id="reConfigFuncId" name="handleReviewQuoteCallBack" action="{!setupCartWithSelectedSites}" reRender="frmUp,detail,grandTot,grandTot2,siteTot,theTable2,pbtable,theTable2a,form-2,applyBtn,form1" status="loading" oncomplete="linkRefreshed();activeFirstSite('true');">
+                                                                    <apex:param name="quoteId" value=""/>
+                                                                </apex:actionFunction>
+                                                                <apex:actionFunction id="applyEligibleConfigUI" name="handleApplyEligibleConfigUI" action="{!handleApplyEligibleConfigUI}" reRender="frmUp,detail,grandTot,grandTot2,siteTot,theTable2,pbtable,theTable2a,form-2,applyBtn,form1" status="loading" oncomplete="linkRefreshed();activeFirstSite('true');">
+                                                                    <apex:param name="quoteId" value=""/>
+                                                                    <apex:param name="cartId" value=""/>
+                                                                    <apex:param name="siteId" value=""/>
+                                                                </apex:actionFunction>
+                                                                <apex:actionFunction id="clearUI" name="handleClearUI" action="{!handleClearUI}" reRender="frmUp,detail,grandTot,grandTot2,siteTot,theTable2,pbtable,theTable2a,form-2,applyBtn,form1" status="loading" oncomplete="linkRefreshed();activeFirstSite('true');">
+                                                                    <apex:param name="quoteId" value=""/>
+                                                                </apex:actionFunction>
+                                                                 <apex:actionFunction id="filterSites" name="handlefilterSites" action="{!handlefilterSites}" reRender="frmUp,detail,grandTot,grandTot2,siteTot,theTable2,pbtable,theTable2a,form-2,applyBtn,form1" status="loading" oncomplete="linkRefreshed();activeFirstSite('true');">
+                                                                    <apex:param name="quoteId" value=""/>
+                                                                </apex:actionFunction>
+                                                            </form>
+                                                        </div>
+                                                        <!-- /products container -->
+                                                    </div><!-- end ngRepeat: tab in tabs -->
+
+                                            <div class="clear m-b-20 ng-scope"></div>
+                                            <div class="row ng-scope">
+                                                <div class="col-xs-6 col-xs-offset-6">
+                                                        <p class="m-b-10"><strong>Pricing Summary</strong></p>
+                                                    <div class="row">                                 
+                                                        
+                                                            <div class="col-xs-6 p0 text-left">                                                           
+                                                                <h3>Total</h3>
+                                                            </div>
+                                                            <div class="col-xs-6 text-right">
+                                                                 <apex:outputText value="${0, number, ###,###,##0.00}" id="grandTot2" styleClass="font21" style="text-align: right">
+                                                                    <h3 style="display: block; text-align: right;"><apex:param value="{!grandTot}" /></h3>
+                                                                 </apex:outputText>
+                                                            </div>
+                                                        
+                                                    </div>   
+                              
+                                                </div>
+ <hr class="blue_hr" />                                                                                     
+                                                    <div class="col-xs-12" style="margin: 10px 0;">
+                                                        <apex:commandButton styleClass="btn btn-primary pull-right nextToReview" id="btnId" action="{!finalizeCart}" oncomplete="isReviewSelected();handleReviewQuotePageCall();linkRefreshed();" status="loading" disabled="{!isAllSitesNotProcessed}" value="Continue" style="padding: 7px 20px !important;"></apex:commandButton>
+                                                        <apex:commandButton styleClass="btn btn-primary pull-right" id="btnId2" action="{!SaveandExit}" status="loading" value="Save and Exit" style="padding: 7px 20px !important;"></apex:commandButton>
+                                                    </div>                                                    
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+        <script>
+            disableFirstOpt();
+        </script>
+    </apex:form>
+   
+    <!-- table starts -->
+    <div class="modal fade addaddressConfig" id="" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                  <button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                  <h4 class="m-t-0">Apply Configuration to Eligible Sites</h4>  
+              </div>
+               <apex:form styleClass="form-horizontal" id="form1">
+              <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12">
+                       
+                            <apex:pageMessages escape="true" id="errmsgModal"></apex:pageMessages> 
+                            <blockquote><apex:outputLabel value="Choose from eligible sites to apply the configuration." for="theEligibleModal" rendered="{!AND(eligibleSitesLst != null,eligibleSitesLst.size > 0)}"/></blockquote>
+                            <apex:pageBlock rendered="{!AND(eligibleSitesLst != null,eligibleSitesLst.size > 0)}">
+                                <apex:pageBlockTable value="{!eligibleSitesLst}" var="item" id="EligibleSitesTable" styleClass="table table-bordered table-striped table-hover" >
+                                    <apex:column value="{!1}" headerValue="#"/>
+                                    <apex:column value="{!item.custSiteIns.Site_Name__c}" />
+                                    <apex:column value="{!item.custSiteIns.Address_Line__c}" />
+                                    <apex:column value="{!item.custSiteIns.City__c}" />
+                                    <apex:column value="{!item.custSiteIns.State__c}" />
+                                    <apex:column headerValue="Select">
+                                        <apex:inputCheckbox value="{!item.eligibleSelected}" />
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                                <apex:commandButton styleClass="btn btn-primary br-0 m-t-10 pull-right" status="loading" value="Apply" action="{!eligibleSitesApply}" rerender="addaddress,detail,grandTot2" oncomplete="completePricing();" style="margin-bottom: 10px !important;"/>
+                                </apex:pageblock>
+                                <apex:inputHidden value="{!quoteId}" id="selectedQuote" /> 
+                                <apex:inputHidden value="{!cartId}" id="selectedCart" /> 
+                                <apex:inputHidden value="{!siteId}" id="selectedSite" />  
+                        
+                    </div>
+                </div>   
+                </div>   
+                </apex:form>     
+            </div>
+        </div>
+    </div>
+
+    <!-- table ends -->
+    <div class="waitingSearchDiv" id="remotingScroll" style="display:none; background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;z-index:999999">
+        <div class="waitingHolder" style="top: 200px; left:700px; width: 91px; position: fixed;">
+            <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+        </div>
+    </div>
+    <script>
+    
+    function disableFirstOpt() {
+        $('#configSites select').each(function(){
+            $(this).children('option:first-child').attr('disabled', 'false');
+        });        
+    }
+    </script>
+</apex:page>

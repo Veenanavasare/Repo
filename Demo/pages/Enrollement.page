@@ -1,0 +1,1037 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="EnrollmentApplicationFormController" showChat="false" name="Enrollment Application Form" cache="true">
+<apex:stylesheet value="{!$Resource.PortalDesignBootCSS}"/>
+<apex:stylesheet value="{!$Resource.PortalDesignGlobalCSS}"/>
+<apex:stylesheet value="{!$Resource.PortalDesignUnAuthCSS}"/>     
+  <style>
+  .radio input {
+        margin-left: 0 !important;
+               
+    }.ThankYouContainer {
+        margin-bottom: 250px;
+    }
+    .ThankYouContainer h1, 
+    .ThankYouContainer .h1 {
+        font-size: 36px;
+        margin-bottom: 25px;
+        font-family: omnes_att_iimedium;      
+   }
+    
+     .errorText{
+        color:#ce2828;
+        margin-top: 4px;
+        font-size: 15px;
+    }
+
+
+/* Prevent the li item from getting a border and padding, as we have a button class defined */
+    .apply_pager li
+    {
+        border:0;
+        padding-left:0;
+    }
+    .apply_previous_disabled, .apply_next_disabled, .parent_submit_disabled
+    {
+        cursor:not-allowed;
+    }
+    .parent_submit #myButton {
+        font-family: "omnes_att_iimedium" !important;
+        height: inherit !important;
+        padding: 6px 45px !important;
+        background-color: #d1d1d1; 
+        font-size: 15px;
+         outline: none;
+         box-shadow: none;
+         border:none;    
+    }
+       .enabled
+       {
+       font-family: "omnes_att_iimedium" !important;
+        height: inherit !important;
+        padding: 6px 45px !important;
+        background-color: #0568ad !important ; 
+        font-size: 15px; 
+         outline: none;
+       box-shadow: none;
+         border:none;
+      
+       }  
+        
+         .parent_submit {
+         display: block;
+         margin: auto;
+         text-align: center;
+
+          
+       
+    }
+    @import url(http://fonts.googleapis.com/css?family=Roboto);
+
+    .input-container {
+      background-color: rgb(249, 249, 249);
+      border: 1px solid #d3d3d3;
+      height: 74px;
+      width: 300px;
+      font-family: Roboto,omnes_att_iimedium ;
+      display: inline-block;
+     }
+    img {
+      width: 32px;
+      display: inline;
+      margin-left: -60px;
+    }
+
+    span, a {
+      color: rgb(155, 155, 155);
+    }
+
+    .recaptcha {
+      font-size: 12px;
+      margin-left: -55px;
+      position: relative;
+      bottom: -10px;
+    }
+
+a, .dash {
+  font-size: 8px;
+  text-decoration: none;
+  display: inline;
+  position: relative;
+  top: -22px;
+  right: -232px;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.triangle {
+  width: 0px;
+  height: 0px;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid $rgb-204;
+  border-top: 7px solid transparent;
+  position: relative;
+  left: 10px;
+  top: -55px;
+}
+
+.not-human {
+  width: 340px;
+  height: 200px;
+  background-color: white;
+  border: 1px solid $rgb-204;
+  padding: 15px;
+  position: relative;
+  top: -55px;
+  left: 3px;
+  }
+  .captcha-code {
+    padding: 15px 0;
+    border: none;
+    border-bottom: 1px solid $rgb-204;
+    font-size: 18px;
+    width: 90%;
+    margin-left: 50%;
+    transform: translateX(-50%); 
+  }
+  .captcha-code:focus {
+    outline: none;
+    border-bottom: 1px solid rgb(74, 144, 226);
+  }
+  img {
+    display: inline-block;
+    position: relative;
+    left: 75px;
+    top: -80px;
+    width: 300px;
+    height: 57px;
+  }
+  
+    .line {
+      width: 370px;
+      height: 1px;
+      background-color: $rgb-204;
+      margin-top: 90px;
+      margin-left: 50%;
+      transform: translateX(-50%);
+    }
+  
+    .img {
+        width: 24px;
+        height: 24px;
+        position: relative;
+        top: -36px;
+        margin: 0 4px 75px 4px;
+        display: inline-block;
+        cursor: pointer;
+        
+        background-size: 24px 24px;
+        opacity: 0.55;
+    }
+    .replay {
+      background: url(https://www.gstatic.com/recaptcha/api2/refresh.png);
+    }
+   .audio {
+      background: url(https://www.gstatic.com/recaptcha/api2/audio.png);
+    }
+    .info {
+      background: url(https://www.gstatic.com/recaptcha/api2/info.png)
+    }
+    
+    :hover {
+      opacity: 1.0;
+    }
+  
+  .verify {
+    float: right;
+    position: relative;
+    top: -42px;
+    margin-right: 5px;
+    background-color: rgb(74, 144, 226);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: default;
+}
+    h4 {
+        font-family: "omnes_att_iimedium" !important;       
+        font-size: 18px !important;
+        text-align: center;
+        margin-bottom: 20px !important;
+    }
+    label {
+        font-family: "omnes_att_iimedium" !important;
+        font-size: 15px; 
+        margin-bottom: 6px; 
+        margin-top: 6px; 
+        font-weight: inherit;
+       
+    }
+
+    .form-body input, .form-body select
+    { 
+        height: 30px; 
+        border-color:#a6a7a8 !important;
+    }          
+    
+    .form-body select {
+        background: url(/resource/1466127250000/portalDesignImg/new_arrow_small.png) no-repeat right #fff;
+        background-size: 32px;
+       -moz-appearance: none;
+        appearance: none;
+         
+    }
+                 
+      .form-body hr { 
+        width: 98%;         
+        border-color: #878889;
+         
+    }
+
+    .form-body { 
+        padding: 40px 25px !important;
+                 
+    }
+
+    .provider_question {
+        display: inline !important;
+        float: left !important;
+        width: auto !important;
+        margin-left: 7px;
+    }
+
+    .radio {
+        margin-top: 0px; 
+        margin-left: 20px; 
+     }
+
+    .radio label {
+        margin-left: 1px !important; 
+        padding-left: 4px !important;
+        font-size: 15px;
+
+     }
+
+    .radio-li {
+        list-style: none;
+        
+     }
+
+    .replaced.checked {
+        border: 1px solid #009edb;
+        background-color: #d9f1fa;
+       
+       
+    }
+
+    .checked::after {
+        background-color: #0568ad;
+        border-radius: 20px;
+        content: "";
+        height: 10px;
+        left: 3px;
+        position: absolute;
+        top: 3px;
+        width: 10px;
+       
+    }
+    .replaced {
+        display: inline-block;
+        height: 18px; 
+        width: 18px;
+        border: 1px solid #939393;
+        border-radius: 20px; 
+        background-color: #fff;
+    }
+
+    input[type="radio"], input.radio {
+        top: 7px !important;
+       
+    }
+
+    #slice_apply #slice_footer {
+        color:#fff;
+  }
+   .footer_logo {
+    margin-right: -20px;
+    float: right;
+}
+
+
+.col-sm-6 {
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+}
+
+.col-sm-6.form-body {
+    padding-left: 40px !important;
+    padding-right: 40px !important;
+}
+</style>
+    
+     <apex:actionstatus id="loading">
+        <apex:facet name="start">
+            <div class="waitingSearchDiv" id="loading" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;z-index:999999">
+                <div class="waitingHolder" style="top: 200px; left:940px; width: 91px; position: fixed;">
+                    <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionstatus>
+    
+
+
+<div id="cred_pages">
+
+
+    <!-- Main Fixed Nav -->
+    <div class="navbar navbar-default" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand navbar-logo" href="/apex/PortalDesignHomeUnauth">
+                    <!-- Robyn 6/13/16: edited image width and height for logo update -->
+                    <apex:image url="{!URLFOR($Resource.PortalUnauthImg,'/logo.png')}" width="222" height="32" title="AT&amp;T Partner Exchange" alt="AT&amp;T Partner Exchange"/>
+                </a>
+            </div>
+
+            <div class="login_nav">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="btn_cred"><a href="/apex/PortalDesignHomeUnauth">Back to Home</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="slice_apply" class="slice">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <section class="text-center form-heading">
+                        <h1>Join our program!</h1>
+                        <p>Learn how AT&amp;T Partner Exchange can help grow your business.</p>
+                    </section>
+                </div>
+            </div>
+        </div>
+     
+     <apex:outputPanel rendered="{!IF($CurrentPage.parameters.ThankYou=='True',true,false)}">    
+     <div class="container ThankYouContainer">
+            <div class="row login_apply_body">
+                <div class="col-sm-6 col-sm-offset-3 form-body">    
+                    <h1>Thank you for contacting us!</h1>
+                    <p>Someone from AT&amp;T will be in touch shortly.</p>
+                </div>
+            </div>
+     </div>
+     </apex:outputPanel>
+      <apex:outputPanel rendered="{!IF($CurrentPage.parameters.ThankYou!='True',true,false)}">
+        <div class="container">
+            <div class="row login_apply_body">
+                <div class="col-sm-6 col-sm-offset-3 form-body">
+                    <apex:form id="formId" styleClass="container-fluid">
+                        
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <apex:pageMessages ></apex:pageMessages>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4>Tell us a little about your business.</h4>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group" id="">
+                                    <label>Business Name</label>                                            
+                                    <apex:inputText value="{!BusinessName}" styleClass="form-control required Business-Name-Input"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group" id="">
+                                    <label>Business Website</label>
+                                    <apex:inputText value="{!BusinessWebsite}" styleClass="form-control required  Business-Website-Input"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group" id="">
+                                    <label>Business Address</label><br/>
+                                    <apex:inputText value="{!BusinessAddressLine1}" styleClass="form-control required Business-Address-Input"/> 
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group" id="">
+                                    <label>Suite/Floor</label><br/>
+                                    <apex:inputText value="{!BusinessAddressLine2}" styleClass="form-control Suite-Floor-Input"/>
+                                </div>
+                            </div>
+                        </div>
+
+                       <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group" id="">
+                                    <label>City</label><br/>
+                                    <apex:inputText value="{!City}" styleClass="form-control required City-Input" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group" id="">
+                                    <label>State</label><br/>
+                                        <apex:selectList id="state" value="{!state}" size="1" html-data-live-search="true" multiselect="false" styleClass="apply_state selectpicker form-control required" >
+                                        <apex:selectOptions value="{!StatePicklist}"/> </apex:selectList>
+                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group" id="zipcodeId">
+                                    <label>Zip Code</label><br/>
+                                    <apex:inputText value="{!Zipcode}" styleClass="form-control required zip-code-input" onkeyup="validateZipCode(this)" />                           
+                                 </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group" id="phoneNumberDivId">
+                                    <label>Business Phone Number</label><br/>
+                                    <apex:inputText value="{!BusinessPhoneNumber}" styleClass="form-control required business-num-input "/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <hr />
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <h4>Tell us a little about you.</h4>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group" id="">
+                                    <label>First Name</label><br/>
+                                    <apex:inputText value="{!FirstName}" styleClass="form-control required First-Name-Input"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group" id="">
+                                    <label>Last Name</label><br/>
+                                    <apex:inputText value="{!LastName}" styleClass="form-control required Last-Name-Input"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group" id="">
+                                    <label>Title</label><br/>
+                                    <apex:inputText value="{!Title}" styleClass="form-control Title-Input" />
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group" id="Email">
+                                    <label>Email</label><br/>
+                                    <apex:inputText value="{!Email}" styleClass="form-control required email-addr-input" />
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group" id="phoneNumberDiv">
+                                    <label>Phone Number</label><br/>
+                                    <apex:inputText value="{!PhoneNumber}" styleClass="form-control required phone-num-input"/>
+                                </div>
+                            </div>
+                        </div>
+
+                         <div class="row">
+                            <label for="" class="provider_question">Do you currently do business with AT&amp;T?</label>
+                            <div class="radio provider_question_radio_group radio-buttons">
+                                <apex:selectRadio value="{!Radio1}">
+                                    <apex:selectOption itemLabel="Yes" itemValue="Yes" ></apex:selectOption>    
+                                    <apex:selectOption itemLabel="No"  itemValue="No" html-checked="checked"></apex:selectOption>
+                                </apex:selectRadio>
+                            </div> 
+                        </div>
+                            
+                        <div class="row">
+                            <hr />
+                        </div>
+                        <label for="check">
+  <div class="input-container">
+    <input type="checkbox" class="checkbox" id="check"> </input>
+    <span class="checkbox-text">I'm not a robot</span>
+  </div>
+</label>
+
+<img src="https://www.gstatic.com/recaptcha/api2/logo_48.png">
+<span class="recaptcha">reCAPTCHA</span>
+
+<a href="#">Privacy</a>
+<span class="dash">-</span>
+<a href="#">Terms</a>
+
+<div class="triangle"></div>
+
+
+
+
+<div class="not-human">
+  <input type="text" class="captcha-code" placeholder="Type the text"></input>
+  
+  <div class="line"></div>
+  
+  <img src="http://i.imgur.com/YvGc2Tt.png"> </img>
+  
+  <div class="controls">
+    <div class="img replay"></div>
+    <div class="img audio"></div>
+    <div class="img info"></div>
+    
+    <input type="button" class="verify" value="Verify"> </input>
+  </div>
+</div>
+
+
+                        <div class="row">
+                            <span class="parent_submit parent_submit_disabled">
+                            <!-- BRANDON 6.16.2016: Removed disabled attribute on button for Eliza disabled="disabled" -->
+                                <input id="myButton" type="button" value="Submit" onclick="Submitaction();" class="btn btn-primary" disabled="disabled" ></input>
+                                <apex:actionFunction name="Submitaction" action="{!Submit}" reRender="formId" status="loading" />   
+                            </span>
+                        </div>
+                        </img>
+                    </apex:form>
+                </div>
+            </div>
+        </div>
+        </apex:outputPanel>
+          <div id="slice_footer">
+            <footer class="">
+                <div class="row">
+                    <!-- Robyn 6/6/16: update column structure for footer -->
+                    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 footer_copy">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-xs-1  footer_logo_container">
+                                    <img class="footer_logo" src="{!$Resource.logo_footer}" alt="AT&amp;T"/>
+                                </div>
+                                <div class="col-xs-11 footer_copy">
+                                    &copy; <script>document.write(new Date().getFullYear())</script> AT&amp;T Intellectual Property. All rights reserved. AT&amp;T, the AT&amp;T logo and all other AT&amp;T marks contained herein are trademarks of AT&amp;T Intellectual Property and/or AT&amp;T affiliated companies. All other marks contained herein are the property of their respective owners.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Robyn 6/6/16 -->
+                </div>
+            </footer>
+        </div>
+    </div>
+  
+</div>
+
+
+<!-- JavaScript
+================================================== -->
+
+<!-- PRODUCTION -->
+<apex:includeScript value="{!$Resource.atomjqueryjs}"/>
+<apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/plugins/min/jquery.plugins.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/plugins/min/selectpicker.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/plugins/min/att_unauthenticated.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/js/modules/min/att_apply_form.js')}"/>
+  <script>
+  
+  $(document).ready(function() {
+        $("#check").click( function () { validateRequiredFields() });
+        $('.not-human, .triangle').hide();
+        $('.verify').addClass('disabled');
+  
+  function human(e) {
+    if ($('.checkbox-text').hasClass('robot')) {
+      return;
+    }
+    else {
+        $('.checkbox-text').text("You're human!").css("color", "green").addClass('human');
+        $('.checkbox').addClass('disabled');
+        $('.checkbox').click(function(e) {
+        e.preventDefault();
+        });
+    }
+    
+    // $('.not-human, .triangle').slideUp();
+  }
+  
+  function robot(event) {
+    if ($('.checkbox-text').hasClass('human')) {
+      return;
+    }
+    else {
+      $('.checkbox-text').text("ROBOT").css("color", "red").addClass('robot');
+      $('.checkbox').addClass('disabled');
+      $('.checkbox').click(function(event) {
+        event.preventDefault();
+      });
+    
+      // $('.not-human, .triangle').slideDown();
+    }
+  }
+  
+  $('.checkbox').click(function() {
+    if ($('.checkbox').is(":checked")) {
+      $(document).mousemove(function() {
+        window.setTimeout(function() {
+          human();
+        }, 250);
+      });
+      
+      window.setTimeout(function() {
+        robot();
+      }, 1000);
+    };
+  });
+  
+  $('.captcha-code').keyup(function(event) {
+    if ($('.captcha-code').val().length <= 0) {
+      $('.verify').addClass('disabled');
+    }
+    else {
+      $('.verify').removeClass('disabled');
+    };
+  });
+  
+  $('.verify').click(function() {
+    if ($('.captcha-code').val() == "captcha code") {
+      $('.checkbox-text').removeClass('robot').addClass('human');
+      // $('.not-human, .triangle').slideUp();
+    }
+  });
+});
+        $(document).ready(function()    
+                       {
+               $(".apply_state option[value='Alabama']").before("<option value='Select'>Select</option>");
+               $(".apply_state").val("Select");
+
+               $(".apply_state").blur( StateCheck );
+               $(".apply_state").change( StateCheck );
+
+               function StateCheck () {
+                    var state = $(".apply_state").val();
+                    if(state == "Select") {
+                        $(".state-error").remove();
+                        $(".apply_state").after("<div class='has-error errorText state-error'>Selection required</div>");
+                    } else {
+                        $(".state-error").remove();
+                    }
+                    validateRequiredFields();
+               }
+
+
+               function CustomRadioButton () {
+                    $("input[type='radio']").css({ "opacity":"0"})
+                      .after("<span class='replaced'></span>");
+
+                    $(".replaced").each( function  () {
+                      var myCheckbox = $(this).siblings("input").attr("name");
+                      var myId = $(this).siblings("input").attr("id");
+                      var myLabel = $(this).siblings("label").text();
+                      if ( myLabel == " No") {
+                       $(this).addClass("checked");
+                      }
+                      $(this).attr("name", myCheckbox);
+                      $(this).attr("id", myId);
+                    });
+
+
+                    $(".replaced").click( function () {
+                      var radioId = $(this).attr("id");
+                      var radioName = $(this).attr("name");
+                      $("span[name='"+radioName+"']").removeClass("checked");
+                      $(this).addClass("checked");
+                      $("[type='radio']").removeAttr("checked");
+                      $(this).siblings("input").attr("checked","checked");
+                    });
+                }
+              
+                
+                // Customize all radio button styles
+                CustomRadioButton();
+                                
+             function initializeFieldValidations () {
+                // Add a keyup event handler to each of the fields to ensure that on keyup we validate the field
+                 
+                 
+                $(".First-Name-Input").on({"keyup": function()
+                    {
+                        validateEmptyFields("First-Name-Input","","Cannot be blank", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields("First-Name-Input","","Cannot be blank", true);
+                    }
+                });
+                // Last Name
+                $(".Last-Name-Input").on({"keyup": function()
+                    {
+                        validateEmptyFields("Last-Name-Input","","Cannot be blank", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields("Last-Name-Input","","Cannot be blank", true);
+                    }
+                });
+                // Title
+                $(".Title-Input").on({"keyup": function()
+                    {
+                        validateEmptyFields("Title-Input ","","Cannot be blank", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields("Title-Input ","","Cannot be blank", true);
+                    }
+                });
+                // Email Address
+                // $("[placeholder='Email Address']").on({"keyup": function()
+                //     {
+                //         validateEmptyFields("Email Address","Email Address should not begin with a space","Cannot be blank", true);
+                //     },
+                // "blur":function()
+                //     {
+                //         validateEmptyFields("Email Address","Email Address should not begin with a space","Cannot be blank", true);
+                //     }   
+                // });
+                // Business Name
+                $(".Business-Name-Input").on({"keyup": function()
+                    {
+                        validateEmptyFields("Business-Name-Input","","Cannot be blank", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields("Business-Name-Input","","Cannot be blank", true);
+                    }
+                });
+                 // Business Address Line 1
+                $(".Business-Address-Input").on({"keyup": function()
+                    {
+                        validateEmptyFields("Business-Address-Input","","Cannot be blank", true);
+                    },
+                "blur":function()
+                    {
+                        
+                        validateEmptyFields("Business-Address-Input","","Cannot be blank", true);
+                    }
+                });
+                // Business Address Line 2
+               // $(".Suite-Floor-Input").on({"keyup": function()
+                  //  {
+                      //  validateEmptyFields("Suite-Floor-Input","Suite/Floor should not begin with a space","", true);
+                    //},
+              //  "blur":function()
+                  //  {
+                       // validateEmptyFields("Suite-Floor-Input","Suite/Floor should not begin with a space","", true);
+                   //}
+             //   });
+                // City
+                $(".City-Input").on({"keyup": function()
+                    {
+                        validateEmptyFields("City-Input","","Cannot be blank", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields("City-Input","","Cannot be blank", true);
+                    }
+                });
+                // Business Website
+                $(".Business-Website-Input").on({"keyup": function()
+                    {
+                        validateEmptyFields("Business-Website-Input","","Cannot be blank", true);
+                    },
+                "blur":function()
+                    {
+                        validateEmptyFields("Business-Website-Input","","Cannot be blank", true)
+                    }    
+                });
+                // Numerical Fields - Verify the length along with the checks for invalid characters and empty space
+                $(".phone-num-input").on({"keyup": function()
+                    {
+                        validateNumericalFields($(this).val(), "Invalid Phone Number","Cannot be blank", "Phone Number must have 10 digits", true,"phoneNumberDiv","phoneNumberErrorText","" );
+                    },
+                "blur":function()
+                    {
+                      validateNumericalFields($(this).val(), "Invalid Phone Number","Cannot be blank", "Phone Number must have 10 digits", true,"phoneNumberDiv","phoneNumberErrorText","" );  
+                    }
+                });
+              $(".zip-code-input").on({"keyup": function()
+                   {
+                       
+                        validateNumericalFields($(this).val(),"","Must be 5 digits","", true, "zipcodeId","ZipcodeErrorText","");
+                    },
+               "blur":function()
+                    {
+                        validateNumericalFields($(this).val(),"","Must be 5 digits","", true, "zipcodeId","ZipcodeErrorText","");
+                    }
+               });                      
+                $(".business-num-input").on({"keyup": function()
+                    {
+                        validateNumericalFields($(this).val(), "Invalid Business Phone Number", "Cannot be blank", "Phone Number must have 10 digits", true, "phoneNumberDivId","PhoneNumber1ErrorText","");
+                    },
+                "blur":function()
+                    {
+                        validateNumericalFields($(this).val(), "Invalid Business Phone Number", "Cannot be blank", "Phone Number must have ten digits", true, "phoneNumberDivId","PhoneNumber1ErrorText","");
+                    }
+                });
+                $(".email-addr-input").on({"keyup": function()
+                    {
+                        CustomEmailCheck($(".email-addr-input").val());
+                        // validateNumericalFields($("[placeholder='Email Address']").val(), "Invalid Email", "Cannot be blank", "", true, "Email","EmailError","Email should not contain a space");
+                    },
+                "blur":function()
+                    {
+                        // validateNumericalFields($("[placeholder='Email Address']").val(), "Invalid Email", "Cannot be blank", "", true, "Email","EmailError","Email should not contain a space");
+                        CustomEmailCheck($(".email-addr-input").val());
+                    }
+                });
+             }
+                 
+            // Add the keyup events for each of the fields
+            initializeFieldValidations();
+            
+          });
+          </script>    
+         <script>    
+            function CustomEmailCheck (emailValue) {
+                var eValue = emailValue; 
+                if (eValue == ""){
+                    $("#EmailError").remove();
+                    $(".email-addr-input").after("<p id='EmailError' class='errorText'>Cannot be blank</p>" );
+                }
+                else if(eValue != ""){
+                    if(!isValidEmailAddress(eValue) && eValue != "") {
+                        $("#EmailError").remove();
+                        $(".email-addr-input").after("<p id='EmailError' class='errorText'>Please enter a valid email</p>" );
+                    } else {
+                        $("#EmailError").remove();
+                    }
+                }
+             }
+                        // Function to initialize each of the validations present on the form fields
+           
+                 // Function to handle numerical values
+                // If any non - numerical characters are entered, we show an invalid entry message
+                // If a required field is blank, we show a message indicating that the field is blank
+                // If a phone number is greater or less than 10 digits in length, we show a message indicating that the number is longer than expected
+             function validateNumericalFields(sValue, sErrorMessage, sBlankMessage, sPhoneDigitErrorMessage,boolIsRequired, sParentID, sErrorFieldID, sFirstSpaceErrorMessage){
+                var oParent = $("#"+sParentID+""), oError = $("#"+sErrorFieldID+"");
+
+                if(oParent[0]) {
+                   if((boolIsRequired) && ("" === sValue))
+                    {
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+
+                        oParent.append("<p id='"+sErrorFieldID+"' class='errorText'>"+sBlankMessage+"</p>" );
+                    }
+                    else if((" " === sValue) || (sValue !== $.trim(sValue))){
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+
+                        oParent.append("<p id='"+sErrorFieldID+"' class='errorText'>"+sFirstSpaceErrorMessage+"</p>" );
+                    }
+                    else if(isNaN(sValue)){
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+
+                        oParent.append("<p id='"+sErrorFieldID+"' class='errorText'>"+sErrorMessage+"</p>" );
+                    }
+                     
+                    
+                       else if(("phoneNumberDiv" === sParentID || "phoneNumberDivId" === sParentID) && ( sValue.length>10 || sValue.length < 10)){
+                        oParent.addClass("has-error");
+                        if(oError){
+                            oError.remove();
+                        }
+                        oParent.append("<p id='"+sErrorFieldID+"' class='errorText'>"+sPhoneDigitErrorMessage+"</p>" );
+
+                    }
+                    else{
+                         oParent.removeClass("has-error");
+                         if(oError){
+                            oError.remove();
+                        }
+                    }
+                }
+             
+                // All Field Check
+                validateRequiredFields();
+            }
+                        // Function to check whether the field is empty or whether the field contains preceeding white space
+                        // If the field contains white space or preceeding white space, we show an error message
+                        // If a required field is blank, we show a message indicating that the field is blank
+            function validateEmptyFields (sStyleClass,sErrorMessage, sBlankMessage, boolIsRequired) {
+                var sValue = $("."+sStyleClass+"").val(), oField = $("."+sStyleClass+""), oParent = oField.parent();
+            
+                if(oField[0])
+                {
+                    // Check if the field contains blank value as the first character
+                    sValue = oField.val();
+                    if((boolIsRequired) && ("" === sValue))
+                    {
+                        // Append the error message in case the field is not filled
+                        if(oParent[0]){
+                            // Remove all spaces and () from the string
+                            $(".errorText."+sStyleClass.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error").remove();
+                            oParent.addClass("has-error").append("<p class='errorText "+sStyleClass.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error'>"+ sBlankMessage +"</p>");
+                        }
+                    }
+                    else if((" " === sValue) || (sValue !== $.trim(sValue)))
+                    {
+                        // Append the error message in case the field is wrongly filled
+                        if(oParent[0]){
+                            // Remove all spaces and () from the string
+                            $(".errorText."+sStyleClass.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error").remove();
+                            oParent.addClass("has-error").append("<p class='errorText "+sStyleClass.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error'>"+ sErrorMessage +"</p>");
+                        }
+                    }
+                    else
+                    {   
+                        // Remove the error message
+                        if(oParent[0]){
+                            oParent.removeClass("has-error");
+                            // Remove all spaces and () from the string
+                            $(".errorText."+sStyleClass.replace(/\s/g,"_").replace(/["'()]/g,"")+"_error").remove();
+                        }
+                    }
+                }
+                // All Field Check
+                validateRequiredFields();
+            }
+            
+             //If a ZipCode is greater or less than 5 digits in length, we show a message indicating that the number is longer than expected
+             
+             
+             function validateZipCode(thisEle) {
+               if (isNaN(thisEle.value)) {
+                $(thisEle).addClass("has-error");
+                $('#ZipCodeErrorText').remove();
+                $(thisEle).after("<p id='ZipCodeErrorText' class='errorText'>Invalid ZipCode</p>");
+
+            } else 
+             if (0 !== thisEle.value.length && (!isNaN(thisEle.value)) && (thisEle.value.length > 5 || thisEle.value.length < 5)) {
+                $(thisEle).addClass("has-error");
+                $('#ZipCodeErrorText').remove();
+                $(thisEle).after("<p id='ZipCodeErrorText' class='errorText'>Must be 5 digits</p>");
+            } 
+            else {
+                $(thisEle).removeClass("has-error");
+                $('#ZipCodeErrorText').remove();
+            }
+
+         }                    
+      function isValidEmailAddress(emailAddress) {
+    var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+    return pattern.test(emailAddress);
+    }        
+                function validateRequiredFields () {
+                // Iterate through all fields and check if there are any invalid entries. If yes, then return false    
+                var arrRequiredFields = $(".required"), boolIsNumberValid = true,boolIsValid = true;
+                var state = $(".apply_state").val();     
+                $(".apply_state").on("focusout", function () {
+                    if(state == "Select") {
+                        $(".state-error").remove();
+                        $(".apply_state").after("<div class='has-error errorText state-error'>Selection required</div>");
+                    } else {
+                        $(".state-error").remove();
+                    }    
+                });
+                arrRequiredFields.each(function () 
+                {   
+                    oRequiredField = $(this);
+                    if(oRequiredField[0]) 
+                    {
+                        if (0 === oRequiredField.val().length)
+                        {
+                            boolIsValid = false;
+                            return false;
+                        }
+                    }
+                }); 
+           
+                // If there is any error message present, do not enable the button
+                if(0 < $(".has-error").length)
+                {
+                    boolIsNumberValid = false;
+                }
+                if(boolIsValid && boolIsNumberValid){
+                    if($("#check").is(":checked")){
+                      $("#myButton").removeAttr("disabled").addClass("enabled"); 
+                    }
+                }
+                else
+                {   
+                    $("#myButton").attr("disabled","disabled").removeClass("enabled");
+                }  
+
+     }  
+     </script>  
+<c:Walkme_Script ></c:Walkme_Script>
+</apex:page>

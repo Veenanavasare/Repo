@@ -1,0 +1,30 @@
+<apex:page controller="reCAPTCHA">
+<script>
+var RecaptchaOptions = {
+   theme : 'clean'
+};
+</script>
+  <apex:pageBlock >
+    <apex:form >
+     <apex:pageBlockSection columns="1">        
+            <apex:pageBlockSectionItem rendered="{! NOT(verified)}">
+                   <script type="text/javascript"
+                    src="https://www.google.com/recaptcha/api/challenge?k=6LclnOMSAAAAANnP-8IgMMVW_GSKVMWoSKFsJQ93">               
+                    <textarea name="recaptcha_challenge_field" rows="3" cols="40"></textarea>
+                    <input type="hidden" name="recaptcha_response_field" value="manual_challenge"/> 
+                   </script>                                
+             </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem >
+                <apex:commandButton action="{!verify}" 
+                        value="Check If I'm Human" rendered="{! NOT(verified)}"/>
+            </apex:pageBlockSectionItem>
+            
+             <apex:pageBlockSectionItem rendered="{!verified}"  >
+                <p>reCAPTCHA verification suggests that you're not a 'bot.</p>
+            </apex:pageBlockSectionItem>            
+        </apex:pageBlockSection>
+        
+    </apex:form>
+  </apex:pageBlock>
+</apex:page>

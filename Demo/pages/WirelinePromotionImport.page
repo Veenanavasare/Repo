@@ -1,0 +1,804 @@
+<apex:page controller="WirelinePromotionImportController" sidebar="false" title="Wireline Promotion Import">
+    <apex:includeScript value="//code.jquery.com/jquery-1.12.4.js" />
+    <apex:includeScript value="//code.jquery.com/ui/1.10.3/jquery-ui.js" />
+    <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/angular.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/lodash.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/jszip.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/xlsx.js')}"/>
+    <apex:stylesheet value="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <apex:stylesheet value="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap.min.css" />
+    <apex:stylesheet value="https://cdn.datatables.net/t/bs-3.3.6/dt-1.10.11/datatables.min.css" />
+    
+    <style>
+        .tertiaryPalette, .individualPalette .Custom72Block .tertiaryPalette, .layoutEdit .individualPalette .Custom72Block .tertiaryPalette {
+            background-color: #1797c0 !important;
+            border-color: #1797c0 !important;
+        }
+        body{
+            font-size: 12px;
+            font-family: Arial;
+        }
+        .secondaryPalette, .individualPalette .Custom72Block .secondaryPalette {
+            background-color: #1797c0;
+            border-color: #1797c0;
+        }
+        div.secondaryPalette label{
+            padding-right:10px;
+            font-size: 12px;
+            color: #000;
+            font-family: Arial;
+        }
+        th.labelCol label{
+            pointer-events:none;
+        }
+        div.secondaryPalette .pbBody{
+            padding: 6px 20px 4px 20px;
+        }
+        div.secondaryPalette input,div.secondaryPalette select, div.secondaryPalette textarea{
+            margin:0 10px;
+            border-radius: 4px;
+        }
+    
+        fieldset {
+            font-family: Arial;
+            border: 3px solid #1797c0;
+            background: #FFFFFF;
+        }
+    
+        fieldset legend {
+    
+            background: #1797c0;
+            color: #FFFFFF;
+            padding: 3px 10px;
+            font-size: 19px;
+            border-radius: 5px;
+            box-shadow: 0 0 0 3px #ddd;
+            margin-left: 30px;
+            width: auto;
+        }
+        .requiredasterisk{
+         color: red;
+            font-size: 20px;
+            position: absolute;
+            padding-left: 5px;
+            visibility:hidden;
+        }
+        div.pbSubheader{
+            font-size: 14px;
+            padding: 8px !important;
+            border-radius:4px;
+        }
+        div.pbSubheader h3{
+            font-weight:bold;
+        }
+        center{
+            margin: 10px;
+        }
+        .uploadSection label{
+            vertical-align: middle;
+        }
+        .submitBtn, .cancelBtn{
+            width: 100px;
+            margin: 10px !important;
+            font-size: 12px !important;
+        }
+        .fieldSection{
+            margin-top: 10px;
+        }
+        .promoSection label{
+            vertical-align: middle;
+        }
+        .secondaryPalette, .individualPalette .Custom72Block .secondaryPalette {
+            background-color: #1797c0;
+            border-color: #1797c0;
+        }
+        div.secondaryPalette label{
+            padding-right:10px;
+            font-size: 12px;
+            color: #000;
+            font-family: Arial;
+        }
+        th.labelCol label{
+            pointer-events:none;
+        }
+        div.secondaryPalette .pbBody{
+            padding: 6px 20px 4px 20px;
+        }
+        div.secondaryPalette input,div.secondaryPalette select, div.secondaryPalette textarea{
+            margin:0 10px;
+            border-radius: 4px;
+        }
+        a.downloadtemplatehover{    
+            color: #337ab7;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        div#fileUploadSection{
+            margin-left: 124px;
+            margin-top: 5px;
+        }
+        .custom-file-input::before {
+            content: 'Choose File';
+            display: inline-block;
+            background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+            border: 1px solid #999;
+            border-radius: 4px;
+            padding: 2px 5px;
+            outline: none;
+            white-space: nowrap;
+            -webkit-user-select: none;
+            cursor: pointer;
+            margin-right: 50px;
+            color: #333;
+            font-size: .9em;
+            font-family: Arial,Helvetica,sans-serif;
+        }
+        .custom-file-input::-webkit-file-upload-button {
+          visibility: hidden;
+        }
+        .custom-file-input:disabled::before {
+            background: #e8e8e9;
+            cursor: not-allowed !important;
+            border: 1px solid #b5b5b5;
+            border-bottom-color: #7f7f7f;
+            box-shadow: none;
+            opacity: .65;
+        }
+        .custom-file-input{
+            margin-left:0px !important;
+        }
+        .detailList{
+            margin-top: 10px !important;
+        }
+        .bPageBlock .detailList .errorMsg{
+            padding-left: 10px;
+        }
+        .uploadButton{
+            position: relative;
+            top: 0;
+            width: 115px;
+            margin: 10px;
+            float: right;
+        }
+        table.validationErrorTable{
+            margin:0;
+        }       
+        table.validationErrorTableScroll>thead>tr, table.validationErrorTableScroll>tbody>tr{
+            display:table;
+            width:100%;
+            table-layout:fixed;
+        }
+        table.validationErrorTableScroll>thead, table.validationErrorTableScroll>tbody{
+            display:block;
+        }
+        table.validationErrorTableScroll>tbody{
+            overflow-x:hidden;
+            overflow-y:scroll;
+            height:275px;
+        } 
+        table.validationErrorTableScroll thead th:first-child{
+            width: 100%;
+        }
+        table.validationErrorTableScroll tbody td:first-child{
+            width: 100%;
+        }
+        table.promotionDuplicateTable{
+            margin:0;
+        }       
+        table.promotionDuplicateTableScroll>thead>tr, table.promotionDuplicateTableScroll>tbody>tr{
+            display:table;
+            width:100%;
+            table-layout:fixed;
+        }
+        table.promotionDuplicateTableScroll>thead, table.promotionDuplicateTableScroll>tbody{
+            display:block;
+        }
+        table.promotionDuplicateTableScroll>tbody{
+            overflow-x:hidden;
+            overflow-y:scroll;
+            height:275px;
+        } 
+        table.promotionDuplicateTableScroll thead th:first-child{
+            width: 31%;
+        }
+        table.promotionDuplicateTableScroll tbody td:first-child{
+            width: 32%;
+        }
+        table.promotionDuplicateTable tbody td:last-child{
+            max-width: 40px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        table#DuplicatePopup{
+            width: 100%;
+        }
+        div.alertDesc {
+            display: grid;
+            margin-left: 16px;
+            font-size: 13px;
+        }
+        #duplicateAlertp {
+            height: auto;
+            padding: inherit;
+        }
+        .confirmDuplication {
+            float: left;
+            margin-top: 5px;
+            padding-right: 10px;
+        }
+        div.duplicateAlertModalFooter {
+            border-top: 0 !important;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            padding: 0;
+        }
+    </style>
+    
+    <script>
+        var blankRow = false;
+        var maxLimit = false;
+        var templateError = false;
+        var templateErrorMsg = '';
+        var app = angular.module("App", []);
+        app.factory("XLSXReaderService", ['$q', '$rootScope',
+        function($q, $rootScope) {
+            var service = function(data) {
+                angular.extend(this, data);
+            };
+            service.readFile = function(file, showPreview) {
+                var deferred = $q.defer();
+
+                XLSXReader(file, showPreview, function(data) {
+                    $rootScope.$apply(function() {
+                        deferred.resolve(data);
+                    });
+                });
+
+                return deferred.promise;
+            };
+            return service;
+        }
+        ]);
+                
+        app.controller('PreviewController', function($scope, XLSXReaderService) {
+            $scope.showPreview = false;
+            $scope.fileChanged = function(files) {
+                $scope.isProcessing = true;
+                $scope.sheets = [];
+                $scope.excelFile = files[0];
+                XLSXReaderService.readFile($scope.excelFile, $scope.showPreview).then(function(xlsxData) {
+                    $scope.sheets = xlsxData.sheets;
+                    $scope.isProcessing = false;
+                });
+                $scope.isProcessing = true;
+                $scope.showPreview = true;
+                var temp = XLSXReaderService.readFile($scope.excelFile, $scope.showPreview).then(function(xlsxData) {
+                    $scope.sheets = xlsxData.sheets;
+                    $scope.isProcessing = false;
+                });
+            }; 
+        });
+        (function(undefined) {
+            'use strict';
+            // Check if dependecies are available.
+            if (typeof XLSX === 'undefined') {
+                console.log('xlsx.js is required. Get it from https://github.com/SheetJS/js-xlsx');
+                return;
+            }
+        
+            if (typeof _ === 'undefined') {
+                console.log('Lodash.js is required. Get it from http://lodash.com/');
+                return;
+            }
+            /*--- Baseline setup: Establish the root object, `window` in the browser, or `exports` on the server. ---*/
+            var root = this;
+        
+            // Save the previous value of the `XLSXReader` variable.
+            var previousXLSXReader = root.XLSXReader;
+        
+            // Create a safe reference to the XLSXReader object for use below.
+            var XLSXReader = function(file, readCells, handler) {
+                var obj = {};
+                XLSXReader.utils.intializeFromFile(obj, file, readCells, handler);
+                return obj;
+            };
+            
+            /* Export the XLSXReader object for **Node.js**, with
+            /* backwards-compatibility for the old `require()` API. If were in
+            /* the browser, add `XLSXReader` as a global object via a string identifier,
+            /* for Closure Compiler 'advanced' mode.*/
+            if (typeof exports !== 'undefined') {
+                if (typeof module !== 'undefined' && module.exports) {
+                    exports = module.exports = XLSXReader;
+                }
+                exports.XLSXReader = XLSXReader;
+            } else {
+                root.XLSXReader = XLSXReader;
+            }
+        
+            // Current version.
+            XLSXReader.VERSION = '0.0.1';
+        
+            XLSXReader.utils = {
+                'intializeFromFile': function(obj, file, readCells, handler) {
+                    var reader = new FileReader();
+        
+                    reader.onload = function(e) {
+                        var data = e.target.result;
+                        var workbook = XLSX.read(data, {
+                            type: 'binary'
+                        });
+        
+                        obj.sheets = XLSXReader.utils.parseWorkbook(workbook, readCells);
+                        handler(obj);
+                    };
+        
+                    reader.readAsBinaryString(file);
+                },
+                'parseWorkbook': function(workbook, readCells) {
+                    var sheets = {};
+        
+                    _.forEachRight(workbook.SheetNames, function(sheetName) {
+                        var sheet = workbook.Sheets[sheetName];
+                        sheets[sheetName] = XLSXReader.utils.parseSheet(sheet, readCells, sheetName);
+                    });
+                    return sheets;
+                },
+                'parseSheet': function(sheet, readCells, sheetName) {
+                    var range = XLSX.utils.decode_range(sheet['!ref']);
+                    var promoType = $('[id$=promotionType]').val();
+                    var sheetData = [];
+                    var sheetDataJSON = {};
+                    var firstRowData = false;
+                    blankRow = false;
+                    maxLimit = false;
+                    templateError = false;
+                    templateErrorMsg = '';
+                    var mandatoryFields = []; 
+                    var fieldNames = [];
+                    var fieldNamesStr = $('[id$=promoFields]').val();
+                    if(fieldNamesStr != 'undefined' && fieldNamesStr.length>0){
+                        fieldNamesStr = 'SL,'+fieldNamesStr;
+                        fieldNames = fieldNamesStr.split(",");
+                        mandatoryFields = fieldNamesStr.split(",");
+                    }
+                    var rankData = [];
+                    console.log('@@@mandatoryFields'+mandatoryFields);
+                    if (readCells === true) {
+                        _.forEachRight(_.range(range.s.r, range.e.r+1), function(row) {
+                            var rowData = [];
+                            _.forEachRight(_.range(range.s.c, range.e.c + 1), function(column) {
+                                var cellIndex = XLSX.utils.encode_cell({
+                                    'c': column,
+                                    'r': row
+                                });
+                                var cell = sheet[cellIndex];
+                                if(column>0){
+                                    rowData[column] = cell ? cell.v : '';       
+                                    if(typeof rowData[column] == 'undefined'){
+                                        rowData[column] ='';
+                                    }
+                                    sheetDataJSON[fieldNames[column]]=rowData[column];
+                                }
+                            });
+                            
+                            if(row == 0){
+                                    if($.isEmptyObject(sheetDataJSON) == false){
+                                        if(promoType != null){
+                                            if(promoType == 'Port'){
+                                                var sheetRowData = sheetDataJSON['Port Speed'];
+                                                if(sheetRowData != 'undefined' && sheetRowData != null && sheetRowData != 'Port Speed'){
+                                                    sheetData = [];
+                                                    templateError = true;
+                                                    templateErrorMsg= 'Invalid Template for Promo Type: '+promoType;
+                                                    return false;
+                                                }
+                                            }
+                                            else if(promoType == 'Access'){
+                                                var sheetRowData = sheetDataJSON['Access Speed'];
+                                                if(sheetRowData != 'undefined' && sheetRowData != null && sheetRowData != 'Access Speed'){
+                                                    sheetData = [];
+                                                    templateError = true;
+                                                    templateErrorMsg= 'Invalid Template for Promo Type: '+promoType;
+                                                    return false;
+                                                }
+                                            }
+                                        }
+                                    }
+                            }
+                            if(row > 2){
+                                    var criteriaInput = [];
+                                    var emptyRow = false;
+                                    var mandatoryFieldsValue = '';
+                                    Object.keys(sheetDataJSON).map(function (key){
+                                        if(key != null && key != 'undefined' && ($.inArray(key, mandatoryFields) >=0)){
+                                            if(sheetDataJSON[key] != 'undefined' && sheetDataJSON[key] != null){
+                                                var inputData = key+":"+sheetDataJSON[key];
+                                                criteriaInput.push(inputData);
+                                                mandatoryFieldsValue = mandatoryFieldsValue+sheetDataJSON[key];
+                                            }
+                                        }
+                                        else{
+                                            var inputData = key+":"+sheetDataJSON[key];
+                                            criteriaInput.push(inputData);
+                                        }
+                                        if(key != 'undefined' && key != null && key == 'Rank__c' && (sheetDataJSON[key] != 'undefined' && sheetDataJSON[key] != null)){
+                                            rankData[row]=sheetDataJSON[key];
+                                        }
+                                    });
+                                    if(mandatoryFieldsValue.length == 0){
+                                        criteriaInput = [];
+                                        if(firstRowData){
+                                            blankRow = true;
+                                        }
+                                    }
+                                    if(criteriaInput.length>0){
+                                        sheetData[row] = JSON.stringify(criteriaInput.join('|'));
+                                        firstRowData = true;
+                                    }
+                            }
+                        });
+                    };
+                    console.log('@@@rankData '+rankData);
+                    var processedExcelBodyString = '';
+                    if(sheetData.length >53){
+                        maxLimit = true;
+                        return false;
+                    }
+                    if(sheetData.length > 0 && blankRow == false) {
+                        for(var i=0; i < sheetData.length; i++) {
+                            console.log('sheetData:  '+sheetData[i]);
+                            if(typeof sheetData[i] != 'undefined' && sheetData[i] != ''){
+                                processedExcelBodyString += sheetData[i].toString() +"~~";              
+                            }
+                        }
+                    }                       
+                    if (document.getElementsByTagName("textarea")[0]) {
+                        document.getElementsByTagName("textarea")[0].value = processedExcelBodyString; 
+                        if(rankData != null){
+                            var rankDataArray = rankData.filter(function(v){return v!==''});
+                            $('[id$=ranksInExcel]').val(rankDataArray);
+                        }
+                    }
+                    return {
+                        'data': sheetData,
+                        'name': sheet.name,
+                        'col_size': range.e.c + 1,
+                        'row_size': range.e.r + 1
+                    };
+                }
+            };
+        }).call(this);
+        
+        function processFileForParsing(obj, obj1) {
+            var filePath = $("#uploadFile").val();
+            var file = filePath.toLowerCase();
+            var extension = file.substring(file.lastIndexOf('.'));
+            var allowedExtensions = ['.xlsx', '.xls'];
+            if ($.inArray(extension, allowedExtensions) <0) {
+                $(".custom-file-input").val("");
+                alert('The file format isnt a supported format. Upload your file as a .xlsx, .xls');
+            }
+            else{
+                $('#loading').parent().show();
+                if(filePath != null && filePath != "undefined" && filePath.length>0){
+                    $(".uploadButton").removeAttr("disabled");
+                    $(".uploadButton").removeClass("btn-secondary");
+                }
+                else{
+                    $(".uploadButton").prop("disabled", true);
+                    $(".uploadButton").addClass("btn-secondary");
+                    document.getElementsByTagName("textarea")[0].value = '';
+                }
+                angular.element(obj).scope().fileChanged(obj1);
+                setTimeout(function(){$('#loading').parent().hide()},1300);
+            }
+        }
+        
+        function uploadWirelinePromotion(){
+            var excelData = document.getElementsByTagName("textarea")[0].value;
+            if(excelData != 'undefined' && excelData != null && excelData.length>0){
+                ReadFile(); 
+            }
+            else{
+                if(templateError){
+                    alert(templateErrorMsg);
+                }
+                else if(maxLimit){
+                    alert('Only a maximum of 50 promotions can be loaded at a time.');
+                }
+                else if(blankRow){
+                    alert('One or more rows are blank. Please re-upload with correct data.');
+                }
+                else{
+                    alert('No records to insert promotions');
+                }
+                clearFilePath();
+            }
+             return false;
+        }
+        
+        function getPromoTemplate(promoType){
+            if(promoType != null && promoType != 'undefined'){
+                getPromoTemplateAction(promoType);
+            }
+        }
+        
+        function clearFileInput(){
+            $(".uploadButton").prop("disabled", true);
+            $(".uploadButton").addClass("btn-secondary");
+            $("#uploadFile").prop("disabled", true);
+            $(".custom-file-input").val("");
+            $("[id$=promotionType]").val("");
+            document.getElementsByTagName("textarea")[0].value = '';
+        }
+        
+        function enableUpload(){
+            var promoType = $('[id$=promotionType]').val();
+            $(".custom-file-input").val("");
+            document.getElementsByTagName("textarea")[0].value = ''; 
+            if(promoType != null && promoType != "undefined" && promoType.length>0){
+                $("#uploadFile").removeAttr("disabled");
+            }
+            else{
+                $("#uploadFile").prop("disabled", true);
+                $(".custom-file-input").val("");
+                document.getElementsByTagName("textarea")[0].value = '';
+            }
+        }
+        function checkValidation(){
+            var validationErrorFlag = $('[id$=validationErrorFlag]').val();
+            var validationStage3ErrorFlag = $('[id$=validationStage3ErrorFlag]').val();
+            var duplicateErrorFlag = $('[id$=duplicateErrorFlag]').val();
+            if((validationErrorFlag != 'undefined' && validationErrorFlag == 'true')){
+                checkValidationError(validationErrorFlag);
+            }
+            else if((validationStage3ErrorFlag != 'undefined' && validationStage3ErrorFlag == 'true')){
+                checkValidationError(validationStage3ErrorFlag);
+            }
+            else if((duplicateErrorFlag != 'undefined' && duplicateErrorFlag == 'true')){
+                checkDuplicationError(duplicateErrorFlag);
+            }
+            else{
+                clearFileInput();
+                $('#importConfirmationModal').modal('show');
+            }
+        }
+         function checkValidationError(validationErrorExists) {
+            if('undefined' != typeof validationErrorExists && 'true' == validationErrorExists){
+                $('#validationErrorAlertModal').on('show.bs.modal', function() {
+                    if($('.validationErrorTable tbody tr').length>8){
+                    
+                        if(navigator.userAgent.indexOf("Chrome") == -1 )
+                        {
+                            $(".validationErrorTable").addClass("validationErrorTableScroll_moz validationErrorTableScroll");
+                        }  
+                        else{
+                            $(".validationErrorTable").addClass("validationErrorTableScroll");
+                        }
+                    }
+                    else{
+                        $(".validationErrorTable").removeClass("validationErrorTableScroll validationErrorTableScroll_moz");
+                    }
+                });
+            
+                $('#validationErrorAlertModal').modal('show');
+            }             
+        }
+        
+        function checkDuplicationError(duplicateExists) {
+            if('undefined' != typeof duplicateExists && 'true' == duplicateExists){
+                $('#duplicateAlertModal').on('show.bs.modal', function() {
+                    if($('#DuplicatePopup tbody tr').length>8){
+                    
+                        if(navigator.userAgent.indexOf("Chrome") == -1 )
+                        {
+                            $("#DuplicatePopup").addClass("promotionDuplicateTableScroll_moz promotionDuplicateTableScroll");
+                        }  
+                        else{
+                            $("#DuplicatePopup").addClass("promotionDuplicateTableScroll");
+                        }
+                    }
+                    else{
+                        $("#DuplicatePopup").removeClass("promotionDuplicateTableScroll promotionDuplicateTableScroll_moz");
+                    }
+                });
+            
+                $('#duplicateAlertModal').modal('show');
+            }             
+        }
+        function clearFilePath(){
+            var filePath = $("#uploadFile").val();
+            if(filePath != null && filePath != 'undefined' && filePath.length>0){
+                $("#uploadFile").val('');
+                $(".uploadButton").prop("disabled", true);
+                $(".uploadButton").addClass("btn-secondary");
+                document.getElementsByTagName("textarea")[0].value = '';
+                return false;
+            }
+        }
+        
+        function insertDuplicatePromo(){
+            insertDuplicatePromoAction();
+        }
+    </script>
+    
+    <apex:form id="frm_PromoEngineBulkUpload">
+        <apex:inputTextArea value="{!excelBody}" id="theTextInput" style="display:none;" />
+        <apex:inputHidden value="{!promoFields}" id="promoFields" />
+        <apex:inputHidden value="{!validationErrorFlag}" id="validationErrorFlag" />
+        <apex:inputHidden value="{!validationStage3ErrorFlag}" id="validationStage3ErrorFlag" />
+        <apex:inputHidden value="{!duplicateErrorFlag}" id="duplicateErrorFlag" />
+        <apex:inputHidden value="{!ranksInExcel}" id="ranksInExcel" />
+        <apex:outputPanel styleClass="bulkUploadPanel">
+                       
+                <apex:actionstatus id="loading">
+                    <apex:facet name="start">
+                        <div class="waitingSearchDiv" id="loading" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;"> 
+                                <div class="waitingHolder" style="top: 200px; left:600px; width: 91px; position: fixed;"> 
+                                <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait..." />
+                                <span class="waitingDescription">Please wait...</span> 
+                               </div> 
+                        </div>
+                    </apex:facet> 
+                </apex:actionstatus>
+                <fieldset>
+                    <legend>{!$Label.WIRELINE_BULKUPLOAD}</legend>
+                    <ol style="padding:5px;">
+                        <li><label>{!$Label.WIRELINE_BULKUPLOAD_INST1}</label></li>
+                        <li><label>{!$Label.WIRELINE_BULKUPLOAD_INST2}</label></li>
+                    </ol>
+                </fieldset>
+                <br/>
+                <left>
+                    <apex:commandButton action="{!cancel}" value="<< Back" styleClass="cancelBtn" status="loading" immediate="true" html-formnovalidate="formnovalidate"/>
+                    <apex:actionFunction name="getPromoTemplateAction" action="{!getPromoTemplate}" status="loading" rerender="templateSection,promoFields" oncomplete="enableUpload();">     
+                        <apex:param name="promoType" value="{!promoType}" assignTo="{!promoType}"/>
+                    </apex:actionFunction>
+                </left>
+                
+            <div ng-app='App' class="row ng-scope uploadSection">   
+                <div ng-controller="PreviewController" style="padding: 10px 20px;">
+                    <apex:pageBlock id="pbs_bulkUploadPanel"> 
+                        <apex:pageBlockSection id="pbs_UploadBlock" title="Promotion Upload" collapsible="false">
+                            <apex:selectList id="promotionType" style="height:22px;width:150px;" value="{!promoType}" label="Promo Type" multiselect="false" size="1" onchange="getPromoTemplate(this.value);">
+                            <apex:selectOptions value="{!bulkCriteriaList}"/>
+                            </apex:selectList>
+                            <apex:outputPanel id="templateSection">
+                                <apex:outputLink rendered="{!IF(promoType != null && promoType != '' && strDocUrl != '', true, false)}" value="{!strDocUrl}" id="templateLink" target="_blank" styleClass="downloadtemplatehover" >{!documentName}</apex:outputLink>
+                                <apex:outputPanel rendered="{!IF(promoType == null && promoType == '' && strDocUrl == '', true, false)}">&nbsp;</apex:outputPanel>
+                            </apex:outputPanel>
+                            <div id="fileUploadSection">
+                                <div id="pbs_Upload_FieldSection" class="fieldSection promoSection col-md-12" style="display:table;padding:0;width:100%">
+                                    <!-- Upoad-->
+                                    <input type="file" id="uploadFile" name="excel_file" accept=".xlsx" onclick="clearFilePath();" onchange="processFileForParsing(this, this.files)" class="custom-file-input" style="width:-webkit-fill-available;margin: 0px !important;padding: 0px;" disabled="true"></input>
+                                    <input type="button" onclick="uploadWirelinePromotion();" value="Import Promotions" class="btn col-md-4 p0 btn-secondary uploadButton" disabled="true"/>
+                                </div>  
+                            </div>
+                        </apex:pageBlockSection>
+                    </apex:pageBlock>
+                </div>
+            </div>  
+        </apex:outputPanel>
+        <apex:actionFunction name="ReadFile" action="{!importPromotions}" status="loading" rerender="validationErrorFlag,validationStage3ErrorFlag,duplicateErrorFlag,validationErrorAlertModalPanel,duplicateAlertModalPanel" oncomplete="checkValidation();"></apex:actionFunction>
+        <apex:actionFunction name="insertDuplicatePromoAction" action="{!importDuplicatePromotions}" status="loading" rerender="validationErrorFlag,validationStage3ErrorFlag,duplicateErrorFlag" oncomplete="checkValidation();"></apex:actionFunction>
+        <apex:actionFunction name="redirectToWirelinePromotionAction" action="{!redirectToWirelinePromotion}" status="loading" />
+        
+        <!-- Overlay Panels -->
+        <apex:outputPanel id="validationErrorAlertModalPanel">
+            <div class="modal fade validationErrorAlertModal" id="validationErrorAlertModal" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick='$(".custom-file-input").val("");'>&times;</button>
+                            <h3 class="modal-title">{!$Label.VALIDATION_ERRORS}</h3>
+                        </div>
+                       <div class="modal-body">
+                        <div class="alertDesc">
+                            <span style="padding-top:10px;padding-bottom: 5px;">
+                                <apex:outputPanel rendered="{!IF(validationErrorFlag == true && validationStage3ErrorFlag== false, true, false)}">{!$Label.IMPORT_FORMAT_ERR1}</apex:outputPanel>
+                                <apex:outputPanel rendered="{!IF(validationErrorFlag == false && validationStage3ErrorFlag== true, true, false)}">{!$Label.IMPORT_FORMAT_ERR2}</apex:outputPanel>
+                            </span>
+                        </div>
+                         <div style="padding:10px 15px;">
+                            <apex:dataTable styleClass="table table-bordered table-striped table-hover tableClass validationErrorTable" id="validationErrorList" value="{!validationErrorList}" var="item">
+                                <apex:column >
+                                    <apex:outputText title="{!item}" value="{!item}" />
+                                </apex:column>
+                            </apex:dataTable>
+                            <apex:outputPanel id="duplicateRank" rendered="{!IF(rankErrorExits == true && validationStage3ErrorFlag == false, true, false)}">
+                                <div class="alertDesc" style="margin:0;">
+                                    <span style="padding-top:10px;padding-bottom: 5px;">{!$Label.GENERAL_ERROR}</span>
+                                </div>
+                                <span style="padding-top:10px;padding-bottom: 5px;">{!$Label.IMPORT_RANK_DUPLICATE}</span>
+                            </apex:outputPanel>
+                                
+                         </div>                 
+                        </div>  
+                        <div class="modal-footer validationErrorAlertModalFooter">
+                            <div id="confirmSave">
+                                <button type="button" class="alertBtn" data-dismiss="modal" onclick='$(".custom-file-input").val("");'>Close</button>                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="duplicateAlertModalPanel">
+         <!--Duplicate Popup-->
+         <div class="modal fade duplicateAlertModal" id="duplicateAlertModal" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3 class="modal-title">{!$Label.Promotion_Alert}</h3>
+                    </div>
+                   <div class="modal-body">
+                    <div class="alertDesc">
+                        <span id="duplicateAlertp">{!$Label.Promotion_Alert_2}</span>
+                        <span style="padding-top:10px;padding-bottom: 5px;white-space: nowrap;">{!$Label.Promotion_Alert_3}</span>
+                    </div>
+                     <div style="padding:10px 15px;">
+                        <table id="DuplicatePopup" class="table table-bordered table-striped table-hover tableClass">
+                            <apex:repeat value="{!duplicatePromotionWrapper}" var="row">
+                                 <tr>
+                                    <td>Row-{!row} - {!duplicatePromoNameMap[row]}</td>
+                                 </tr>
+                                 <tr> 
+                                    <td>
+                                        <!-- duplicate promotion list -->
+                                        <apex:dataTable styleClass="table table-bordered table-striped table-hover tableClass promotionDuplicateTable" id="promotionDuplicateList" value="{!duplicatePromotionWrapper[row]}" var="item">
+                                            <apex:column >
+                                                <apex:facet name="header">{!$Label.PROMOTION_ID_TITLE}</apex:facet>
+                                                <apex:outputLink value="/apex/wirelinepromotion?id={!item.promoId}" target="_blank" id="promoLink">{!item.promAutoNo}</apex:outputLink>
+                                            </apex:column>
+                                            <apex:column >
+                                                <apex:facet name="header">{!$Label.PROMOTION_NAME_TITLE}</apex:facet>
+                                                <apex:outputText title="{!item.promoName}" value="{!item.promoName}" />
+                                            </apex:column>
+                                        </apex:dataTable>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </table>
+                     </div>                 
+                    </div>  
+                    <div class="modal-footer duplicateAlertModalFooter">
+                        <label class="confirmDuplication">{!$Label.CONFIRM_DUPLICATION_TXT_BULK}</label>
+                        <div id="confirmSave">
+                            <button type="button" class="alertBtn" data-dismiss="modal" onclick="insertDuplicatePromo();">YES</button>
+                            <button type="button" class="alertBtn" data-dismiss="modal">NO</button>                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </apex:outputPanel>
+        <div class="modal fade importConfirmationModal" id="importConfirmationModal" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h3 class="modal-title">File Upload Status</h3>
+                    </div>
+                   <div class="modal-body">
+                        <div class="alertDesc">
+                            <span id="duplicateAlertp">{!$Label.Import_Success_Msg}</span>
+                            <span style="padding-top:10px;padding-bottom: 5px;white-space: nowrap;">{!$Label.Import_Success_Msg_Redirect}</span>
+                        </div>              
+                    </div>  
+                    <div class="modal-footer importConfirmationModalFooter">
+                        <div id="confirmSave">
+                            <button type="button" class="alertBtn" data-dismiss="modal" onclick="javascript:$('.cancelBtn').click();">OK</button>
+                            <button type="button" class="alertBtn" data-dismiss="modal">Close</button>                    
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </apex:form>    
+</apex:page>

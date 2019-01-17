@@ -1,0 +1,172 @@
+<apex:page controller="SIHeatMapController" sidebar="true" id="pageId">
+<style type="text/css">
+
+table.gridtable {
+    font-family: verdana,arial,sans-serif;
+    font-size:11px;
+    color:#333333;
+    border-width: 100px;
+    border-color: #666666;
+    border-collapse: collapse;
+    border-radius: 3px 3px 3px 3px    
+}
+table.gridtable th {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: black;
+    background-color: #dedede;
+    border-radius: 3px 3px 3px 3px
+}
+table.gridtable td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: black;
+    border-radius: 3px 3px 3px 3px    
+}
+</style>
+<apex:form id="formId">
+    <table align="left" border="0">
+        <tr>
+            <td nowrap="nowrap">
+               <apex:pageBlock tabStyle="Account" id="pageBlckSearch">
+                    <apex:pageBlockSection title="Heat Map Search" columns="2" collapsible="false" id="pageBlckSecSearch">
+                        <apex:outputLabel value="Heat Map View" for="chooseSearch" styleClass="labelCol"/>
+                        <apex:selectList id="chooseSearch" value="{!searchType}" size="1" >
+                            <apex:selectOption itemValue="account" itemLabel="SPAccount"/>
+                            <apex:selectOption itemValue="endCustomer" itemLabel="End Customer"/>
+                        </apex:selectList>
+                        <apex:outputLabel value="SP Account" for="accountSerId" styleClass="labelCol"/>
+                        <apex:inputText value="{!accountName }" id="accountSerId"/>                        
+                        <apex:outputLabel value="End Customer" for="endCustomerSerId" styleClass="labelCol"/>
+                        <apex:inputText value="{!endCustomerName}" id="endCustomerSerId"/>
+                    </apex:pageBlockSection>
+                    <apex:outputText >
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    </apex:outputText>
+                   
+                    <apex:commandButton value="Search" action="{!getSearchResults}"/>
+                    <apex:commandButton value="Clear" action="{!doCancelSearchAndSearchRes}"/>                                                                
+                </apex:pageBlock>
+            </td>
+            <td nowrap="nowrap">
+                <apex:outputLabel style="color:red;font-weight:bold;" rendered="{!isErrorDisplay}">No records found for your search.</apex:outputLabel>
+                <apex:pageBlock tabStyle="Account" rendered="{!isSearResDisplay}">
+                    <apex:pageBlockSection title="Heat Map Search Results - {!headerDisplayStr}" collapsible="false" columns="4">
+                        <apex:pageBlockTable value="{!heatResMap}" var="mapKey">
+                            <!-- <apex:column value="{!mapKey}" headerValue="ID"/> -->
+                            <!-- <apex:column value="{!heatResMap[mapKey]}" headerValue="{!headerDisplayStr} Name"/> -->
+                            <apex:column headerValue="{!headerDisplayStr} Name">
+                                <a href=
+                                    "/{!IF(searchType == 'account',
+                                            heatResMap[mapKey].Deal__r.Account.Id, 
+                                            heatResMap[mapKey].Deal__r.End_Customer__r.Id
+                                    )}"
+                                >
+                                    {!IF(searchType == 'account',
+                                            heatResMap[mapKey].Deal__r.Account.Name, 
+                                            heatResMap[mapKey].Deal__r.End_Customer__r.Name
+                                    )}
+                                </a>
+                                <sup style="color:blue;weight:bold;">
+                                    {!IF(searchType != 'account',
+                                        IF(heatResMap[mapKey].Deal__r.End_Customer__r.Named_Account__c,'Named Account',''), 
+                                        ''
+                                    )}
+                                </sup>                                                                        
+                            </apex:column>
+                            <apex:column headerValue="Generate">
+                                <input type="button" value="Get Heat Map" class="btn" onClick="generateHeatMap('{!mapKey}')"/>
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:pageBlockSection>                
+                </apex:pageBlock>
+            </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <apex:actionStatus startText="Generating Heat Map please wait..." startStyle="color:red;font-weight:bold;"
+                      stoptext="" stopStyle="color:green;font-weight:bold;" 
+                      id="heatMapStatus" rendered="{!isSearResDisplay}"/>
+                      <br/><br/> 
+                <apex:pageBlock tabStyle="Account" rendered="{!isSearResDisplay}" id="heatMapGridId">
+                    <apex:pageBlockSection title="Heat Map Grid" columns="2" collapsible="true" rendered="{!isHeatMapDisplay}">
+                    <apex:outputLabel id="heatMapPBGridId" title="Heat Map Grid">
+                        <table class="gridtable" boder="0">
+                            <thead>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    <th>AVPN&nbsp;&nbsp;&nbsp;</th>
+                                    <th>CaaS&nbsp;&nbsp;&nbsp;</th>
+                                    <th>StaaS&nbsp;&nbsp;&nbsp;</th>
+                                    <th>MIS</th>
+                                    <th>MPLS PNT</th>
+                                </tr>
+                            </thead>
+                            <apex:repeat value="{!persistedHeatMapList}" var="heatMapObj">
+                                 <tr>
+                                    <td nowrap="nowrap">
+                                        <a href="/{!IF(searchType == 'account',heatMapObj.endCustomerId,heatMapObj.accountId)}">
+                                            {!IF(searchType == 'account',heatMapObj.endCustomerName,heatMapObj.accountName)}
+                                        </a>    
+                                    </td>
+                                    <td bgcolor="{!heatMapObj.productCodeMap['AVPN']}">&nbsp;</td>
+                                    <td bgcolor="{!heatMapObj.productCodeMap['CaaS']}">&nbsp;</td>
+                                    <td bgcolor="{!heatMapObj.productCodeMap['StaaS']}">&nbsp;</td>
+                                    <td bgcolor="{!heatMapObj.productCodeMap['MIS']}">&nbsp;</td>
+                                    <td bgcolor="{!heatMapObj.productCodeMap['MPLSPNT']}">&nbsp;</td>
+                                    <apex:variable var="objectTypeName" 
+                                        value="{!IF(searchType == 'account',heatMapObj.accountName,heatMapObj.endCustomerName)}"/>
+                                </tr>
+                            </apex:repeat>
+                            <tfoot>
+                            <tr>
+                              <td colspan="5" align="center"><b>{!headerDisplayStr} View: {!objectTypeName}
+                              </b></td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                    </apex:outputLabel>
+                   </apex:pageBlockSection>                         
+                </apex:pageBlock>
+            </td> 
+         </tr>
+         </table>
+        <apex:actionFunction action="{!doHeatMap}" name="generateHeatMap" rerender="heatMapGridId" status="heatMapStatus">
+            <apex:param name="objectId" value="" assignTo="{!heatMapObjId}"/>
+        </apex:actionFunction> 
+     </apex:form>
+    <apex:pageBlock >              
+      <apex:pageBlockSection title="Legend" columns="1" collapsible="true">
+          <apex:outputLabel id="legendLbl" title="Heat Map Grid">
+              <table class="gridtable" boder="0">
+                     <tr>
+                         <td bgcolor="Green">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                         <td>Deal Available, the end-customer does not have the product with an existing SP.</td>
+                         <td bgcolor="Blue">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                         <td>AT&amp;T, the end customer is on the named account list.</td>
+                     </tr>                     
+                     <tr>
+                         <td bgcolor="Yellow">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                         <td>Deal Pending, the deal has been submitted by 
+                         another SP and is pending approval by the EBM team or has been approved but the solution is not sold.</td>
+                         <td bgcolor="Orange">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                         <td>Deal Pending, the deal has been submitted by the current SP and is pending approval 
+                         by the EBM team or has been approved but the solution is not sold</td>
+                     </tr>                     
+                     <tr>
+                         <td bgcolor="Red">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                         <td>Deal Closed, the deal has been approved by EBM and the solution has been 
+                             sold to the end customer by another SP.</td>
+                         <td bgcolor="#8A0808">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                         <td>Deal Closed, the deal has been approved by EBM and the solution has been 
+                             sold to the end customer by the current SP.</td>
+                     </tr>                                                                                                         
+                 </table>
+          </apex:outputLabel>
+      </apex:pageBlockSection>
+    </apex:pageBlock> 
+</apex:page>

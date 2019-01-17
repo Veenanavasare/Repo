@@ -1,0 +1,51 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    <div class="startselling">
+        
+        <!-- Intro -->
+        <h2>Get started</h2>
+        
+        <p class="mb-40">{!$Label.Field_Solutions} from AT&amp;T have distinct advantages in certain industries. The following use cases will help you understand the benefits to each industry.</p>
+        
+        <hr class="blue_hr" />
+        
+        <!-- Callout Circle List: Advantageous Industries -->
+        <div class="callout-circle-list">
+            <!-- Industry List -->
+            <ul class="mt-40 mb-40 list-inline main-view text-center">
+                <li>Hospitality</li>
+                <li>Healthcare</li>
+                <li>Oil &amp; Gas</li>
+                <li>Construction</li>
+                <li>Transportation</li>
+            </ul>
+            <!-- Industry List Mobile -->
+            <ul class="list-inline mobile-view text-center">
+                <li>Hospitality</li>
+                <li>Healthcare</li>
+                <li>Oil &amp; Gas</li>
+            </ul>
+            <ul class="list-inline mobile-view text-center">
+                <li>Construction</li>
+                <li>Transportation</li>
+            </ul>
+        </div>
+
+        <!-- Document List: Get Started -->
+        <div class="mb-40">
+            <apex:outputPanel >   
+                <apex:repeat value="{!DocMapFSStart}" var="docMap"> 
+                    <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                        <div class="document-row">
+                            <div class="file-type file-{!docMap.type}"></div>
+                            <div class="details">
+                                <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                <p><apex:outputText value="{!docMap.description}"/></p>
+                            </div>
+                        </div>
+                    </apex:outputLink>        
+                </apex:repeat>    
+            </apex:outputPanel>  
+        </div>
+        <p class="mb-30">Now that you’re ready to incorporate {!$Label.Field_Solutions} into your portfolio, reach out to your Channel Account Manager to get started.</p>
+    </div>
+</apex:page>

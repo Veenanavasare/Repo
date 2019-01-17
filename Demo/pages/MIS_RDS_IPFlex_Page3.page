@@ -1,0 +1,1083 @@
+<apex:page controller="RDSMISController" standardStylesheets="false" sidebar="false" showHeader="false" tabStyle="Apttus_Proposal__Proposal__c" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false">
+    <style> 
+        .exceptionSection input{
+            width: 100%;
+            height: 40px;
+            padding: 10px;
+        }
+        .PortableNumberSection{
+            margin-top:10px;
+        }
+        .PortableNumbersMessage{
+            color: #ea7400;
+        }
+        .rdsMarginT20 {margin-top: 20px;}
+        .m-b-10 {margin-bottom: 10px;}
+        .rdsMarginB20 {margin-bottom: 20px;}
+        .section-dividerHr {
+            width: 100%;
+            clear: both;
+            margin: 40px 0;
+            float: left;
+            border-bottom: 1px solid #d3d3d3;
+        }
+       .requestCSR {
+            background: #fff;
+            border: 1px solid #e5e5e5!important;
+            width: 182px!important;
+            height: 50px!important;
+            margin: 20px -1px;
+        }
+        img.CSRIcon {
+            margin: -3px 3px -13px -29px;
+        }
+        .CNAMSection .tooltip-inner{
+            width:300px !important;
+        }        
+        .fileUpload,.techQuestBtn {
+            width: 160px;
+            padding:7px 0;
+        }
+        .fileUpload input.upload {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+        .inputBoxCSR {
+            float:left;
+        }
+        
+        .uploadButton {
+            float: right;
+            margin-right: 58px;
+            margin-top: -32px;
+        }
+
+        .removeLink {
+            color:#ea7400 !important;
+            padding-left: 25px;
+            font-weight: 600;
+        }
+                
+        .downloadLink {
+            line-height: 22px;
+            color: #0568ae!important;
+            font-weight: 600;
+            word-wrap: break-word;
+        }
+        .uploadedFileNames {
+            line-height: 22px;
+        }
+        .popover{
+            max-width: 100%; /* Max Width of the popover (depending on the container!) */
+        }
+
+        .popover-title {
+             background-color: #fff; 
+             border-bottom: 0px solid #fff;
+             font-size : 12px !important;
+             margin-bottom: 0px !important;
+        }
+        .popover-content{
+             padding : 0px !important;
+        }
+        #chooseFileToUpload, #chooseFileToUploadTN, #chooseFileToUploadMoveReq, #chooseTechQuestFileToUpload{
+             display:none;
+        }
+        .form-errors{
+             color:#cf2a2a;
+             font-weight: 600;
+        }
+         .button-disabled {
+            background-color: #ccc !important;
+            border-color: #ccc !important;
+            pointer-events: none;
+        }
+        #uploadFileButton.btn.disabled, #uploadFileButton.btn[disabled], fieldset[disabled] #uploadFileButton.btn {
+            background-color: #ccc !important;
+            border-color: #ccc !important;
+        }
+        .IPFlexibleReachPlan td:first-child,.portInclFaxNum td:first-child,.directoryListingPhnNum td:first-child,.listingAddressInDLDA td:first-child, .moveReqInfo td:first-child{
+            width:10%;
+        }   
+        .portNumberTitle{
+            display:inline;
+        }
+        #PortingTNSection a{
+            color: #70c4e8;
+            font-family:omnes_att_iimedium !important;
+        }
+        .labelLink{
+            font-family:omnes_att_iimedium !important;
+        }
+        hr.portingTNSection-dividerHr {
+            width: 100%;
+            clear: both;
+            float: left;
+            border-bottom: 1px solid #d3d3d3;
+            margin: 20px 0px 30px 0px;
+        } 
+        .tooltipTrigger {
+            cursor: pointer;
+        }
+        hr.section-dividerHr {
+            margin: 20px 0px;
+        } 
+        .fileUploadTN{
+            position: relative;
+            overflow: hidden;
+            //margin-left: 219px;
+            width: 129px;
+        }
+        .fileUploadTN input.upload {
+            position: absolute;
+            top: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            filter: alpha(opacity=0);
+        }
+        .tooltip.fade.top.in{
+            display : none !important;
+        }
+        .portNumberToolTip{
+            margin-left: 8px;
+        }
+        .portedToolTip{
+            margin-left: 7px;
+        }
+        .portNumberCls{
+            margin-bottom:15px !important;
+        }
+        #panelFooter {
+            margin-bottom: 40px !important;
+            margin-top: 2px;
+        }
+    </style>
+    <apex:form id="MISRDSPage3" styleClass="MISRDSPage3">
+        <hr class="section-dividerHr" style="margin: 15px 0px 20px 0px !important;"/>
+        <apex:outputPanel id="PortableNumbersSection" styleClass="PortableNumberSection">
+            <div> <h3 class="rdsMarginT20 portNumberTitle">Portable Numbers</h3>
+            <span class="tooltipTrigger glyphicon glyphicon-question-sign portNumberToolTip" data-popover="true" data-html="true" data-original-title="<div>{!$Label.RDS_Refer_LAB} <a href='{!$Resource.TN_Porting_Guide}' target='_blank'>TN Porting Guide</a> for help."></span>
+            </div>
+            <div class="m-b-10 m-t-10">
+                It is critical you make sure you identify all of your phone numbers for proper porting to avoid porting issues on order.
+            </div>
+            
+            <div class="col-xs-12 p0 radioFields m-b-25">
+            <div>{!$Label.RDS_PORT_YSNO}
+                <span class="tooltipTrigger glyphicon glyphicon-question-sign portedToolTip" data-placement="right" rel="tooltip" data-toggle="tooltip" title="" data-original-title="{!$Label.RDS_PORT_LAB_TT}"></span></div>
+                <apex:selectRadio styleClass="required IPFlexibleReachPlan" value="{!portableNumbersOnExistingIPFlexPlan}">
+            <!-- <div>Are you porting numbers from a non- AT&amp;T carrier? &nbsp;
+                <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-placement="right" rel="tooltip" data-toggle="tooltip" title="" data-original-title="If moving numbers from an existing AT&T IPFlex site, your order manager will provide you with the required move forms."></span></div>
+                <apex:selectRadio styleClass="required IPFlexibleReachPlan" value="{!portableNumbersOnExistingIPFlexPlan}" onchange="fieldValidation(event,this,'radioSelection');PortingNumNonATTSelection('onRadio',this.value);"> -->
+                     <apex:selectOptions value="{!pickList1}" />
+             <apex:actionSupport event="onchange" reRender="PortingTNSectionUploadBlock" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';fieldValidation(event,this,'radioSelection');"/>
+                </apex:selectRadio>
+            </div>
+            
+           <apex:outputPanel id="portTypeBillingNewPhnNumSection">
+               <ul id="portTypeBillingNewPhnNum" class="col-xs-12 m-b-25 addressFields p0">
+                   <li class="m-r-3P col-md-4 p0" > 
+                       <div class="m-b-10">Port Type</div> 
+                       <apex:selectList value="{!portType}" styleClass="form-control required styled-select-small" onblur="fieldValidation(event,this,'dropDownSelection');" onchange="fieldValidation(event,this,'dropDownSelection');clearBillingTelephoneNumbers(this.value);" multiselect="false" size="1"> 
+                           <apex:selectOptions value="{!portTypeList}" /> 
+                       </apex:selectList> 
+                   </li> 
+                   <apex:outputPanel id="portTypeBillingPhoneNum" rendered="{!IF(portType == 'Full',true,false)}">
+                       <li class="col-md-4 p0 portTypeBillingPhnNum"> 
+                           <div class="m-b-10">Billing Phone Number</div> 
+                           <apex:inputText styleClass="form-control required" html-placeholder="0000000000" value="{!billingTelphoneNumber}" onblur="fieldValidation(event,this,'phoneNumber');" onkeyup="fieldValidation(event,this,'phoneNumber');"/> 
+                       </li> 
+                   </apex:outputPanel>
+                   <apex:outputPanel id="portTypeBillingNewPhoneNum" rendered="{!IF(portType == 'Partial',true,false)}">
+                       <li class="col-md-4 p0 portTypeNewPhnNum"> 
+                           <div class="m-b-10">New Billing Phone Number</div> 
+                           <apex:inputText styleClass="form-control required" html-placeholder="0000000000" value="{!newBillingTelephoneNumber}" onblur="fieldValidation(event,this,'phoneNumber');" onkeyup="fieldValidation(event,this,'phoneNumber');"/> 
+                       </li>
+                   </apex:outputPanel>
+               </ul>
+               <apex:outputPanel rendered="{!IF(portType == 'Full',true,false)}">
+                   <div class="PortableNumbersMessage portTypeBillingPhnNum m-b-25 sectionHeader-secondary"> 
+                       Do not include Modem, Alarm, DSL, Elevator, Pay Phones, Credit Card Machines, Postage Meter, Crisis Link lines <br /> 
+                       (used for disaster recovery), or POTS lines behind exisiting 800#'s in the telephone number range list. Toll-free numbers 
+                       may not be ported due to IP Toll-Free restriction. 
+                   </div>
+                </apex:outputPanel>
+               <apex:outputPanel rendered="{!IF(portType == 'Partial',true,false)}">
+                   <div class="PortableNumbersMessage m-b-25 sectionHeader-secondary"> 
+                       If you are porting the main Billed Telephone Number (BTN), you must choose any remaining TN that is not being ported for new BTN.
+                   </div> 
+               </apex:outputPanel>               
+           </apex:outputPanel>
+
+            <div class="m-b-10"><span class="sectionHeader-secondary">Ported Numbers </span></div>
+            <div class="col-xs-12 p0 radioFields portNumberCls">
+                <div>Will the port include fax number? &nbsp;                    
+                    <span class="glyphicon glyphicon-question-sign" data-popover="true" data-html="true" data-original-title="<div style='width:535px;font-family:omnes_att_iimedium;font-size:12px;'>For IP-PBX, refer to the <a href='{!certifiedIPPBXListDocumentId}' target='_blank'>Certified IP-PBX Equipment </a>list and check the Fax Supported Column.
+                                                      CPE must support G.711 fax and G.729 voice CODECS to support T.38 fax or must use PSTN line.
+                                                      Guidance to ensure you have the appropriate equipment configuration can be found at <div><a href='http://www.corp.att.com/bvoip/ipflex/training' target='_blank'>
+                                                      http://www.corp.att.com/bvoip/ipflex/training/</a></div> Log in: Username = att Password = attvoip. Otherwise,
+                                                      it is recommended to order a Plain Old Telephone Service (POTS) line for your fax machine."></span></div>
+                 <apex:selectRadio styleClass="required portInclFaxNum" value="{!willThePortIncludeFaxNumber}" onchange="fieldValidation(event,this,'radioSelection');">
+                     <apex:selectOptions value="{!pickList1}" />
+                </apex:selectRadio>
+            </div>
+            
+            <apex:outputPanel styleClass="CSRSection" id="CSRUploadedFiles">
+                <apex:outputPanel rendered="{!IF((portType == 'Partial' || portType == 'Full'),true,false)}">
+                    <div class="m-b-25">
+                        A Customer Service Record (CSR) should be requested from your Current Local Service Provider or may be available to request from the AT&amp;T Port-In request link below:<br />
+                        <a type="button" class="requestCSR btn secondary" href="http://www.corp.att.com/lnp/csir_port_in.html" target="_blank">
+                            <apex:image value="{!($Resource.request_CSR_Icon)}" styleClass="CSRIcon"/>Request CSR</a><br/>
+                        <div class="m-b-10">
+                            Please upload each CSR that includes all the Telephone Numbers requesting to be ported.
+                        </div>
+                        <strong> Upload File </strong>Supported file formats: .doc, .docx, .pdf Maximum file size: 1 MB
+                    </div> 
+                     <ul class="col-xs-12 m-b-10 p0 addressFields">
+                         <li class="m-r-3P" style="width:54%;float:left;">
+                             <div class="CSRFile">
+                                <input id="chooseFileToUpload" class="CSRUploadFileBtnBrowse" type="file" readonly="true" placeholder="No file selected" multiple="multiple" onchange="changePath();fieldValidation(event,this,'CSRFile');"/>
+                                <input type="text" id="filePath" class="required" placeholder="No file selected" readonly="true"/>                         
+                             </div>
+                         </li>
+                         <li class="m-r-3P" style="width:20%;">
+                             <div class="fileUpload btn btn-primary" onclick="CSRChooseFile();">Choose File</div>
+                         </li>
+                         <li class="m-r-3P" style="width:16%;">
+                            <div id="uploadFileButton" class="fileUpload btn btn-primary button" disabled="true" onclick="uploadFile('CSRSection','chooseFileToUpload','filePath', 'CSR_Upload_btn', 'CSR-form-errors');">Upload</div>
+                         </li>
+                     </ul>
+                    <div class="CSR-form-errors form-errors"></div>
+                    <div class="col-xs-12 p0">
+                        <div class="sectionHeader-secondary m-b-15">Uploaded CSR files:</div>
+                        <script>
+                            CSRFilesObject = ("{!csrUploadedFileNameURLMap}").replace(/'/g, "\\'");
+                            function clearAlreadyAttachedMsg(){
+                                $(".CSR-form-errors").hide();
+                            }                
+                        </script>
+                        <apex:repeat id="reloadOnRemove" value="{!csrUploadedFileNameURLMap}" var="key">    
+                            <apex:outputlink value="/servlet/servlet.FileDownload?file={!csrUploadedFileNameURLMap[key]}" target="_blank" styleClass="downloadLink">{!key}</apex:outputlink>
+                            <apex:commandLink id="CSRRemoveLink" value="Remove" rendered="{!IF(csrUploadedFileNameURLMap[key] != null || csrUploadedFileNameURLMap[key] != '',true,false)}" onclick="removeUploadedId('{!JSENCODE(key)}','CSRSection');clearAlreadyAttachedMsg();return false;" immediate="true" styleClass="removeLink"/><br />
+                        </apex:repeat>
+                    </div>
+                </apex:outputPanel>
+            </apex:outputPanel>
+            <div><hr class="portingTNSection-dividerHr" /></div>
+            <!-- Porting TN Spread Sheet Block-->
+            <apex:outputPanel id="PortingTNSectionUploadBlock">
+            <apex:outputPanel id="PortingTNSection" rendered="{!IF(portableNumbersOnExistingIPFlexPlan == 'Yes',true,false)}" styleClass="PortingTNSection">
+                    <div class="sectionHeader-primary m-t-10">{!$Label.PORT_TN_MSG1}</div>
+                    <div class="rdsMarginT20">{!$Label.PORT_TN_MSG2}</div>
+                    <div class="rdsMarginT20"><a type="button" class="requestPortTN portTNBtn secondary labelLink" href="{!$Resource.TN_Port_List}" target="_blank">{!$Label.PORT_TN_MSG_TEMPL}
+                        </a>
+                        </div>
+                    
+                    <div class="rdsMarginB20 rdsMarginT20">
+                        {!$Label.PORT_TN_MSG3}<a type="button" class="requestTN secondary labelLink" href="https://partnerexchange.att.com/apex/support_center" target="_blank">
+                        {!$Label.SUPPORT_CENT_LAB}</a>{!$Label.PORT_TN_MSG4}
+                    </div>
+                    <div class="m-b-10">
+                    <strong> Upload File </strong>{!$Label.PORT_TN_FILE_FORMAT}</div>
+                 <ul class="col-xs-12 m-b-10 p0 errorMessageDisplay">
+                     <li class="m-r-3P" style="width:54%;float:left;">
+                        <div class="PortTNFile">
+                            <input id="chooseFileToUploadTN" class="TNUploadFileBtnBrowse" type="file" readonly="true" placeholder="No file Selected" multiple="multiple" onchange="changePathOnFileSelect('TNUploadFileBtnBrowse','filePathTN','fileUploadTN');fieldValidation(event,this,'PortTNFile');" />
+                            <input type="text" id="filePathTN" class="required" placeholder="No file Selected" readonly="true" />
+                        </div>
+                     </li>
+                     <li class="m-r-3P" style="width:20%;display:inline-block;">
+                         <div class="fileUpload btn btn-primary {!IF(TNmapSize ==1,'button-disabled','')}" onclick="onClickOfChoose('TNUploadFileBtnBrowse','filePathTN','TN_Upload_btn');" style="width:160px;">Choose File</div>
+                     </li>
+                     <li class="m-r-3P" style="width:16%;display:inline-block;">
+                         <div id="TN_Upload_btn" class="fileUploadTN btn btn-primary button-disabled" onclick="uploadFile('portingTNSection','chooseFileToUploadTN','filePathTN', 'TN_Upload_btn', 'portingTNSectionError');" style="width:160px;">Upload</div>
+                     </li>
+                 </ul>
+                <div class="form-errors portingTNSectionError"></div>
+                <apex:outputPanel id="PortTNUploadedFiles" styleClass="col-xs-12 p0">
+                    <div class="rdsMarginT20 sectionHeader-secondary uploadedFileNames"><strong>{!$Label.PORT_TN_MSG5}</strong></div>
+                    <script>
+                            PortTNObject = ("{!TNGuideUploadedFileNameURLMap}").replace(/'/g, "\\'");
+                    </script>
+                            <ul class="col-xs-12 p0 uploadedFileList">
+                            <apex:repeat id="reloadTNOnRemove" value="{!TNGuideUploadedFileNameURLMap}" var="key">    
+                                <li class="" style="">
+                                <apex:outputlink value="/servlet/servlet.FileDownload?file={!TNGuideUploadedFileNameURLMap[key]}" target="_blank" styleClass="downloadLink">{!key}</apex:outputlink>
+                                <apex:commandLink id="PortTNRemoveLink" value="Remove" rendered="{!IF(TNGuideUploadedFileNameURLMap[key] != null || TNGuideUploadedFileNameURLMap[key] != '',true,false)}" onclick="removeUploadedId('{!JSENCODE(key)}','portingTNSection');" status="loading" immediate="true" styleClass="removeLink" reRender="reloadTNOnRemove">
+                                   <apex:param assignTo="{!removeAttachmentId}" name="removeAttachmentId" value="{!TNGuideUploadedFileNameURLMap[key]}" /> 
+                                    <apex:param assignTo="{!removeAttachmentName}" name="removeAttachmentName" value="{!key}" /> 
+                                </apex:commandLink>
+                                 </li>
+                            </apex:repeat>
+                            </ul>
+                        <hr class="section-dividerHr" />
+                    </apex:outputPanel> 
+            </apex:outputPanel> 
+            
+            
+        </apex:outputPanel>  
+        </apex:outputPanel>  
+        
+        <apex:outputPanel id="NewTelephoneNumSection">
+            <div class="sectionHeader-primary m-b-25">New Telephone Numbers</div>
+            <div class="m-b-25">
+                Please enter your desired NPA NXX for any new Local Phone Numbers and Virtual phone Numbers.<br />
+                The request is not guaranteed and is dependent upon availability.
+            </div>
+            <div class="m-b-25"><span class="sectionHeader-secondary">Number of Local Phone Numbers: </span><span>{!NoOfLocalPhoneNumbers}</span></div>
+            
+            <apex:outputPanel id="LocalPhoneNumInputFields" rendered="{!IF(NoOfLocalPhoneNumbers == 0,false,true)}">
+                <div class="m-b-25">NPA NXX (Area Code/Prefix)</div>
+                <ul class="col-xs-12 addressFields m-b-25 p0">
+                    <li class="m-r-3P" >
+                        <div class="m-b-10">Requested Primary NPA/NXX</div>
+                        <apex:inputText value="{!Local_Phone_Number_PrimaryInfo}" styleClass="form-control"  html-placeholder="Optional" onkeyup="fieldValidation(event,this,'NPANXXCode');"/>
+                    </li>                                            
+                    <li>
+                        <div class="m-b-10">Requested Secondary NPA/NXX</div>
+                        <apex:inputText value="{!Local_Phone_Number_SecondaryInfo}" styleClass="form-control"  html-placeholder="Optional" onkeyup="fieldValidation(event,this,'NPANXXCode');"/>
+                    </li>
+                </ul>
+            </apex:outputPanel>
+            
+            <div class="m-b-25"><span class="sectionHeader-secondary">Number of Virtual Phone Numbers: </span><span>{!NoOfVirtualPhoneNumbers}</span></div>
+            
+            <apex:outputPanel id="VirtualPhoneNumInputFields" rendered="{!IF(NoOfVirtualPhoneNumbers == 0,false,true)}">
+                <div class="m-b-25">NPA NXX (Area Code/Prefix)</div>
+                <ul class="col-xs-12 addressFields p0 m-b-25">
+                    <li class="m-r-3P" >
+                        <div class="m-b-10">Requested Primary NPA/NXX</div>
+                        <apex:inputText value="{!Virtual_Phone_Number_PrimaryInfo}" styleClass="form-control"  html-placeholder="Optional" onkeyup="fieldValidation(event,this,'NPANXXCode');"/>
+                    </li>                                            
+                    <li>
+                        <div class="m-b-10">Requested Secondary NPA/NXX</div>
+                        <apex:inputText value="{!Virtual_Phone_Number_SecondaryInfo}" styleClass="form-control"  html-placeholder="Optional" onkeyup="fieldValidation(event,this,'NPANXXCode');"/>
+                    </li>
+                </ul>
+            </apex:outputPanel> 
+            
+            <div class="sectionHeader-secondary m-b-10">PBX Restrictions</div> 
+            <div class="m-b-25">
+                By default, Collect Calling and 3rd Party Billing will apply to all of your telephone numbers.<br />
+                You can restrict these features by selecting a different option in the dropdown list.
+            </div> 
+
+            <ul class="col-xs-12 addressFields p0 m-b-25">
+                <li style="width: 38%;">
+                    <div class="m-b-10">Collect Calling and 3rd Party Billing</div>
+                    <apex:selectList value="{!Collect_Calling_and_3rd_Party_BillingInfo}" multiselect="false" size="1" onchange="fieldValidation(event,this,'dropDownSelection');" onblur="fieldValidation(event,this,'dropDownSelection');" styleClass="form-control required styled-select-small">
+                        <apex:selectOptions value="{!CCPartyBillingInfo}" /> 
+                    </apex:selectList> 
+                </li>                                            
+            </ul>            
+            <ul class="col-xs-12 p0 m-b-25 exceptionSection">
+                <div class="m-b-10">Please note any exceptions</div>
+                <apex:input value="{!Please_note_any_exceptionsInfo}" html-placeholder="Optional - up to 50 characters" html-maxlength="50" styleClass="myTextareaClass" onkeyup="CharLimit(this, '50');"/>
+                <apex:outputLabel value="50 characters remaining" styleClass="additionalInfoMsg" style="display: block;text-align: right;margin-top: 6px;margin-bottom: 16px;font-size:12px;color:#000;"/>
+            </ul> 
+
+            <div class="m-b-25">Please select a restriction option for your <span class="sectionHeader-secondary">Calling Name (CNAM)</span> Display.</div>            
+            <apex:outputPanel id="CNAMInputFields">
+                <ul class="col-xs-12 addressFields p0">
+                    <li class="m-r-3P col-md-4 p0 CNAMSection">
+                        <div class="m-b-10">Calling Name (CNAM) Display &nbsp;&nbsp;<span class="tooltipTrigger glyphicon glyphicon-question-sign" data-placement="bottom" rel="tooltip" data-toggle="tooltip" title="" data-original-title="This is the name that will appear on the caller ID display of the called party on an outbound call."></span></div>
+                        <apex:selectList value="{!Calling_Name_DisplayInfo}" multiselect="false" size="1" styleClass="form-control styled-select-small" onchange="emptycustomerCNAM(this.value);">
+                            <apex:selectOptions value="{!CNAMList }" />
+                        </apex:selectList> 
+                    </li>
+                    <li class="m-r-3P col-md-4 p0">
+                        <apex:outputPanel id="CustomerSpecifiedCNAM" >
+                            <apex:outputPanel rendered="{!IF(Calling_Name_DisplayInfo == 'Allow Customer Specified CNAM',true,false)}">
+                                <div class="m-b-10">Customer Specified CNAM</div>
+                                <apex:inputText value="{!Customer_Specified_CNAMInfo}" styleClass="form-control required"  html-placeholder="Up to 15 characters" onblur="fieldValidation(event,this,'CNAMFieldBlur');" onkeyup="fieldValidation(event,this,'CNAMFieldKeyUp');"/>                        
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </li>
+                </ul>
+            </apex:outputPanel>            
+            <hr class="section-dividerHr"/>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="DirectoryListingSection">
+            <div class="sectionHeader-primary m-b-25">Directory Listing</div>
+            <div class="col-xs-12 p0 radioFields">
+                <div>Directory Listing needed for Phone Number?</div>
+                <apex:selectRadio value="{!Directory_Listing_for_Phone_NumberInfo}" styleClass="required directoryListingPhnNum" onchange="fieldValidation(event,this,'radioSelection');emptyDirectoryListingFields(this.value);">
+                    <apex:selectOptions value="{!pickList1}" />
+                </apex:selectRadio>
+            </div>
+            <apex:outputPanel id="DirectoryListingInputFields">
+                <apex:outputPanel rendered="{!IF(Directory_Listing_for_Phone_NumberInfo == 'Yes',true,false)}">
+                    <ul class="col-xs-12 addressFields p0 m-b-25 m-t-25">
+                        <li class="m-r-3P" >
+                            <div class="m-b-10">Listing Category</div>
+                            <apex:inputText value="{!Listing_CategoryInfo}" styleClass="form-control required"  html-placeholder="Up to 50 characters" onkeyup="fieldValidation(event,this,'DirectoryListingCategory');" onblur="fieldValidation(event,this,'DirectoryListingCategory');"/>
+                        </li>                                            
+                        <li class="m-r-3P">
+                            <div class="m-b-10">Listed Number</div>
+                            <apex:inputText value="{!Listed_NumberInfo}" styleClass="form-control required"  html-placeholder="0000000000" onkeyup="fieldValidation(event,this,'phoneNumber');" onblur="fieldValidation(event,this,'phoneNumber');"/>
+                        </li>
+                        <li>
+                            <div class="m-b-10">Listed Name</div>
+                            <apex:inputText value="{!Listed_NameInfo}" styleClass="form-control required"  html-placeholder="Up to 75 characters"  onblur="fieldValidation(event,this,'DirectoryListingName');" onkeyup="fieldValidation(event,this,'DirectoryListingName');"/>
+                        </li>
+                    </ul>
+                    
+                    <div class="col-xs-12 p0 radioFields m-b-25">
+                        <div>Do you want the Listed Address in the Directory Listing &amp; Directory Assistance?</div>
+                        <apex:selectRadio value="{!Directory_Listing_and_Directory_Asistance_for_AddressInfo}" styleClass="required listingAddressInDLDA" onchange="fieldValidation(event,this,'radioSelection');">
+                            <apex:selectOptions value="{!pickList1}" />
+                        </apex:selectRadio>
+                    </div>
+                    
+                    <ul class="col-xs-12 addressFields p0">
+                        <li style="width:48%;">
+                            <div class="m-b-10">Listing Options</div>
+                            <apex:selectList value="{!Listing_OptionInfo}" multiselect="false" size="1" onblur="fieldValidation(event,this,'dropDownSelection');" onchange="fieldValidation(event,this,'dropDownSelection');" styleClass="form-control required styled-select-small">
+                                <apex:selectOptions value="{!ListingOptionList }" />
+                            </apex:selectList> 
+                        </li>                                            
+                    </ul>                
+                </apex:outputPanel>
+            </apex:outputPanel>
+            <hr class="section-dividerHr"/>
+        </apex:outputPanel>
+        <!-- Move Requirements Section -->
+        
+    <apex:outputPanel id="MoveRequirementSection">
+    <div class="sectionHeader-primary">{!$Label.MOVE_REQ_TITLE}</div>
+    <div class="col-xs-12 p0 m-t-20 m-b-20 radioFields">
+                    <div class="m-b-10">{!$Label.MOVE_SELECTQ}</div>
+                    <apex:selectRadio value="{!isMoveRequirementSelected}" styleClass="required moveReqInfo" >
+                        <apex:selectOption itemLabel="Yes" itemValue="true" />
+                        <apex:selectOption itemLabel="No" itemValue="false" />
+                        <apex:actionSupport event="onchange" reRender="MoveRequirementSectionUpload" onsubmit="document.body.style.cursor = 'wait'" oncomplete="document.body.style.cursor = 'auto';fieldValidation(event,this,'radioSelection');"/>
+                    </apex:selectRadio>
+                </div>
+    <apex:outputPanel id="MoveRequirementSectionUpload">
+       <apex:outputPanel rendered="{!IF(isMoveRequirementSelected == 'true',true,false)}">
+        <div id="MoveRequirementUploadBlock" class="MoveRequirementSectionUpload">
+                    <div class="m-t-40"><strong>{!$Label.MOVE_FORM_DOWNLD_LABEL}</strong></div>
+                    <div><a type="button" class="requestMoveReq MoveReqBtn secondary labelLink" href="{!$Resource.Move_Form}" target="_blank">{!$Label.MOVE_FORM_TEMPL}
+                        </a>
+                        </div>
+                        <div><a type="button" class="requestMoveReq MoveReqBtn secondary labelLink" href="{!$Resource.Number_Reassignment_Agreement}" target="_blank">{!$Label.MOVE_REASSIGN_TEMPL}
+                        </a>
+                        </div>
+                    <div class="m-b-10 m-t-10">
+                        {!$Label.RDS_MOVE_REQ_MSG1}
+                    </div>
+                    <div class="m-b-10 rdsMarginT20">
+                    <strong> {!$Label.UPLOAD_FILE_LAB} </strong>{!$Label.MOVE_FORM_FILE_FORMAT}</div>
+                 <ul class="col-xs-12 m-b-10 p0 errorMessageDisplay">
+                     <li class="m-r-3P" style="width:54%;float:left;">
+                        <div class="MoveReqFile">
+                            <input id="chooseFileToUploadMoveReq" class="MoveReqUploadFileBtnBrowse" type="file" readonly="true" placeholder="No file Selected" multiple="multiple" onchange="changePathOnFileSelect('MoveReqUploadFileBtnBrowse','filePathMoveReq','fileUploadMoveReq');"/>
+                            <input type="text" id="filePathMoveReq" placeholder="No file Selected" onchange="changePathOnFileSelect('MoveReqUploadFileBtnBrowse','filePathMoveReq','fileUploadMoveReq');" readonly="true" />
+                        </div>
+                     </li>
+                     <li class="m-r-3P" style="width:20%;display:inline-block;">
+                         <div class="fileUpload btn btn-primary {!IF(moveMapSize==2,'button-disabled','')}" onclick="onClickOfChoose('MoveReqUploadFileBtnBrowse','filePathMoveReq','MoveReq_Upload_btn');" style="width:160px;">Choose File</div>
+                     </li>
+                     <li class="m-r-3P" style="width:16%;display:inline-block;">
+                         <div id="MoveReq_Upload_btn" class="fileUploadMoveReq btn btn-primary button-disabled" onclick="uploadFile('MoveReqSection','chooseFileToUploadMoveReq','filePathMoveReq', 'MoveReq_Upload_btn', 'MoveReqSectionError');" style="width:160px;">Upload</div>
+                     </li>
+                 </ul>
+                <div class="form-errors MoveReqSectionError"></div>
+                <apex:outputPanel id="MoveReqUploadedFiles" styleClass="col-xs-12 p0">
+                    <div class="rdsMarginT20 sectionHeader-secondary uploadedFileNames"><strong>{!$Label.UPLOADED_FILES}</strong></div>
+                            <ul class="col-xs-12 p0 uploadedFileList">
+                            <apex:repeat id="reloadMoveReqOnRemove" value="{!moveSectionUploadedFileNameURLMap}" var="key">    
+                                <li class="" style="">
+                                <apex:outputlink value="/servlet/servlet.FileDownload?file={!moveSectionUploadedFileNameURLMap[key]}" target="_blank" styleClass="downloadLink">{!key}</apex:outputlink>
+                                <apex:commandLink id="MoveReqRemoveLink" value="Remove" rendered="{!IF(moveSectionUploadedFileNameURLMap[key] != null || moveSectionUploadedFileNameURLMap[key] != '',true,false)}" onclick="removeUploadedId('{!JSENCODE(key)}','MoveReqSection');" status="loading" immediate="true" styleClass="removeLink" reRender="reloadMoveReqOnRemove">
+                                   <apex:param assignTo="{!removeAttachmentId}" name="removeAttachmentId" value="{!moveSectionUploadedFileNameURLMap[key]}" /> 
+                                    <apex:param assignTo="{!removeAttachmentName}" name="removeAttachmentName" value="{!key}" /> 
+                                </apex:commandLink>
+                                 </li>
+                            </apex:repeat>
+                            </ul>
+                       <!-- <hr class="section-dividerHr" /> -->
+                    </apex:outputPanel> 
+            </div>
+        </apex:outputPanel>
+    </apex:outputPanel>
+    <hr class="section-dividerHr"/>
+    </apex:outputPanel>
+
+        
+        <apex:outputPanel id="TechnicalQuestionnaireSection">
+            <div class="sectionHeader-primary m-b-25">Technical Questionnaire</div>
+            <div class="sectionHeader-secondary m-b-15">A Technical Questionnaire can be downloaded from the link below:</div>
+            <a href="{!techQFileId}" target="_blank" class="downloadLink">Technical Questionnaire</a>
+            <div class="sectionHeader-secondary m-b-25 m-t-15">The Technical Questionnaire is a required form to complete the ordering process. You may attach the completed form here or if you need additional assistance, you may send via email to the order manager assigned to your order.</div>
+            <strong> Upload File </strong>Supported file formats: .doc, .docx, .pdf Maximum file size: 1 MB
+            <ul class="col-xs-12 m-b-10 m-t-15 p0 addressFields">
+                <li class="m-r-3P" style="width:54%;float:left;">
+                    <div>
+                        <input id="chooseTechQuestFileToUpload" class="techQuestUploadFileBtnBrowse" type="file" readonly="true" placeholder="No file selected" multiple="multiple" onchange="techQuestChangePath();"/>
+                        <input type="text" id="techQuestFilePath" placeholder="No file selected" readonly="true"/>                         
+                    </div>
+                </li>
+                <li class="m-r-3P" style="width:20%;">
+                    <apex:outputPanel rendered="{!techQMapSize ==0}">
+                        <div class="techQuestBtn btn btn-primary" id="techQuestChooseBtn" onclick="techQuestChooseFile();">Choose File</div>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!techQMapSize !=0}">
+                        <div class="techQuestBtn btn btn-primary" disabled="true">Choose File</div>
+                    </apex:outputPanel>
+                </li>
+                <li class="m-r-3P" style="width:16%;">
+                    <div class="techQuestBtn btn btn-primary" id="techQuestUploadBtn" disabled="true" onclick="uploadTechQuestFile();">Upload</div>
+                </li>
+            </ul>
+            <div class="techQuest-form-errors form-errors m-b-25"></div>
+            <div class="col-xs-12 p0 m-b-25">
+                <div class="sectionHeader-secondary m-b-15">Uploaded Technical Questionnaire files:</div>
+                <apex:outputPanel rendered="{!IF(techQMapSize != 0,true,false)}">
+                    <apex:repeat value="{!techQUploadedFileNameURLMap}" var="key">              
+                        <apex:outputlink value="/servlet/servlet.FileDownload?file={!techQUploadedFileNameURLMap[key]}" target="_blank" styleClass="downloadLink">{!key}</apex:outputlink>
+                        <apex:commandLink value="Remove" rendered="{!IF(techQUploadedFileNameURLMap[key] != null || techQUploadedFileNameURLMap[key] != '',true,false)}" onclick="removeTechQuestDoc('{!JSENCODE(key)}');return false;" immediate="true" styleClass="removeLink"/><br />
+                    </apex:repeat>                  
+                </apex:outputPanel>
+            </div>           
+        </apex:outputPanel>        
+        
+        <apex:outputPanel id="BottomSectionMISRDS">
+            <apex:outputPanel id="MISRDSPaginationSection">
+                <ul class="pageNavigationBtnSection" style="margin-top: 12px;">
+                    <li id="page1" onclick="pageNavigation(event,this);" class="{!IF(MISRDSPage1Status == 'completelyFilled','completedPage statusImgSuccess','')} {!IF(MISRDSPage1Status == 'partiallyFilled','inCompletePage','')}">Page 1</li>
+                    <li id="page2" onclick="pageNavigation(event,this);" class="{!IF(MISRDSPage2Status == 'completelyFilled','completedPage statusImgSuccess','')} {!IF(MISRDSPage2Status == 'partiallyFilled','inCompletePage','')}">Page 2</li>
+                    <li id="page3" onclick="pageNavigation(event,this);" class="currentPage">Page 3</li>
+                </ul>
+            </apex:outputPanel>
+            <apex:outputPanel id="errorTextForIncompleteFields">
+                <apex:outputPanel styleClass="orangeText naviagtionOrangeLink"  style="margin-top: -29px; margin-bottom: 30px;"  rendered="{!MISRDSValidationErrorMsg}">
+                    <p>You will not be able to submit the RDS until all required fields are completed for all sites;</p> 
+                    <p>however, you can proceed now to another page and come back to complete the blank fields.</p> 
+                    <a href="javascript:void(0)" onclick="navigateOnLink('{!MISRDSPageNumber}');" class="linkToNavigate">Click here to proceed</a>
+                </apex:outputPanel>
+            </apex:outputPanel>
+            <hr class="blue_hr" id="panelFooter" />
+            <div id="mainId" class="pull-right">                            
+                <apex:commandButton value="Save & Exit" styleClass="btn btn-primary" style="width: 175px !important;padding: 7px 20px !important;background:#FFFFFF !important; color:#595959 !important;border: 1px solid #595959 !important; margin-right:20px; font-family:omnes_att_iimedium !important;Font-Size:16px ! important;" onclick="saveAndExit('{!siteselected}','{!MISRDSPageNumber}');return false;" />
+                <apex:commandButton styleClass="btn btn-primary NextSiteBtn" style="width: 175px !important;padding: 7px 20px !important;font-family:omnes_att_iimedium !important; font-Size:16px; ! important;" value="{!SubmitButtonLabel}" rendered="{!IF(SubmitButtonLabel == 'Next Site',true,false)}" onclick="viewNextSite('{!MISRDSPageNumber}');return false;" />
+                <apex:commandButton styleClass="btn btn-primary SubmitBtn" style="width: 175px !important;padding: 7px 20px !important;font-family:omnes_att_iimedium !important; font-Size:16px; ! important;" value="{!SubmitButtonLabel}" rendered="{!IF(SubmitButtonLabel != 'Next Site',true,false)}" onclick="SubmitBtnClick('{!siteselected}','{!MISRDSPageNumber}');return false;" disabled="true"/>
+            </div>          
+        </apex:outputPanel>
+        
+        <apex:actionFunction name="ajaxSaveAndExit" action="{!SaveandExit}" reRender=""  status="loading" oncomplete="">
+            <apex:param name="saveSiteId" value="" assignTo="{!siteselected}" />
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage3Status}" name="MISRDSPage3Status" value="" />
+        </apex:actionFunction> 
+        <apex:actionFunction name="setBestAvailDate" action="{!setBestAvailDate}" rerender="">
+            <apex:param name="BestAvailDate" value="" assignTo="{!BestAvailDate}"/>
+        </apex:actionFunction> 
+        <apex:actionFunction id="filterSites" name="handlefilterSites" action="{!handlefilterSites}" reRender="leftPanelContainerForm" status="loading" oncomplete="window.scrollTo(0, 0);">
+            <apex:param name="quoteId" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="passSite" action="{!saveOnToggleSite}" reRender="leftPanelContainerForm"  status="loading" oncomplete="window.scrollTo(0, 0);">
+            <apex:param name="goToSiteId" value="" />
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage3Status}" name="MISRDSPage3Status" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="takeToNextSite" action="{!navigateToNextSite}" reRender="leftPanelContainerForm"  status="loading" oncomplete="window.scrollTo(0, 0);">
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage3Status}" name="MISRDSPage3Status" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="saveCompleteRDS" action="{!SubmitRDS}" reRender="pageBodyContainer,ciError,crddoverlaycontainer" oncomplete="checkCIError();displaycrddoverlay();" status="loading">
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage3Status}" name="MISRDSPage3Status" value="" />
+            <apex:param name="rdsFlag" value="" />
+        </apex:actionFunction>        
+        
+        <apex:actionFunction name="saveCurrentPageData" action="{!saveCompleteRDS}" oncomplete="dataSavedOnCurrentPage();" status="loading">
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage3Status}" name="MISRDSPage3Status" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="navigateToNewPage" action="{!updatePageToShow}" reRender="pageBodyContainer" oncomplete="loadSiteRDSdata();" status="loading">
+            <apex:param assignTo="{!MISRDSPageToShow}" name="MISRDSPageToShow" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="loadSiteRDSdata" action="{!loadSiteRDSdata}" reRender="pageBodyContainer,leftPanelContainerForm" oncomplete="initializePageValidationOnPageLoad('{!MISRDSPageNumber}','{!MISRDSPage1Status}','{!MISRDSPage2Status}','{!MISRDSPage3Status}');" status="loading" />
+        <apex:actionFunction name="showErrorMsgAtNavigation" action="{!showErrorMsgAtNavigation}" reRender="errorTextForIncompleteFields" status="loading" />          
+        <apex:actionFunction name="emptyDirectoryListingFields" action="{!emptyDirectoryListingFields}" reRender="DirectoryListingInputFields" oncomplete="checkIfSubmitBtnCanBeEnabled();" status="loading">
+            <apex:param assignTo="{!Directory_Listing_for_Phone_NumberInfo}" name="Directory_Listing_for_Phone_NumberInfo" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="emptycustomerCNAM" action="{!emptycustomerCNAM}" reRender="CustomerSpecifiedCNAM" oncomplete="checkIfSubmitBtnCanBeEnabled();" status="loading"> 
+            <apex:param assignTo="{!Calling_Name_DisplayInfo}" name="Calling_Name_DisplayInfo" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="reloadCSRMap" action="{!reloadCSRMap}" reRender="CSRUploadedFiles" onComplete="removeErrorMsgForCSR();" status="loading"/>  
+        <apex:actionFunction name="reloadPortTNMap" action="{!reloadTNGuideMap}" reRender="PortingTNSection,reloadTNOnRemove" status="loading" oncomplete="checkIfSubmitBtnCanBeEnabled();"/>  
+        <apex:actionFunction name="reloadMoveReqMap" action="{!reloadMoveSectionMap}" reRender="MoveRequirementSectionUpload,reloadMoveReqOnRemove" status="loading"/> 
+        <apex:actionFunction name="reloadTechQuestMap" action="{!reloadTechQMap}" reRender="TechnicalQuestionnaireSection" onComplete="" status="loading"/>  
+        <apex:actionFunction name="clearBillingTelephoneNumbers" action="{!clearBillingTelephoneNumbers}" reRender="portTypeBillingNewPhnNumSection,CSRUploadedFiles" oncomplete="checkIfSubmitBtnCanBeEnabled();" status="loading">
+            <apex:param assignTo="{!portType}" name="portType" value="" />
+        </apex:actionFunction>
+    </apex:form>
+
+    <script>
+        $('body').popover({ selector: '[data-popover]', trigger: 'click hover', placement: 'right', delay: {show: 50, hide: 2000}}); 
+    </script>
+ <!-- this fix is specific to the tooltip/popover -->
+        <script>
+        var originalLeave = $.fn.popover.Constructor.prototype.leave;
+        $.fn.popover.Constructor.prototype.leave = function(obj){
+          var self = obj instanceof this.constructor ?
+            obj : $(obj.currentTarget)[this.type](this.getDelegateOptions()).data('bs.' + this.type)
+          var container, timeout;
+        
+          originalLeave.call(this, obj);siteListPanel
+        
+          if(obj.currentTarget) {
+            container = $(obj.currentTarget).siblings('.popover')
+            timeout = self.timeout;
+            container.one('mouseenter', function(){
+              clearTimeout(timeout);
+              container.one('mouseleave', function(){
+                $.fn.popover.Constructor.prototype.leave.call(self, self);
+              });
+            })
+          }
+        };
+    
+    </script>
+    
+    <script>
+        document.getElementById("uploadBtn").onclick = function () {
+        document.getElementById("uploadFile").value = this.value;
+        };
+    </script>
+    
+    <script>
+    var CSRFilesObject = ("{!csrUploadedFileNameURLMap}").replace(/'/g, "\\'");
+    var PortTNObject = ("{!TNGuideUploadedFileNameURLMap}").replace(/'/g, "\\'");
+    
+    function CSRChooseFile() {
+        $(".CSRUploadFileBtnBrowse").val('');
+        $('#uploadFileButton').attr("disabled", "disabled");
+        $("#filePath").val('');
+        $(".CSRUploadFileBtnBrowse").click();
+    }
+    
+    function changePath(){
+        if($(".CSRUploadFileBtnBrowse").val()){
+            $("#uploadFileButton").removeAttr('disabled'); 
+            $("#filePath").val(
+                $(".CSRUploadFileBtnBrowse").val().substring(
+                    $(".CSRUploadFileBtnBrowse").val().lastIndexOf('\\')+1));
+        } 
+    }  
+    
+    function onClickOfChoose(buttonClass,filePath,uploadBtnObj) {
+            $('#'+uploadBtnObj).addClass("button-disabled");
+            $("."+buttonClass).val('');
+             document.getElementById(filePath).value = '';
+            $("."+buttonClass).click();
+        }
+        function changePathOnFileSelect(buttonClass,filePath,fileUpload){
+                $("."+fileUpload).removeClass('button-disabled'); 
+                $("#"+filePath).val(
+                $("."+buttonClass).val().substring(
+                $("."+buttonClass).val().lastIndexOf('\\')+1));
+       }
+
+    function removeErrorMsgForCSR(){
+        $('.CSRFile').find('.errorText').remove();
+        $('#filePath').removeClass('errorFieldBorderColor');
+        checkIfSubmitBtnCanBeEnabled();
+    }
+    
+    </script>
+    <script type="text/javascript">
+        var chunkSize = 950000;        //Maximum Javascript Remoting message size is 1,000,000 characters
+        var attachment;
+        var attachmentName;
+        var fileSize;
+        var positionIndex;
+        var siteId = "{!siteRecordId}";
+        var optyId = "{!opportunityId}";
+        var duplicateResult = '';
+        var extensionNameCS;
+        var extensionName;
+   
+        function uploadFile(uploadSection, uploadSectionClass, filePath, uploadBtnObj, errorDiv) {  
+        $('#loading').parent().show();
+    var maxFileSize = 1024000;      //After Base64 Encoding, this is the max file size
+    $("#"+uploadBtnObj).addClass('button-disabled'); 
+    document.getElementById(filePath).focus();
+    var file = document.getElementById(uploadSectionClass).files[0];
+    if (file != undefined) {
+        extensionNameCS = file.name.substring(file.name.lastIndexOf('.') + 1);
+        extensionName = extensionNameCS.toLowerCase();
+        console.log('extensionName  '+extensionName+' uploadSection '+uploadSection);
+        if (file.size <= maxFileSize && uploadSection != null && ((uploadSection == 'CSRSection' && (extensionName == 'doc' || extensionName == 'docx' || extensionName == 'pdf'))
+        || (uploadSection == 'portingTNSection' && (extensionName == 'xls' || extensionName == 'xlsx'))
+        || (uploadSection == 'MoveReqSection' && (extensionName == 'doc' || extensionName == 'docx' || extensionName == 'pdf' || extensionName == 'xls' || extensionName == 'xlsx')))       
+        ) {
+            $("."+errorDiv).text('');
+            attachmentName = file.name;
+            var fileReader = new FileReader();
+            fileReader.onloadend = function(e) {
+                attachment = window.btoa(this.result); //Base 64 encode the file before sending it
+                positionIndex = 0;
+                fileSize = attachment.length;
+                maxFileSize += fileSize - file.size;
+                doneUploading = false;
+                if (fileSize < maxFileSize) {
+                    uploadAttachment(null,uploadSection, uploadBtnObj, errorDiv,filePath);
+                    $("."+errorDiv).hide();
+                      $("."+errorDiv).text('');
+                } else {
+                    $("."+errorDiv).text("The file exceeds the maximum limit size of 1 MB.").show();
+                    $("#"+uploadBtnObj).addClass('button-disabled'); 
+                    $('#loading').parent().hide();
+                }
+            }
+            fileReader.readAsBinaryString(file); //Read the body of the file
+        } else if (uploadSection != null && uploadSection == 'CSRSection' && (extensionName != 'doc' && extensionName != 'docx' && extensionName != 'pdf')) {
+            $("."+errorDiv).text("The file format isn't a supported format. Upload your file as a .doc, .docx or .pdf.").show();
+             
+            $("#"+uploadBtnObj).addClass('button-disabled'); 
+        }
+        else if (uploadSection != null && uploadSection == 'portingTNSection' && (extensionName != 'xls' && extensionName != 'xlsx')){
+            $("."+errorDiv).text("The file format isn't a supported format. Upload your file as a .xls, .xlsx.").show();
+             
+            $("#"+uploadBtnObj).addClass('button-disabled'); 
+        }else if (uploadSection != null && uploadSection == 'MoveReqSection' && (extensionName != 'doc' && extensionName != 'docx' && extensionName != 'pdf' && extensionName != 'xls' && extensionName != 'xlsx')){
+            $("."+errorDiv).text("The file format isn't a supported format. Upload your file as a .doc, .docx, .xls, .xlsx or .pdf.").show();
+             
+            $("#"+uploadBtnObj).addClass('button-disabled'); 
+        }
+        else if (file.size > maxFileSize) {
+            $("."+errorDiv).text("The file exceeds the maximum limit size of 1 MB.").show();
+            $("#"+uploadBtnObj).addClass('button-disabled'); 
+        }  
+        
+    } else {
+        $("."+errorDiv).text("One uploaded file is required.").show();
+        
+        $("#"+uploadBtnObj).addClass('button-disabled'); 
+        //console.log("upload size");
+    }
+    if('undefined' != ($("."+errorDiv).text().length) && ($("."+errorDiv).text().length > 0)){
+            $('#loading').parent().hide();
+        }    
+    
+}
+    function uploadAttachment(fileId,uploadSection, uploadBtnObj, errorDiv, filePath){
+    console.log('filePtah:: '+filePath+'errorDiv '+errorDiv);
+        var attachmentBody = "";
+        if(fileSize <= positionIndex + chunkSize) {
+            attachmentBody = attachment.substring(positionIndex);
+        } else {
+            attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+        }
+        RDSMISController.doUploadAttachment(
+            siteId, optyId, attachmentBody, attachmentName, fileId, uploadSection, 
+            function(result, event) {
+                if(event.statusCode == '200'){
+                    if(result=='Attachment already exists'){
+                        $("."+errorDiv).text("A file by this name has already been uploaded").show();
+                        $("#"+uploadBtnObj).addClass('button-disabled'); 
+                         $("#"+filePath).val('');
+                    }else{
+                        $("."+errorDiv).text('');
+                        $("#"+filePath).val('');
+                        if(uploadSection == 'CSRSection'){
+                            reloadCSRMap(); 
+                        }else if(uploadSection == 'portingTNSection'){
+                            reloadPortTNMap();
+                        }else if(uploadSection == 'MoveReqSection'){
+                            reloadMoveReqMap();                     } 
+                    }   
+                    $('#loading').parent().hide();                  
+                }                
+            },
+            {buffer: true, escape: true, timeout: 120000}
+        );
+    }
+    </script>   
+
+    <script>
+        function removeUploadedId(key,uploadSection){
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.RDSMISController.removeAttachment}',
+                key,
+                function(result, event){
+                    if (result == "Delete Success") { 
+                        if(uploadSection == 'CSRSection'){
+                            reloadCSRMap(); 
+                        }else if(uploadSection == 'portingTNSection'){
+                            reloadPortTNMap();
+                        }else if(uploadSection == 'MoveReqSection'){
+                            reloadMoveReqMap();
+                        }
+                    }
+                }
+            );
+        }
+    </script>
+
+    <script>    
+        function techQuestChooseFile() {
+            $(".techQuestUploadFileBtnBrowse").val('');
+            $("#techQuestFilePath").val('');
+            $('#techQuestUploadBtn').attr("disabled", "disabled");
+            $(".techQuestUploadFileBtnBrowse").click();
+        }
+
+        function techQuestChangePath(){
+            if($(".techQuestUploadFileBtnBrowse").val()){
+                $("#techQuestUploadBtn").removeAttr('disabled'); 
+                $("#techQuestFilePath").val(
+                    $(".techQuestUploadFileBtnBrowse").val().substring(
+                        $(".techQuestUploadFileBtnBrowse").val().lastIndexOf('\\')+1));
+            } 
+        } 
+
+        function uploadTechQuestFile(){
+             $('#loading').parent().show();
+            var maxFileSize = 1024000;      //After Base64 Encoding, this is the max file size
+            $('#techQuestUploadBtn').attr("disabled", "disabled");            
+            var file = document.getElementById('chooseTechQuestFileToUpload').files[0];
+            if(file != undefined) {
+                extensionNameCS = file.name.substring(file.name.lastIndexOf('.')+1);
+                extensionName = extensionNameCS.toLowerCase();
+                if(file.size <= maxFileSize){
+                    if(extensionName == 'doc' || extensionName == 'docx' || extensionName == 'pdf'){
+                        attachmentName = 'TechQ_'+file.name;
+                        var fileReader = new FileReader();
+                        fileReader.onloadend = function(e) {
+                            attachment = window.btoa(this.result);  //Base 64 encode the file before sending it
+                            positionIndex=0;
+                            fileSize = attachment.length;
+                            maxFileSize += fileSize - file.size;
+                            if(fileSize < maxFileSize) {
+                                uploadTechQuestAttachment(null);
+                            } else {
+                                $(".techQuest-form-errors").text("The file exceeds the maximum limit size of 1 MB.").show();
+                                $('#loading').parent().hide();
+                            } 
+                        }
+                        fileReader.readAsBinaryString(file);  //Read the body of the file                    
+                    }else{
+                        $(".techQuest-form-errors").text("The file format isn't a supported format. Upload your file as a .doc, .docx or .pdf.").show();
+                        $('#loading').parent().hide();
+                    }
+                }else{
+                    $(".techQuest-form-errors").text("The file exceeds the maximum limit size of 1 MB.").show();
+                    $('#loading').parent().hide();
+                }
+            }       
+        }  
+    
+        function uploadTechQuestAttachment(fileId) {
+            var attachmentBody = "";
+            var uploadSection = "";
+            if(fileSize <= positionIndex + chunkSize) {
+                attachmentBody = attachment.substring(positionIndex);
+            } else {
+                attachmentBody = attachment.substring(positionIndex, positionIndex + chunkSize);
+            }
+            RDSMISController.doUploadAttachment(
+                siteId, optyId, attachmentBody, attachmentName, fileId, uploadSection,
+                function(result, event) {
+                    if(event.statusCode == '200'){
+                        reloadTechQuestMap();
+                        $('#loading').parent().hide(); 
+                    }
+                },
+                {buffer: true, escape: true, timeout: 120000}
+            );
+        }
+
+        function removeTechQuestDoc(key){
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.RDSMISController.removeAttachment}',
+                key,
+                function(result, event){
+                    if (result == "Delete Success") { 
+                        reloadTechQuestMap();
+                    }
+                }
+            );
+        }   
+    </script>
+
+    <script>
+        /*var portingNumNonATTCarrier;
+    
+        function validationForBlockPhnNumsOnPageLoad(){
+            var portableNumbersValue = document.getElementsByClassName('IPFlexibleReachPlan')[0];
+            var radioInputValue1 = portableNumbersValue.getElementsByTagName('input');
+            for (var z=0; z<radioInputValue1.length; z++) {
+                if(radioInputValue1[z].value == 'Yes' && radioInputValue1[z].checked == true){
+                    PortingNumNonATTSelection('onLoad','Yes');
+                    return false;
+                }else{
+                    PortingNumNonATTSelection('onLoad','No');
+                }
+            }
+        }
+        
+        function PortingNumNonATTSelection(from,radioValue){
+            var phnNumValidation;
+            portingNumNonATTCarrier = radioValue;
+            if(portingNumNonATTCarrier == 'No'){
+                $('.PortablePhoneNumInputFields input').each(function() {
+                    if($(this).val()){
+                        $(this).trigger("keyup");
+                    }  
+                    $(this).removeClass('required');
+                    if($(this).parent().find('.errorText').length > 0 && $(this).parent().find('.errorText').text() == 'Cannot be blank'){
+                        $(this).removeClass('errorFieldBorderColor');
+                        $(this).parent().find('.errorText').remove();
+                    }
+                    return false;
+                });
+            }else{
+                $('.PortablePhoneNumInputFields input').each(function() {
+                    if($(this).val()){
+                        phnNumValidation = true;
+                        $(this).addClass('required');
+                        $(this).trigger("keyup");
+                        return false;
+                    }else{
+                        phnNumValidation = false;
+                    }                    
+                });
+                if(!phnNumValidation){
+                    var errorMsg = "<div class='m-t-10 errorText'></div>";
+                    var errorMsgToappendTo = $('.PortablePhoneNumInputFields input')[0];
+                    var elementName = errorMsgToappendTo.name;
+                    var currentElement = $('input[name="' + elementName + '"]');
+                    if(currentElement.parent().find('.errorText').length == 0){
+                        currentElement.addClass('required');
+                        if(from == 'onLoad'){
+                            currentElement.parent().append(errorMsg);
+                            currentElement.parent().find('.errorText').text('Cannot be blank');
+                            currentElement.addClass('errorFieldBorderColor');
+                        }
+                    }
+                }
+            }
+            checkIfSubmitBtnCanBeEnabled();            
+        }*/
+    </script>
+    
+    <script>
+        var phnNumValidation;
+        var specialChars = "0123456789-"
+        var checkSpecialChars = function(string){
+            for(i = 0; i < specialChars.length;i++){
+                if(string.indexOf(specialChars[i]) > -1){
+                    return true
+                }
+            }
+            return false;
+        }
+        
+
+        /*function phoneNumBlocksValidation(event,currentField){
+            if(event.keyCode != 9){
+                var enteredValue = currentField.value;
+                var elementName = currentField.name;
+                var currentElement = $('input[name="' + elementName + '"]');
+                var parentElement = currentElement.parent();
+                var errorMsg = "<div class='m-t-10 errorText'></div>";
+                parentElement.find('.errorText').remove();
+                currentElement.removeClass('errorFieldBorderColor');        
+                var isRequiredField = false;
+                
+                if(enteredValue.length > 0){
+                    if(portingNumNonATTCarrier == 'Yes'){
+                        //appending required class to first entered input field
+                        if(!currentElement.hasClass('required')){
+                            $('.PortablePhoneNumInputFields input').each(function() {
+                                if($(this).hasClass('required')){
+                                    isRequiredField = true;
+                                    return false;
+                                }
+                            });
+                            if(!isRequiredField){
+                                currentElement.addClass('required');    
+                            }                    
+                        }                        
+                    }
+                    
+                    //logic to introduce hyfen after 10 digits
+                    var numbers = enteredValue.replace(/\D/g,''), char = {10:'-'};
+                    enteredValue = '';
+                    for (var i = 0; i < numbers.length; i++) {
+                        enteredValue += (char[i]||'') + numbers[i];
+                    }
+                    currentElement.val(enteredValue);
+                    
+                    //phone number validation
+                    if(enteredValue.charAt(0) === ' '){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Cannot begin with a space');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }else if(enteredValue.indexOf(' ') >= 0 || !(checkSpecialChars(enteredValue))){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Invalid Phone number');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }else if(currentField.value.length != 10 && currentField.value.length != 15){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Must be 10 digits or 14 digits');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }                
+                }else{
+                    if(currentElement.hasClass('required')){
+                        parentElement.append(errorMsg);
+                        parentElement.find('.errorText').text('Cannot be blank');
+                        currentElement.addClass('errorFieldBorderColor');
+                    }
+                } 
+                checkIfSubmitBtnCanBeEnabled();               
+            }
+        }*/
+    </script> 
+    <script>
+        CharLimit('.myTextareaClass', 50);
+        function CharLimit(input, maxChar) {
+            var len = $(input).val().length;
+            if (len > maxChar) {
+                $(input).val($(input).val().substring(0, maxChar));
+                $('.additionalInfoMsg').html(0 + ' characters remaining');
+            }else{
+                $('.additionalInfoMsg').html(maxChar - len + ' characters remaining');
+            }
+            if((maxChar - len)==maxChar){
+                $('.additionalInfoMsg').css('display','block');
+            }else{
+                $('.additionalInfoMsg').css('display','block');
+            }
+        }  
+        
+         function reInitiateToolTip(){
+            $("[rel='tooltip']").tooltip();
+            $(".tooltipTrigger").tooltip();
+         } 
+    
+          $(document).ready(function() {  
+            //On Load Function
+            drawLeftPanel();
+            addLeftPanelScroll();
+            reInitiateToolTip();
+            //validationForBlockPhnNumsOnPageLoad();
+        });   
+    </script>    
+</apex:page>

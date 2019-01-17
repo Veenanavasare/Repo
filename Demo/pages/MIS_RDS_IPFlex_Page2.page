@@ -1,0 +1,316 @@
+<apex:page controller="RDSMISController" standardStylesheets="false" sidebar="false" showHeader="false" tabStyle="Apttus_Proposal__Proposal__c" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false">
+    <style>
+        .IPFlexReachSection{
+            margin-top:10px;
+            float: left;
+            width: 100%;        
+        }
+        .equipmentSection{
+            float:left;
+        }
+        .PBXSection .tooltip-inner{
+            width:400px;
+        }
+        .CPECertificationRadioFields td{
+            float:left;
+        }
+        .CPECertificationRadioFields .errorText{
+            margin-top:0 !important
+        }
+        .PBXLink{
+            color: #0568ae !important;
+            font-family: omnes_att_iimedium;
+        }
+        .dialPlan td:first-child,.reqToNewServiceAcc td:first-child{
+            width:10%;
+        }        
+        .trafficType td:first-child{
+            width:15%;
+        }
+        .PBXInterfaceType td:first-child{
+            width:40%;
+        }
+        #panelFooter {
+            margin-bottom: 40px !important;
+            margin-top: 2px;
+        }
+    </style>
+    <apex:form id="MISRDSPage2" styleClass="MISRDSPage2">
+        <apex:outputPanel id="IPFlexibleReachSection" styleClass="IPFlexReachSection">
+            <div class="sectionHeader-primary m-b-25">IP Flexible Reach Information</div>
+            <div class="m-b-25"><span class="sectionHeader-secondary">IP Flexible Reach Calling Plan: </span>{!ipFlexibleReachCallingPlan}</div>
+
+            <div class="col-xs-12 p0 radioFields {!IF(IPFlex_Reach_Private_Dial_Plan == 'Yes','m-b-10','m-b-15')}">
+                <div class="sectionHeader-secondary">IP Flexible Reach Private Dial Plan</div>
+                <apex:selectRadio value="{!IPFlex_Reach_Private_Dial_Plan}" styleClass="required dialPlan" onchange="fieldValidation(event,this,'radioSelection');showWarning('dialPlan', this);">
+                    <!-- <apex:selectOptions value="{!pickList1}" /> -->
+                    <apex:selectOption itemLabel="Yes" itemValue="Yes" />
+                    <apex:selectOption itemLabel="No" itemValue="No" />
+                </apex:selectRadio>
+            </div>
+
+            <div id="dialPlan_warning" class="m-b-25" style="color:#ea7200;display:none;">Expect follow-up discussions with the TSC and the Provisioning to confirm the TN digit-lengths to be represented in the private dial plan from the designated PBX equipment</div>
+            
+            <div class="m-b-25"><span class="sectionHeader-secondary">How many Concurrent Calls? </span>{!noOfConcurrentCalls}</div>
+            <div class="m-b-25"><span class="sectionHeader-secondary">Rate Center: </span>{!rateCenter}</div>
+
+            <div class="col-xs-12 p0 radioFields m0">
+                <div>IP Flexible Reach Traffic Type</div>
+                <apex:selectRadio value="{!IPFlex_Reach_Traffic_Type}" styleClass="required trafficType" onchange="fieldValidation(event,this,'radioSelection');changeIPTrafficType();">
+                    <apex:selectOption itemLabel="Voice Only" itemValue="Voice Only" />
+                    <apex:selectOption itemLabel="Voice/Data" itemValue="Voice/Data" />
+                </apex:selectRadio>
+            </div>
+            <apex:outputPanel id="IPFlexibleOptions">
+                <apex:outputPanel rendered="{!IF(IPFlex_Reach_Traffic_Type != '',true,false)}">
+                    <div class="m-b-10 pull-left m-t-15"><span>How Many Static IP Addresses will you need</span>&nbsp;&nbsp;&nbsp;<span title="1-20 addresses for Voice Only <br> 6-20 addresses for Voice/Data" data-html="true" data-toggle="tooltip" rel="tooltip" data-placement="right" class="tooltipTrigger glyphicon glyphicon-question-sign"></span></div>
+                    <ul class="col-xs-12 addressFields m0 p0">
+                        <li class="m-r-3P" >
+                            <apex:outputPanel rendered="{!IF(IPFlex_Reach_Traffic_Type == 'Voice Only',true,false)}">
+                                <apex:inputText value="{!Number_of_static_IP_addresses}" styleClass="form-control required" onblur="fieldValidation(event,this,'StaticIPVoiceOnly');" onkeyup="fieldValidation(event,this,'StaticIPVoiceOnly');"/>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(IPFlex_Reach_Traffic_Type == 'Voice/Data',true,false)}">
+                                <apex:inputText value="{!Number_of_static_IP_addresses}" styleClass="form-control required" onblur="fieldValidation(event,this,'StaticIPVoiceData');" onkeyup="fieldValidation(event,this,'StaticIPVoiceData');"/>
+                            </apex:outputPanel>
+                        </li>                                            
+                    </ul>    
+                </apex:outputPanel>
+            </apex:outputPanel>
+            <hr class="section-dividerHr"/>
+        </apex:outputPanel>
+
+        <apex:outputPanel id="EquipmentSection" styleClass="equipmentSection">
+            <div class="sectionHeader-primary m-b-25">Equipment</div>
+            <div class="col-md-4 p0 m-b-25" style="height:65px;">
+                <div class="PBXSection">
+                    <span>PBX Type</span>&nbsp;&nbsp;<span title="IP-PBX for IP Handoff and TDM PBX for PRI Handoff" data-toggle="tooltip" data-placement="right" rel="tooltip" class="tooltipTrigger glyphicon glyphicon-question-sign"></span> 
+                </div>
+                <div class="col-xs-12 p0 radioFields pbxType">
+                    <apex:selectRadio value="{!PBX_Type}" styleClass="required" onchange="fieldValidation(event,this,'radioSelection');updatePBXOptions();">
+                        <apex:selectOption itemLabel="IP PBX" itemValue="IP PBX" />
+                        <apex:selectOption itemLabel="TDM PBX" itemValue="TDM PBX" />
+                    </apex:selectRadio>
+                </div>                           
+            </div>
+            
+            <div class="col-md-5 p0 m-b-25" style="height:65px;">
+                <apex:outputPanel id="PBXTypeOptions">
+                    <apex:outputPanel rendered="{!IF(PBX_Type == 'IP PBX',true,false)}">
+                    <div>CPE Certification Status</div>
+                    <div class="col-xs-12 p0 radioFields CPECertificationRadioFields">
+                            <apex:selectRadio value="{!CPE_Certification_Status}" styleClass="{!IF(PBX_Type == 'IP PBX','required','')}" onchange="fieldValidation(event,this,'radioSelection');">
+                            <apex:selectOption itemLabel="All CPEs Certified" itemValue="All CPE's Certified" />
+                            <apex:selectOption itemLabel="IP Flex Customer Self Certification" itemValue="IP Flex Customer Self Certification" />
+                        </apex:selectRadio>
+                    </div>                           
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(PBX_Type == 'TDM PBX',true,false)}">
+                    <div class="sectionHeader-secondary">PBX Interface Type</div>
+                    <div class="col-xs-12 p0 radioFields">
+                        <apex:selectRadio value="{!PBX_Interface_Type}" styleClass="{!IF(PBX_Type == 'TDM PBX','required','')} PBXInterfaceType" onchange="fieldValidation(event,this,'radioSelection');">
+                            <apex:selectOption itemLabel="Digital CAS" itemValue="Digital CAS" />
+                            <apex:selectOption itemLabel="Digital PRI" itemValue="Digital PRI" />
+                        </apex:selectRadio>
+                    </div> 
+                    </apex:outputPanel>                 
+                </apex:outputPanel>               
+            </div>
+            <apex:outputPanel id="cpeStatusMsg">
+                <apex:outputPanel rendered="{!IF(PBX_Type == 'IP PBX',true,false)}" >
+                     <div class="col-xs-12 p0 m-b-25" style="margin-top: 25px;">Check the <a href="{!certifiedIPPBXListDocumentId}" target="_blank" class="PBXLink">Certified IP-PBX List</a> to verify that the IP-PBX on location is compatible with the IP Flexible Reach service. Uncertified IP-PBX is still acceptable to be provisioned for IP Flexible Reach service. A self-certification waiver form is no longer required.</div> 
+                </apex:outputPanel>
+            </apex:outputPanel>
+            
+            <ul class="col-xs-12 addressFields p0 m-b-25">
+                <li class="m-r-3P" >
+                <div class="m-b-10">PBX Vendor or Manufacturer</div>
+                <apex:inputText styleClass="form-control required" html-placeholder="Up to 20 characters" value="{!PBX_Vendor_Mfg}" onkeyup="fieldValidation(event,this,'PBXVendororManufacturer');" onblur="fieldValidation(event,this,'PBXVendororManufacturer');"/>
+                </li>
+            
+                <li class="m-r-3P" >
+                <div class="m-b-10">PBX Model</div>
+                <apex:inputText styleClass="form-control required" html-placeholder="Up to 20 characters" value="{!PBX_Model}" onkeyup="fieldValidation(event,this,'PBXModel');" onblur="fieldValidation(event,this,'PBXModel');"/>
+                </li>
+                <li>
+                <div class="m-b-10">PBX Software Version</div>
+                <apex:inputText styleClass="form-control required" html-placeholder="Up to 10 characters" value="{!PBX_Software_Version}" onkeyup="fieldValidation(event,this,'PBXSoftwareVersion');" onblur="fieldValidation(event,this,'PBXSoftwareVersion');"/>
+                </li>
+            </ul>
+            <ul class="col-xs-12 m-b-25 p0">
+                <li>PBX/Voice CPE Point of Contact</li>
+            </ul>
+            <ul class="col-xs-12 addressFields p0 m-b-25">
+                <li class="m-r-3P" >
+                    <div class="m-b-10">First Name</div>
+                    <apex:inputText value="{!PBX_or_Voice_CPE_POC_First_Name}" styleClass="form-control required" html-placeholder="Up to 40 characters" onblur="fieldValidation(event,this,'firstName');" onkeyup="fieldValidation(event,this,'firstName');"/>
+                </li>                                            
+                <li class="m-r-3P">
+                    <div class="m-b-10">Last Name</div>
+                    <apex:inputText value="{!PBX_or_Voice_CPE_POC_Last_Name}" styleClass="form-control required" html-placeholder="Up to 80 characters" onblur="fieldValidation(event,this,'lastName');" onkeyup="fieldValidation(event,this,'lastName');"/>
+                </li>
+                <li>
+                    <div class="m-b-10">Email Address</div>                                                
+                    <apex:inputText value="{!PBX_or_Voice_CPE_POC_Email}" styleClass="form-control required" html-placeholder="Up to 80 characters"  onblur="fieldValidation(event,this,'email');" onkeyup="fieldValidation(event,this,'email');"/>
+                </li>
+            </ul>
+            <ul class="col-xs-12 addressFields p0">
+                <li>
+                    <div class="m-b-10">Phone Number</div>
+                    <apex:inputText value="{!PBX_or_Voice_CPE_POC_Phone_Number}" styleClass="form-control required"  html-placeholder="0000000000"  onblur="fieldValidation(event,this,'phoneNumber');" onkeyup="fieldValidation(event,this,'phoneNumber');"/>
+                </li>
+            </ul>            
+            <hr class="section-dividerHr"/>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="EnhancFeatureInfoSection">
+            <div class="sectionHeader-primary m-b-25">Enhanced Features Information</div>
+            <div class="{! IF(EnhancedFeatures == 'Yes','m-b-25','')}"><span class="sectionHeader-secondary">Enhanced Features Services: </span><span>{!EnhancedFeatures}</span></div>
+            
+            <apex:outputPanel id="EnhancFeatureInfoInputFields" rendered="{!IF(EnhancedFeatures == 'Yes',true,false)}">
+                <div class="sectionHeader-secondary m-b-25">Portal Administrator</div>
+                <ul class="col-xs-12 addressFields p0 m-b-25">
+                    <li class="m-r-3P" >
+                        <div class="m-b-10">First Name</div>
+                        <apex:inputText value="{!Portal_Administrator_First_NameInfo}" styleClass="form-control required" html-placeholder="Up to 40 characters" onblur="fieldValidation(event,this,'firstName');" onkeyup="fieldValidation(event,this,'firstName');"/>
+                    </li>                                            
+                    <li class="m-r-3P">
+                        <div class="m-b-10">Last Name</div>
+                        <apex:inputText value="{!Portal_Administrator_Last_NameInfo}" styleClass="form-control required" html-placeholder="Up to 80 characters" onblur="fieldValidation(event,this,'lastName');" onkeyup="fieldValidation(event,this,'lastName');"/>
+                    </li>
+                    <li>
+                        <div class="m-b-10">Email Address</div>                                                
+                        <apex:inputText value="{!Portal_Administrator_Email_AddressInfo}" styleClass="form-control required" html-placeholder="Up to 80 characters"  onblur="fieldValidation(event,this,'email');" onkeyup="fieldValidation(event,this,'email');"/>
+                    </li>
+                </ul>
+                <ul class="col-xs-12 addressFields p0 m-b-25">
+                    <li>
+                        <div class="m-b-10">Phone Number</div>
+                        <apex:inputText value="{!Portal_Administrator_Phone_NumberInfo}" styleClass="form-control required"  html-placeholder="0000000000"  onblur="fieldValidation(event,this,'phoneNumber');" onkeyup="fieldValidation(event,this,'phoneNumber');"/>
+                    </li>
+                </ul>
+                <ul class="col-xs-12 addressFields p0 m-b-25">
+                    <li class="m-r-3P">
+                        <div class="m-b-10">Test Call Phone Number (1)</div>
+                        <apex:inputText value="{!Test_Call_Phone_Number1Info}" styleClass="form-control testCallPhnNum required"  html-placeholder="0000000000"  onblur="fieldValidation(event,this,'phoneNumber');" onkeyup="fieldValidation(event,this,'phoneNumber');"/>
+                    </li>                                            
+                    <li>
+                        <div class="m-b-10">Test Call Phone Number (2)</div>
+                        <apex:inputText value="{!Test_Call_Phone_Number2Info}" styleClass="form-control testCallPhnNum"  html-placeholder="Optional - 0000000000"  onkeyup="fieldValidation(event,this,'optionalPhoneNumber');"/>
+                    </li>
+                </ul>
+
+                <div class="col-xs-12 p0 radioFields">
+                    <div class="m-b-10">Will you be requiring Call Forwarding?</div>
+                    <div class="col-xs-2 p0">
+                        <apex:selectRadio value="{!Call_Forwarding_requiredInfo}" styleClass="required" onchange="fieldValidation(event,this,'radioSelection');">
+                            <apex:selectOptions value="{!pickList1}" />
+                        </apex:selectRadio>
+                    </div>
+                </div>
+            </apex:outputPanel>
+            <hr class="section-dividerHr"/>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="CallRoutingInfoSection">
+            <div class="sectionHeader-primary m-b-25">Call Routing Information</div>
+            <div class="m-b-25"><span class="sectionHeader-secondary">Trunk Call Routing Management Required?: </span><span>{!isTrunkCallingRequired}</span></div>            
+            <div class="m-b-25">Inbound Alternate Call Routing (IAR) cannot be used if you have Enhanced Features, Trunk Call Routing or only one site.</div>             
+            <apex:outputPanel rendered="{!!IF((EnhancedFeatures == 'Yes' || isTrunkCallingRequired == 'Yes' || isSingleSite),true,false)}" >
+                 <div class="m-b-10">Please specify the Inbound Alternate Routing availability set-up.</div>
+                    <ul class="col-xs-12 addressFields p0 m-b-25">
+                        <li>
+                            <apex:selectList value="{!Inbound_Alternate_Call_RoutingInfo}" multiselect="false" size="1" styleClass="form-control styled-select-small">
+                                <apex:selectOptions value="{!InboundAlternateCallRouteInfoList}" />
+                            </apex:selectList>
+                        </li>                                            
+                    </ul>
+            </apex:outputPanel>
+        </apex:outputPanel> 
+        <apex:outputPanel id="BottomSectionMISRDS">
+            <apex:outputPanel id="MISRDSPaginationSection">
+                <ul class="pageNavigationBtnSection" style="margin-top: 12px;">
+                    <li id="page1" onclick="pageNavigation(event,this);" class="{!IF(MISRDSPage1Status == 'completelyFilled','completedPage statusImgSuccess','')} {!IF(MISRDSPage1Status == 'partiallyFilled','inCompletePage','')}">Page 1</li>
+                    <li id="page2" onclick="pageNavigation(event,this);" class="currentPage">Page 2</li>
+                    <li id="page3" onclick="pageNavigation(event,this);" class="{!IF(MISRDSPage3Status == 'completelyFilled','completedPage statusImgSuccess','')} {!IF(MISRDSPage3Status == 'partiallyFilled','inCompletePage','')}">Page 3</li>
+                </ul>
+            </apex:outputPanel>
+            <apex:outputPanel id="errorTextForIncompleteFields">
+                <apex:outputPanel styleClass="orangeText naviagtionOrangeLink"  style="margin-top: -29px; margin-bottom: 30px;"  rendered="{!MISRDSValidationErrorMsg}">
+                    <p>You will not be able to submit the RDS until all required fields are completed for all sites;</p> 
+                    <p>however, you can proceed now to another page and come back to complete the blank fields.</p> 
+                    <a href="javascript:void(0)" onclick="navigateOnLink('{!MISRDSPageNumber}');" class="linkToNavigate">Click here to proceed</a>
+                </apex:outputPanel>
+            </apex:outputPanel>
+            <hr class="blue_hr" id="panelFooter"/>
+            <div id="mainId" class="pull-right">                            
+                <apex:commandButton value="Save & Exit" styleClass="btn btn-primary" style="width: 175px !important;padding: 7px 20px !important;background:#FFFFFF !important; color:#595959 !important;border: 1px solid #595959 !important; margin-right:20px; font-family:omnes_att_iimedium !important;Font-Size:16px ! important;" onclick="saveAndExit('{!siteselected}','{!MISRDSPageNumber}');return false;" />
+                <apex:commandButton styleClass="btn btn-primary NextSiteBtn" style="width: 175px !important;padding: 7px 20px !important;font-family:omnes_att_iimedium !important; font-Size:16px; ! important;" value="{!SubmitButtonLabel}" rendered="{!IF(SubmitButtonLabel == 'Next Site',true,false)}" onclick="viewNextSite('{!MISRDSPageNumber}');return false;" />
+                <apex:commandButton styleClass="btn btn-primary SubmitBtn" style="width: 175px !important;padding: 7px 20px !important;font-family:omnes_att_iimedium !important; font-Size:16px; ! important;" value="{!SubmitButtonLabel}" rendered="{!IF(SubmitButtonLabel != 'Next Site',true,false)}" onclick="SubmitBtnClick('{!siteselected}','{!MISRDSPageNumber}');return false;" disabled="true"/>
+            </div>         
+        </apex:outputPanel>
+        
+        <apex:actionFunction name="ajaxSaveAndExit" action="{!SaveandExit}" reRender=""  status="loading" oncomplete="">
+            <apex:param name="saveSiteId" value="" assignTo="{!siteselected}" />
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage2Status}" name="MISRDSPage2Status" value="" />
+        </apex:actionFunction> 
+        <apex:actionFunction name="setBestAvailDate" action="{!setBestAvailDate}" rerender="">
+            <apex:param name="BestAvailDate" value="" assignTo="{!BestAvailDate}"/>
+        </apex:actionFunction> 
+        <apex:actionFunction id="filterSites" name="handlefilterSites" action="{!handlefilterSites}" reRender="leftPanelContainerForm" status="loading" oncomplete="window.scrollTo(0, 0);">
+            <apex:param name="quoteId" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="passSite" action="{!saveOnToggleSite}" reRender="leftPanelContainerForm"  status="loading" oncomplete="window.scrollTo(0, 0);">
+            <apex:param name="goToSiteId" value="" />
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage2Status}" name="MISRDSPage2Status" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="takeToNextSite" action="{!navigateToNextSite}" reRender="leftPanelContainerForm"  status="loading" oncomplete="window.scrollTo(0, 0);">
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage2Status}" name="MISRDSPage2Status" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="saveCompleteRDS" action="{!SubmitRDS}" reRender="pageBodyContainer,ciError,crddoverlaycontainer" oncomplete="checkCIError();displaycrddoverlay();" status="loading">
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage2Status}" name="MISRDSPage2Status" value="" />
+            <apex:param name="rdsFlag" value="" />
+        </apex:actionFunction>        
+        
+        <apex:actionFunction name="saveCurrentPageData" action="{!saveCompleteRDS}" oncomplete="dataSavedOnCurrentPage();" status="loading">
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage2Status}" name="MISRDSPage2Status" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="navigateToNewPage" action="{!updatePageToShow}" reRender="pageBodyContainer" oncomplete="loadSiteRDSdata();" status="loading">
+            <apex:param assignTo="{!MISRDSPageToShow}" name="MISRDSPageToShow" value="" />
+            
+        </apex:actionFunction>
+        <apex:actionFunction name="loadSiteRDSdata" action="{!loadSiteRDSdata}" reRender="pageBodyContainer,leftPanelContainerForm" oncomplete="initializePageValidationOnPageLoad('{!MISRDSPageNumber}','{!MISRDSPage1Status}','{!MISRDSPage2Status}','{!MISRDSPage3Status}');" status="loading" />
+        <apex:actionFunction name="showErrorMsgAtNavigation" action="{!showErrorMsgAtNavigation}" reRender="errorTextForIncompleteFields" status="loading" />         
+        <apex:actionFunction name="updatePBXOptions" action="{!updatePBXOptions}" reRender="PBXTypeOptions,cpeStatusMsg" status="loading" />
+        <apex:actionFunction name="changeIPTrafficType" action="{!changeIPTrafficType}" reRender="IPFlexibleOptions" oncomplete="reInitiateToolTip();" status="loading" />
+        <apex:actionFunction name="IPFlexCalender" action="{!IPFlexCalender}" reRender="IPFlexCalender" status="loading" />
+    </apex:form>   
+    <script>
+        function showWarning(className, currentField) { 
+            var parentElement = $('input[name="' + currentField.name + '"]').parents( ".radioFields" );
+            if (currentField.value == 'Yes') {
+                parentElement.removeClass('m-b-25').addClass('m-b-10');
+                document.getElementById(className+'_warning').style.display = "block";            
+            } else {
+                parentElement.removeClass('m-b-10').addClass('m-b-25');
+                document.getElementById(className+'_warning').style.display = "none"; 
+            }     
+        }
+    
+        function reInitiateToolTip(){
+            $("[rel='tooltip']").tooltip();
+            $(".tooltipTrigger").tooltip();
+        } 
+    
+        $(document).ready(function() { 
+            drawLeftPanel();            
+            addLeftPanelScroll();
+            reInitiateToolTip();
+        });
+    
+    </script>
+</apex:page>

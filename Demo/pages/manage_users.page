@@ -1,0 +1,295 @@
+<apex:page controller="ManageUsersPageController" docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" id="thePage">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="AtomDesignHeader" />
+    <apex:includeScript value="{!$Resource.ATnT_AES}" />
+    <apex:includeScript value="{!$Resource.ATnT_mode_ecb_min}" />
+
+    <style>
+        .errorText { color: #a94442; }
+         table a { cursor: pointer; }
+        .dataTables_length { display: none; }
+        .dataTables_info { bottom: 22px; position: absolute; right: 180px; font-size:16px !important;}
+        .manage_user_name { width: 250px !important; font-size:16px !important;}
+        .manage_user_email { width: 245px !important; font-size:16px !important;}
+        .manage_user_id { width: 200px !important; font-size:16px !important;}
+        #manage_content .pagination > a { padding: 5px 10px; font-family: omnes_att_iimedium; line-height: 1.125em; color: #056fab;margin-left: 5px;background: #fff;border: 1px solid #ccc; }
+        .paginate_enabled_previous, .paginate_enabled_next {cursor: pointer;}
+        .paginate_disabled_previous,.paginate_disabled_next { cursor: no-drop;}
+        .adjust-select-small {width: 230px;}
+        .adjust-select-small select {padding: 0 5px;line-height: 17px;}
+        h1 {font-family: omnesatt_iiregular;}
+        #headerNav3,#headerNav4,#headerNav5 { background: #edf8fd;}
+        .tHeadNavType ul {padding-left: 10px;min-width: 300px;}
+        .tHeadNavStatus ul {padding-left: 10px;min-width: 300px;}
+        .tHeadNavProduct ul {padding-left: 10px;min-width: 300px;}
+        .dataTables_wrapper tbody td { border-style: dashed !important; }
+        .createUserButton { float:right;width:16%; display:block;padding: 7px 40px;font-family: clearviewattregular;color: #fff;background: #056fab;border: 0;-webkit-border-radius: 4px;border-radius: 4px;width: auto;}
+        .createUserButton:hover{background-color:#3BC1F4;}
+        .manageUserLabelStyle{ font-size:44px;color:#666666;font-style:normal;text-align:left;line-height:30px; letter-spacing:0em;effect:none;}
+        .manage_user_search_row{margin-top:50px;}
+        .search_button { top:-24px;}
+        #search_input { height: 32px !important; margin-bottom:-5px;}
+        .successMessSty{ text-align:center; margin-top:10px; font-size:20px;}
+        .successMessStyUpt{ margin-top:10px; font-size:20px;}
+        table a {color: #3BC1F4;}        
+        #manage_content .pagination > a { border-radius: 4px;}
+        .reorder_btn {position: relative;top: -15px;margin-right: 10px !important;width: 18px;background-position: -40px -40px;cursor: pointer;height: 18px; margin-bottom: -11px;margin-top: -4px;}
+        .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+            padding-left: 20px;
+        }
+        .dataTables_info { right: 98px; }  
+        .successUpdated{color: #4ca90c;margin: 10px 0px; padding: 5px 10px 5px 5px; 10px center; font-size: 18px; margin-top:20px; margin-bottom:-17px; line-height:30px;letter-spacing:0em; effect:none;}
+    </style>
+    <script>
+        function showSelectedRecords(val) {
+            var selctdVal = val;
+            showSelectedRecords1(selctdVal);
+        }
+
+        function WriteAReviewClick(){
+            document.getElementById('ratingContainer').style.display = "block";        
+        }
+
+        function doAd(isNot){
+            if(isNot){
+              storeFeedback();
+              isNot.stopPropagation();
+            }       
+        }
+
+        $(document).ready(function() {
+            $("#successMessId").show();
+            $("#successMessUpdId").show();
+        });
+</script>
+<body>
+    <div class="bootstrap">
+        <div class="content_container">
+            <apex:form id="frmNew">             
+             <!-- HERO MODULE -->
+               <div id="hero_banner" class="hero_manage jumbotronContainer">
+                   <div class="row">
+                       <div class="col-sm-12"></div>
+                   </div>
+               </div>    
+                <div id="manage_content" class="page">
+                    <div class="manageUserLabelStyle">
+                        {!$Label.Manage_Users}
+                    </div>
+                    <apex:outputpanel rendered="{!isSucessMsg}">
+                        <div class="successMessStyUpt successUpdated" id="successMessUpdId">
+                           {!successMsg}
+                        </div>
+                    </apex:outputpanel>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="manage_user_search_row">
+                                <form action="" method="get" id="search_users_form" class="" style="float:left;">
+                                    <div class="search_user_container">
+                                        <div class="search_button"></div>
+                                    </div>
+                                </form>
+                                <apex:commandButton action="{!redirectToCreatePage}" value="Create User" styleClass="createUserButton" id="createUserButtonId" rendered="{!isCreateModifyProfile}"/>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        <apex:pageBlock id="quoteBlock">
+                            <apex:outputPanel id="thePanel">
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="manage_quotes_table">
+                                        <div id="manage_users_table_wrapper" class="dataTables_wrapper" role="grid">
+                                            <!-- <apex:pageBlock id="table" > -->
+                                            <apex:pageBlockTable id="manage_quotes_table" value="{!communityUsersWrapperList}" var="customerWrap" rendered="{!(quoteDetails.size != 0)}" styleClass=" list dataTable table table-bordered table-striped" width="100%">
+                                                <div style="margin-top:5px;">
+                                                    <apex:column styleClass="manage_user_name sorting" headerValue="{!$Label.UserName}" rendered="{!isCreateModifyProfile}" style="font-size:15px !important;">
+                                                        <a href="/apex/Profile?id={!customerWrap.ComUserInst.Id}">{!customerWrap.Name}</a>
+                                                    </apex:column>
+                                                </div>
+                                                <apex:column styleClass="manage_user_name sorting" headerValue="{!$Label.UserName}" rendered="{!IF(isCreateModifyProfile=TRUE,FALSE,TRUE)}" style="font-size: 15px !important;">
+                                                    <apex:outputText value="{!customerWrap.Name}"/> 
+                                                </apex:column>
+                                                <apex:column styleClass="manage_user_email sorting" headerValue="{!$Label.Email}" style="font-size: 15px !important;">                                                   
+                                                    <apex:outputText rendered="{!IF(LEN(customerWrap.ComUserInst.Contact.Email)<28, true, false)}">
+                                                        <apex:outPutText value="{!customerWrap.ComUserInst.Contact.Email}" styleClass="dirorySummary" />
+                                                    </apex:outputText>
+                                                    <apex:outputText rendered="{!IF(LEN(customerWrap.ComUserInst.Contact.Email)>27, true, false)}">
+                                                        <apex:variable value="{!FIND(" ", MID(customerWrap.ComUserInst.Contact.Email, 28, 27))}" var="trim"/>
+                                                        <apex:outPutText value="{!Left(customerWrap.ComUserInst.Contact.Email,27+trim-1)}..."  escape="false"/>
+                                                    </apex:outputText>
+                                                </apex:column>
+                                                <apex:column styleClass="manage_user_id sorting" headerValue="User ID" style="font-size: 15px !important;">
+                                                     <!--<apex:outputText value="{!customerWrap.ComUserInst.FederationIdentifier}"/>-->
+                                                    <apex:outputText rendered="{!IF(LEN(customerWrap.ComUserInst.FederationIdentifier)<28, true, false)}">
+                                                        <apex:outPutText value="{!customerWrap.ComUserInst.FederationIdentifier}" styleClass="dirorySummary"/>
+                                                    </apex:outputText>
+                                                    <apex:outputText rendered="{!IF(LEN(customerWrap.ComUserInst.FederationIdentifier)>27, true, false)}">
+                                                        <apex:variable value="{!FIND(" ", MID(customerWrap.ComUserInst.FederationIdentifier, 28, 27))}" var="trim"/>
+                                                        <apex:outPutText value="{!Left(customerWrap.ComUserInst.FederationIdentifier,27+trim-1)}..."  escape="false"/>
+                                                    </apex:outputText>
+                                                </apex:column>
+                                                <apex:column styleClass="manage_user_role sorting" headerValue="Role" style="width: 190px;font-size: 15px !important;">
+                                                    <apex:outputText value="{!customerWrap.ComUserInst.Community_Role__c}"/>
+                                                </apex:column>
+                                                <apex:column headerValue="Status" style="width: 190px;font-size: 15px !important;" value="{!customerWrap.ComUserInst.Status__c}" id="statusID" onclick="statusUpdate()"/>     
+                                            </apex:pageBlockTable>
+                                        </div>
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+                        </apex:pageBlock>
+                    </div>
+                </div>
+                
+                <!-- Modal to display confirm delete, Added 11/25, Arif -->
+                <div class="modal" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteModal" aria-hidden="true" style="z-index: 9999;">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header" style="border-bottom: 0;">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="text-center">
+                                    Are you sure you want to delete this quote and record?
+                                </p>
+                            </div>
+                            <div class="modal-footer text-center" style="border-top: 0;">
+                                <div style="width: 160px; margin: 0 auto;">
+                                    <input type="button" value="No" styleClass="btn btn-secondary enabled" data-dismiss="modal" style="width: auto !important; margin-right: 20px; padding: 5px 20px;" />
+                                    <apex:commandButton value="Yes" id="yesDeleteBtn" styleClass="btn btn-primary enabled" style="width: auto !important; padding: 5px 20px;" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </apex:form>
+        </div>
+    </div>
+    </body>
+    <script type="text/javascript">
+        $( "#confirmDeleteBtn" ).click(function() {
+          $('#confirmDeleteModal').modal('show');
+        }); 
+            
+        function doSearch() {
+            searchServer(document.getElementById("firstName").value);            
+            isCustomerSelected();
+        }
+
+        function getSelectedContact() {
+            var $radio = $('input[name=group1]:checked');
+            var updateDay = $radio.val();
+            var id = $radio.attr('id');
+            if (customerId != null && customerId != '') {
+                CreateQuote(customerId);
+            }
+        }
+
+        function isCustomerSelected() {
+            if (!$("input[name='group1']:checked").val()) {
+                $('input[value="Create Quote"]').addClass('disabled');
+            } else {
+                $('input[value="Create Quote"]').removeClass('disabled');
+            }
+            $('#addCustTrigger').on('click', function () {
+                $('#addCustomerModal').modal('show');
+            });
+            recheckIsCustomerSel();
+        }
+
+        function recheckIsCustomerSel() {
+            $('input[name=group1]:radio').change(function () {
+                customerId = $('input[type=radio][name=group1]:checked').attr('id');
+                //console.log(customerId);
+            });
+            $("input[name='group1']").on('click', function () {
+                if (!$("input[name='group1']:checked").val()) {
+                    $('input[value="Create Quote"]').addClass('disabled');
+                } else {
+                    $('input[value="Create Quote"]').removeClass('disabled');
+                }
+            });
+        }
+        $(document).ready(function () {
+            isCustomerSelected();
+            callDatatable();
+        });
+
+        function callDatatable() {
+            $('#search_input, .dataTables_info, .pagination').remove();
+            /** datatable script **/
+            $('.dataTable th.headerRow').each(function () {
+                var thText = $(this).text();
+                var newHeadTd = '<td role="columnheader" rowspan="1" colspan="1"><a>' + thText + '</a><div class="reorder_btn"></div></td>';
+                $(this).replaceWith(newHeadTd);    
+            });
+            //$('.dataTable thead tr td:eq(0)').addClass('no-sort').children('.reorder_btn').remove();
+           // $('.dataTable thead td:eq(4)').html('');
+           // $('.tHeadNavStatus').prependTo('table thead td:eq(4)');
+          // $('.dataTable thead tr td:eq(4)').addClass('no-sort');
+            //$('.dataTable thead tr td:first-child').html('<div class="check-label"><input class="css-checkbox" id="checkboxAll" name="checkboxAll" type="checkbox"><label class="css-label radGroup1 clr" for="checkboxAll"></label></div>');
+            $('.dataTable').DataTable({
+                "iDisplayLength": 8,
+                "oLanguage": {
+                   "sInfo": "_START_ - _END_ of _TOTAL_"
+                },
+                "oLanguage": {
+                  "sInfo": "_START_ - _END_ of _TOTAL_",
+                  "oPaginate": {
+                    "sPrevious": "<",
+                    "sNext": ">"
+                  }
+                },
+            });
+            var searchBTN = $('.dataTables_filter > label > input[type="text"]').attr({
+                'id': 'search_input',
+                'name': 'search_users',
+                'placeholder': 'Search by Name'
+            });
+            $(searchBTN).prependTo('.search_user_container');
+            $('.dataTables_filter').hide();
+            $('.dataTables_paginate').addClass('pagination');
+        }
+         <!--Method by khalid for mobility product-->
+        function getEncryptedData(encryptedData, ErrorMessage) {
+            console.log(ErrorMessage.length);
+            if (ErrorMessage && ErrorMessage.length != 0) {
+                $('#oppurtunityModal1').modal('show');
+                $('.errMsg').text(ErrorMessage);
+                setErrorMessage();
+            } else {
+                console.log('getEncryptedUrl proceedToLoginService--' + encryptedData);
+                var encryptedUrl = encryptedData;
+                // Decryption Logic
+                var base64Key = "{!$Setup.ATnT_Encrypt_LD__c.Encrypted_Key_Value__c}";
+                var key = CryptoJS.enc.Base64.parse(base64Key);
+                console.log("key = " + key);
+                var decryptedData = CryptoJS.AES.decrypt(encryptedUrl, key, {
+                    mode: CryptoJS.mode.ECB,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+                var decryptedText = decryptedData.toString(CryptoJS.enc.Utf8);
+                var pop = window.open(decryptedText, 'Popup', 'height=700,width=1000');
+                if (window.focus) {
+                    pop.focus()
+                }
+            }
+            return false;
+        }
+
+        function setVar() {
+            $('#oppurtunityModal').modal('show');
+        }
+        function destroyDatatable() {
+            $('.newManageQuotesDatatable').dataTable().fnDestroy();
+        } 
+        $(document).ready(function() {
+            callNewManageQuotesDatatable('loadDefault', 'false'); 
+        });
+    </script>
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter"/>
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/libs/jquery.dataTables.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/modernizr.js')}" />
+</apex:page>

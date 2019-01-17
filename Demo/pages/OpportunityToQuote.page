@@ -1,0 +1,106 @@
+<apex:page controller="OpportunityToQuoteController" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0"  cache="false">
+<style>
+.hsonuc {
+    position: absolute;   
+    
+    
+    top:190px;
+    right:10%;
+    left:40%
+    bottom: 60%
+    margin-top:60px;
+    margin-bottom:80px;
+    margin-left:50px;
+    margin-right:50px;
+}
+</style>
+<style>
+.tertiaryPalette, .individualPalette .Custom72Block .tertiaryPalette, .layoutEdit .individualPalette .Custom72Block .tertiaryPalette {
+background-color: #1797c0;
+border-color: #1797c0;
+}
+.secondaryPalette, .individualPalette .Custom72Block .secondaryPalette {
+background-color: #1797c0;
+border-color: #1797c0;
+}
+
+fieldset {
+    font-family: sans-serif;
+    border: 3px solid #1797c0;
+    background: #FFFFFF;
+}
+
+fieldset legend {
+
+    background: #1797c0;
+    color: #FFFFFF;
+    padding: 3px 10px;
+    font-size: 19px;
+    border-radius: 5px;
+    box-shadow: 0 0 0 3px #ddd;
+    margin-left: 30px;
+}
+</style>
+<script type="text/javascript">
+window.onload = setFocus
+function setFocus()
+{
+      <!--   document.getElementById("abc").focus();-->
+}
+
+var arItems = [];
+
+function validateAndEnableBtn(inpObj, token){
+
+    
+   // if( arItems.indexOf( token ) == -1 ){
+    
+    //    arItems.push(token);
+    
+   // }else{
+    
+   //     arItems.splice(arItems.indexOf(token),1);
+    //}
+    //if( arItems.length >= 2 ){
+    
+ //       document.getElementById( "{!$Component.frm.nextbutton}").disabled = false;
+  //  }else{
+    
+  //      document.getElementById( "{!$Component.frm.nextbutton}").disabled = true;
+  //  }
+    //alert(arItems);
+}
+
+
+</script>
+    <fieldset>
+        <legend>Instructions</legend>
+        1. Please select the Date and Time to schedule the migration job (Mandatory) <br></br> 
+        2. Select the SP Account which you would like to migrate to Force Portal (Mandatory) <br></br>
+        3. Select the Opportunity Stage of the deals to be migrated (Optional)
+    </fieldset>
+    <div class="height: 200px;">
+        <apex:form id="frm">
+        <apex:outputtext value="Select Date and Time to schedule a job : " />
+        <apex:inputField id="dateElem" style="width:290px;margin-top:8px;margin-left:15px;" value="{!bidMigration.SchuduleJobAt__c}" onchange="validateAndEnableBtn(this,'dt');"/><br/>
+        <apex:outputtext value="Select SP Account Name : " />
+        <apex:selectList id="selectedSpAccount"  value="{!selectedSpAccountVal }" style="width:290px;margin-top:8px;margin-left:92px;" multiselect="false" size="1" onchange="validateAndEnableBtn(this,'sp');" >
+            <apex:selectOptions value="{!AccountName}"></apex:selectOptions>
+                <apex:actionSupport event="onchange" action="{!enabelNext}"  reRender="nextbutton" status="loading" />
+        </apex:selectList><br/>
+        <apex:outputtext value="Select Opportunity Stage : " />
+            <apex:selectList id="selectedStage"  value="{!selectedVal }" style="width:290px;margin-top:8px;margin-left:75px;" multiselect="false" size="1" >
+                <apex:selectOptions value="{!OpportunityStageOptions}"></apex:selectOptions>
+                
+            </apex:selectList><br/><br/>
+
+            <t></t><apex:commandButton styleClass="hsonuc" id="nextbutton" value="Start Deal Migration" action="{!createBidMigrationRecord}"  onclick="this.disabled=true;" reRender="stepspanel,frm" /><br/><br/><br/>
+            
+            <apex:outputPanel id="stepspanel" >
+                <div style="color:#E60000; font-weight:bold;font-size:14px;  margin-top: -45px;">
+                <apex:messages id="erMessage"  />
+                </div>
+            </apex:outputPanel>
+        </apex:form>
+    </div>
+</apex:page>

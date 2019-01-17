@@ -1,0 +1,791 @@
+<apex:page docType="html-5.0" controller="PortalDesignHeaderController" standardStylesheets="false" sidebar="false" showHeader="false">
+    <!-- Developers Note Robyn 12/04/15: removing extra bootstrap stylesheet PortalDesignBootCSS -->
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!$Resource.App_CSS}"/>
+    <apex:includeScript value="{!$Resource.atomjqueryjs}"/>
+    
+    <apex:includeScript value="{!$Resource.atombootstrapminjs}"/>
+    
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/libs/jquery.dataTables.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/modernizr.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/bootstrap.min.js')}" />
+
+    <style>
+        .adbuilder_hero_manage {
+           height: 99px;
+            background-image: url("{!$Resource.Hero_AdBuilder}") !important;
+        }        
+        .begin_quote_icon {
+            width: 30px !important;
+            height: 34px !important;
+        }
+
+        .link-section {
+            margin-right: 0 !important;
+        }
+                
+        .begin_quote_btn {
+            position: relative;
+            left: 5px;
+            margin-top: 6px;
+            padding: 1px 12px 0px;
+            font-family: clearviewattlight;
+            font-size: 0.875em;
+            line-height: 40px;
+            color: #FFF;
+            border: 0px none;
+            background: none repeat scroll 0% 0% #056FAB;
+            transition: #000 0.2s ease-in-out 0s;
+            border-radius: 3px;
+        }
+        .user_badge {
+            margin-top: 6px;
+        }
+        .navbar-header {
+            margin-bottom: 17px;
+        }
+        .sub_links_manage {
+          width: 1355px !important;
+        }
+        .navbar-header{
+           margin-top:18px;
+        }
+        ul li, ol li {
+        margin-left:0;
+        padding-left: 0;
+        }
+    </style>
+    <style>    
+        .profile-dropdown-container {
+            display: none;
+            position: absolute;
+            top: 59px;
+            right: -6px;
+            width: 103px;
+            min-height: 70px;
+            padding: 10px 10px;
+            background-color: #fff;
+            border-radius: 2px;
+            -webkit-box-shadow: 0px 2px 2px 2px rgba(50, 50, 50, 0.1);
+            -moz-box-shadow:    0px 2px 2px 2px rgba(50, 50, 50, 0.1);
+            box-shadow:         0px 2px 2px 2px rgba(50, 50, 50, 0.1);
+        }
+        .profile-dropdown-container-beginQuote {
+            display: none;
+            position: absolute;
+            top: 55px;
+            right: 5px;
+            width: 135px;
+            min-height: 60px;
+            padding: 10px 10px;
+            background-color: #fff;
+            border-radius: 2px;
+            -webkit-box-shadow: 0px 2px 2px 2px rgba(50, 50, 50, 0.1);
+            -moz-box-shadow:    0px 2px 2px 2px rgba(50, 50, 50, 0.1);
+            box-shadow:         0px 2px 2px 2px rgba(50, 50, 50, 0.1);
+        }
+        .up-arrow {
+        position: absolute;
+        top: -12px;
+        left: 50px;
+        color: #fff;
+        font-size: 120%;
+        }
+        
+        .dropdown-link-container {
+        
+        
+        ul {
+        list-style: none;
+        list-style-type: none;
+        padding: 0px 5px;
+        }
+        
+        li { padding: 2px 0px; }
+        
+        
+        a { text-decoration: none;}
+        
+        .user_badge {
+            float: left;
+            position: relative;
+            top: -10px;
+            width: 100px;
+        }
+        hover {
+        .notification_badge {
+            background: lighten($orange, 10%);
+            @include transition(background, .2s, ease-in-out);
+        }
+        .styled-select-small select {
+            -moz-appearance: none;
+        }
+        .styled-select-small{
+            -moz-appearance: none;
+        }
+                    
+        .modal.modal-wide .modal-dialog {
+              width: 90%;
+            }
+        .modal-wide .modal-body {
+              overflow-y: auto;
+            }
+    </style>
+    
+    <div id="top_nav_bar" class="navbar navbar-default navbar-fixed-top" role="navigation">
+        <div class="container">
+
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+                <a>
+                    <apex:image url="{!URLFOR($Resource.portalDesignImg,'/logo_retina.png')}" width="222" height="32" title="AT&amp;T Partner Exchange" alt="AT&amp;T Partner Exchange"/>
+                </a>
+            </div>
+
+            <div class="navbar-collapse collapse" ng-controller="NavController as nav">
+                <ul id="nav_desktop" class="nav navbar-nav navbar-right">
+                    <li>
+                        <a>{!$Label.My_Dashboard}</a>
+                    </li>
+                   
+                    <li>                         
+                         <a>{!$Label.Grow}</a>
+                    </li>
+
+                    <li>
+                        <a>{!$Label.Products}</a>
+                    </li>
+                    <li>
+                        <a>{!$Label.Manage}</a>
+                    </li>
+                    <li>
+                        <a class="main_nav_link top_link_community" href="javascript:void(0);"
+                           data-target=".community-content"
+                           data-type="hasSub">{!$Label.Community}</a>
+                    </li>
+                  
+                    
+                    <li>
+                        <a>{!$Label.Developers}</a>
+                    </li>
+                    <li class="nav_quote_li" style="margin-left:20px;">
+                <!--    <apex:outputPanel rendered="{!userBeginQuote = true}">
+                        <a class="unactive_top top_link_quote" href="{!$Page.Buyflow}">
+                            <button class="begin_quote_btn" title="{!$Label.Begin_Quote}" style="width: auto !important; display: inline-block;">
+                                <div class="begin_quote_icon" style="padding: 0; margin: 0;"></div>
+                                {!$Label.Begin_Quote}
+                            </button>
+                        </a>
+                    </apex:outputPanel> -->
+
+                    <apex:outputPanel onmouseover="onmouseOverBeginQuote()" onmouseout="onmouseOutBeginQuote()">
+                                <button  class="begin_quote_btn begin_quote_btnID" title="{!$Label.Begin_Quote}" style="width: auto !important; display: inline-block;background-color: #eeeeee;margin-right: 8px;">
+                                    <div class="begin_quote_icon" style="padding: 0; margin: 0;"></div>
+                                    {!$Label.Begin_Quote}
+                                </button>
+                                <div data-status="open" class="profile-dropdown-container-beginQuote" style="display: none;" id="begin_quote_btnID11">                                    
+                                    <apex:image url="{!$Resource.triangleGlyphion}" width="144" height="10" style="margin-top:-17px; margin-left:-15px; position:absolute;"/>
+                                    <div class="dropdown-link-container" style="font-size:12px;text-align:center;color:#333333;font-style:normal;line-height:17px;">
+                                       <p>You need <br/> permission to <br/> access this content</p>
+                                </div>
+                               </div> 
+                     </apex:outputPanel>
+                    
+                    </li>
+                    <li style="margin-left:10px;">
+                        <div class="user_badge">
+                            <div data-status="open" class="profile-dropdown-container" style="display: none;">
+                                <i class="glyphicon glyphicon-triangle-top up-arrow"></i>
+                                <apex:image url="{!$Resource.triangleGlyphion}" width="130" height="10" style="margin-top:-16px; margin-left:-15px; position:absolute; width:112px;"/>
+                                <div class="dropdown-link-container">
+                                    <ul>
+                                    <apex:form >                                       
+                                        <li><apex:outputLink value="/apex/Profile" title="My Profile" style="margin-top:8px; margin-left:10px;color:#3BC1F4;" >My Profile</apex:outputLink></li><br/>       
+                                        <li><apex:commandLink value="Logout" action="{!portalLogOut}" style="margin-top:6px; margin-left:10px; color:#3BC1F4;"  oncomplete="javascrit:window.top.location.href='{!$Label.PortalLogOutUrl}';" /></li>     
+                                    </apex:form>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- <div class="notification_badge">6</div> -->
+                            <div class="welcomeDivClass">
+                                <div class="avatar">
+                                    <apex:image url="{!userSmallPhotoUrl}" width="40px" height="40px" alt="you"/>
+                                    <!--<a href="/apex/Profile?id={!userObj.Id}">
+                                        <apex:image url="{!userSmallPhotoUrl}" width="40px" height="40px" alt="you"/>
+                                    </a>-->
+                                </div>
+                                <div class="user_welcome" title="Goto Profile">
+                                    <ul>
+                                        <!-- <li>{!$Label.Welcome}</li>
+                                         <li class="profile_name">{!userFirstName}&#33;</li> -->
+                                        <!--<a href="/apex/Profile?id={!userObj.Id}">
+                                            <li>{!$Label.Welcome}</li>
+                                            <li class="profile_name">{!userFirstName}&#33;</li>
+                                        </a> -->                                           
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="sub_navigation">
+        <section class="grow-content sub_content panel-collapse">
+            <div class="row">
+                <div class="sub_links_container sub_links_grow">
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>{!$Label.Getting_Started}</h4>
+                        <ul>
+                            <!-- updated links to grow tab getting started section, Arif Merritt 10/9/2015 -->
+                            <li><a href="{!$Page.PortalDesign_GettingStarted}#PortalDesign_GettingStarted_Overview">{!$Label.Program_Overview}</a></li>
+                            <li><a href="{!$Page.PortalDesign_GettingStarted}#PortalDesign_GettingStarted_FinancePage">{!$Label.Finance}</a></li>
+                            <li><a href="{!$Page.PortalDesign_GettingStarted}#PortalDesign_GettingStarted_SalesEnablePage">{!$Label.Sales_Enablement}</a></li>
+                            <!-- / getting started section, Arif Merritt -->
+                        </ul>
+                     </div>
+
+                     <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <!--DE90249 | Teja -->
+                        <h4>{!$Label.Incentives}</h4>
+                        <ul>
+                            <li><a href="{!$Page.Grow_Incentives_IncentivesPromotions}">{!$Label.Incentives_Promotions}</a></li>
+                            <li><a href="{!$Page.Grow_Incentives_MobilityDiscounts}">{!$Label.IRU_Sponsorship_Program}</a></li>
+                            <li><a href="{!$Page.Grow_Incentives_TierLevels}">{!$Label.Tier_Levels}</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>{!$Label.Program_Resources}</h4>
+                        <ul>
+                            <li><a href="{!$Page.Ad_Builder}" >{!$Label.Ad_Builder}</a></li>
+                            <li><a href="{!$Page.Proposal_Builder}">{!$Label.Proposal_Builder}</a></li>
+                            <li><a href="javascript:void(0);" data-status="cs">{!$Label.SharedVue}</a></li>
+                            <li><a href="{!$Page.Grow_DevelopmentFunds}">{!$Label.Development_Funds}</a></li>
+                            <li><a href="javascript:void(0);" data-status="cs">{!$Label.Marketing_Guides}</a></li>
+                            <li><apex:outputLink value="{!URLFOR($Action.User.eStore_link)}" target="_blank">{!$Label.Store}</apex:outputLink></li>
+                            <li><a href="javascript:void(0);" data-status="cs">{!$Label.Additional_Resources}</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>{!$Label.Learning_Center}</h4>
+                        <ul>
+                            <li><a href="javascript:void(0);">{!$Label.Training_Center_Home}</a></li>
+                            <li><a href="javascript:void(0);" data-status="cs">{!$Label.All_Courses}</a></li>
+                            <li><a href="javascript:void(0);" data-status="cs">{!$Label.My_Transcript}</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="sub_links_container">
+                    <div class="link-section col-xs-12 col-md-12">
+                        Our self-service website is under development. We&#39;ll activate more product and information links in the coming months.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="products-content sub_content">
+            <div class="row">
+                <div class="sub_links_container sub_links_products">
+                    <div class="link-section col-xs-12 col-md-4 col-lg-4">
+                        <h4>{!$Label.Network_Services}</h4>
+                          <ul>
+                              <li><a href="{!$Page.PortalDesign_AVPN}">{!$Label.Virtual_Private_Network}</a></li>
+                              <li><a href="{!$Page.PortalDesign_MIS}">{!$Label.Managed_Internet_Service}</a></li>
+                              <!-- <li class="disabled"><a href="javascript:void(0);">MPLS Private Network Transport</a></li> 
+                              <li><a href="{!$Page.PortalDesign_ANIRA}">{!$Label.Network_Based_IP_VPN_Remote_Access}</a></li>
+                              <li><a href="{!$Page.PortalDesign_IA}">{!$Label.Internet_Access}</a></li>
+                              <li><a href="{!$Page.PortalDesign_NFS}" >{!$Label.Network_Based_Firewall_Service}</a></li>
+                              <li><a href="{!$Page.PortalDesign_SES}">{!$Label.Switched_Ethernet_Service}</a></li>
+                              <li><a href="{!$Page.PortalDesign_IFR}">{!$Label.IP_Flexible_Reach}</a></li>                          
+                              <!-- <li class="disabled"><a href="javascript:void(0);">IP Toll-Free</a></li> -->
+                          </ul>
+                    </div>
+
+                    <!--<div class="link-section col-xs-12 col-md-4 col-lg-4">
+                        <h4>{!$Label.Mobile_Services}</h4>
+                          <ul>
+                              <li><a href="{!$Page.PortalDesign_Wireless}">{!$Label.Wireless}</a></li>
+                              <li><a href="{!$Page.PortalDesign_EPTTS}">{!$Label.Enhanced_Push_to_Talk}</a></li>
+                              <li><a href="{!$Page.PortalDesign_BC}">{!$Label.Business_Connect}</a></li>
+                              <li><a href="{!$Page.PortalDesign_RCO}">{!$Label.RingCentral_Office_Hand}</a></li>
+                          </ul>
+                    </div>
+
+                    <div class="link-section col-xs-12 col-md-4 col-lg-4">
+                        <h4>{!$Label.Cloud_and_Hosting_Services}</h4>
+                          <ul>
+                              <!-- <li><a href="{!$Page.PortalDesign_SCAAS}">{!$Label.Synaptic_Compute_as_a_Service}</a></li> 
+                              <li><a href="{!$Page.PortalDesign_SSAAS}">{!$Label.Synaptic_Storage_as_a_Service}</a></li>
+                              <li><a href="{!$Page.PortalDesign_CHS}">{!$Label.Colocation_Hosting_Services}</a></li>
+                              <li><a href="{!$Page.PortalDesign_PC}">{!$Label.Private_Cloud}</a></li>
+                          </ul>
+                    </div>-->
+                </div>
+            </div>
+        </section>
+
+        <section class="manage-content sub_content">
+            <div class="row">
+                <div class="sub_links_container sub_links_manage">
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>Customers</h4>
+                        <ul>
+                            <li><a href="{!$Page.PortalDesign_AddNewCustomers}">{!$Label.Add_New_Customers}</a></li>
+                            <li><a href="{!$Page.PortalDesign_ManageCustomers}">{!$Label.Manage_Customers}</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>Profiles</h4>
+                        <ul>
+                            <apex:outputPanel rendered="{!userCreateModifyProfile = true}">
+                                <li><a href="/apex/create_user">{!$Label.Create_User}</a></li>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!userCreateModifyProfile = false}">
+                                <li><p style="color:#74A4C5; cursor:default;">{!$Label.Create_User}</p></li>
+                            </apex:outputPanel>
+                            <li><a href="/apex/manage_users">{!$Label.Manage_Users}</a></li>
+                            <li><a href="/apex/business_profile">{!$Label.Business_Profile}</a></li>  
+                        </ul>
+                    </div>
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>Quotes &amp; Orders</h4>
+                        <ul>
+                            <apex:outputPanel rendered="{!userBeginQuote = true}">
+                                <li><a href="{!$Page.Buyflow}">{!$Label.Create_New_Quote}</a></li>
+                                <li><a href="{!$Page.QuotesAndOrdersDashboard}">{!$Label.Manage_Quotes_Orders}</a></li>
+                            </apex:outputPanel> 
+                            <!-- if userBeginQuote  = False, then disable Create New Quote and Manage Quotes Orders -->       
+                            <apex:outputPanel rendered="{!userBeginQuote = false}">
+                                <li><p style="color:#74A4C5; cursor:default;">{!$Label.Create_New_Quote}</p></li>
+                                <li><p style="color:#74A4C5; cursor:default;">{!$Label.Manage_Quotes_Orders}</p></li>    
+                            </apex:outputPanel> 
+                            <li><a href="{!$Label.Provisioning_Status_Url}" target="new">{!$Label.Provisioning_Status}</a></li> <!-- As part of US472811 --> 
+                        </ul>
+                    </div>
+
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>Support</h4>
+                        <ul>
+                      <!--      <li><a href="https://cbm.s2-ia.bcs.att.com/sso/saml2?sfdcid={!BDUserID}&appid=elecbllpymt" target="new">{!$Label.Billing}</a></li> -->
+                            <li> 
+                                <apex:form >
+                                    <apex:commandLink action="{!setupAOTSValues}" target="_self" value="{!$Label.Trouble_Tickets}" id="troubleTicketLink" status="loading" oncomplete="showTroubleTicket('{!aotsURL}', '{!aotsApiFlag}', '{!aotsBdID}', '{!aotsSaartID}', '{!$User.Username}', '{!$User.FirstName}', '{!$User.LastName}', '{!aotsEmailId}','{!aotsPhNum}');"/>
+                                </apex:form>
+                               
+                            </li>                  
+                            <!--
+ <li><a href="javascript:void(0);" data-status="cs">{!$Label.Trouble_Tickets}</a></li>
+                            <li><a href="javascript:void(0);" data-status="cs">{!$Label.Trouble_Tickets}</a></li>-->
+                            
+                     <!--       <li><a href="https://cbm.s2-ia.bcs.att.com/sso/saml2?sfdcid={!BDUserID}&appid=mapadvantage" target="new">{!$Label.Network_Status}</a></li>
+                            <li><a href="https://cbm.s2-ia.bcs.att.com/sso/saml2?sfdcid={!BDUserID}&appid=intsrvoffer" target="new">{!$Label.Service_Level_Agreements}</a></li> -->
+                        </ul>
+                    </div>
+                    <div class="link-section col-xs-12 col-md-3 col-lg-3">
+                        <h4>Services</h4>
+                        <ul>
+                            <li><a href="/apex/ManageExistingNetworkServiceInventry" >{!$Label.Manage_Network_Services}</a></li>
+                           <li><a href="javascript:void(0);" onclick="premierWindowCall();" >{!$Label.Manage_Mobility_Services}</a></li>  
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="sub_links_container">
+                    <div class="link-section col-xs-12 col-md-12">
+                        Our self-service website is under development. Weâll activate more product and information links in the coming months.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="community-content sub_content">
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <apex:outputPanel rendered="{!isCommunityUser || isInternalUser}">
+                    <!-- <apex:outputPanel> -->
+                        <div class="link-section">
+                            <h4>Community</h4>
+                            <ul>
+                              <li><a href="/Connect/apex/newsroomListView?Flag=R">{!$Label.Newsroom}</a></li>
+                              <li><a href="/Connect/_ui/core/chatter/ui/ChatterPage">{!$Label.Chatter}</a></li>
+                              <li><a href="{!$Page.Answers}">{!$Label.Answers}</a></li>
+                              <li><a href="{!$Page.EventsAndSponsorships}">{!$Label.Events_and_Sponsorships}</a></li>
+                              <li><a href="{!$Page.SI_HomeProviderDirectory}">{!$Label.Provider_Directory}</a></li>
+                              <li><a href="javascript:void(0);"  data-status="cs">{!$Label.Contact_Us}</a></li>
+                            </ul>
+                        </div>
+                    </apex:outputPanel> 
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+        </section>
+        
+        <section class="developers-content sub_content">
+            <div class="row">
+                <div class="sub_links_container">
+                    <div class="link-section col-xs-12 col-md-12">
+                        Developer content coming soon.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    
+    <apex:form >
+     <!-- Modal to display pop for mobility products-->
+     <apex:outputPanel id="rerenderpremiermodalwindow">
+                <div class="modal fade" id="urlpremierModal" tabindex="-1" role="dialog" aria-labelledby="urlpremierModalLabel" aria-hidden="true" data-target="#urlpremierModal" data-backdrop="static" data-keyboard="false" style="height:670px !important; margin-left: -550px; margin-top: -15px;">
+                    <div class="modal-dialog">
+                        <div class="modal-content" style="height:650px; width:1100px;">
+                              <div class="modal-header">
+                                <button type="button" onclick="closedModalWindow();" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                </button>
+                                <h4 class="modal-title" id="oppurtunityModalLabel"></h4>
+                            </div>
+                            <div class="modal-body" style="height:80%;" data-toggle="modal">
+                                 <div class="urlpage" style="height:100%;">
+                                 
+                                  <iframe width="100%" height="100%" frameborder="0" scrolling="yes" allowtransparency="true" src="{!deEncryptedUrl}"></iframe> 
+                                 
+                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+     
+                
+         </apex:outputPanel>
+                <!-- Modal -->
+     </apex:form>
+     <!-- Modal to display pop for mobility products-->
+                <div class="modal fade" id="premierModal" tabindex="-1" role="dialog" aria-labelledby="oppurtunityModalLabel" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                </button>
+                                <h4 class="modal-title" id="oppurtunityModalLabel" style="margin: 16px 30px 0px; font-size: 32px; color: #666666;">Continue</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p style="font-size: 22px; margin-left: 32px;">
+                                    To manage wireless users and services, AT&amp;T Premier will open in a new window. To proceed, click <strong>Continue.</strong>
+                                </p>
+                            </div>
+                            <div class="modal-footer">
+                               <!-- <input type="button" id="select_prod_modal_continue1" value="Continue" data-dismiss="modal" class="btn btn-primary enabled" style="float: right; width: 200px;" onclick="premierWindowCallex();" /> -->
+                               <apex:form >
+                                    <apex:commandButton action="{!callLoginDispatchService}" value="Continue" style="width: 172px; float: right; background: #056fab; margin: 12px 30px 30px; color: #fff;" id="theCommandButton" status="loading" oncomplete="getEncryptedData('{!encryptedUrl}','{!ErrorMessage}');"/>
+                                </apex:form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal -->
+                <!-- Modal to handle exception in login dispatch-->
+                <div class="modal fade" id="premierModal1" tabindex="-1" role="dialog" aria-labelledby="oppurtunityModalLabel" data-backdrop="static" data-keyboard="false" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" onclick="closedModalWindow();" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                </button>
+                                <h4 class="modal-title" id="oppurtunityModalLabel">Premier Single Sign-On</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p class="errorText">
+                                    Error :
+                                    <br/>Premier SSO failed:<span class="errMsg"></span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Modal -->
+        
+        <apex:form >
+        
+            <apex:actionFunction name="callLoginDispatchService" action="{!callLoginDispatchService}" oncomplete="getEncryptedData('{!encryptedUrl}','{!ErrorMessage}');" >
+            </apex:actionFunction>
+            
+            <apex:actionFunction action="{!selectDeEncrypted}" reRender="rerenderpremiermodalwindow" name="findDeencryptURL" oncomplete="premierWindowCallex();">
+              <apex:param value="decryptedText" name="decryptedText" assignTo="{!deEncryptedUrl}"></apex:param>
+            </apex:actionFunction>
+            
+          </apex:form>
+                         
+    
+    <script>
+        $(document).ready(function() {
+            var isAccessPermission = "{!isRedirect}";
+            if( isAccessPermission == 'true' ){
+                window.location.href = '/basic_manage_template';
+            }
+            // DISABLE ALL COMING SOON LINKS
+            $("a[data-status='cs']").each(function(){
+              $(this).attr("href","javascript:void(0)").css({"color":"#74a4c5", "cursor":"default", "text-decoration":"none"});
+            });
+            
+            
+            // Main Nav Script
+            var contentHeight = 0;
+
+            $('.main_nav_link').unbind('click').bind("click", function () {
+                var type = $(this).data('type');
+                var text = $(this).text().toLowerCase();
+                if (type === 'hasSub') {
+                    thisHasSub(text);
+                } else {
+                    window.scrollTo(0, 0);
+                    $('.sub_navigation').css({'height' : '0px'});
+                    $('.'+text+'-content').css({'display':'block', 'height':'auto'});
+                    $('.'+text+'-content').siblings().css({'display' : 'none'});
+                    $('#nav_desktop a').removeClass('active_top');
+
+                    if (text === 'dashboard' ||
+                        text === 'developers') {
+                        $('.top_link_'+text).removeClass('unactive_top');
+                        $('.top_link_'+text).addClass('active_top');
+                    }
+                }
+            });
+
+            function thisHasSub(text) {
+            
+                if ($('.'+text+'-content').css('display') === 'block') {
+                    $('.'+text+'-content').css({'display' : 'none'});
+                    $('.top_link_'+text).removeClass('active_top');
+                    $('.top_link_'+text).addClass('unactive_top');
+                    $('.sub_navigation').animate({ height: '0px' });
+
+                } else {
+                    window.scrollTo(0, 0);
+                    $('.sub_navigation').css({'height' : '0px'});
+                    $('.'+text+'-content').css({'display':'block', 'height':'auto'});
+                    $('.'+text+'-content').siblings().css({'display' : 'none'});
+                    $('#nav_desktop a').removeClass('active_top');
+                    $('.top_link_'+text).removeClass('unactive_top');
+                    $('.top_link_'+text).addClass('active_top');
+                    contentHeight = $('.'+text+'-content').innerHeight();
+
+                    $('.sub_navigation').animate({ height: contentHeight }, function() {
+                        $('.sub_navigation').css({'height' : 'auto'});
+                        $('.'+text+'-content').css({'height' : 'auto'});
+                    });
+                }
+            }
+
+            // $('#nav_desktop li a').on('click', function() {
+            //     openMe = $(this).attr('data-target');
+            //     $(".panel-collapse").not(openMe).slideUp();                    
+            //     $(openMe).slideToggle();
+            // });
+        });
+        
+          function closedModalWindow(){                
+                 // alert("function called on window close");  
+                 window.location="/apex/PortalDashboard_UI";
+        }
+        
+        function premierWindowCall(){
+   
+                $('#premierModal').modal('show'); 
+        }
+        
+        function premierWindowCallex(){
+        
+                 $('#premierModal').modal("hide");  
+                 $('#oppurtunityModal').modal("hide");
+                 $('#urlpremierModal').modal("show"); 
+        }
+        
+        
+     function getEncryptedData(encryptedData, ErrorMessage) {
+     
+         // alert("inside getEncryptedData");
+            
+         //alert(encryptedData+" : "+ErrorMessage);
+            
+            console.log('Error Msg Length:'+ErrorMessage.length);
+            if (ErrorMessage && ErrorMessage.length != 0) {
+                $('#oppurtunityModal1').modal('show');
+                $('.errMsg').text(ErrorMessage);
+                setErrorMessage();
+            } else {
+                console.log('getEncryptedUrl proceedToLoginService--' + encryptedData);
+                var encryptedUrl = encryptedData;
+                // Decryption Logic
+                var base64Key = "{!$Setup.ATnT_Encrypt_LD__c.Encrypted_Key_Value__c}";
+                var key = CryptoJS.enc.Base64.parse(base64Key);
+                console.log("key = " + key);
+                var decryptedData = CryptoJS.AES.decrypt(encryptedUrl, key, {
+                    mode: CryptoJS.mode.ECB,
+                    padding: CryptoJS.pad.Pkcs7
+                });
+                var decryptedText = decryptedData.toString(CryptoJS.enc.Utf8);
+                
+                // alert("decryptedText : "+decryptedText);
+               //var pop = window.open(decryptedText, 'Popup', 'height=700,width=1000');
+               
+               //alert("previous to action call");
+               
+               findDeencryptURL(decryptedText);
+               
+               // decryptedText = "http://www.w3schools.com/";
+                
+                //Anand comment temporary - 1002
+                //var newUrl = 'http://www.w3schools.com/';
+         
+                //$(".urlpage").html('<iframe width="100%" height="100%" frameborder="0" scrolling="yes" allowtransparency="true" src="decryptedText"></iframe>'); 
+                //$('#urlpremierModal').modal("show");   
+                //End Anand 1002
+                //if (window.focus) {
+                //    pop.focus()
+               // }
+            }
+          //  return false;
+        } 
+    </script>
+    
+    <script type="text/javascript">
+        function onmouseOverBeginQuote(){
+            $('.profile-dropdown-container-beginQuote').show();
+        }
+        function onmouseOutBeginQuote(){
+            $('.profile-dropdown-container-beginQuote').hide();
+        }
+   </script>  
+   <script>
+        $(document).ready( function () {
+            /*$(".welcomeDivClass").mouseover( function () {
+                $(".profile-dropdown-container").show();
+            });*/
+
+            $(".begin_quote_btn").mouseover( function () {
+                $(".profile-dropdown-container").hide();
+            });
+            
+            $(".profile-dropdown-container").mouseover( function () {
+                $(".profile-dropdown-container").show();               
+            });
+            $(".profile-dropdown-container").mouseout( function () {
+                $(".profile-dropdown-container").hide();               
+            });
+        });
+    </script>
+    <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        
+          ga('create', 'UA-63429768-1', 'auto');
+          ga('send', 'pageview');
+
+    </script> 
+    
+    <!-- New Adobe Analytic Script added 7-12-2015-->
+    <script src="//assets.adobedtm.com/3cb377f74dd760b920cb82680edd5ed3ee951963/satelliteLib-ed747715529f45d08618d00cf7cca3159b56bc30-staging.js"></script>  
+        
+      <script type="text/javascript">
+
+        function showTroubleTicket(sURL, sAPIFlag, sbdId, sSaartId, sSfdcId, sFname, sLName, sMailId,sPhNum)
+        {
+            //alert('sURL='+sURL);
+            //alert('sAPIFlag='+sAPIFlag);
+            //alert('sbdId='+sbdId);
+            //alert('sSaartId='+sSaartId);
+            ///alert('sSfdcId='+sSfdcId);
+            //alert('sFname='+sFname);
+            //alert('sLName='+sLName);
+            //alert('sMailId='+sMailId);
+            //alert('sPhNum='+sPhNum);            
+            var form = document.createElement("form");
+            form.setAttribute("method", "POST");
+            form.setAttribute("action", sURL);
+            form.setAttribute("target", "PopupWindow");
+            
+            var apiFlagField = document.createElement("input");
+            apiFlagField.setAttribute("type", "hidden");
+            apiFlagField.setAttribute("name", "apiFlag");
+            apiFlagField.setAttribute("value", sAPIFlag);
+            
+            form.appendChild(apiFlagField);
+            
+            if(sbdId != null && sbdId !=''){
+                var bdIdField = document.createElement("input");
+                bdIdField.setAttribute("type", "hidden");
+                bdIdField.setAttribute("name", "bdId");
+                bdIdField.setAttribute("value", sbdId);
+                
+                form.appendChild(bdIdField);
+            }
+            else
+            {
+                var saartField = document.createElement("input");
+                saartField.setAttribute("type", "hidden");
+                saartField.setAttribute("name", "saartId");
+                saartField.setAttribute("value", sSaartId);
+                form.appendChild(saartField);
+            }
+
+            var sfdcField = document.createElement("input");
+            sfdcField.setAttribute("type", "hidden");
+            sfdcField.setAttribute("name", "sfdcId");
+            sfdcField.setAttribute("value", sSfdcId);
+            
+            form.appendChild(sfdcField);
+            
+            var fnameField = document.createElement("input");
+            fnameField.setAttribute("type", "hidden");
+            fnameField.setAttribute("name", "fname");
+            fnameField.setAttribute("value", sFname);
+            
+            form.appendChild(fnameField);         
+            
+            var lnameField = document.createElement("input");
+            lnameField.setAttribute("type", "hidden");
+            lnameField.setAttribute("name", "lname");
+            lnameField.setAttribute("value", sLName);
+            
+            form.appendChild(lnameField);  
+            
+            var mailIDField = document.createElement("input");
+            mailIDField.setAttribute("type", "hidden");
+            mailIDField.setAttribute("name", "mailId");
+            mailIDField.setAttribute("value", sMailId);
+            
+            form.appendChild(mailIDField);         
+            
+            var phoneField = document.createElement("input");
+            phoneField.setAttribute("type", "hidden");
+            phoneField.setAttribute("name", "phNum");
+            phoneField.setAttribute("value", sPhNum);
+            
+            form.appendChild(phoneField);          
+            document.body.appendChild(form);            
+
+
+            window.open('', 'PopupWindow');
+            //window.open('', '');
+            form.submit();            
+        }
+
+    </script>
+    
+</apex:page>

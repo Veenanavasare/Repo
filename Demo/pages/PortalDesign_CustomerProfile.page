@@ -1,0 +1,895 @@
+<apex:page Controller="CustomerProfileController" name="Customer Profile Page" docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" id="custProt">
+
+    <apex:include pageName="PortalDesignHeader_UIUX"/>
+    <style type="text/css">
+        body {
+            background: #f7f7f7;
+            overflow-x: hidden !important;
+        }       
+        #manage_content #add_customer_wrapper .btn {
+            width: auto;
+        }
+        #manage_content #add_customer_wrapper .form_btn {
+            float: none;
+            height: 32px;
+        }
+        .site_table {
+            margin: 0;
+            border-bottom: 0px;
+        }
+        .site_table thead tr{
+            background: none;
+            border-bottom-style: solid !important;
+            color:#333;        
+        }
+        .site_table tbody tr td,
+        .site_table thead tr td {
+            border-bottom: none;
+        }
+        .site_table td,
+        .manage_users_table td {
+            width: 10%;
+        }
+        .site_table tr td:first-child,
+        .manage_users_table td:first-child {
+            width: 4% !important;
+        }
+        #manage_content #add_customer_wrapper .site_table input, #manage_content #add_customer_wrapper .manage_users_table input {
+            width: 100% !important;
+            margin: 0;
+            height: 27px !important;
+        }
+
+        #manage_content tbody tr:nth-child(odd), #manage_content tbody tr:nth-child(even){
+            background: none !important;
+        }         
+        #manage_content #add_customer_wrapper .site_table .selectTD {
+            position: relative;
+        }
+        #manage_content #add_customer_wrapper .add_site_location_adjust {
+            top: 0px
+        }
+        #manage_content #add_customer_wrapper .styled-select-small {
+            height: 27px;
+            width: 100%;
+        }    
+        #manage_users_table_wrapper .styled-select-small{
+            width: 8em !important;
+        }
+        #manage_content #add_customer_wrapper .styled-select-small select{
+            padding: 0 5px !important;
+            height:25px !important;
+        }        
+        #add_customer_wrapper .dividerHr {
+            page-break-after: always;
+            height: 3px;
+            background-color: #1B81AD;
+            border: 0px;
+            margin: 15px 0px;
+        }
+        h1 {
+            font-family: omnesatt_iiregular;
+        }
+        #manage_users_table td {
+            width: 12.5%;
+        }
+        input[type="file"] {
+            font-family: clearviewattregular;
+            border: 0;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+            width: 279px;
+        }
+        .dataTables_length {
+            display: none;
+        }
+        .dataTables_info {
+            bottom: 22px;
+            right: 180px;
+            float:left;
+        }
+        .manage_users_table .dataTables_paginate {
+            float: right;
+        }
+        .manage_users_table .dataTables_paginate > a {
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #056fab;
+            margin-left: 5px;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+        .manage_users_table thead {
+            display: none;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+            cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+            cursor: no-drop;
+        }
+        .searchBlock {
+            float: left;
+        }
+        .searchBlock .manage_user_search_row {
+            margin: 0;
+        }
+        .bulkUploadBlock {
+            float: right;
+        }
+        .editcheckbox {
+            height: auto !important;
+            width: auto !important;
+        }
+        #manage_content #add_customer_wrapper .messageText {
+            color: #ff7700 !important;
+        }
+        #bulkUploadModal .modal-body {
+            min-height: 150px;
+        }
+        #bulkUploadModal .modal-body li {
+            padding: 20px;
+        }
+        #bulkUploadModal .modal-body li p {
+            padding: 10px 0;
+        }
+        #bulkUploadModal .modal-body li a {
+            font-size: 84%;
+            text-decoration: underline;
+        }
+        .m-t-20 {
+            margin-top: 20px;
+        }
+        #bulkUploadModal .modal-body li .upload_input {
+            border: 0;
+        }
+        .errorText {
+            color: #cf2a2a !important;
+            font-weight: bold;
+        }
+        /* Disabled button styles */
+        .btn.disabled
+        {
+            /* Used to overwrite the styles so we can have a disabled look */
+            color: #333 !important;
+            background: #eee !important;
+            border-color: #eee !important;
+        }
+        .custPopup {
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            z-index: 9999;
+            left: 50%;
+            padding: 10px;
+            position: absolute;
+            /* These are the 3 css properties you will need to change so the popup 
+        displays in the center of the screen. First set the width. Then set 
+        margin-left to negative half of what the width is. You can add 
+        the height property for a fixed size pop up if you want.*/
+            width: 500px;
+            margin-left: -250px;
+            top: 100px;
+        }
+        .popupBackground {
+            background-color: black;
+            opacity: 0.20;
+            filter: alpha(opacity=20);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 9998;
+        }
+        .dropdownStyle{
+            height: 32px !important;;
+            background-size: 36px;
+            font-size: 16px;
+            line-height: 1.5em;
+            padding: 4px 12px;
+        }        
+    </style>
+    <div class="content_container">
+        <!-- angular templating content will be injected here -->
+        <!-- HERO MODULE -->
+        <div id="hero_banner" class="hero_manage jumbotronContainer ng-scope">
+            <div class="row">
+                <div class="col-sm-12"></div>
+            </div>
+        </div>
+        <!-- CONTENT MODULE -->
+        <div id="manage_content" class="ng-scope">
+            <div id="add_customer_wrapper">
+                <apex:form id="form1">
+                    <apex:pageMessages ></apex:pageMessages>
+                    <div class="row add_new_customer_header">
+                        <div class="col-xs-12 col-md-12">
+                            <h1>{!customerList.Name}</h1>
+                        </div>
+                    </div>
+                    <p class="whiteSpaceError"></p>
+                    <apex:pageBlock id="page1">
+                        <div class="row">
+                            <div class="col-xs-12 col-md-4 col-lg-4">
+                                <ul>
+                                    <li>
+                                        <label>{!$Label.Business_Name}</label>
+                                    </li>
+                                    <li>
+                                        <apex:inputText value="{!customerList.Name}" label="{!$Label.Business_Name}" html-placeholder="{!customerList.Name}" maxlength="50"/>
+                                    </li>
+                                    <li>
+                                        <label>{!$Label.Address}</label>
+                                    </li>
+                                    <li>
+                                        <apex:inputText value="{!customerList.Mailing_Street_Address__c}" label="{!$Label.Address}" html-placeholder="{!customerList.Mailing_Street_Address__c}" maxlength="255"/>
+                                    </li>
+                                    <li>
+                                        <div class="row">
+                                            <label class="col-xs-6">Location (Optional)</label>
+                                            <label class="col-xs-6"></label>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="row">
+                                            <div class="col-xs-6">                                                
+                                                <apex:selectList value="{!customerList.Suite__c}" label="Location" id="siteLocation" multiselect="false" size="1" styleClass="form-control dropdownStyle styled-select-small"  >
+                                                    <apex:selectOptions value="{!LocationPicklist}" id="sitePickLocation" />
+                                                </apex:selectList>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <apex:inputText value="{!customerList.Floor__c}" html-placeholder="#" />
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <label>{!$Label.City}</label>
+                                    </li>
+                                    <li>
+                                        <apex:inputText value="{!customerList.City__c}" html-placeholder="{!customerList.City__c}" maxlength="200"/>
+                                    </li>
+                                    <li>
+                                        <div class="row">
+                                            <div class="col-xs-6">
+                                                <label>{!$Label.State}</label>
+                                            </div>
+                                            <div class="col-xs-6">
+                                                <label>{!$Label.ZIP}</label>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-xs-6">
+                                                <div class="add_state_input_div">
+                                                    <div class="add_site_location_adjust">
+                                                        <apex:selectList value="{!customerList.State__c}" multiselect="false" size="1" styleClass="form-control dropdownStyle styled-select-small"  >
+                                                            <apex:selectOptions value="{!StatePickList}"/>
+                                                        </apex:selectList>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-6 form-group" id="ZIPId" style="padding-left: 0;">
+                                                <apex:inputText value="{!customerList.Zip__c}" html-placeholder="{!customerList.Zip__c}" onkeyup="validateZIP(this)" maxlength="5"/>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-xs-12 col-md-4 col-lg-4">
+                                <ul>
+                                    <li>
+                                        <label>{!$Label.Business_Website}</label>
+                                    </li>
+                                    <li>
+                                        <apex:inputText value="{!customerList.Business_Website__c}" html-placeholder="Optional" maxlength="255"/>
+                                    </li>
+                                    <li>
+                                        <label>{!$Label.DUNS1}</label>
+                                    </li>
+                                    <li>
+                                        <apex:inputText value="{!customerList.DUNS__c}" html-placeholder="Optional" id="DUNSId" styleClass="form-group" onkeyup="validateDUNS(this)" maxlength="255"/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: 20px;">
+                            <div class="col-xs-12 col-md-12 col-lg-12">
+                                <!---<apex:commandButton value="{!$Label.Save}" id="Complete" status="loading" action="{!Save}" styleClass="btn btn-primary btn-login form_btn" reRender="form1" />-->
+                            </div>
+                        </div>
+                    </apex:pageBlock>
+                </apex:form>
+                <!-- Add New Customer search  row-->
+                <div class="row">
+                    <div class="col-xs-12 col-md-12 col-lg-12">
+                        <h3>{!$Label.Add_Customer_Sites_Optional}</h3>
+                    </div>
+                </div>
+                <hr class="dividerHr" />
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <h4>{!$Label.CustomerManagementLabel1}</h4>
+                    </div>
+                </div>
+                <div class="m-t-20">
+                    <div class="row m0">
+                        <div class="searchBlock">
+                            <div class="manage_user_search_row">
+                                <form action="" method="get" id="search_users_form" class="">
+                                    <div class="search_user_container">
+                                        <input type="text" id="search_input" name="search_users" placeholder="Search by Name or Location" autocomplete="off" />
+                                        <div class="search_button"></div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="bulkUploadBlock">
+                            <div class="clear"></div>
+                            <!----<button type="button" class="btn btn-primary m0" data-toggle="modal" onclick="$('#bulkUploadModal').modal();">Upload</button>--->
+                        </div>
+                    </div>
+                </div>
+                <!-- Site Row-->
+                <apex:form ID="Form2">
+                    <div class="row m0">
+                        <!-- <div class="col-xs-12 col-md-12"> -->
+                        <div id="manage_users_table_wrapper" class="dataTables_wrapper" role="grid">
+                            <table class="site_table table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <td colspan="1">
+                                            <!-- <input type="checkbox" class="css-checkbox" style="position:relative" /> -->
+                                            <div class="check-label">
+                                                <input type="checkbox" name="checkboxAll" id="checkboxAll" class="css-checkbox" disabled="true" />
+                                                <label for="checkboxAll" style="cursor:not-allowed;" class="css-label radGroup1 clr">&nbsp;</label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <!-- <input type="checkbox" name="check_next_step" id="check_next_step" class="css-checkbox"/>  -->
+                                            <label>{!$Label.Site_ID}</label>
+                                        </td>
+                                        <td>
+                                            <label>{!$Label.Site_Name}</label>
+                                        </td>
+                                        <td>
+                                            <label>{!$Label.Address}</label>
+                                        </td>
+                                        <td>
+                                            <label>{!$Label.Location}</label>
+                                        </td>
+                                        <td>
+                                            <label>{!$Label.No}</label>
+                                        </td>
+                                        <td>
+                                            <label>{!$Label.City}</label>
+                                        </td>
+                                        <td>
+                                            <label>{!$Label.State}</label>
+                                        </td>
+                                        <td>
+                                            <label>{!$Label.Zip}</label>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </thead>
+                                <tbody class="add_sites_tbody">
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td>
+                                            <apex:inputText value="{!custsiteInst.Site_Name__c}" />
+                                        </td>
+                                        <td>
+                                            <apex:inputText value="{!custsiteInst.Address_Line__c}" styleClass="mandatory_field" onkeyup="enableAddSite();" />
+                                        </td>
+                                        <td class="selectTD">
+                                            <div class="add_state_input_div">
+                                                <div class="add_site_location_adjust">
+                                                    <div class="styled-select-small adjust-select-small">
+                                                        <apex:selectList value="{!custsiteInst.Location__c}" size="1" multiselect="false">
+                                                            <apex:selectOptions value="{!LocationPicklist}" />
+                                                        </apex:selectList>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText value="{!custsiteInst.RoomBuildingFloorInput__c}" id="LOCId" styleClass="form-group add_site_loc2" html-placeholder="#" />
+                                        </td>
+                                        <td>
+                                            <apex:inputText value="{!custsiteInst.City__c}" styleClass="mandatory_field" onkeyup="enableAddSite();" />
+                                        </td>
+                                        <td class="selectTD">
+                                            <div class="add_state_input_div">
+                                                <div class="add_site_location_adjust">
+                                                    <div class="styled-select-small adjust-select-small">
+                                                        <apex:selectList value="{!custsiteInst.State__c}" size="1" multiselect="false" onchange="enableAddSite();" styleClass="mandatory_field">
+                                                            <apex:selectOptions value="{!StatePicklist}" />
+                                                        </apex:selectList>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <apex:inputText value="{!custsiteInst.Zip_Code__c}" onkeyup="validateZIP(this);enableAddSite();" styleClass="form-group mandatory_field" id="ZIPId" maxlength="5"/>
+                                        </td>
+                                        <td>
+                                            <!--<apex:commandButton action="{!AddSite}" styleClass="btn btn-primary disabled add_site_btn" value="{!$Label.Add_Site}" status="loading" rerender="pb1,page2,page1,Form1,Form2,table,manage_users_table" oncomplete="enableAddSite();pageRefreshed();" style="margin-top: 8px;" /> -->
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!--  </div> -->
+                    </div>
+                    <!-- Table-->
+                    <div class="row m0">
+                        <div class="manage_users_table">
+                            <div id="manage_users_table_wrapper" class="dataTables_wrapper" role="grid">
+                                <apex:pageBlock id="table">
+                                    <apex:pageBlockTable id="manage_users_table" styleClass="manage_users_table dataTable table table-bordered" width="100%" html-aria-describedby="manage_users_table_info" style="width: 100%;" value="{!endCustWrapperList}" var="r" rendered="{!IF((endCustWrapperList!=null && endCustWrapperList.size>0),'true','false')}">
+                                        <apex:column >
+                                            <div class="check-label">
+                                                <apex:inputCheckbox id="s" value="{!r.isSelected}" label="{!r.customerSiteInst.Name}" styleClass="editcheckbox css-checkbox" disabled="true" />
+                                                <label for="" class="editSiteChkLbl css-label radGroup1 clr" style="cursor:not-allowed;">&nbsp;</label>
+                                            </div>
+                                        </apex:column>
+                                        <apex:column >
+                                            <apex:inputField value="{!r.customerSiteInst.Name}" /></apex:column>
+                                        <apex:column >
+                                            <span class="hide">{!r.customerSiteInst.Site_Name__c}</span>
+                                            <apex:inputField value="{!r.customerSiteInst.Site_Name__c}" />
+                                            <!--<input type="text" value="{!r.customerSiteInst.Site_Name__c}" />-->
+                                        </apex:column>
+                                        <apex:column >
+                                            <span class="hide">{!r.customerSiteInst.Address_Line__c}</span>
+                                            <apex:inputField value="{!r.customerSiteInst.Address_Line__c}" /></apex:column>
+                                        <apex:column >
+                                            <div class="styled-select-small adjust-select-small">
+                                                <apex:selectList value="{!r.customerSiteInst.Location__c}" size="1" multiselect="false" >
+                                                    <!---<apex:selectOptions value="{!LocationPicklist}" />--->
+                                                </apex:selectList>
+                                            </div>
+                                        </apex:column>
+                                        <apex:column >
+                                            <apex:inputField value="{!r.customerSiteInst.RoomBuildingFloorInput__c}" /></apex:column>
+                                        <apex:column >
+                                            <span class="hide">{!r.customerSiteInst.City__c}</span>
+                                            <apex:inputField value="{!r.customerSiteInst.City__c}" /></apex:column>
+                                        <apex:column >
+                                            <span class="hide">{!r.customerSiteInst.State__c}</span>
+                                            <div class="styled-select-small adjust-select-small">
+                                                <apex:selectList value="{!r.customerSiteInst.State__c}" size="1" multiselect="false" >
+                                                    <!--<apex:selectOptions value="{!StatePicklist}" />-->
+                                                </apex:selectList>
+                                            </div>
+                                        </apex:column>
+                                        <apex:column >
+                                            <span class="hide">{!r.customerSiteInst.Zip_Code__c}</span>
+                                            <apex:inputField value="{!r.customerSiteInst.Zip_Code__c}" /></apex:column>
+                                        <apex:column ></apex:column>
+                                    </apex:pageBlockTable>
+                                </apex:pageBlock>
+                                <apex:pageBlock id="hiddenBlock" rendered="false"></apex:pageBlock>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin: 10px 0; padding: 10px 0; border-top: 1px dashed #ddd;">
+                        <div class="col-xs-12 col-md-12" style="padding:0">
+                            <h4 style="margin-bottom: 10px;">{!$Label.CustomerManagementLabel2}</h4>
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <!---<apex:commandButton action="{!Save2}" value="{!$Label.Save}" status="loading" rerender="hiddenBlock" styleClass="pull-left btn btn-primary text-center" style="margin-right: 20px;">
+                                        <apex:param name="{!$Label.Message}" value="{!customerList.Name}" assignTo="{!Msg}" />
+                                    </apex:commandButton>--->
+                                    <apex:commandButton value="{!$Label.Delete}" action="{!showPopup}" status="loading" rerender="tstpopup" id="deleteBtn" styleClass="pull-left btn btn-primary text-center deleteBtn" oncomplete="showDeleteSiteModal();" />
+                                </div>
+                            </div>
+                            <!-- Delete site Modal -->
+                            <div class="modal fade" id="deleteSiteModal" tabindex="-1" role="dialog" aria-labelledby="deleteSiteModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                            </button>
+                                            <h4 class="modal-title" id="deleteSiteModalLabel">{!$Label.Delete_Site}</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>{!$Label.CustomerManagementLabel3}</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <apex:commandButton value="{!$Label.Delete}" action="{!DeleteAction}" rerender="tstpopup,table,manage_users_table,Form2,form1,page1" oncomplete="pageRefreshed()" styleClass="btn btn-primary" status="loading"/>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">{!$Label.Close}</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Delete site Modal -->
+                        </div>
+                    </div>
+                </apex:form>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div ng-app='App' class="modal fade" id="bulkUploadModal" tabindex="-1" role="dialog" aria-labelledby="bulkUploadModalLabel" aria-hidden="true">
+        <div ng-controller="PreviewController" class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">{!$Label.Close}</span>
+                    </button>
+                    <h4 class="modal-title" id="bulkUploadModalLabel">{!$Label.CustomerManagementLabel12}</h4>
+                </div>
+                <apex:form id="form-bulk-input2">
+                    <div class="modal-body">
+                        <ol>
+                            <li>
+                                <p>{!$Label.CustomerManagementLabel9}</p>
+                                <a>
+                                    <apex:outputLink value="{!strDocUrl}" id="theLink" target="_blank">{!$Label.CustomerManagementLabel10}</apex:outputLink>
+                                </a>
+                            </li>
+                            <li>
+                                <p>{!$Label.CustomerManagementLabel11}</p>
+                                <input type="file" name="excel_file" accept=".xlsx" onchange="processFileForParsing(this, this.files)" required="true" class="m-l-10 upload_input"></input>
+                                <input type="checkbox" ng-model="showPreview" ng-change="showPreviewChanged();" style="display:none;"  ></input>
+                                <apex:inputTextArea value="{!excelBody}" id="theTextInput" style="display:none;"   />
+                                <apex:commandButton action="{!ReadFile}" value="{!$Label.Upload}"  styleClass="btn btn-primary m-l-10" style="width:auto;" />
+                                <apex:outputPanel id="oPRes">
+                                                      
+                                    <script>
+                                    
+                           function processFileForParsing(obj, obj1) {
+                               angular.element(obj).scope().fileChanged(obj1);
+                                        }
+                            (function(undefined) {
+                                            'use strict';
+                                            // Check if dependecies are available.
+                                            if (typeof XLSX === 'undefined') {
+                                                console.log('xlsx.js is required. Get it from https://github.com/SheetJS/js-xlsx');
+                                                return;
+                                            }
+                                        
+                                            if (typeof _ === 'undefined') {
+                                                console.log('Lodash.js is required. Get it from http://lodash.com/');
+                                                return;
+                                            }
+                                        
+                                            // Baseline setup
+                                            // --------------
+                                        
+                                            // Establish the root object, `window` in the browser, or `exports` on the server.
+                                            var root = this;
+                                        
+                                            // Save the previous value of the `XLSXReader` variable.
+                                            var previousXLSXReader = root.XLSXReader;
+                                        
+                                            // Create a safe reference to the XLSXReader object for use below.
+                                            var XLSXReader = function(file, readCells, handler) {
+                                                var obj = {};
+                                                XLSXReader.utils.intializeFromFile(obj, file, readCells, handler);
+                                                return obj;
+                                            };
+                                        
+                                            // Export the XLSXReader object for **Node.js**, with
+                                            // backwards-compatibility for the old `require()` API. If were in
+                                            // the browser, add `XLSXReader` as a global object via a string identifier,
+                                            // for Closure Compiler 'advanced' mode.
+                                            if (typeof exports !== 'undefined') {
+                                                if (typeof module !== 'undefined' && module.exports) {
+                                                    exports = module.exports = XLSXReader;
+                                                }
+                                                exports.XLSXReader = XLSXReader;
+                                            } else {
+                                                root.XLSXReader = XLSXReader;
+                                            }
+                                        
+                                            // Current version.
+                                            XLSXReader.VERSION = '0.0.1';
+                                        
+                                            XLSXReader.utils = {
+                                                'intializeFromFile': function(obj, file, readCells, handler) {
+                                                    var reader = new FileReader();
+                                        
+                                                    reader.onload = function(e) {
+                                                        var data = e.target.result;
+                                                        var workbook = XLSX.read(data, {
+                                                            type: 'binary'
+                                                        });
+                                        
+                                                        obj.sheets = XLSXReader.utils.parseWorkbook(workbook, readCells);
+                                                        handler(obj);
+                                                    };
+                                        
+                                                    reader.readAsBinaryString(file);
+                                                },
+                                                'parseWorkbook': function(workbook, readCells) {
+                                                    var sheets = {};
+                                        
+                                                    _.forEachRight(workbook.SheetNames, function(sheetName) {
+                                                        var sheet = workbook.Sheets[sheetName];
+                                                        sheets[sheetName] = XLSXReader.utils.parseSheet(sheet, readCells, sheetName);
+                                                    });
+                                        
+                                                    return sheets;
+                                                },
+                                                'parseSheet': function(sheet, readCells, sheetName) {
+                                                    var range = XLSX.utils.decode_range(sheet['!ref']);
+                                                    var sheetData = [];
+                                                    if (readCells === true) {
+                                                        _.forEachRight(_.range(range.s.r, range.e.r + 1), function(row) {
+                                                            var rowData = [];
+                                                            _.forEachRight(_.range(range.s.c, range.e.c + 1), function(column) {
+                                                                var cellIndex = XLSX.utils.encode_cell({
+                                                                    'c': column,
+                                                                    'r': row
+                                                                });
+                                                                var cell = sheet[cellIndex];
+                                                                rowData[column] = cell ? cell.v : undefined;
+                                                            });
+                                                            sheetData[row] = rowData;
+                                                        });
+                                                    };
+                                                    var processedExcelBodyString = '';
+                                                    if(sheetData.length > 0) {
+                                                        for(var i=0; i < sheetData.length; i++) {
+                                                            
+                                                             processedExcelBodyString += sheetData[i].toString() +"~~";
+                                                             //processedExcelBodyString += sheetData[i].toString() + "\n";
+                                                          
+                                                        }
+                                                    }
+                                                    //buyflowid:sitedetails:
+                                                    document.getElementById("custProt:form-bulk-input2:theTextInput").value = processedExcelBodyString;
+                                                    return {
+                                                        'data': sheetData,
+                                                        'name': sheet.name,
+                                                        'col_size': range.e.c + 1,
+                                                        'row_size': range.e.r + 1
+                                                    };
+                                                }
+                                            };
+                                        }).call(this);            
+                                      
+                           var app = angular.module("App", []);
+                           app.factory("XLSXReaderService", ['$q', '$rootScope',
+                                    function($q, $rootScope) {
+                                        var service = function(data) {
+                                            angular.extend(this, data);
+                                        };
+                                        service.readFile = function(file, showPreview) {
+                                            var deferred = $q.defer();
+                        
+                                            XLSXReader(file, showPreview, function(data) {
+                                                $rootScope.$apply(function() {
+                                                    deferred.resolve(data);
+                                                });
+                                            });
+                        
+                                            return deferred.promise;
+                                        };
+                        
+                                        return service;
+                                    }
+                                ]);
+                                
+                  app.controller('PreviewController', function($scope, XLSXReaderService) {
+                    $scope.showPreview = false;
+        
+                    $scope.fileChanged = function(files) {
+                        $scope.isProcessing = true;
+                        $scope.sheets = [];
+                        $scope.excelFile = files[0];
+                        XLSXReaderService.readFile($scope.excelFile, $scope.showPreview).then(function(xlsxData) {
+                            $scope.sheets = xlsxData.sheets;
+                            $scope.isProcessing = false;
+                        });
+                        $scope.isProcessing = true;
+                        $scope.showPreview = true;
+                        var temp = XLSXReaderService.readFile($scope.excelFile, $scope.showPreview).then(function(xlsxData) {
+                            $scope.sheets = xlsxData.sheets;
+                            $scope.isProcessing = false;
+                        });
+                    }; 
+                });
+        
+                document.onkeypress = function(e){
+                            e=e?e:window.event;
+                            if (e.keyCode==13)return false;
+                }
+                                    </script>
+                                </apex:outputPanel>
+                            </li>
+                        </ol>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">{!$Label.Close}</button>
+                    </div>
+                </apex:form>
+            </div>
+        </div>
+    </div>
+    <!--Start--These Below Files are required to read Excel file ---->  
+        <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/angular.min.js')}"/>
+        <!---<apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/jquery.min.js')}"/>-->
+        <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/bootstrap.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/lodash.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/jszip.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/xlsx.js')}"/>
+        <!--<apex:includeScript value="{!URLFOR($Resource.ExcelParser, 'ExcelParser/xlsx-reader.js')}"/>--->
+    <!--End--These Below Files are required to read Excel file ---->  
+
+    <script>
+        $(document).ready(function () {
+            pageRefreshed();
+        });
+
+        function pageRefreshed() {
+            $('#deleteSiteModal').modal('hide'); //hide delete modal
+            $('body').removeClass('modal-open'); //hide delete modal
+            $('.modal-backdrop').remove(); //hide delete modal           
+            $('.deleteBtn').removeClass('show').addClass('hide'); // Hide the delete button on load of the page
+            $('.dataTable').DataTable({
+                'iDisplayLength': 8,
+                "oLanguage": {
+                    "sInfo": "_START_ - _END_ of _TOTAL_"
+                },
+                "oPaginate": {
+                    "sNext": ">",
+                    "sPrevious": "<",
+                    "First": '1',
+                    "Next": '2'
+                }
+            });
+            if ($('.dataTable tr > td').length) {
+                 $('#search_input').remove();
+                var searchBTN = $('.dataTables_filter > label > input[type="text"]').attr({
+                    'id': 'search_input',
+                    'name': 'search_users',
+                    'placeholder': 'Search by Name or Location'
+                });
+                $(searchBTN).prependTo('.search_user_container');
+            }
+            $('.dataTables_filter').hide();
+
+            $('.check-label input').each(function(){
+                var chkIdVal = $(this).attr('id');
+                var targetLabel = $(this).parent('div.check-label').find('label.editSiteChkLbl');
+                $(targetLabel).attr('for', chkIdVal);
+            });
+
+            $('.editcheckbox').on('click', function () {
+                issChkTrue('oneByOne');
+            });
+            
+            $('#checkboxAll').on('click', function () {
+                issChkTrue('all');
+            });
+        }
+
+        // Function to enable/disable the delete button based on whether a site is selected
+        function issChkTrue(clickType) {
+            if (clickType === 'oneByOne') {
+                if ($(".editcheckbox:checked").length > 0) {
+                    $('.deleteBtn').removeClass('hide').addClass('show');
+                } else {
+                    $('.deleteBtn').removeClass('show').addClass('hide');
+                }
+            } else if (clickType === 'all') {
+                $('.editcheckbox:checkbox').prop('checked', checkboxAll.checked);
+                if ($(".editcheckbox:checked").length > 0) {
+                    $('.deleteBtn').removeClass('hide').addClass('show');
+                } else {
+                    $('.deleteBtn').removeClass('show').addClass('hide');
+                }
+            }
+
+        }
+
+        function showDeleteSiteModal() {
+            $('#deleteSiteModal').modal();
+        }
+        
+        var onlyNumRegex = /^[0-9]+$/;
+        function validateZIP(thisEle) {            
+            var enteredValue = thisEle.value;
+            $(thisEle).removeClass("has-error");
+            $('#ZIPErrorText').remove();
+            if(enteredValue.length > 0){
+                if(enteredValue.indexOf(' ') >= 0 || !onlyNumRegex.test(enteredValue)){
+                    $(thisEle).addClass("has-error");
+                    $(thisEle).after("<p id='ZIPErrorText' class='errorText'>Invalid ZIP</p>");
+                }else if(enteredValue.length < 5 && onlyNumRegex.test(enteredValue)){
+                    $(thisEle).addClass("has-error");
+                    $(thisEle).after("<p id='ZIPErrorText' class='errorText'>Zip Code must be 5 digits</p>");                    
+                }                    
+            }            
+            if(0 < $(".errorText").length){
+                  $('.btn-login').addClass('disabled');
+              } else {
+                  $('.btn-login').removeClass('disabled');
+            }
+        }
+        
+        function validateDUNS(thisEle) {
+            if (isNaN(thisEle.value)) {
+                $(thisEle).addClass("has-error");
+                $('#DUNSErrorText').remove();
+                $(thisEle).after("<p id='DUNSErrorText' class='errorText'>Invalid DUNS</p>");
+            } else {
+                $(thisEle).removeClass("has-error");
+                $('#DUNSErrorText').remove();
+            }
+            if(0 < $(".errorText").length){
+                  $('.btn-login').addClass('disabled');
+              } else {
+                  $('.btn-login').removeClass('disabled');
+            }            
+        }
+
+        function enableAddSite() {
+            var boolIsSiteValid = true, boolIsNumberValid = true;
+            // If any mandatory fields are not filled, we do not enable the button
+            $('.mandatory_field').each(function () {
+                if ("" === $(this).val().trim() || undefined === $(this).val()) {
+                    boolIsSiteValid = false;
+                    return false;
+                }
+            });
+
+            // If there is any error message present, do not enable the button
+            if (0 < $(".add_sites_tbody .errorText").length) {
+                boolIsNumberValid = false;
+            }
+            // If true, we need to disable the button
+            // If false, we need to enable the button
+            boolIsSiteValid && boolIsNumberValid?$('.add_site_btn').removeClass('disabled'):$('.add_site_btn').addClass('disabled');
+            
+        }
+        enableAddSite();
+     
+    /**
+    Added by kumar Gaurav to check file size before submitting it to avoid view state error
+    **/    
+    function getIEFileSize(file){
+        var myFSO = new ActiveXObject("Scripting.FileSystemObject"),
+        filepath = file.value,
+        thefile = myFSO.getFile(filepath);
+        return thefile.size;
+    }
+ 
+    function checkFileSize()
+    {
+        var goodSize = true;
+        var fileExtension = "";
+        var filename = '';
+        $('input[type=file]').each(function()
+        {
+            if(typeof this.files[0] !== 'undefined')
+            {
+                var file = this.files[0],
+                size = typeof ActiveXObject !== 'undefined' ? getIEFileSize(file): file.fileSize || file.size;
+                goodSize = 135000 > size;
+                filename = this.files[0].name;            
+                if (filename.lastIndexOf(".") > 0) {
+                    fileExtension = filename.substring(filename.lastIndexOf(".") + 1, filename.length);
+                }
+                if(!goodSize)
+                {
+                    alert('Error : '+this.files[0].name +' is too large - please choose a file that is 1.5Mb or less');
+                }else if(fileExtension.toUpperCase() != 'CSV'){
+                    alert('Error : You can only import .CSV file ->'+filename);
+                    goodSize = false;
+                }
+                return goodSize;
+            }
+        });
+        return goodSize;
+    }
+        
+    </script>
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+</apex:page>

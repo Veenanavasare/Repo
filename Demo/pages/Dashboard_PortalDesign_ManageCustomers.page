@@ -1,0 +1,420 @@
+<apex:page Controller="ManageCustomerController" action="{!displayCustomerDetails}" docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+
+    <style>
+        .dataTables_paginate {margin-right:-15px;}
+        .check-label {
+            margin: auto;
+            text-align:center;
+        }
+        #manage_content input[type="checkbox"] {
+        width: 20px;
+        margin-top: 1px;
+        }
+        .dataTables_length {
+            display: none;
+        }
+        .dataTables_info {
+            bottom: 22px;
+           position: absolute;
+            right: 180px;
+            width: 50%;
+        }
+        .manage_user_name {
+        width: 17% !important;
+        }
+        .manage_user_contact_name {
+        width: 10% !important;
+        }
+        .manage_user_address {
+        width: 10% !important;
+        }
+        .manage_user_city {
+        width: 10% !important;
+        }
+        .manage_user_state {
+        width: 10% !important;
+        }
+        .manage_user_zip {
+        width: 10% !important;
+        }
+        .paginate_button_disabled {
+            cursor: no-drop;
+            color: #cfcfcf !important;
+        }
+        #manage_content .pagination > a {
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #056fab;
+            margin-left: 0 !important;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+        .paginate_button, .paginate_active {
+            float: left;
+            padding: 3px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #428bca;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+        
+        .paginate_enabled_previous, .paginate_enabled_next {
+            cursor: pointer;
+        }
+        .paginate_disabled_previous, .paginate_disabled_next {
+            cursor: no-drop !important;
+        }
+        .paginate_active {
+            z-index: 2;
+            color: #fff !important;
+            cursor: default;
+            background-color: #428bca !important;
+            border-color: #428bca !important;
+        }
+        .btn_deactivate_user {
+            margin: -10px 0px 0;
+            padding: 0 20px !important;
+            font-family: clearviewattregular;
+            color: #fff;
+            background: #056fab;
+            border: 0 !important;
+            height: 36px !important;
+            -webkit-border-radius: 4px;
+            width: auto !important;
+        }
+        .paginate_button_disabled {
+            cursor: no-drop !important;
+            color: #cfcfcf !important;
+        }
+        .modal-footer input {        
+            width: auto !important;
+        }
+        h1 { font-family: omnesatt_iiregular; }
+        .table-bordered>thead>tr>th, .table-bordered>thead>tr>td { border-top: none; border-bottom: none; }  
+        .table-bordered>tbody>tr:first-child td { border-top: none !important; }  
+        table thead td { border: none;}
+        
+        #manage_content .messageText{
+            color: #47D510;
+        }
+        .messageTable tr{
+            background: none !important;
+            float: left;
+            margin: 10px 0;
+            font-size: 16px;
+        }        
+
+        .dataTableManageCustSearchButton {
+            position: absolute;
+            display: inline;
+            top: 13px;
+            z-index: 9;
+        }
+        .dataTableManageCustSearch {
+            width: 300px;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        .dataTableManageCust thead td:nth-child(1) {
+            width: 29px !important;
+        }
+        .dataTableManageCust thead th:nth-child(2) {
+            width: 250px !important;
+        }
+        .dataTableManageCust thead th:nth-child(3) {
+            width: 200px !important;
+        }
+        .dataTableManageCust thead th:nth-child(4) {
+            width: 200px !important;
+        }
+        .dataTableManageCust thead th:nth-child(5) {
+            width: 200px !important;
+        }
+        .dataTableManageCust thead th:nth-child(6) {
+            width: 120px !important;
+        }
+        .dataTableManageCust thead th:nth-child(7) {
+            width: 90px !important;
+        }
+        .dataTableManageCust thead th:nth-child(8) {
+            width: 75px !important;
+        }
+        .dataTableManageCust .searchField {
+            width: 370px !important;margin-top: -8px;margin-bottom: 10px;
+        }
+        .dataTableManageCust thead th:nth-child(4), .dataTableManageCust tbody td:nth-child(4) {
+            display: none;
+        }
+
+        .dataTableManageCust thead th:nth-child(3), .dataTableManageCust tbody td:nth-child(3) {
+            display: none;
+        }
+
+    </style>
+    <div class="content_container" id="manageCustomerWrapperId">
+        <!-- CONTENT MODULE -->
+        <apex:form id="ManageCustomerId">
+            <div id="manage_content" class="page">
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <h1>{!$Label.Manage_Customers}</h1>
+                    </div>
+                </div>
+                <apex:pageMessages ></apex:pageMessages>
+                    <div class="row" id="search">
+                        <div class="col-xs-12">
+                            <div class="searchField input-group w50p">
+                                <span class="dataTableManageCustSearchButton search_button" title="Search"></span>
+                                <input type="text" class="custom_filter dataTableManageCustSearch" placeholder="Search by Name or Location"/>
+                            </div>
+                        </div>
+                    </div>
+                
+                <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                        <div class="manage_users_table">
+                            <div id="manage_users_table_wrapper" class="dataTables_wrapper" role="grid">
+                                <table class="dataTableManageCust table table-bordered table-striped table-hover">
+                                    <thead>
+                                        <th>&nbsp;</th>
+                                        <th><a>Business Name</a></th>
+                                        <th><a>Contact Name</a></th>
+                                        <th>FName</th>
+                                        <th><a>Address</a></th>
+                                        <th><a>City</a></th>
+                                        <th><a>State</a></th>
+                                        <th><a>Zip</a></th>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                 <!--   <input type="button" id="deleteButton" value="Delete" class="hide btn_deactivate_user" onclick="deleteModalShow();" />
+                        <apex:commandButton id="deleteButton" styleClass="btn btn-primary" html-data-dismiss="modal" value="{!$Label.Delete}" onclick="deleteModalShow()"/>                        
+                        <div class="modal fade" id="deleteModal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                                        <h3>{!$Label.CustomerManagementLabel4}</h3>
+                                    </div>
+                                    <div class="modal-footer">
+                                       <apex:commandButton styleClass="btn btn-primary" html-data-dismiss="modal" value="{!$Label.Delete}" action="{!deleteAction}" rerender="table,pb1,popup,ManageCustomerId,manage_users_table" oncomplete="callManageCustDataTable('loadDefault');"/>
+                                        <input type="button" class="btn btn-primary" data-dismiss="modal" value="{!$Label.Delete}" onclick = "callDeleteAction();" />
+                                        <input type="button" class="btn btn-default" data-dismiss="modal" value="{!$Label.Cancel}" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->                      
+                    </div>
+                </div> 
+            </div>
+            <!-- <apex:actionFunction id="deleteAactionId" name="deleteActionExecute" action="{!deleteAction}" status="loading"
+                rerender="table,pb1,popup,ManageCustomerId,manage_users_table" oncomplete="callManageCustDataTable('loadDefault');">
+                    <apex:param name="selectedCustId" value="" />
+            </apex:actionFunction> -->
+        </apex:form> 
+    </div>    
+    <!-- JavaScript
+================================================== -->
+    <!-- PRODUCTION -->
+    
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/libs/jquery.dataTables.js')}"/>        
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/modernizr.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/bootstrap.min.js')}"/>
+    <script>
+        function callDeleteAction() {
+            var sectedIds = chkValArr.join(';');
+            deleteActionExecute(sectedIds);
+        }
+
+        function deleteModalShow(){
+            $('#deleteModal').modal('show');
+        }
+
+        function callManageCustDataTable(searchCalled) {
+           endCustFields = ['Id', 'Name', 'Last_Name__c', 'First_Name__c', 'Mailing_Street_Address__c', 'City__c', 'State__c', 'Zip__c'];
+           searchText1 = '';
+           var aoColumns = [];
+            if(searchCalled == 'loadSearch'){
+                searchText1 = $('.dataTableManageCustSearch').val();
+            }           
+            for (var i = 0; i < endCustFields.length; i++) {
+                aoColumns.push({'mData': endCustFields[i]});
+            }
+
+            $('.dataTableManageCust thead tr th:first-child').html('<div class="check-label"><input class="css-checkbox" id="checkboxAll" name="checkboxAll" type="checkbox"><label class="css-label radGroup1 clr chklbl" for="checkboxAll" style="margin-left:5px;"></label></div>');
+           /************************ Data table code starts ******************************/
+            $('.dataTableManageCust').dataTable({
+                "iDisplayLength": 8,
+                "oLanguage": {
+                    "sInfo": "Showing _START_ - _END_ of _TOTAL_",
+                    "sProcessing": '<div class="waitingSearchDiv" id="loadingDatatable" style="background-color: #fbfbfb;height: 10000px;opacity: 0.65;width: 10000px;position: fixed;z-index: 999999;left: 0;top: 0;"><div class="waitingHolder" style="top: 40%; left: 50%; position: fixed;"><img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" /></div></div>'
+                },
+                'bPaginate': true,
+                'sPaginationType': 'full_numbers',
+                'aoColumns': aoColumns,
+                'bProcessing': true,
+                'bServerSide': true,
+                'bFilter': false,
+                'bDestroy': false,
+                'bLengthChange': false,
+                'sAjaxSource': 'fakeUrl',
+                'fnServerData': function(sSource, aoData, fnCallback) {
+                    //Set the search text in aoData
+                    aoData.push({"name":"searchText","value":searchText1});
+                    // Call the @RemoteAction JavaScript function
+                    ManageCustomerController.fetchEndCustomerRecords(aoData, function(result, event) {
+                        if (event.type != 'exception') {
+                            for (var i = 0; i < result.aaData.length; i++) {
+                                var r = result.aaData[i];
+                                for (var j = 0; j < endCustFields.length; j++) {
+                                    var field = endCustFields[j];
+                                    if (r[field] == undefined) {
+                                        // DataTables pops a dialog for undefined values
+                                        r[field] = null;
+                                    }
+                                }
+                            }                                    
+                            // Call back into the DataTable function
+                            fnCallback(result);
+                        } else {
+                            console.log(event.type+'-----'+event.message);
+                        }                        
+                    });
+                },
+                'fnDrawCallback': function (oSettings) {     
+                    $(".dataTableManageCust").css( "width","100%" );
+                    $("#checkboxAll").parent('div').parent('th').removeAttr('class aria-controls role aria-label');
+                    var tdData = $("#checkboxAll").parent('div').parent('th').html();
+
+                    $(".dataTableManageCust thead tr th:first-child").replaceWith( "<td>"+tdData+"</td>" );
+                    addCheckbox(); // Inserting checkboxes in first column
+
+                    $('.check-label').each(function(){
+                        var inputChkId = $(this).children('label').attr('for');
+                        $(this).children('input').attr('id', inputChkId);
+                    });
+
+                    $('.dataTables_empty').each(function(index, obj){
+                        if($(obj).text()!=null && $(obj).text()=="No data available in table"){
+                            $(obj).attr('colspan', '6');
+                        }  
+                    });
+                    
+                    $('.checkbox').on('click', function(){isChkTrue('oneByOne'); });
+                    
+                    $('#DataTables_Table_1_info').css('margin-left', '15px');
+                }                   
+            });
+            /************************ Data table code ends ******************************/
+                $('.dataTableManageCust .reorder_btn').remove();
+                $('.dataTableManageCust thead th').not('.dataTableManageCust thead th:first-child').addClass('sorting').append('<div class="reorder_btn"></div>');                
+                $('#manageCustomerWrapperId .dataTables_paginate').addClass('pagination'); 
+            }
+             function isChkTrue(clickType) {
+                if ($(".checkbox:checked").length > 0) {
+                    $('.btn_deactivate_user').removeClass('hide').addClass('show');
+                } else {
+                    $('.btn_deactivate_user').removeClass('show').addClass('hide');
+                }                
+            }
+
+            function addCheckbox() {
+                $('.dataTableManageCust tbody tr td:first-child').not('td.dataTables_empty').each(function(){ 
+                    var custId = $(this).text();
+                    var newCreateField = '<div class="check-label"><input type="checkbox" name="selected" id="'+custId+'" value="val_'+custId+'" class="checkbox css-checkbox" style="position:absolute !important;"/><label for="'+custId+'" class="css-label radGroup1 clr chklbl" style="margin-left:5px;"></label></div>';
+                    $(this).html(newCreateField);                
+                });
+
+                $.each( chkValArr, function( key, value ) {
+                  $('input:checkbox[id="'+value+'"]').prop('checked', true);
+                });
+                
+                $('#checkboxAll').change(function() {
+                    chkValArr = [];
+                    var isAllChecked = $('#checkboxAll').is(':checked');
+                        $('input:checkbox.checkbox').not('#checkboxAll').each(function(){
+                            if(isAllChecked == true){
+                              $('this').prop('checked', true);
+                              var chkVal = $(this).attr('id');
+                              chkValArr.push(chkVal); 
+                            } else {
+                                $('this').prop('checked', false);
+                                chkValArr = [];
+                            }
+                        });
+                        $('.checkbox:checkbox').prop('checked', checkboxAll.checked);
+                        isChkTrue('all');
+                });
+
+                $('input:checkbox.checkbox').change(function(){
+                    if($(this).is(':checked')){
+                        var chkVal = $(this).attr('id');
+                        chkValArr.push(chkVal); 
+                    } else {
+                        var chkVal = $(this).attr('id');
+                        chkValArr.splice( $.inArray(chkVal , chkValArr), 1 );
+                    }                
+                });
+             
+                $('.dataTableManageCust tbody tr td:nth-child(2)').each(function(){
+                    $(this).css("vertical-align","middle"); 
+                    var businessName = $(this).text();
+                    var custId = $(this).parent('tr').children('td:first-child').find('input.checkbox').attr('id');
+                    var newCreateField = '<a href="/apex/PortalDesign_CustomerProfile?id='+custId+'">'+businessName+'</a>';
+                    $(this).html(newCreateField);   
+                });    
+                
+                $('.dataTableManageCust tbody tr td:nth-child(3)').each(function(){
+                     $(this).css("vertical-align","middle"); 
+                });  
+
+                $('.dataTableManageCust tbody tr td:nth-child(4)').each(function(){
+                     $(this).css("vertical-align","middle"); 
+                }); 
+                
+                $('.dataTableManageCust tbody tr td:nth-child(5)').each(function(){
+                     $(this).css("vertical-align","middle"); 
+                }); 
+                
+                $('.dataTableManageCust tbody tr td:nth-child(6)').each(function(){
+                     $(this).css("vertical-align","middle"); 
+                }); 
+                
+                $('.dataTableManageCust tbody tr td:nth-child(7)').each(function(){
+                     $(this).css("vertical-align","middle"); 
+                }); 
+                
+                $('.dataTableManageCust tbody tr td:nth-child(8)').each(function(){
+                     $(this).css("vertical-align","middle"); 
+                }); 
+                
+            }
+    
+        function initiateSearch() { 
+            //donetyping method is defined in the header
+            $('.dataTableManageCustSearch').donetyping(function(){
+                $('.dataTableManageCust').dataTable().fnDestroy();
+                callManageCustDataTable('loadSearch');
+            });
+            $('.custom_filter').on("keyup keypress", function(e) {
+                var code = e.keyCode || e.which; 
+                if (code  == 13) {               
+                    e.preventDefault();
+                    return false;
+                }
+            });            
+        }
+
+        $(document).ready(function() {
+            chkValArr=[];
+            callManageCustDataTable('loadDefault'); 
+            initiateSearch();
+        });
+    </script>
+</apex:page>

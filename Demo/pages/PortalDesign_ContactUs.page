@@ -1,0 +1,228 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="ContactUsController" title="Contact Us Form">
+    <style type='text/css'>
+        .footer_logo {
+        margin-right: -20px;
+        float: right;
+        }
+     .styled-select-small select {
+      background: url(/resource/1466127250000/portalDesignImg/new_arrow_small.png) no-repeat right #fff;
+        background-size: 39px;
+        -webkit-appearance:none;
+          -moz-appearance: none;
+          appearance: none;
+        }
+        .form-group-half-left {
+            float: left;
+            width: 47.5%;
+            margin-right: 5%;
+        }
+        .form-group-half-right {
+            float: left;
+            width: 47.5%;
+        }
+        .errorText {
+            color: #a94442;
+            margin-bottom: -15px;
+            font-size: 15px;
+        }
+        .has-error .control-label
+        {
+            color: #333;
+        }
+        .btn-complete-parent-disabled
+        {
+            cursor: not-allowed;
+        }
+        .inputState_error, .inputMessage_error
+        {
+            margin-top:0;
+        }
+        /* To prevent the form fields from shifting we add an additional height*/
+        #nameDiv, #companyInfoDiv, #contactInfoDiv
+        {
+            height: 80px;
+        }
+        /* To prevent the form fields from shifting, we remove the margin-bottom from the error messages*/
+        #emailDivErrorText, #phoneNumberDivErrorText
+        {
+            margin-bottom:0;
+        }
+        #serviceDivErrorText, #messageDivErrorText
+        {
+            margin-top: 0;
+        }
+        .btn_parent
+        {
+            height: 10px;
+            clear: both;
+        }
+        #slice_contact_us { background: url({!URLFOR($Resource.PortalDesignHeros,'heros/contact.jpg')}) fixed; }
+        #submitButton,
+        .btn_parent .btn {
+            color: #fff;
+            background: #0568ad;
+            width: 100%;
+        }
+        .disabled {
+            background-color: silver !important;
+        }
+        .blank-error {
+            color: #a94442;
+        }
+        .thankYouText {
+            display: none;
+            position: relative;
+            background-color: #eafdcf;
+            padding: 10px; 
+            border-radius: 7px; 
+            border: 1px solid #a5e031;
+            color: #86b41a;
+            line-height: 150%;
+            padding-left: 20px; 
+        }
+        .closeThankYouText {
+            position: absolute;
+            top: 10px; 
+            right: 10px; 
+            cursor: pointer;
+        }
+        /* BRANDON 5/9/16 fix smart button */
+        .btn_parent button {
+            margin: 0px; 
+        }
+        /* END - BRANDON 5/9/16 fix smart button */
+        .captcha-hack {display:none}
+        .captcha-w {
+            align-items: center;
+        }
+    </style>
+
+    <apex:includeScript value="{!$Resource.jQueryMin}" /> 
+    <apex:includeScript value="{!$Resource.jMaskedInput}" />
+    <apex:includeScript value="{!$Resource.atombootstrapminjs}" />
+    <div id="cred_pages">
+        <div id="slice_contact_us">
+            <form id="contactForm" action="{!LEFT($Api.Partner_Server_URL_260, FIND( '/services', $Api.Partner_Server_URL_260))}servlet/servlet.WebToCase?encoding=UTF-8" method="POST">
+            <input type="hidden" name="orgid" value="{!$Organization.Id}"></input>
+            <input type="hidden" name="retURL" value="{!LEFT($Api.Partner_Server_URL_260, FIND( '/services', $Api.Partner_Server_URL_260))}apex/PortalDesign_ContactUsUnauth#success"></input>
+            <input type="hidden" name="origins" value="contactUs"></input>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <section class="contact_header">
+                            <h1>Contact us</h1>
+                            <h2>Learn more about our collaborative reseller program built around resellers like you.</h2>
+                        </section>
+                    </div>
+                </div>
+                <div class="max_1000_width">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="contact_form_container" id="contactFormDiv">
+                                <apex:pageMessages ></apex:pageMessages>
+                                <apex:outputPanel id="thankYouText">
+                                    <div class="thankYouText">
+                                    </div>
+                                </apex:outputPanel><br/>
+                                <p>Complete the form and click <strong>Submit</strong>. An AT&amp;T representative will contact you shortly with a response.</p><BR />
+                                <div class="form-group" id="nameDiv">
+                                    <div class="form-group-half-left" id="firstNameDiv">
+                                        <label class="control-label">First Name</label>
+                                        <input value="{!firstName}" id="00Nm0000000kpv0" maxlength="30" name="00Nm0000000kpv0" size="20" type="text" Class="form-control required inputFirstName" placeholder="First Name" ></input>
+                                    </div>
+                                    <div class="form-group-half-right" id="lastNameDiv">
+                                        <input  id="name" maxlength="80" name="name" size="20" type="hidden" ></input>
+                                        <label class="control-label">Last Name</label>
+                                        <input value="{!lastName}" id="00Nm0000000kpv5" maxlength="30" name="00Nm0000000kpv5" size="20" type="text" Class="form-control required inputLastName" placeholder="Last Name" ></input>
+                                    </div>
+                                </div>
+                                      <div class="form-group" id="companyInfoDiv">
+                                        <div class="form-group-half-left" id="companyNameDiv">
+                                            <label class="control-label">Company Name</label>
+                                            <input value="{!companyName}" id="inCompanyName" Class="form-control required inputCompanyName" placeholder="Company Name" ></input>
+                                        </div>
+                                        <div class="form-group-half-right" id="companyWebsiteDiv">
+                                            <label class="control-label">Company Website</label>
+                                            <input value="{!companyWebsite}" id="company" maxlength="80" name="company" size="20" type="text" class="form-control inputCompanyWebsite" html-placeholder="Company Website" ></input>
+                                        </div>
+                                    </div>
+                                <div class="form-group" id="contactInfoDiv">
+                                    <div class="form-group-half-left" id="emailDiv">
+                                        <label class="control-label">Email</label>
+                                        <input value="{!email}" id="email" maxlength="80" name="email" size="20" type="text" Class="form-control required inputEmail" placeholder="john.smith@abc.com" ></input>
+                                    </div>
+                                    <div class="form-group-half-right" id="phoneNumberDiv">
+                                        <label class="control-label">Phone Number</label>
+                                        <input value="{!phoneNumber}" id="phone" maxlength="40" name="phone" size="20" type="text" Class="form-control tel-mask required inputPhoneNumber" placeholder="(xxx) xxx-xxxx" ></input>
+                                    </div>
+                                </div>
+
+                                <div class="styled-select-small adjust-select-small" id="serviceDiv">
+                                    <label class="control-label">Subject</label> <BR />
+                                    <select  id="00Nm0000000kpvK" name="subject" title="Select a Subject"  html-data-live-search="true" class="form-control State required inputService" multiselect="false" size="1">
+                                        <option value="">--None--</option>
+                                        <option value="Learn about the Partner Exchange">Learn more about AT&amp;T Partner Exchange</option>
+                                        <option value="Login/Portal Issues">Login/Portal Issues</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group" id="messageDiv"> <br/>
+                                    <label class="control-label">Message</label>
+                                    <textarea value="{!message}" id="00Nm0000000kpul" name="description" type="text" wrap="soft" 
+                                        class="form-control required inputMessage" rows="3" 
+                                        html-placeholder="Write your message here. An AT&T representative will get back to you soon." ></textarea>
+                                </div>
+                                <div class="onCaptcha">
+                                <apex:pageBlock >       
+                                        <apex:pageBlockSection columns="1">
+                                            <apex:pageBlockSectionItem >
+                                                 <form action="?" method="POST">
+                                                     <div class="g-recaptcha required" data-sitekey="{!$Label.ReCaptcha}"></div>
+                                                         <br/>
+                                                 </form>
+                                            <script src="https://www.google.com/recaptcha/api.js"> </script>
+                                            </apex:pageBlockSectionItem>
+                                         </apex:pageBlockSection>
+                                    </apex:pageBlock>
+                                </div>
+                                <div class="btn_parent afterLoad">
+                                </div>
+                                <!-- END - BRANDON 5/9/16 fix smart button -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="slice_footer">
+                    <footer class="">
+                        <div class="row">
+                            <!-- Robyn 6/6/16: update column structure for footer -->
+                            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 footer_copy">
+                                <div class="container-fluid">
+                                    <div class="row">
+                                        <div class="col-xs-1  footer_logo_container">
+                                            <img class="footer_logo" src="{!$Resource.logo_footer}" alt="AT&amp;T" width="24" height="24" />
+                                        </div>
+                                        <div class="col-xs-11 footer_copy">
+                                            <a href="{!$Label.legal_link_intellectual_prop}" target="_blank">&copy; <script>document.write(new Date().getFullYear())</script> AT&amp;T Intellectual Property</a>. {!$Label.legal_footer_text_part2}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- End Robyn 6/6/16 -->
+                        </div>
+                    </footer>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+    function checkLimit(limitField, limitCount, limitNum) {
+        if (limitField.value.length > limitNum) {
+        limitField.value = limitField.value.substring(0, limitNum);
+        } else {
+        limitCount.value = limitNum - limitField.value.length;
+        }
+    }
+    </script>
+    <apex:includeScript value="{!$Resource.contactusunauth}" />
+    <c:Walkme_Script ></c:Walkme_Script>
+</apex:page>

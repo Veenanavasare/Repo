@@ -1,0 +1,1091 @@
+<apex:page controller="RDSMISController" standardStylesheets="false" sidebar="false" showHeader="false" tabStyle="Apttus_Proposal__Proposal__c" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false">
+    <style>
+        #POTSRadio td:first-child label{
+            margin-right: 50px;
+        }
+        #POTSRadio td:first-child{
+            width: 18%;
+        }        
+        .SitesPhnNo label{
+            margin-top: 0 !important;
+        }
+        .DomainURL .errorText{
+            margin-top:10px;
+        }
+        .noteData{
+            margin-top: 10px;
+            float: left;
+        }
+        .styled-select .m-t-10{
+            position: absolute;
+        }
+        .IPType fieldset label, .ASNProvider fieldset label{
+            margin-right: 21px;
+        }        
+        .IPType fieldset input[type="radio"]{
+            margin: 10px 10px 0 0 !important;
+        }
+        .IPType fieldset td:first-child{
+            width:30%;
+        }
+        .additionalField {
+            margin-top: -15px!important;
+        }
+        .CRDDField {
+            width: 264px;
+        }
+        .CRDDNote {
+            margin-left: 16px;
+        }
+        .dualStackNote {
+             font-size: 12px!important;
+             margin: 0!important;
+        }
+        .dualStackInfoTxt {
+             color: #ea7400 !important;
+             font-family: omnes_att_iimedium;
+             font-size: 12px!important;
+        }
+        #panelFooter {
+            width: 1127px;
+            margin-left: -291px!important;
+            margin-bottom: 40px !important;
+            margin-top: 2px;
+        }
+        .interfacetypeNote {
+            width: 274px;
+        }
+        .tooltip-inner{
+            max-width: 330px!important;
+        }
+        .IPV6LanLenghtIcon {
+            margin-left: -10px!important;
+        }
+        .interfaceType {
+            padding: 7px 25px 7px 6px !important;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            font-size:14px;
+        }
+        .intractiveIcon {
+            margin-left: 7px;
+        }
+        .additionalInfoSection{
+            margin-bottom: 20px;
+        }
+        /* Site Info placeholder font*/
+        input.siteInfoPlaceholder::-webkit-input-placeholder {
+           font-size: 13px;
+        }
+        
+        input.siteInfoPlaceholder::-moz-placeholder { /* Firefox 19+ */
+          font-size: 13px;
+        }
+        
+        input.siteInfoPlaceholder:-ms-input-placeholder { /* IE 10+ */
+          font-size: 13px;
+        }
+        
+        input.siteInfoPlaceholder:-moz-placeholder { /* Firefox 18- */
+          font-size: 13px;
+        }
+        .siteInfoLabel{
+            font-family: omnes_att_iimedium;
+            font-size:15px;
+        }
+        .siteInfoInOrange{
+            font-family: omnesatt_iiregular;
+            font-weight: 700;
+            font-Size: 16px;
+            font-color:#ea7400;
+        }
+        .fontStyle{
+            font-weight: 400;
+            font-size: 24px;
+            line-height: 26px;
+        }
+        
+    </style>
+    <apex:form styleClass="MISRDSPage1">    
+        <!-- Begin Site Information -->
+        <apex:outputPanel id="addressInfoSection">
+            <p class="orangeText m-b-25 siteInfoInOrange">{!$Label.RDS_BUILDING_STATICMSG}</p>            
+            <div class="row">
+                <div class="form-group col-md-4 m-b-25">
+                    <div class="m-b-10 siteInfoLabel">Building</div>
+                    <apex:inputText id="buildingID" styleClass="form-control required siteInfoPlaceholder" Label="Building" maxlength="10" html-placeholder="Ex: Bldg #, Bldg name, or Main" value="{!inpBuilding}" onkeyup="fieldValidationForFirstPage(event,this,'siteInfoBldg');" onblur="fieldValidationForFirstPage(event,this,'siteInfoBldg');"/>
+                </div>
+                <div class="form-group col-md-4 m-b-25">
+                    <div class="m-b-10 siteInfoLabel">Floor</div>
+                    <apex:inputText id="floorID" styleClass="form-control required siteInfoPlaceholder" label="Floor" maxlength="9" html-placeholder="Ex: Floor #" value="{!inpFloor}" onkeyup="fieldValidationForFirstPage(event,this,'siteInfoFloor');" onblur="fieldValidationForFirstPage(event,this,'siteInfoFloor');"/>
+                </div>
+                <div class="form-group col-md-4 m-b-25">
+                    <div class="m-b-10 siteInfoLabel">Room</div>
+                    <apex:inputText id="roomID" styleClass="form-control required siteInfoPlaceholder" label="Room" maxlength="9" html-placeholder="Ex: Room #, Telco, IT Closet, Basement" value="{!inpRoom}" onkeyup="fieldValidationForFirstPage(event,this,'siteInfoRoom');" onblur="fieldValidationForFirstPage(event,this,'siteInfoRoom');"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-4 m-b-10" id="siteLandLinePhnNum">
+                    <div class="m-b-10 siteInfoLabel">Site Phone Number</div>
+                    <apex:inputText styleClass="form-control required" value="{!sitephonenumber}" html-placeholder="0000000000" onkeyup="fieldValidationForFirstPage(event,this,'siteLandLinePhnNum');" onblur="fieldValidationForFirstPage(event,this,'siteLandLinePhnNum');"/>
+                </div>        
+            </div>
+        </apex:outputPanel> 
+        
+        <hr class="section-dividerHr" />
+        
+        <!-- Begin Site Contact -->
+        <apex:outputPanel id="siteContactSection">
+            <div class="sectionHeader-primary m-b-25 fontStyle">Site Contact</div>
+            <!-- Primary Contact -->
+            <label>Primary Contact </label><span class="tooltipTrigger glyphicon glyphicon-question-sign intractiveIcon" data-toggle="tooltip" data-placement="right" title="Tell us about the primary local contact for this site."></span>                                    
+            <div class="row">
+                <div class="form-group col-md-4 m-b-25" id="firstName">
+                    <div class="m-b-10 siteInfoLabel">First Name</div>
+                    <apex:inputText styleClass="form-control required" value="{!sitecontactfirstname}" id="FirstName" label="First Name" onkeyup="fieldValidationForFirstPage(event,this,'primaryFirstName');" onblur="fieldValidationForFirstPage(event,this,'primaryFirstName');"/>
+                </div>
+                <div class="form-group col-md-4 m-b-25" id="lastName">
+                    <div class="m-b-10 siteInfoLabel">Last Name</div>
+                    <apex:inputText styleClass="form-control required" value="{!sitecontactlastname}" label="Last Name" onkeyup="fieldValidationForFirstPage(event,this,'primaryLastName');" onblur="fieldValidationForFirstPage(event,this,'primaryLastName');"/>
+                </div>
+                <div class="form-group col-md-4 m-b-25" id="email">
+                    <div class="m-b-10 siteInfoLabel">Email Address</div>
+                    <apex:inputtext styleClass="form-control required" value="{!sitecontactemailaddress}" label="Email Address" title="Please enter an valid email address" onkeyup="fieldValidationForFirstPage(event,this,'primaryEmail');" onblur="fieldValidationForFirstPage(event,this,'primaryEmail');"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-4 m-b-25" id="phoneNumber">
+                    <div class="m-b-10 siteInfoLabel">Business Phone Number</div>
+                    <apex:input styleClass="form-control required" value="{!sitecontactphonenumber}" label="Phone Number" type="tel" onkeyup="fieldValidationForFirstPage(event,this,'primaryBussinessPhoneNumber');" onblur="fieldValidationForFirstPage(event,this,'primaryBussinessPhoneNumber');"/>
+                </div>
+                <div class="form-group col-md-4 m-b-25" id="mobileNumber">
+                    <div class="m-b-10 siteInfoLabel">Mobile Phone Number</div>
+                    <apex:inputText styleClass="form-control required" value="{!sitecontactmobile}" label="Mobile Phone Number" onkeyup="fieldValidationForFirstPage(event,this,'primaryMobilePhoneNumber');" onblur="fieldValidationForFirstPage(event,this,'primaryMobilePhoneNumber');"/>
+                </div>
+            </div>                    
+            <!-- Alternate Contact -->
+            <label>Alternate Contact </label><span class="tooltipTrigger glyphicon glyphicon-question-sign intractiveIcon" rel="tooltip" data-toggle="tooltip" data-placement="right" title="Enter a backup local contact for this site."></span>
+            <div class="row">
+                <div class="form-group col-md-4 m-b-25" id="firstName">
+                    <div class="m-b-10 siteInfoLabel">First Name</div>
+                    <apex:inputText styleClass="form-control required" value="{!sitealtcontactfirstname}" label="First Name" onkeyup="fieldValidationForFirstPage(event,this,'secondaryFirstName');" onblur="fieldValidationForFirstPage(event,this,'secondaryFirstName');"/>
+                </div>
+                <div class="form-group col-md-4 m-b-25" id="lastName">
+                    <div class="m-b-10 siteInfoLabel">Last Name</div>
+                    <apex:inputText styleClass="form-control required" value="{!sitealtcontactlastname}" label="Last Name" onkeyup="fieldValidationForFirstPage(event,this,'secondaryLastName');" onblur="fieldValidationForFirstPage(event,this,'secondaryLastName');"/>
+                </div>
+                <div class="form-group col-md-4 m-b-25" id="email">
+                    <div class="m-b-10 siteInfoLabel">Email Address</div>
+                    <apex:inputText styleClass="form-control required" value="{!sitealtcontactemailaddress}" label="Email Address" onkeyup="fieldValidationForFirstPage(event,this,'secondaryEmail');" onblur="fieldValidationForFirstPage(event,this,'secondaryEmail');"/>
+                </div>
+            </div>
+            <div class="row ">
+                <div class="form-group col-md-4 m-b-10" id="phoneNumber">
+                    <div class="m-b-10 siteInfoLabel">Business Phone Number</div>
+                    <apex:inputText styleClass="form-control required" value="{!sitealtcontactphonenumber}" label="Phone Number" onkeyup="fieldValidationForFirstPage(event,this,'secondaryBussinessPhoneNumber');" onblur="fieldValidationForFirstPage(event,this,'secondaryBussinessPhoneNumber');"/>
+                </div>
+                <div class="form-group col-md-4 m-b-10" id="mobileNumber">
+                    <div class="m-b-10 siteInfoLabel">Mobile Phone Number</div>
+                    <apex:inputText styleClass="form-control required" value="{!sitealtcontactmobile}" label="Mobile Phone Number" onkeyup="fieldValidationForFirstPage(event,this,'secondaryMobilePhoneNumber');" onblur="fieldValidationForFirstPage(event,this,'secondaryMobilePhoneNumber');"/>
+                </div>
+            </div>
+        </apex:outputPanel>
+        
+        <hr class="section-dividerHr" />
+        
+        <apex:pageBlock >
+            <div class="sectionHeader-primary m-b-25">Port Information</div>
+            <div class="m-b-25"><span class="sectionHeader-secondary">Type: </span><span>{!porttypeselected}</span></div>  
+            <ul class="col-xs-12 p0 m0">
+                <li class="col-md-4 p0">          
+                    <div class="m-b-25"><span class="sectionHeader-secondary">Speed: </span><span>{!portspeedselected}</span></div>
+                </li>           
+                <li class="m-r-3P p0">
+                    <apex:outputPanel rendered="{!mbcSpeed != null || mbcSpeed != ''}">
+                        <div class="m-b-25"><span class="sectionHeader-secondary" style="padding-left:10px;">Minimum Bandwidth Commitment (MBC): </span><span>{!mbcSpeed}</span></div>
+                    </apex:outputPanel>   
+                </li>
+            </ul>              
+            <div class="m-b-25"><span class="sectionHeader-secondary">Class of Service: </span><span>{!CosSelected}</span></div>            
+            
+            <!-- Existing POTS for Testing Router -->
+            <apex:outputPanel rendered="{!ismanaged}" styleClass="row col-xs-8 m-b-15">
+                <div style="font-family: omnesatt_iiregular;font-weight:bold;">Existing POTS for Testing Router</div>
+                <apex:selectRadio value="{!selectedId1}" styleClass="col-md-4">
+                    <apex:selectOptions value="{!pickList1}" />
+                    <apex:actionSupport event="onchange" reRender="ExistingPOTSText" oncomplete="checkIfSubmitBtnCanBeEnabled();" />
+                </apex:selectRadio>
+                <apex:outputPanel id="ExistingPOTSText">
+                    <apex:inputText value="{!ExistingPOTSText}" styleClass="m-b-15" rendered="{!IF(selectedId1 == 'No',true,false)}" onchange="checkIfSubmitBtnCanBeEnabled();"/>
+                </apex:outputPanel>
+            </apex:outputPanel>
+            
+            <!-- New POTS Section-->
+            <apex:outputPanel id="POTS_Section" rendered="{!IsMisRouter}">
+                <div class="row m-b-10" id="POTS_SectionId">
+                    <div class="col-md-8 m-t-10" id="POTSRadio">
+                        <div style="font-family: omnes_att_iimedium;line-height:5px"><p>Do you have an existing POTS (Plain Old Telephone Service)</p>for testing the Router?
+                            <span class="tooltipTrigger glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" title="Line that will be used for Out of Band Access, providing AT&T a way to access your router during turn up and maintenance of the router."></span></div>
+                        <apex:selectRadio value="{!selectedPOTSId}" styleClass="required" style="margin-bottom: -15px;" onchange="fieldValidation(event,this,'radioSelection');emptyPOTSPhnNum(this.value);">
+                            <apex:selectOption itemLabel="Yes" itemValue="true"/>
+                            <apex:selectOption itemLabel="No" itemValue="false"/>
+                        </apex:selectRadio>
+                        <div class="row"><div class="col-md-10 siteInfoTxtSty m0 m-t-25 m-b-10" ><p>POTS is required to troubleshoot and test your router.</p><p>If you need to establish POTS, please contact your CAM.</p></div></div>
+                    </div>
+                    <!-- Sites POTS Phone Number -->
+                    
+                    <apex:outputPanel styleClass="col-md-4" id="SitesPhnNo">
+                        <apex:outputPanel styleCLass="SitesPhnNo" rendered="{!IF(selectedPOTSId == 'true',true,false)}"> 
+                            <label>Sites POTS Phone Number</label>
+                            <apex:inputText styleclass="form-control required" value="{!POTS_PhoneNo}" html-placeholder="0000000000" onkeyup="fieldValidationForFirstPage(event,this,'POTSPhoneNumber');" onblur="fieldValidationForFirstPage(event,this,'POTSPhoneNumber');"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <span class="noteData col-xs-12 p0" >Landline number only</span>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </div>
+            </apex:outputPanel> 
+            
+            <!-- AT&T Hosted DNS -->
+            <div class="row m-b-10">
+                <div class="col-md-8" id="hostedDNS">
+                    <div style="font-family: omnesatt_iiregular;font-weight:bold;">Would you like AT&amp;T to host your DNS?</div>
+                    <apex:selectRadio value="{!ATTHostedDNSSeleted}" styleClass="col-md-4" onchange="fieldValidation(event,this,'radioSelection');emptyDomainURL(this.value);">
+                        <apex:selectOptions value="{!pickList1}" />
+                    </apex:selectRadio>
+                </div>
+                <!-- Domain URL -->
+                <apex:outputPanel styleClass="col-md-4" id="DomainURL">
+                    <apex:outputPanel styleClass="DomainURL" rendered="{!IF(ATTHostedDNSSeleted == 'Yes',true,false)}">
+                        <label>Domain URL</label>
+                        <apex:inputText value="{!DomainURL}" styleClass="form-control required" onkeyup="fieldValidationForFirstPage(event,this,'DomainURL');" onblur="fieldValidationForFirstPage(event,this,'DomainURL');"/>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </div>
+            
+            <ul class="addressFields col-xs-12 p0 m-b-25">
+                <apex:outputPanel rendered="{!showInterfaceType}">
+                  <li class="m-r-3P col-md-4 p0" style="width:32%;"> 
+                      <label>Interface Type</label> <span class="tooltipTrigger glyphicon glyphicon-question-sign intractiveIcon" data-toggle="tooltip" data-html="true" data-placement="right" 
+                                                          data-original-title="<div style='width:274px;font-family:omnes_att_iimedium;font-size:12px;'>Distance Limitations on 100BaseT = 100 Meters. (So a 50M service more than 100 Meters from the Demarcation must be Optical.)"></span>
+                        <apex:outputPanel rendered="{!enableInterfaceType}">
+                            <apex:selectList value="{!interface_Type}" styleClass="form-control styled-select-small adjust-select-small interfaceType"  onblur="fieldValidation(event,this,'dropDownSelection');" onchange="fieldValidation(event,this,'dropDownSelection');" multiselect="false" size="1">
+                                <apex:selectOptions value="{!interfaceTypeOptionList}" /> 
+                            </apex:selectList>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!!enableInterfaceType}">
+                            <apex:selectList value="{!interface_Type}" styleClass="form-control disabled-styled-select-small interfaceType" disabled="true" multiselect="false" size="1">
+                                <apex:selectOptions value="{!interfaceTypeOptionList}" /> 
+                            </apex:selectList>
+                        </apex:outputPanel>
+                      <span class="noteData interfacetypeNote col-xs-12 p0">Option from Configuration page can be changed.</span>
+                  </li>
+                </apex:outputPanel> 
+                <li class="m-r-3P col-md-4 p0" > 
+                    <label>Jack Type</label> 
+                    <apex:selectList value="{!jack_Type}" styleClass="form-control jackTypeDropDowns styled-select-small adjust-select-small required" onblur="fieldValidation(event,this,'dropDownSelection');" onchange="fieldValidation(event,this,'dropDownSelection');" multiselect="false" size="1" style="-moz-appearance: none;-webkit-appearance: none;font-size:16px;"> 
+                        <apex:selectOptions value="{!jackTypeOptionList}" /> 
+                    </apex:selectList>
+                </li> 
+            </ul> 
+            
+            <label class="dualStackNote"><b>Note: Dual Stack is the recommended IP Type.</b> Dual Stack = Unnumbered IPv4 (1 LAN, 0 WAN); IPv6 (/56 LAN and /64 WAN)</label>
+            <!-- IP Type -->
+            <div class="row IPType">
+                <div class="col-md-12 ">
+                    <label>IP Type </label> <span class="tooltipTrigger glyphicon glyphicon-question-sign intractiveIcon" data-toggle="tooltip" data-placement="right" title="Dual Stack supports both IPv4 and IPv6."></span>
+                    <apex:selectRadio id="IPType" value="{!selectedId2}" styleClass="required">
+                        <apex:selectOptions value="{!IpTypePicklistOptions}" />
+                        <apex:actionSupport event="onchange" action="{!renderipv4blocks}" reRender="ipv4CriteriaBlock,ipv4block,ipv6block" oncomplete="removeErrorMsg('IPType');" status="loading" />
+                    </apex:selectRadio>                   
+                </div>
+            </div>
+            <!--IP4 Criteria -->
+            <apex:outputPanel id="ipv4CriteriaBlock">
+                <apex:outputPanel rendered="{!IF(selectedId2 == 'IPv4',true,false)}">
+                  <div class='ipv4CriteriaBox'>
+                      <div class="criteriaHeader"><b>Select the criteria that applies to your needs to proceed with the RDS.</b></div>
+                      <apex:selectRadio value="{!ipV4_Exception}" styleClass="required ipv4CriteriaOptions">
+                          <apex:selectOptions value="{!ipV4CriteriaOptionsList}" />
+                          <apex:actionSupport event="onchange" action="{!ipv4ExceptionSelected}" reRender="ipv4block" oncomplete="removeErrorMsg('IPV4CriteriaRadioSelection');" status="loading" />
+                      </apex:selectRadio>
+                  </div>
+                  <apex:outputPanel rendered="{!IF(ipV4_Exception == '',true,false)}">
+                        <div class="m-t-10 errorText">Selection required</div>
+                  </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:outputPanel>
+            
+            <!--IPV4 INFORMATION STARTS HERE -->
+            <apex:outputPanel id="ipv4block">
+                <apex:outputPanel rendered="{!IF((ipV4_Exception != '' || selectedId2 == 'Dual Stack'),true,false)}">
+                    <section id="section1Id">
+                        <hr class="section-dividerHr" style="margin-top:20px;"/>
+                        <h3>IPv4 Information</h3>
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-xs-12">
+                                <apex:outputPanel id="LANBlockDisplay1">
+                                    <div class="dataTables_wrapper">
+                                        <table class="lan-adr-type table table-condensed table-striped table-bordered">
+                                            <tr>
+                                                <th width="25%"><label>LAN Address Type</label></th>
+                                                <th width="30%"><label>Public IP Address</label></th>
+                                                <th width="30%"><label style="margin-right:0px !important;">LAN IP Length</label><span style="margin-left:10px !important;" class="tooltipTrigger glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="right" 
+                                                                                                       data-html="true" data-original-title="<div style='width:150px;font-size:12px;'>The standard default IP Length is /29"></span></th>
+                                             </tr>
+                                            <apex:repeat value="{!LANSBlocksWrapper1}" var="lan">
+                                                <tr>
+                                                    <td>            
+                                                        <h4>{!DefaultCustomer}</h4>
+                                                    </td>    
+                                                    <td>            
+                                                        <apex:inputText styleClass="form-control" disabled="true" html-placeholder="N/A" />
+                                                    </td>
+                                                    <td>
+                                                        <apex:selectList id="IPLength" value="{!lanlengthV4}" size="1" multiselect="false" styleClass="form-control styled-select-small">
+                                                                <apex:selectOptions value="{!IpLengthPicklistOptions}" />
+                                                            </apex:selectList>                                                          
+                                                    </td>
+                                                </tr>
+                                            </apex:repeat>
+                                        </table>
+                                    </div>
+                                </apex:outputPanel>
+                            </div>
+                        </div>
+                        <div class="row top-m-25">
+                            <!-- Routing Protocol -->
+                            <div class="col-md-4">
+                                <apex:outputLabel value="Routing Protocol" />
+                                <apex:selectRadio styleClass="col-xs-8" value="{!DefaultBGP}">
+                                    <apex:selectOption itemLabel="Static" itemValue="STATICROUTING"></apex:selectOption>
+                                    <apex:selectOption itemLabel="BGP" itemValue="BGP4"></apex:selectOption>
+                                    <apex:actionSupport event="onchange" action="{!ResetBGPStaticValues4}" reRender="ASNProvider,ASNNumber,BGPdisplay,CIRData,CIRData2" oncomplete="checkIfSubmitBtnCanBeEnabled();reInitiateToolTip();" status="loading"/>
+                                </apex:selectRadio>
+                            </div>
+                            <!-- ASN Provider -->
+                            <div class="col-md-4 ASNProvider">
+                                <apex:outputPanel id="ASNProvider">
+                                    <apex:outputPanel rendered="{!IF(DefaultBGP == 'BGP4',true,false)}">
+                                        <apex:outputLabel value="Who provides your ASN?" />
+                                        <apex:selectRadio value="{!whoProvidesASNv4}">
+                                            <apex:selectOption itemLabel="AT&T" itemValue="ATT"></apex:selectOption>
+                                            <apex:selectOption itemLabel="Public Registered" itemValue="Public Registered"></apex:selectOption>
+                                            <apex:actionSupport event="onchange" action="{!regenerateASNNumberv4}" reRender="ASNNumber" oncomplete="checkIfSubmitBtnCanBeEnabled();" status="loading"/>
+                                        </apex:selectRadio>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </div>  
+                            <!-- Autonomous System Number, only displays if BGP is selected -->
+                            <div class="col-md-4">
+                                <apex:outputPanel id="ASNNumber">
+                                    <apex:outputPanel rendered="{!IF((DefaultBGP == 'BGP4' && whoProvidesASNv4 != ''),true,false)}">
+                                        <apex:outputLabel value="Autonomous System Number" />
+                                        <apex:inputText value="{!AutonomousSystemNumber}" disabled="{!IF(whoProvidesASNv4 == 'ATT',true,false)}" styleClass="form-control {!IF(whoProvidesASNv4 != 'ATT','required','')}" onkeyup="fieldValidationForFirstPage(event,this,'ASNForIP');" onblur="fieldValidationForFirstPage(event,this,'ASNForIP');"/>
+                                        <apex:outputText rendered="{!IF(whoProvidesASNv4 != 'ATT',true,false)}"><span class="col-md-12 p0 noteData">Minimum 4 digits. Maximum 6 digits.</span></apex:outputText>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!-- Begin BGP Display -->
+                    <apex:outputPanel id="BGPdisplay">
+                        <apex:outputPanel rendered="{!IF(DefaultBGP == 'BGP4',true,false)}">
+                            <!-- Routing Row -->
+                            <div class="row">
+                                <!-- Default Routing -->
+                                <div class="col-md-4">
+                                    <apex:outputLabel value="Default Route" />
+                                    <apex:selectRadio styleClass="col-xs-8" value="{!RestrictiveRouting4}">
+                                        <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                        <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                        <apex:actionSupport event="onchange" reRender="RouteAdvertisementPanel" oncomplete="checkIfSubmitBtnCanBeEnabled();reInitiateToolTip();" status="loading"/>
+                                    </apex:selectRadio>
+                                </div>
+                                <!-- Preferred Routing Option -->
+                                <div class="col-md-4">
+                                    <apex:outputPanel id="RouteAdvertisementPanel">
+                                        <apex:outputPanel rendered="{!IF(RestrictiveRouting4 == 'false',true,false)}" styleClass="container-full">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <label>Preferred Route Option</label>
+                                                    <span class="tooltipTrigger glyphicon glyphicon-question-sign intractiveIcon" data-toggle="tooltip" data-html="true" data-placement="right" 
+                                                          data-original-title="<div style='width:315px;font-family:omnes_att_iimedium;font-size:12px;'><b>AT&T Routes</b> includes Candidate Default Networks.<br><b>Full Internet Routes</b> includes AT&T Routes and
+                                                        Candidate Default Networks.<br>In general, the more BGP routes, the larger the memory the router must have.
+                                                        Check with the router vendor in order to determine the exact router configuration required to support the chosen BGP routing configuration."></span>
+                                                
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <apex:selectList styleClass="form-control required styled-select-small" multiselect="false" size="1" value="{!Routevalue4}" style="font-size:16px;" onblur="fieldValidation(event,this,'dropDownSelection');" onchange="fieldValidation(event,this,'dropDownSelection');">
+                                                        <apex:selectOptions value="{!RouteTypeOptions}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </div>
+                            </div>
+                            
+                            <!-- MD5 Row -->    
+                            <div class="row">
+                                <!-- MD5 Authentication -->
+                                <div class="col-md-4">
+                                    <apex:outputLabel value="MD5 Authentication" />
+                                    <span class="tooltipTrigger glyphicon glyphicon-question-sign intractiveIcon" data-toggle="tooltip" data-placement="right" data-html="true"
+                                          data-original-title="<div style='width:274px;font-family:omnes_att_iimedium;font-size:12px;'>If your routers use MD5 Authentication, denote here. If you are unsure, check with your technical team."></span>
+                                    <apex:selectRadio styleClass="col-xs-8" value="{!ipv4MD5Flag}">
+                                        <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                        <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                        <apex:actionSupport event="onchange" action="{!togglePwd}" reRender="ipv4MD5PwdPanel,ipv4MD5PwdPanel2" oncomplete="checkIfSubmitBtnCanBeEnabled();reInitiateToolTip();" status="loading"/>
+                                    </apex:selectRadio>
+                                </div>
+                                <!-- MD5 Password -->
+                                <div class="col-md-4">
+                                    <apex:outputPanel id="ipv4MD5PwdPanel">
+                                        <apex:outputPanel rendered="{!ipv4MD5Flag}" styleClass="container-full">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <apex:outputLabel >MD5 Password</apex:outputLabel>
+                                                    <span class="tooltipTrigger glyphicon glyphicon-question-sign intractiveIcon" data-toggle="tooltip" data-html="true" data-placement="right" data-original-title="<div style='width:224px;font-family:omnes_att_iimedium;font-size:12px;'>Password must be at least 8 characters, no more than 16 characters and contain at least 1 number and 1 uppercase letter."></span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <div class="ipv4Md5PasswordField" style="float:left;width:100%;">
+                                                        <apex:inputSecret html-type="password" id="pwdv4" styleClass="form-control requiredInputField required passwordFieldSelectorMD5" html-placeholder="Password" value="{!MD5Authenticationpassword1}" maxlength="16" onkeypress="return checkSpaceOnly(event);" onkeyup="validateMD5PasswordField();confirmPassMD5();" onblur="validateMD5PasswordField();confirmPassMD5();" />
+                                                    </div>
+                                                    <script>
+                                                        flagmd5 = false;
+                                                        
+                                                        function confirmPassMD5() {
+                                                            var passMd5 = document.getElementById('{!$Component.pwdv4}').value;
+                                                            var confPassMd5 = document.getElementById('{!$Component.pwdv4conf}').value;
+                                                            var messageMd5 = document.getElementById('confirmMessage');
+                                                            var txtmsgMd5 = document.getElementById('textMsg');
+                                                            
+                                                            var lenOfPass = passMd5.length;
+                                                            var lenOfconfPass = confPassMd5.length;
+                                                            var tempPass = confPassMd5.substring(0, lenOfconfPass);
+                                                            
+                                                            if (lenOfconfPass > 0) {
+                                                                if ((passMd5.length == confPassMd5.length) && (passMd5 == tempPass)) {
+                                                                    flagmd5 = true;
+                                                                    messageMd5.innerHTML = '<img src="{!$Resource.GreenCheck}" width="25" height="25" style="margin-left: 1px; margin-bottom: -5px;">';
+                                                                    txtmsgMd5.innerHTML = ' Passwords match.';
+                                                                    $('.reEnterMD5IP4').find('.errorText').remove();
+                                                                } else {
+                                                                    flagmd5 = false;
+                                                                    messageMd5.innerHTML = '<img src="{!URLFOR($Resource.legendicons,'icon_circle_close.png')}" width="25" height="25" style="margin-left: 1px; margin-bottom: -5px;">';
+                                                                    txtmsgMd5.innerHTML = 'Passwords don&#39;t match. Try again.';
+                                                                    if($('.reEnterMD5IP4').find('span.errorText').length == 0){
+                                                                        $('.reEnterMD5IP4').append("<span class='errorText'></span>");
+                                                                    }                           
+                                                                }
+                                                            }else{
+                                                                if($('.reEnterMD5IP4').find('span.errorText').length == 0){
+                                                                    $('.reEnterMD5IP4').append("<span class='errorText'></span>");
+                                                                }
+                                                            }
+                                                        }
+                                                    </script>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </div>
+                                <!-- MD5 Confirm Password -->
+                                <div class="col-md-4">
+                                    <apex:outputPanel id="ipv4MD5PwdPanel2">
+                                        <!-- Re-enter Password-->
+                                        <apex:outputPanel rendered="{!ipv4MD5Flag}" styleClass="reEnterMD5IP4">
+                                            <apex:outputLabel >Re-enter MD5 Password</apex:outputLabel>
+                                            <span id="confirmMessage"></span>
+                                            <apex:inputSecret html-type="password" id="pwdv4conf" styleClass="form-control required requiredInputField"  html-placeholder="Re-enter Password" onkeyup="confirmPass();"/>
+                                            <span id="textMsg"></span>
+                                            <script>
+                                                document.getElementById('{!$Component.pwdv4}').value = '';
+                                                document.getElementById('{!$Component.pwdv4conf}').value = '';
+                                                jQuery('[id$=pwdv4conf]').prop('disabled', true);
+                                                
+                                                function confirmPass() {
+                                                    var pass = document.getElementById('{!$Component.pwdv4}').value;
+                                                    var confPass = document.getElementById('{!$Component.pwdv4conf}').value;
+                                                    var message = document.getElementById('confirmMessage');
+                                                    var txtmsg = document.getElementById('textMsg');
+                                                    
+                                                    var lenconfPass = confPass.length;
+                                                    var partialPass = pass.substring(0, lenconfPass);
+                                                    if((pass.length == confPass.length) && (confPass == partialPass)){
+                                                        flagmd5 = true;
+                                                        message.innerHTML = '<img src="{!$Resource.GreenCheck}"  width="25" height="25" style="margin-left: 1px; margin-bottom: -5px;">';
+                                                        txtmsg.innerHTML = ' Passwords match.';
+                                                        $('.reEnterMD5IP4').find('.errorText').remove();
+                                                    }else{
+                                                        flagmd5 = false;
+                                                        message.innerHTML = '<img src="{!URLFOR($Resource.legendicons,'icon_circle_close.png')}"  width="25" height="25" style="margin-left: 1px; margin-bottom: -5px;" >';
+                                                        txtmsg.innerHTML = 'Passwords don&#39;t match. Try again.';
+                                                        if($('.reEnterMD5IP4').find('span.errorText').length == 0){
+                                                            $('.reEnterMD5IP4').append("<span class='errorText'></span>");
+                                                        }
+                                                    }
+                                                    checkIfSubmitBtnCanBeEnabled();
+                                                }
+                                            </script>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </div>
+                            </div> 
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+            </apex:outputPanel>
+            <!----ENDS IPV4 INFORMATION HERE ---->
+            
+            <!----IPV6 INFORMATION STARTS HERE ---->
+            <apex:outputPanel id="ipv6block">
+                <apex:outputPanel rendered="{!IF((selectedId2 == 'IPv6' || selectedId2 == 'Dual Stack'),true,false)}">
+                    <section id="dualstackdisplay">
+                        <hr class="section-dividerHr" style="margin-top:20px;"/>
+                        <!-- IPV6 Information -->
+                        <h3>IPv6 Information</h3>                                               
+                        <!-- LAN Block Address Table -->                                        
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <apex:outputPanel id="LANBlockDisplay2">
+                                    <table class="lan-adr-type table table-condensed table-striped table-bordered">
+                                        <tr>
+                                            <th width="25%"><label>LAN Address Type</label></th>
+                                            <th width="30%"><label>Public IP Address</label></th>
+                                            <th width="30%"><label>LAN IP Length</label><span class="tooltipTrigger glyphicon glyphicon-question-sign IPV6LanLenghtIcon" data-toggle="tooltip" data-placement="right" 
+                                                                                                      data-html="true" data-original-title="<div style='width:150px;font-size:12px;'>IP Length is /56 when AT&T assigns the IP Address."></span></th>
+                                        </tr>
+                                        <apex:repeat value="{!LANSBlocksWrapper2}" var="lan2">
+                                            <tr>
+                                                <td>
+                                                    <h4>{!DefaultCustomer}</h4>
+                                                </td>
+                                                <td>            
+                                                    <apex:inputText styleClass="form-control" disabled="true" html-placeholder="/64" />
+                                                </td>
+                                                <td>       
+                                                    <apex:selectList id="IPLength" value="{!lanlengthV6}" size="1" multiselect="false" styleClass="form-control styled-select-small">
+                                                                <apex:selectOptions value="{!IpV6LengthPicklistOptions}" />
+                                                    </apex:selectList>                                             
+                                                </td>
+                                            </tr>
+                                        </apex:repeat>
+                                    </table>
+                                </apex:outputPanel>
+                            </div>
+                        </div>
+                        <div class="row top-m-25">
+                            <!-- Routing Protocol -->
+                            <div class="col-md-4">
+                                <apex:outputLabel value="Routing Protocol" />                                            
+                                <apex:selectRadio styleClass="col-xs-8" value="{!DefaultBGP1}">
+                                    <apex:selectOption itemLabel="Static" itemValue="STATICROUTING"></apex:selectOption>
+                                    <apex:selectOption itemLabel="BGP" itemValue="BGP4"></apex:selectOption>
+                                    <apex:actionSupport event="onchange" action="{!ResetBGPStaticValues6}" reRender="ASNProvider2,BGPdisplay2,BGPdisplay3,Staticdisplay2" oncomplete="checkIfSubmitBtnCanBeEnabled();reInitiateToolTip();" status="loading"/>
+                                </apex:selectRadio>                                            
+                            </div>
+                            <!-- ASN Provider -->
+                            <div class="col-md-4 ASNProvider">
+                                <apex:outputPanel id="ASNProvider2">
+                                    <apex:outputPanel rendered="{!IF(DefaultBGP1 == 'BGP4',true,false)}">
+                                        <apex:outputLabel value="Who provides your ASN?" />
+                                        <apex:selectRadio value="{!whoProvidesASNv6}">
+                                            <apex:selectOption itemLabel="AT&T" itemValue="ATT"></apex:selectOption>
+                                            <apex:selectOption itemLabel="Public Registered" itemValue="Public Registered"></apex:selectOption>
+                                            <apex:actionSupport event="onchange" action="{!regenerateASNNumberv6}" reRender="BGPdisplay2" oncomplete="checkIfSubmitBtnCanBeEnabled();" status="loading"/>
+                                        </apex:selectRadio>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </div>                             
+                            <!-- Autonomous System Number, only displays if BGP is selected-->
+                            <div class="col-md-4">
+                                <apex:outputPanel id="BGPdisplay2">
+                                    <apex:outputPanel rendered="{!IF((DefaultBGP1 == 'BGP4' && whoProvidesASNv6 != ''),true,false)}">
+                                        <apex:outputLabel value="Autonomous System Number" /><br />
+                                        <apex:inputText value="{!AutonomousSystemNumber2}" disabled="{!IF(whoProvidesASNv6 == 'ATT',true,false)}" styleClass="form-control {!IF(whoProvidesASNv6 != 'ATT','required','')}" onkeyup="fieldValidationForFirstPage(event,this,'ASNForIP');" onblur="fieldValidationForFirstPage(event,this,'ASNForIP');"/>
+                                        <apex:outputText rendered="{!IF(whoProvidesASNv6 != 'ATT',true,false)}"><span class="col-md-12 p0 noteData">Minimum 4 digits. Maximum 6 digits.</span></apex:outputText>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </div>
+                        </div>
+                    </section>
+                    
+                    <!---BGP INFO STARTS-->
+                    <apex:outputPanel id="BGPdisplay3">
+                        <apex:outputPanel rendered="{!IF(DefaultBGP1 == 'BGP4',true,false)}">
+                            <!-- Routing Row -->
+                            <div class="row">
+                                <!-- Default Routing -->
+                                <div class="col-md-4">
+                                    <apex:outputLabel value="Default Route" />
+                                    <apex:selectRadio styleClass="col-xs-8" value="{!RestrictiveRouting6}">
+                                        <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                        <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                        <apex:actionSupport event="onchange" reRender="RouteAdvertisementPanel2" oncomplete="checkIfSubmitBtnCanBeEnabled();reInitiateToolTip();" status="loading"/>
+                                    </apex:selectRadio>
+                                </div>
+                                <!-- Preferred Routing Option -->
+                                <div class="col-md-8">
+                                    <apex:outputPanel id="RouteAdvertisementPanel2">
+                                        <apex:outputPanel rendered="{!IF(RestrictiveRouting6 == 'false',true,false)}" styleClass="container-full">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <label>Preferred Route Option</label>
+                                                    <span class="tooltipTrigger glyphicon glyphicon-question-sign intractiveIcon" data-toggle="tooltip" data-html="true" data-placement="right" 
+                                                          data-original-title="<div style='width:315px;font-family:omnes_att_iimedium;font-size:12px;'><b>AT&T Routes</b> includes Candidate Default Networks.<br><b>Full Internet Routes</b> includes AT&T Routes and
+                                                        Candidate Default Networks.<br> In general, the more BGP routes, the larger the memory the router must have.
+                                                        Check with the router vendor in order to determine the exact router configuration required to support the chosenBGP routing configuration."></span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-6">
+                                                     <apex:selectList styleClass="form-control required styled-select-small adjust-select-small" multiselect="false" size="1" value="{!Routevalue6}" style="-moz-appearance: none;-webkit-appearance: none;font-size:16px;" onblur="fieldValidation(event,this,'dropDownSelection');" onchange="fieldValidation(event,this,'dropDownSelection');">
+                                                         <apex:selectOptions value="{!RouteTypeOptions}"/>
+                                                     </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </div>
+                            </div>
+                            
+                            <!-- MD5 Row -->    
+                            <div class="row">
+                                <!-- MD5 Authentication -->
+                                <div class="col-md-4">
+                                    <apex:outputLabel value="MD5 Authentication" />
+                                    <!-- Developers Note Robyn 12/30/15: add tooltip -->
+                                    <span class="tooltipTrigger glyphicon glyphicon-question-sign intractiveIcon" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="<div style='width:274px;font-family:omnes_att_iimedium;font-size:12px;'>If your routers use MD5 Authentication, denote here. If you are unsure, check with your technical team."></span>
+                                    <apex:selectRadio styleClass="col-xs-8" value="{!ipv6MD5Flag}">
+                                        <apex:selectOption itemLabel="Yes" itemValue="true"></apex:selectOption>
+                                        <apex:selectOption itemLabel="No" itemValue="false"></apex:selectOption>
+                                        <apex:actionSupport event="onchange" action="{!togglePwd}" reRender="ipv6MD5PwdPanel, ipv6MD5PwdPanel2" oncomplete="checkIfSubmitBtnCanBeEnabled();reInitiateToolTip();" status="loading" />
+                                    </apex:selectRadio>
+                                </div>
+                                <!-- MD5 Password -->
+                                <div class="col-md-4">                                                    
+                                    <apex:outputPanel id="ipv6MD5PwdPanel">
+                                        <apex:outputPanel rendered="{!ipv6MD5Flag}" styleClass="container-full">
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <apex:outputLabel >MD5 Password</apex:outputLabel>
+                                                    <span class="tooltipTrigger glyphicon glyphicon-question-sign intractiveIcon" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="<div style='width:224px;font-family:omnes_att_iimedium;font-size:12px;'>Password must be at least 8 characters, no more than 16 characters and contain at least 1 number and 1 uppercase letter."></span>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-xs-12">
+                                                    <div class="ipv6Md5PasswordField" style="float:left;width:100%;">
+                                                        <apex:inputSecret html-type="password" id="pwdv6" styleClass="form-control required requiredInputField passwordFieldSelectorMD5V6" html-placeholder="Password" value="{!MD5Authenticationpassword2}" maxlength="16" onkeypress="return checkSpaceOnly(event);" onkeyup="validateMD5PasswordFieldV6();confirmPassMD5V6();" onblur="validateMD5PasswordFieldV6();confirmPassMD5V6();" />
+                                                    </div>
+                                                    <script>
+                                                    flagmd5V6 = false;
+                                                    function confirmPassMD5V6(){
+                                                        var passMd5V6 = document.getElementById('{!$Component.pwdv6}').value; 
+                                                        var confPassMd5V6 = document.getElementById('{!$Component.pwdv6conf}').value;
+                                                        var messageMd5V6 = document.getElementById('confirmMsgIP6');
+                                                        var txtmsgMd5V6 = document.getElementById('textMsgIP6');
+                                                        
+                                                        var lenOfPassV6 = passMd5V6.length;
+                                                        var lenOfconfPassV6 = confPassMd5V6.length;
+                                                        var tempPassV6 = confPassMd5V6.substring(0,lenOfconfPassV6);
+                                                        
+                                                        if(lenOfconfPassV6>0){
+                                                            if((passMd5V6.length == confPassMd5V6.length) && (passMd5V6 == tempPassV6)){
+                                                                flagmd5V6 = true;
+                                                                messageMd5V6.innerHTML = '<img src="{!$Resource.GreenCheck}" width="25" height="25" style="margin-left: 1px; margin-bottom: -5px;">';
+                                                                txtmsgMd5V6.innerHTML = ' Passwords match.';
+                                                                $('.reEnterMD5IP6').find('.errorText').remove();
+                                                            }else{
+                                                                flagmd5V6 = false;
+                                                                messageMd5V6.innerHTML = '<img src="{!URLFOR($Resource.legendicons,'icon_circle_close.png')}" width="25" height="25" style="margin-left: 1px; margin-bottom: -5px;">';
+                                                                txtmsgMd5V6.innerHTML = 'Passwords don&#39;t match. Try again.';
+                                                                if($('.reEnterMD5IP6').find('span.errorText').length == 0){
+                                                                    $('.reEnterMD5IP6').append("<span class='errorText'></span>");
+                                                                }
+                                                            }
+                                                        }else{
+                                                            if($('.reEnterMD5IP6').find('span.errorText').length == 0){
+                                                                $('.reEnterMD5IP6').append("<span class='errorText'></span>");
+                                                            }
+                                                        }
+                                                    }
+                                                    </script>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </div>
+                                <!-- MD5 Confirm Password -->
+                                <div class="col-md-4">
+                                    <apex:outputPanel id="ipv6MD5PwdPanel2">
+                                        <!-- Re-enter Password-->
+                                        <apex:outputPanel rendered="{!ipv6MD5Flag}" styleClass="reEnterMD5IP6">
+                                            <apex:outputLabel >Re-enter MD5 Password</apex:outputLabel>
+                                            <span id="confirmMsgIP6"></span>
+                                            <apex:inputSecret html-type="password" id="pwdv6conf" styleClass="form-control required requiredInputField" html-placeholder="Re-enter Password" onkeyup="confirmPassV6();"/>
+                                            <span id="textMsgIP6"></span>
+                                            <script>
+                                                document.getElementById('{!$Component.pwdv6}').value='';
+                                                document.getElementById('{!$Component.pwdv6conf}').value='';
+                                                jQuery('[id$=pwdv6conf]').prop('disabled', true);
+                                                function confirmPassV6(){
+                                                    var passV6 = document.getElementById('{!$Component.pwdv6}').value; 
+                                                    var confPassV6 = document.getElementById('{!$Component.pwdv6conf}').value;
+                                                    var messageV6 = document.getElementById('confirmMsgIP6');
+                                                    var txtmsgV6 = document.getElementById('textMsgIP6');
+                                                    var lenconfPass = confPassV6.length;
+                                                    var partialPass = passV6.substring(0,lenconfPass);
+                                                    if((passV6.length == confPassV6.length) && (confPassV6 == partialPass)){
+                                                        flagmd5V6 = true;
+                                                        messageV6.innerHTML = '<img src="{!$Resource.GreenCheck}"  width="25" height="25" style="margin-left: 1px; margin-bottom: -5px;">';
+                                                        txtmsgV6.innerHTML = ' Passwords match.';
+                                                        $('.reEnterMD5IP6').find('.errorText').remove();
+                                                    }else{
+                                                        
+                                                        flagmd5V6 = false;
+                                                        messageV6.innerHTML = '<img src="{!URLFOR($Resource.legendicons,'icon_circle_close.png')}"  width="25" height="25" style="margin-left: 1px; margin-bottom: -5px;">';
+                                                        txtmsgV6.innerHTML = 'Passwords don&#39;t match. Try again.';
+                                                        if($('.reEnterMD5IP6').find('span.errorText').length == 0){
+                                                            $('.reEnterMD5IP6').append("<span class='errorText'></span>");
+                                                        }
+                                                    }
+                                                    checkIfSubmitBtnCanBeEnabled();
+                                                }             
+                                            </script>                                                                          
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </div>
+                            </div>                                           
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                    <!---ENDS BGP INFO-->                                                           
+                </apex:outputPanel>
+            </apex:outputPanel>
+            <!-- ENDS IPV6 INFORMATION HERE -->
+        </apex:pageBlock>
+        
+        <hr class="section-dividerHr" style="margin-bottom:20px;"/>
+        
+        <!-- Managed Router Shipping Information Panel -->
+        <apex:outputPanel id="ManagedRouterInfo" rendered="{!IsMisRouter}">
+            <div class="sectionHeader-primary m-b-25" style="float: left;">AT&amp;T Managed Router Shipping Information</div>
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <div class="row m-b-10">
+                        <div class="col-md-4" id="shippingInfo">
+                            <apex:outputLabel value="First Name" />
+                            <apex:inputText styleClass="form-control required" label="First Name" value="{!Router_Shipping_First_Name}" onblur="fieldValidation(event,this,'firstName');" onkeyup="fieldValidation(event,this,'firstName');"/>
+                        </div>
+                        <div class="col-md-4" id="shippingInfo">
+                            <apex:outputLabel value="Last Name" />
+                            <apex:inputText styleClass="form-control required" label="Last Name" value="{!Router_Shipping_Last_Name}" onblur="fieldValidation(event,this,'lastName');" onkeyup="fieldValidation(event,this,'lastName');"/>
+                        </div>
+                        <div class="col-md-4" id="shippingInfo">
+                            <apex:outputLabel value="Phone Number" />
+                            <apex:input styleClass="form-control required" value="{!Router_Shipping_Phone_Number}" label="Phone Number" onblur="fieldValidation(event,this,'phoneNumber');" onkeyup="fieldValidation(event,this,'phoneNumber');"/>
+                        </div>
+                    </div>
+                    <div class="row m-b-10">
+                        <div class="col-md-4" id="shippingInfo">
+                            <apex:outputLabel value="Address 1:" />
+                            <apex:inputtext styleClass="form-control required" label="Address" value="{!Router_Shipping_Address_1}" onblur="fieldValidation(event,this,'Address');" onkeyup="fieldValidation(event,this,'Address');"/>
+                        </div>
+                        <div class="col-md-4" id="floorNumber">
+                            <apex:outputLabel value="Floor Number (If applicable)" />
+                            <apex:input styleClass="form-control" value="{!Router_Shipping_Floor_Number}" label="Floor Number" onblur="fieldValidation(event,this,'floorNumber');" onkeyup="fieldValidation(event,this,'floorNumber');"/>
+                        </div>
+                        <div class="col-md-4" id="roomNumber">
+                            <apex:outputLabel value="Room Number (If applicable)" />
+                            <apex:input styleClass="form-control" label="Room Number" value="{!Router_Shipping_Room_Number}" onblur="fieldValidation(event,this,'roomNumber');" onkeyup="fieldValidation(event,this,'roomNumber');"/>
+                        </div>
+                    </div>
+                    <div class="row m-b-25">
+                        <div class="col-md-4" id="shippingInfo">
+                            <apex:outputLabel value="City" />
+                            <apex:input styleClass="form-control required" label="City" value="{!Router_Shipping_City}" onblur="fieldValidation(event,this,'city');" onkeyup="fieldValidation(event,this,'city');"/>
+                        </div>
+                        <div class="col-md-4" id="shippingInfo">
+                            <apex:outputLabel value="State" />
+                            <apex:selectList id="state" value="{!Router_Shipping_State}" size="1" multiselect="false"  styleClass="form-control required styled-select-small" onblur="fieldValidation(event,this,'dropDownSelection');" onchange="fieldValidation(event,this,'dropDownSelection');">
+                                <apex:selectOptions value="{!StatePickList}" />
+                            </apex:selectList>
+                        </div>
+                        <div class="col-md-4" id="shippingInfo">
+                            <apex:outputLabel value="Zip Code" />
+                            <apex:inputText styleClass="form-control required" maxlength="5" label="Zip Code" value="{!Router_Shipping_Zip_Code}" onblur="fieldValidation(event,this,'zipCode');" onkeyup="fieldValidation(event,this,'zipCode');"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr class="section-dividerHr" style="margin-bottom: 20px;"/>
+        </apex:outputPanel>
+        
+        <!-- CoS Panel -->
+        <apex:outputPanel id="CoSBlock" rendered="{!classofserviceflag}" style="float:left;">
+            <h3>Class of Service</h3>
+            <p>Class of Service allows the network to prioritize different types of internet traffic. Select a percentage for each Class of Service (CoS).</p>  
+            <br />                     
+            <div class="container-full">
+                <!-- Step 1: Select Real-Time Percentage -->
+                <div class="row">
+                    <div class="col-xs-12">
+                        <label class="portlabel" style="margin-top: 19px;"><b>Step 1:</b> <span class="regular">Select Real-Time Percentage</span></label>
+                        <div class="container-full">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div id="cosSlider" style="height:32px;">
+                                        <div class="cosSliderLabelsProgress">
+                                            <span id="cosSliderPrgs">{!SelectedSliderValue}%</span>
+                                        </div>
+                                        <div class="cosSliderLabelsMax">
+                                            <span id="cosSliderMax">100%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <span class="col-xs-1 axisPlacementStyle" >|</span>
+                                <span class="col-xs-10 axisPlacementStyle" style="text-align:center;">|</span>
+                                <span class="col-xs-1 axisPlacementStyle" style="text-align:right;">|</span>                                        
+                            </div>
+                            
+                            <div class="row">
+                                <span style="padding-left:12px;font-weight:bold;" class="col-xs-1 axisPlacementStyle">0</span>
+                                <span class="col-xs-10 axisPlacementStyle" style="text-align:center;font-weight:bold;">50</span>
+                                <span class="col-xs-1 axisPlacementStyle" style="padding-left:36px;font-weight:bold;">100</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Step 2: Select Profile ID  -->                            
+                <div class="row">
+                    <div class="col-xs-12" >
+                        <label class="portlabel" style="margin-top: 18px;"><b>Step 2:</b> <span class="regular">Select Profile ID</span></label>
+                        <apex:outputPanel id="misprofileSelect" styleClass="profileSelectID">
+                            <apex:selectList id="profileSelect" value="{!selectedmisprofile}" styleclass="container-full form-control required styled-select-small" onblur="fieldValidation(event,this,'dropDownSelection');" onchange="fieldValidation(event,this,'dropDownSelection');" multiselect="false" size="1" style="-moz-appearance: none;-webkit-appearance: none;font-size:16px; width:845px;height: 30px;padding-top: 2px;background-size: 30px 35px !important;">
+                                <apex:selectOptions value="{!misprofileoptions}" />
+                            </apex:selectList>
+                        </apex:outputPanel>
+                    </div>
+                </div>
+                <apex:actionFunction name="getmisprofiles" action="{!getmisprofiles}" reRender="misprofileSelect" status="loading" oncomplete="checkIfSubmitBtnCanBeEnabled();">
+                    <apex:param name="slidervalue" value="" assignTo="{!SelectedSliderValue}" />
+                </apex:actionFunction>
+                <script>                            
+                function updateSlider() {
+                   $("#cosSlider").slider({
+                       value: {!SelectedSliderValue},
+                       range: "min",
+                       animate: true,
+                       step: 10,
+                       change: function (event, ui) {
+                           $("span#cosSliderPrgs").text(ui.value + '%');
+                           getmisprofiles(ui.value);
+                           if(ui.value == 70){
+                               
+                               ui.value = ui.value -10;
+                               getmisprofiles(ui.value);  
+                               $("#cosSlider").slider({
+                                   value: 60,
+                               });    
+                               $("span#cosSliderPrgs").text(ui.value + '%');    
+                           }else if(ui.value == 100){
+                               ui.value = ui.value -10;
+                               getmisprofiles(ui.value);  
+                               $("#cosSlider").slider({
+                                   value: 90,
+                               });     
+                               $("span#cosSliderPrgs").text(ui.value + ' %');   
+                           }else if(ui.value == 30){
+                                   ui.value = ui.value -10;
+                                   getmisprofiles(ui.value);  
+                                   $("#cosSlider").slider({
+                                       value: 20,
+                                   });  
+                                   $("span#cosSliderPrgs").text(ui.value + '%');      
+                           }else if(ui.value == 15){
+                                ui.value = ui.value -5;
+                                getmisprofiles(ui.value);  
+                                $("#cosSlider").slider({
+                                    value: 10,
+                                });  
+                                $("span#cosSliderPrgs").text(ui.value + '%');      
+                            }
+                       }
+                   });
+               }
+                updateSlider();
+                </script>
+            </div>
+            <hr class="section-dividerHr" style="margin-bottom: 20px;"/>
+        </apex:outputPanel>
+        
+        <!-- Installation Information -->
+        <div class="container-full" style="float:left;" >
+            <h3>Installation Information</h3>
+            <p><apex:outputLabel value="Installation Type:" />&nbsp;<apex:outputText value="Tele Install" /></p>
+            <p><apex:outputLabel value="Purchase Decision Date:" />&nbsp;<apex:outputText value="{!PurchaseDecisionDate}" /></p>
+            <div class="row">
+                <!-- Activation Date -->
+                <div class="col-md-6">
+                    <apex:outputLabel value="Customer Requested Due Date (CRDD)" />                        
+                    <div class="container-full">
+                        <div class="row">
+                            <div class="col-xs-12" id="dateField">
+                                <apex:input styleClass="col-xs-5 dPicker required CRDDField" html-readonly="readonly" value="{!RequestedServiceActivationDate}" label="Customer Requested Due Date (CRDD)" type="text" onblur="fieldValidationForFirstPage(event,this,'dateField');" onchange="fieldValidationForFirstPage(event,this,'dateField');"/>
+                                
+                                <span class="glyphicon glyphicon-calendar calendarIcon"></span>
+                                <span class="tooltipTrigger glyphicon glyphicon-question-sign calendarToolTip" data-toggle="tooltip" data-placement="right" data-html="true" data-original-title="<div style='width:220px;font-family:omnes_att_iimedium;font-size:12px;'>Select the date on which your customer requests their AT&T Managed Internet Service to be installed and activated."></span>
+                                
+                            </div>
+                           <p class="CRDDNote noteData p0">
+                                Note: Requested delivery date is not guaranteed.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Early Service & Provision -->
+                <div class="col-md-6 earlyServiceDueDate">
+                    <apex:outputLabel value="Decline Early Service and Provision on Due Date?" />
+                    <apex:selectRadio styleClass="col-xs-4" value="{!EarlyServiceTurnuponDueDate}" label="Decline Early Service and Provision on Due Date?">
+                        <apex:selectOption itemLabel="Yes" itemValue="true" />
+                        <apex:selectOption itemLabel="No" itemValue="false" />
+                    </apex:selectRadio>
+                </div>
+            </div>                
+        </div>
+        
+        <hr class="section-dividerHr" style="margin-bottom: 20px;"/>
+        
+        <div class="conatiner-full col-md-12 p0" style="float:left;">
+            <h3>Additional Information</h3>
+            <div class="row">
+                <div class="col-xs-12 additionalInfoSection">
+                    <apex:outputPanel rendered="{!IF(isIPFlexEnabled == false,true,false)}">
+                        <div style="margin:10px 0;">Tell us anything else we need to know about this site. (eg: Please call Local Contact 24 hours prior to dispatch.)(Optional)</div>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(isIPFlexEnabled == true,true,false)}">
+                        <div style="margin:10px 0;">Tell us anything else we need to know about this site such as New Construction, New Block of Local DID number, any other requirements for your site. (Optional)</div>
+                    </apex:outputPanel>
+                    <apex:input id="myTextarea" value="{!siteadditionalinfo}" html-maxlength="68" styleClass="w100p form-control myTextareaClass" style="margin-bottom: 10px;" html-placeholder="No special characters allowed. Max 68 characters." onkeyup="CharLimit(this, '68');fieldValidationForFirstPage(event,this,'FeedBackField');"/>
+                    <apex:outputLabel value="68 characters remaining" styleClass="additionalInfoMsg" style="display: block;margin-bottom:11px;text-align: right;font-size:12px;color:#000;"/>
+                </div>
+            </div>
+        </div>
+        <apex:outputPanel id="BottomSectionMISRDS">
+            <apex:outputPanel id="MISRDSPaginationSection">
+                <apex:outputPanel rendered="{!IF(isIPFlexEnabled == true,true,false)}">
+                    <ul class="pageNavigationBtnSection" style="margin-top: 12px;">
+                        <li id="page1" onclick="pageNavigation(event,this);" class="currentPage">Page 1</li>
+                        <li id="page2" onclick="pageNavigation(event,this);" class="{!IF(MISRDSPage2Status == 'completelyFilled','completedPage statusImgSuccess','')} {!IF(MISRDSPage2Status == 'partiallyFilled','inCompletePage','')}">Page 2</li>
+                        <li id="page3" onclick="pageNavigation(event,this);" class="{!IF(MISRDSPage3Status == 'completelyFilled','completedPage statusImgSuccess','')} {!IF(MISRDSPage3Status == 'partiallyFilled','inCompletePage','')}">Page 3</li>
+                    </ul> 
+                    <apex:outputPanel id="errorTextForIncompleteFields">
+                        <apex:outputPanel styleClass="orangeText naviagtionOrangeLink"  style="margin-top: -29px; margin-bottom: 30px;" rendered="{!MISRDSValidationErrorMsg}">
+                            <p>You will not be able to submit the RDS until all required fields are completed for all sites;</p> 
+                            <p>however, you can proceed now to another page and come back to complete the blank fields.</p> 
+                            <a href="javascript:void(0)" onclick="navigateOnLink('{!MISRDSPageNumber}');" class="linkToNavigate">Click here to proceed</a>
+                        </apex:outputPanel>
+                    </apex:outputPanel>                                 
+                </apex:outputPanel>             
+            </apex:outputPanel>
+            <hr class="blue_hr" id="panelFooter" />
+            <div id="mainId" class="pull-right">                            
+                <apex:commandButton value="Save & Exit" styleClass="btn btn-primary" style="width: 175px !important;padding: 7px 20px !important;background:#FFFFFF !important; color:#595959 !important;border: 1px solid #595959 !important; margin-right:20px; font-family:omnes_att_iimedium !important;Font-Size:16px ! important;" onclick="saveAndExit('{!siteselected}','{!MISRDSPageNumber}');return false;" />
+                <apex:commandButton styleClass="btn btn-primary NextSiteBtn" style="width: 175px !important;padding: 7px 20px !important;font-family:omnes_att_iimedium !important; font-Size:16px; ! important;" value="{!SubmitButtonLabel}" rendered="{!IF(SubmitButtonLabel == 'Next Site',true,false)}" onclick="viewNextSite('{!MISRDSPageNumber}');return false;" />
+                <apex:commandButton styleClass="btn btn-primary SubmitBtn" style="width: 175px !important;padding: 7px 20px !important;font-family:omnes_att_iimedium !important; font-Size:16px; ! important;" value="{!SubmitButtonLabel}" rendered="{!IF(SubmitButtonLabel != 'Next Site',true,false)}" onclick="SubmitBtnClick('{!siteselected}','{!MISRDSPageNumber}');return false;" disabled="true"/>
+            </div>         
+        </apex:outputPanel>
+        
+        <apex:actionFunction name="ajaxSaveAndExit" action="{!SaveandExit}" reRender=""  status="loading" oncomplete="">
+            <apex:param name="saveSiteId" value="" assignTo="{!siteselected}" />
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage1Status}" name="MISRDSPage1Status" value="" />
+        </apex:actionFunction> 
+        <apex:actionFunction name="setBestAvailDate" action="{!setBestAvailDate}" rerender="">
+            <apex:param name="BestAvailDate" value="" assignTo="{!BestAvailDate}"/>
+        </apex:actionFunction> 
+        <apex:actionFunction id="filterSites" name="handlefilterSites" action="{!handlefilterSites}" reRender="leftPanelContainerForm" status="loading" oncomplete="window.scrollTo(0, 0);">
+            <apex:param name="quoteId" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="passSite" action="{!saveOnToggleSite}" reRender="leftPanelContainerForm"  status="loading" oncomplete="window.scrollTo(0, 0);">
+            <apex:param name="goToSiteId" value="" />
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage1Status}" name="MISRDSPage1Status" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="takeToNextSite" action="{!navigateToNextSite}" reRender="leftPanelContainerForm"  status="loading" oncomplete="window.scrollTo(0, 0);">
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage1Status}" name="MISRDSPage1Status" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="saveCompleteRDS" action="{!SubmitRDS}" reRender="pageBodyContainer,ciError,crddoverlaycontainer" oncomplete="checkCIError();displaycrddoverlay();" status="loading">
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage1Status}" name="MISRDSPage1Status" value="" />
+            <apex:param name="rdsFlag" value="" />
+        </apex:actionFunction>  
+        
+        <apex:actionFunction name="saveCurrentPageData" action="{!saveCompleteRDS}" oncomplete="dataSavedOnCurrentPage();" status="loading">
+            <apex:param assignTo="{!sourcePage}" name="sourcePage" value="" />
+            <apex:param assignTo="{!MISRDSPage1Status}" name="MISRDSPage1Status" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="navigateToNewPage" action="{!updatePageToShow}" reRender="pageBodyContainer" oncomplete="loadSiteRDSdata();" status="loading">
+            <apex:param assignTo="{!MISRDSPageToShow}" name="MISRDSPageToShow" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="loadSiteRDSdata" action="{!loadSiteRDSdata}" reRender="pageBodyContainer,leftPanelContainerForm" oncomplete="initializePageValidationOnPageLoad('{!MISRDSPageNumber}','{!MISRDSPage1Status}','{!MISRDSPage2Status}','{!MISRDSPage3Status}');" status="loading" />
+        <apex:actionFunction name="showErrorMsgAtNavigation" action="{!showErrorMsgAtNavigation}" reRender="errorTextForIncompleteFields" status="loading" />         
+        <apex:actionFunction name="emptyPOTSPhnNum" action="{!emptyPOTSPhnNum}" reRender="SitesPhnNo" oncomplete="checkIfSubmitBtnCanBeEnabled();" status="loading"> 
+            <apex:param assignTo="{!selectedPOTSId}" name="selectedPOTSId" value="" />
+        </apex:actionFunction>
+        <apex:actionFunction name="emptyDomainURL" action="{!resetDoamin}" reRender="DomainURL" oncomplete="checkIfSubmitBtnCanBeEnabled();" status="loading"> 
+            <apex:param assignTo="{!ATTHostedDNSSeleted}" name="ATTHostedDNSSeleted" value="" />
+        </apex:actionFunction>
+    </apex:form>
+    
+    <script>
+    
+    
+        $(document).ready(function () {
+            initiateCalender();
+            drawLeftPanel();
+            reInitiateToolTip();
+            CharLimit('.myTextareaClass', 68);
+            if($('.myTextareaClass').val().length > 0){
+                    $('.myTextareaClass').trigger('keyup');
+             }
+        });   
+        function removeErrorMsg(radioType){
+            if(radioType == 'IPV4CriteriaRadioSelection'){
+                $( ".ipv4CriteriaBox" ).parent().find('.errorText').remove();
+            }else if(radioType == 'IPType'){
+                $( ".IPType" ).find('.errorText').remove();
+            }
+            checkIfSubmitBtnCanBeEnabled();
+            reInitiateToolTip();
+        }
+        function reInitiateToolTip(){
+            $("[rel='tooltip']").tooltip();
+            $(".tooltipTrigger").tooltip();
+        }
+    </script> 
+     <script>
+        function CharLimit(input, maxChar) {
+            var len = $(input).val().length;
+            if (len > maxChar) {
+                $(input).val($(input).val().substring(0, maxChar));
+                $('.additionalInfoMsg').html(0 + ' characters remaining');
+            }else{
+                $('.additionalInfoMsg').html(maxChar - len + ' characters remaining');
+            }
+            if((maxChar - len)==maxChar){
+                $('.additionalInfoMsg').css('display','block');
+            }else{
+                $('.additionalInfoMsg').css('display','block');
+            }
+        }
+     </script>    
+</apex:page>

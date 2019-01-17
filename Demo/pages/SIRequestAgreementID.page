@@ -1,0 +1,27 @@
+<apex:page controller="SIAccountSelectAttachment">
+    <apex:form id="frmID" >
+        <apex:pageMessage severity="" rendered="true" title="EBM SP Agreement ID Requests typically require the following documents to be sent: Agreement Information, Rate Card, MSA, MRA, and IRU Agreement." />
+        <apex:pageBlock rendered="{!displayMsg}" id="erroMsgBlk">
+               <apex:pageMessage rendered="{!displayMsg}" severity="error" title="You have not selected any attachment . Please select one and proceed."/>
+           </apex:pageBlock> 
+        <apex:pageBlock id="wrapperBlock">
+             <apex:pageBlockButtons >
+                 <apex:commandButton value="Send" id="sendBTN" action="{!processSelected}" rerender="table,wrapperBlock,frmID,erroMsgBlk"/>
+                <apex:commandButton value="Cancel" id="cnclBTN" action="{!cancelBtn}" rerender="table"/>
+            </apex:pageBlockButtons>
+            <!-- In our table we are displaying the attachment records -->
+            <apex:pageBlockTable value="{!Attachment}" var="c" id="table">
+                <apex:column >
+                    <!-- This is our selected Boolean property in our wrapper class -->
+                    <apex:inputCheckbox id="chckID" value="{!c.selected}"/>
+                </apex:column>
+                <!-- This is how we access the contact values within our cContact container/wrapper -->
+                <apex:column id="clnm1" value="{!c.attch.name}" />
+                <apex:column id="clnm2" value="{!c.attch.createddate}" />
+                <apex:column id="clmn3" value="{!c.attch.description}" />
+                 
+                     
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

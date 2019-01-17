@@ -1,0 +1,1819 @@
+<apex:page controller="ReviewQuoteController" action="{!handleQuoteReview}" sidebar="false" standardStylesheets="false" showHeader="false">
+    <apex:includescript value="//cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js" />
+    <style>
+        .scrollToTop{ padding:10px; text-align:center; font-weight: bold; color: #444; text-decoration: none; position:fixed; top:80%; right:30px; display:none; .background: url(url('!$Resource.scrollTop') no-repeat center;) no-repeat 0px 20px; width:72px; height:106px; z-index: 9999; }    
+         .scrollToTop:hover{
+            text-decoration:none;
+        }
+        #reviewQuote input[type="radio"] {
+            width: 15px;
+        }
+        input.btn {
+            margin: 0 10px;
+            padding: 7px 20px !important;
+        }
+        .ASE_modal-dialog{
+                width: 660px;
+        }
+        #sitesTable thead {
+            background-color: white;
+        }
+        #customerDetailsTable td,
+        #pricingSmryTable td {
+            border: 0px;
+        }
+        #pricingSmryTable td {
+            padding: 0;
+            margin: 0;
+        }
+        #pricingSmryTable tbody tr:nth-child(odd) {
+            background: none !important;
+        }
+        #pricingSmryTable tbody tr:nth-child(even) {
+            background: none !important;
+        }                
+        table#pricingSmryTable {        
+            border-spacing: 10px;       
+            border-collapse: inherit;
+            margin-bottom: 48px;
+        margin-top: 15px;
+        }
+        .pbSubsection table {
+            width: 100%;
+        }
+        .removePop .modal-body table td {
+            width: 400px;
+            clear: both;
+            float: left;
+            display: table-header-group;
+        }
+        .removePop .modal-body table td input {
+            margin-right: 10px;
+        }
+        .removePop .modal-body table td label {
+            font-size: 16px;
+            text-align: left;
+            margin-left: 25px !important;
+        }
+        boldText {
+            font-weight: bold;
+        }        
+        .dashboardLink{
+            font-family: omnes_att_iimedium !important;
+            color: #0568ad;
+            float:right;
+            margin-top: 7px;
+            margin-right: 50px;
+        }
+        .aseDashLink{       
+            font-size: 1em;     
+            font-family: omnes_att_iimedium !important;     
+            color: #44c8f5;     
+            line-height: 0.89em;        
+            margin-top: 24px !important;        
+            margin-right: 48px !important;      
+        }
+        .exportLink {
+            float: right;
+            color: #009edb !important;
+            font-family: omnes_att_iimedium;
+            font-size: 16px!important;
+            margin:0px 0px 5px 0px;
+        }
+        
+        .blueText {
+            text-align: left;
+        }
+        .sitesDataTable {
+            width: 100% !important;
+            font-family: omnes_att_iimedium;
+        }
+        
+        .sitesDataTable.table-bordered>tbody>tr>td{
+            border:none !important;
+            font-size:16px;
+            white-space:nowrap;
+        }
+        .sitesDataTable.table>tbody>tr>td{
+            border-top: 1px dashed #ddd !important;
+            border-right: 1px solid #d3d3d3 !important;
+        }
+        
+        .reviewQuoteSearchIcon.search_button {
+            position: absolute;
+            display: inline;
+            top: 5px;
+        }
+        
+        .sitesDataTable thead th .reorder_btn {
+            display: block;
+            position: relative;
+            float: right;
+            top: 5px;
+        }
+      
+       .noSearchDataAvailable{
+            color: #000;
+            font-weight: bold;
+            background-color: #fff !important;
+        }
+
+       .totalSitesCount{
+            float: right;
+            font-size: 20px;
+            color: #007a3e !important;
+            font-family: omnes_att_iimedium;
+        } 
+
+        .fine-print {
+            margin:0; 
+            font-size:14px; 
+            font-family: omnesatt_iiregular !important;
+        }
+
+        .sitesDataTable thead th:nth-child(5) div.reorder_btn {
+            display: none;
+        }
+        
+        .tooltipTrigger.glyphicon.glyphicon-info-sign.reviewQuoteInfoIcon {
+            margin: 2px 0 0 10px;
+            float: right;
+        }
+        
+        .oneTimeTotal {
+            margin-right: 0px;
+        }
+        
+        .monthlyTotalCharges {
+            color: black;
+            font-weight: bold;
+            font-size:16px;
+        }
+        
+        .headerTerm {
+            float: right;
+            margin-right: 4px;
+        }
+        
+        .reviewQuote.col-xs-12.col-md-12 {
+            padding: 0px;
+        }
+        .tableDataSection .table a {
+            color: #009edb !important;
+            font-family: omnes_att_iimedium;
+            font-size: 16px!important; 
+        }
+        
+        .reconfigureRemove { 
+            color: #000000;
+            font-size: 16px!important; 
+        
+        }
+        
+        .tableDataSection thead{
+            color: #009edb;
+        }
+        .tableDataSection table{
+            border-color: #939393 !important;
+        }        
+        .tableDataSection .table-bordered>thead>tr>th{
+            border-bottom: 1px dashed #939393;
+            border-left-color: #939393;
+            border-right-color: #939393;
+        }
+        .tableDataSection .table-bordered>tbody>tr>td{
+            border:none !important;
+        }
+        .tableDataSection .table>tbody>tr>td{
+            border-top: 1px dashed #939393 !important;
+            border-right: 1px solid #939393 !important;
+        }
+        .tableDataSection tbody tr:nth-child(odd) {
+            background: #f2f2f2;
+        }
+        .tableDataSection tbody tr:nth-child(even) {
+            background: #fff;
+        }
+        .tooltip.fade.top.in {
+            margin-left: 22px !important;
+            top: -48px !important;
+            margin-right: -100px !important;
+        }
+        .f-s-28 {
+            font-size: 28px !important;
+            font-weight: 500px;
+            font-family: omnes_light;
+        }           
+        .submitButtonAse{       
+            margin-top: 10px;       
+            margin-bottom: -12px;       
+            height: 40px;       
+            width: 180px;       
+                
+        }       
+        .aseBottom{     
+            margin-right: -107px;      
+        }   
+        .tooltipTrigger + .tooltip > .tooltip-inner {
+            background-color: #fff;
+            color:#000;
+            font-family:omnes_att_iimedium;
+            box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px 1px;
+            text-align: left;
+            font-weight: normal;
+            z-index:999;
+        }
+        .tooltipTrigger + .tooltip.top > .tooltip-arrow {
+             border-top-color:#fff; 
+             border-left:12px solid transparent;
+             border-right:12px solid transparent;
+             border-top:12px solid #fff;        
+            top:58px !important;
+             left:45% !important;
+        }
+        .greenText{
+            font-family: omnes_att_iimedium !important;
+            color: #007a3e !important;          
+        }
+        .redText {        
+            font-family: omnes_att_iimedium !important;
+            color: #cf2a2a !important;                    
+        }
+        .m-b-20 {margin-bottom: 20px;}         
+             
+        .tableDataSection .table>tbody>tr>td.putDollarSign{
+            font-size: 16px;
+            text-align: right;
+            white-space: nowrap;
+        }
+        .tableDataSection .table>tbody>tr>td.highlightPriceUpdate{
+            font-size: 16px;
+            white-space: nowrap;
+            background: #ea740070 !important;
+        }
+        span.listPrice{
+            text-decoration-line: line-through;
+            color: #00000087;
+        }
+        .grey_hr{
+            border-bottom:1px solid #000;
+            height: 1px;
+            background: #000;
+            margin-left: 10px;
+            margin-bottom: 8px;
+            margin-top: 8px;
+        }
+        .table.subTotalSummary{
+            margin-bottom: 8px !important;
+            margin-top: 12px;
+        }
+        span.glyphicon.glyphicon-chevron-up, span.glyphicon.glyphicon-chevron-down{
+            top: 3px;
+            color: #ea7400;
+            padding-left: 10px;
+        }
+        .promotionAppliedData{
+            display:none;
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-left: 10px;
+            margin-bottom: 24px;
+        }
+        table.promoTable td:first-child{           
+            width:200px !important;
+            max-width: 200px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding: 0 0px;
+        }
+        
+        table.promoTable td:nth-child(2){
+            color: #ea7400 !important;
+        }
+        
+        table.promoTable td:last-child{
+            color: red !important;
+            font-size: 10px;
+            padding: 5px 10px;
+            vertical-align: top;
+        }
+        
+        table.promoTable td{
+            padding: 2px 0px;
+            white-space: nowrap;
+            font-size: 14px;
+            line-height: 1.2em;
+            font-family: omnes_light;
+            background: #fff;
+            font-weight: 700 !important;
+        }
+        .additionalDiscount{
+            color:#ea7200;          
+        }
+        .lockVerbage{
+            color: #ce2828;
+            margin-bottom: 31px;
+        }
+        div.promotionAppliedData h5{
+            font-family: omnes_att_iimedium;
+            font-size: 18px;
+        }
+        input.btn-primary, button.btn-primary{
+            font-family: omnes_att_iimedium;
+            background-color: #0568ad !important;
+            border-color: #0568ad !important;
+            height: 40px;
+            font-size: 16px;
+            text-align: center;
+            vertical-align: middle;
+            width: 175px !important;
+        }
+        input.btn-default{
+            font-family: omnes_att_iimedium;
+            height: 40px;
+            font-size: 16px;
+            text-align: center;
+            vertical-align: middle;
+            width: 175px;
+        }
+        .PromoStyle{
+            font-size: 27px;
+            font-family: omnes_light;
+            font-weight: 600;
+            padding: 0 70px;
+            margin-top: 30px;
+        }
+        div#promotionUpdateAlert button{
+            margin: 14px 50px 40px 0px;
+        }
+        .PromoLoadingStyle{
+            font-size: 26px;
+            font-family: omnes_light;
+            font-weight: 600;
+            padding: 0 70px;
+            margin-top: 30px;
+        }
+        .imageStyle{
+            margin-left: 235px;
+            width: 65px;
+            margin-top: 8px;
+            margin-bottom: 23px;
+        }
+        ul.siteExportBlock{
+            display: table-row;
+            float: right;
+            line-height: 1;
+            padding-top: 0;
+            margin: -2px 0 10px;
+        }
+        
+        /*.tableDataSection .table a.disabled{
+            color: #939393 !important;
+            pointer-events: none !important;
+            cursor: default !important;
+        }*/
+        div.reviewQuoteNextActions .btn-secondary{
+            min-width: 175px;
+            width: auto;
+            height: 40px;
+            color: #595959 !important;
+            background: #ffffff !important;
+            border: 1px solid #595959;
+            border-radius: 4px;
+            padding: 0 15px;
+            text-align: center;
+            margin-right: 25px;
+        }
+        div.reviewQuoteNextActions .btn-primary{
+            min-width: 175px;
+            width: auto;
+            height: 40px;
+            color: #ffffff !important;
+            background: #0568ad !important;
+            border: 1px solid #0568ad;
+            border-radius: 4px;
+            padding: 0 6px;
+            text-align: center;
+        }
+        div.reviewQuoteNextActions .btn-primary[disabled]{
+            background: #d1d1d1 !important;
+            border: 1px solid #d1d1d1;
+        }
+        div.reviewQuoteNextActions{
+            margin-top: 10px;
+        }
+        div.saveAndRegisterConfirmationOverlay p, div.removeSiteOnDiscardOverlay p{
+            font-family: omnes_att_iimedium;
+            font-size: 26px !important;
+            line-height: 0.8em;
+            font-weight: 500;
+        }       
+        div.saveAndRegisterConfirmationOverlay .modal-body, div.removeSiteOnDiscardOverlay .modal-body {
+            padding: 14px 30px;
+            white-space: nowrap;
+        }
+        div.saveAndRegisterConfirmationOverlay .modal-header{
+            border: 0;
+            padding-top: 9px;
+            width: 750px;
+        }
+        div.removeSiteOnDiscardOverlay .modal-header{
+            border: 0;
+            padding-top: 9px;
+            width: 950px;
+        }
+        div.saveAndRegisterConfirmationOverlay button.close, div.removeSiteOnDiscardOverlay button.close{
+            background:none;
+            margin-right: 20px;
+        }
+        div.saveAndRegisterConfirmationOverlay .modal-footer{
+            padding: 0px 35px 40px 0;
+        } 
+        div.removeSiteOnDiscardOverlay .modal-footer{
+            padding: 2px 35px 40px 0;
+        }
+        div.saveAndRegisterConfirmationOverlay .modal-content{
+            top: 100px;
+            width: 750px;
+            right: 100px;
+        }
+        div.saveAndRegisterConfirmationOverlay .modal-body p:nth-of-type(3){
+           margin-top: 40px;
+        }
+        div.removeSiteOnDiscardOverlay .modal-content{
+            top: 100px;
+            width: 950px;
+            right: 160px;
+        }
+        .pricingSummarydiv{
+            margin-top: 8px;
+        }
+        #manage_content div.reviewQuoteNextActions input.cancelPendingQuoteBtn{
+            /*margin-left: 50px;*/
+            width: auto !important;
+        }
+        p.fine-print{
+            margin-top: 5px !important;
+        }
+        #manage_content input.btn-primary, div.removePop input.btn-primary{           
+            font-family: omnes_att_iimedium !important;
+            background-color: #0568ad !important;
+            border-color: #0568ad !important;
+            height: 40px;
+            font-size: 16px;
+            text-align: center;
+            vertical-align: middle;
+            width: 175px !important;
+        }
+        
+        div.removePop p{
+            font-family: omnes_att_iimedium;
+            font-size: 26px !important;
+            line-height: 1.2em;
+        }
+        div.removePop .modal-body{
+            padding: 32px 34px !important;
+            padding-bottom: 4px !important;
+        }
+        div.removePop .modal-header{
+            border: 0;
+            padding-top: 9px;
+            width: 715px;
+        }
+        div.removePop .modal-footer{
+            padding: 5px 37px 40px 0;
+        }
+        div.removePop .modal-content{
+            top: 200px;
+            width: 725px;
+            right: 100px;
+        }
+        #manage_content div.addAddressAndReconfigureActionModal input.btn-primary{           
+            font-family: omnes_att_iimedium !important;
+            background-color: #0568ad !important;
+            border-color: #0568ad !important;
+            height: 40px;
+            font-size: 16px;
+            text-align: center;
+            vertical-align: middle;
+            width: 175px !important;
+        }
+        <!--#manage_content div.removePop input.btn-primary{           
+            font-family: omnes_att_iimedium !important;
+            background-color: #0568ad !important;
+            border-color: #0568ad !important;
+            height: 40px;
+            font-size: 16px;
+            text-align: center;
+            vertical-align: middle;
+            width: 175px !important;
+        }-->
+        #manage_content input.btn-primary[disabled], div.addAddressAndReconfigureActionModal input.btn-primary[disabled]{
+            background: #d1d1d1 !important;
+            border: 1px solid #d1d1d1;
+        }
+        
+        .cancelLink{
+            float: left;
+            padding: 12px 38px 4px 4px;
+            font-family: omnes_att_iimedium;
+            font-size: 19px;
+            color:  #0568ad !important;
+        }
+        .cancelLink:hover, .goToDashboardLink:hover{
+            color:  #70c4e8 !important;
+        }
+        div.addAddressAndReconfigureActionModal p{
+            font-family: omnes_att_iimedium;
+            font-size: 26px !important;
+            line-height: 0.8em;
+        }
+        <!--div.removePop p{
+            font-family: omnes_att_iimedium;
+            font-size: 26px !important;
+            line-height: 1.2em;
+        }-->
+        #successMsgSection{
+            margin: 32px 0 !important;
+        }
+        .tableDataSection .table>tbody>tr>td.putDollarSign{
+            font-size: 16px;
+            text-align: right;
+            white-space: nowrap;
+        }
+        .tableDataSection .table>tbody>tr>td.highlightPriceUpdate{
+            font-size: 16px;
+            white-space: nowrap;
+            background: #ea740070 !important;
+        }
+        span.listPrice{
+            text-decoration-line: line-through;
+            color: #00000087;
+        }
+        .pricingSummary{
+            padding-top: 10px;
+        }
+        .dropDivider{
+            color:#595959;
+            border-top: 1px solid #939393;
+        }
+        div.addAddressAndReconfigureActionModal .modal-body{
+            padding: 14px 36px 0 36px;
+            white-space: nowrap;
+        }
+        <!--div.removePop .modal-body{
+            position: relative !important;
+            padding: 0 32px !important;
+            padding-bottom: 4px !important;
+        }-->
+        div.addAddressAndReconfigureActionModal .modal-header{
+            border: 0;
+            padding-top: 9px;
+            width: 750px;
+        }
+        <!--div.removePop .modal-header{
+            border: 0;
+            padding-top: 9px;
+            width: 750px;
+        }-->
+        div.addAddressAndReconfigureActionModal button.close{
+            background:none;
+            margin-right: 20px;
+        }
+        div.addAddressAndReconfigureActionModal .modal-footer{
+            padding: 20px 35px 37px 0;
+        }
+        <!--div.removePop .modal-footer{
+            padding: 20px 35px 40px 0;
+        }-->
+        .sitesDataTable {
+            width: 100% !important;
+            font-family: omnes_att_iimedium;
+        }
+        div.addAddressAndReconfigureActionModal .modal-content{
+            top: 200px;
+            width: 750px;
+            right: 100px;
+        }
+        <!--div.removePop .modal-content{
+            top: 200px;
+            width: 750px;
+            right: 100px;
+        }-->
+        .table.subTotalSummary{
+            margin-bottom: 8px !important;
+            margin-top: 20px;
+        }
+        
+        .promotionAppliedData{
+            display:none;
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-left: 10px;
+            margin-bottom: 24px;
+        }
+        .promotionAppliedData h5{
+            margin-bottom: 10px;
+        }
+        table.promoTable td:first-child{           
+            width:200px !important;
+            max-width: 200px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            padding: 0 0px;
+        }
+        
+        table.promoTable td:nth-child(2){
+            color: #ea7400 !important;
+        }
+        
+        table.promoTable td:last-child{
+            color: red !important;
+            font-size: 10px;
+            padding: 5px 10px;
+            vertical-align: top;
+        }
+        
+        table.promoTable td{
+            padding: 2px 0px;
+            white-space: nowrap;
+            font-size: 14px;
+            line-height: 1.2em;
+            font-family: omnes_light;
+            background: #fff;
+            font-weight: 700 !important;
+        }
+        .additionalDiscount{
+            color:#ea7200;          
+        }
+        div.promotionAppliedData h5{
+            font-family: omnes_att_iimedium;
+            font-size: 18px;
+        }
+        span.quoteSummaryTitle{
+            font-size: 28px !important;
+            font-weight: 700;
+            font-family: omnes_light;
+        }
+        .grey_hr{
+            border-bottom:1px solid #000;
+            height: 1px;
+            background: #000;
+            margin-left: 10px;
+            margin-bottom: -11px;
+            margin-top: 8px;
+        }
+        .pricingSummarydiv{
+            margin-top: 15px;
+            padding: 0;
+            margin-bottom: -55px;
+        }
+        .registerQuote{
+            border:1px solid #939393 !important;
+            border-right:none !important;
+            width: 138px !important;
+            border-top-right-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+            padding: 7px 12px !important;
+            color: #fff !important; 
+            margin-right: -4px;
+        }
+        
+        .dropdownStyling{
+                font-size: 18px;
+        }
+        .addnewsiteButton{
+            font-family: omnes_att_iimedium !important;
+            background-color: #0568ad !important;
+            border-color: #0568ad !important;
+            height: 40px;
+            font-size: 16px;
+            text-align: center;
+            vertical-align: middle;
+            width: 175px !important;
+            color: white;
+        }
+        table#sitesTable tbody tr td:first-child {
+            max-width: 10px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width:11%;
+        }
+        table#sitesTable tbody tr td:nth-child(2) {
+            max-width: 400px !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .widthtable {
+            width: 45% !important;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .moveRight{
+        right : 1px;
+        }
+        .increaseWidth{
+        width:101%;
+        }
+    </style>
+
+    <apex:outputPanel id="reviewPanelId">
+        <apex:form id="revewFormId" rendered="{!!isThankYouASE}">
+            <apex:pageMessages />
+            <div id="main" class="row p-t-20 m0">
+                <apex:outputPanel rendered="{!!isOfflineMode}">
+                    <apex:outputPanel rendered="{!isSuccess && NOT(dealCancel) && !(quoteObj.Apttus_Proposal__Approval_Stage__c = 'Deal Reg Denied')&&!(quoteObj.Apttus_Proposal__Approval_Stage__c = 'TSC Review Requested')}">
+                        <label class="greenText p0">{!$Label.REVIEW_QT_SUCCESS}</label>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!(quoteObj.Apttus_Proposal__Approval_Stage__c = 'TSC Review Requested')}">
+                        <label class="redText p0">Your deal is under TSC Review</label>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!(quoteObj.Apttus_Proposal__Approval_Stage__c = 'TSC Review Denied')}">
+                        <label class="redText p0">Your deal has been declined, please reconfigure and resubmit the deal</label>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!dealCancel}">
+                        <label class="greenText p0">Your deal has been cancelled.</label>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!quoteObj.Apttus_Proposal__Approval_Stage__c == 'Deal Reg Denied'}">
+                        <label class="redText p0">Your deal has been declined. You can modify your order and resubmit.</label>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!techReviewStatus  == 'Approved'}">        
+                        <label class="greenText p0">Your quote has been approved by the Technical Review Board. You can proceed to Submit Quote.</label>     
+                    </apex:outputPanel>     
+                    <apex:outputPanel rendered="{!techReviewStatus  == 'Denied'}">        
+                        <label class="redText p0">Your quote has been denied by the Technical Review Board. You can modify your Quote and resubmit.</label>      
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                <div class="row m0 m-t-20">
+                    <div class="reviewQuote col-xs-12 col-md-12">
+                        <h3 class="customerProfile m-b-10" style="font-size: 21px !important;"><apex:outputText id="cnameheader" value="{!quoteObj.End_Customer__r.Name}" /></h3> 
+                        <div class="row p0" style="margin:0;">
+                            <div class="quoteName col-xs-3 p0">
+                                <label style="margin-right: 10px !important;">
+                                    <apex:outputText value="Quote Name" />
+                                </label>
+                                <apex:outputText value="{!quoteObj.Apttus_Proposal__Proposal_Name__c}" />
+                            </div>
+                            <div class="col-xs-3 p0">
+                                <label style="margin-right: 10px !important;">
+                                    <apex:outputText value="Quote ID" />
+                                </label>
+                                <apex:outputText value="{!quoteObj.Name}" />
+                            </div>
+                            <div class="col-xs-4 p0">
+                                <label style="margin-right: 10px !important;">
+                                    <apex:outputText value="Product" />
+                                </label>
+                                <apex:outputText value="{!quoteObj.Product_New_Name__c}" />
+                            </div>
+                            <div class="headerTerm">
+                                <label style="margin-right: 10px !important;">
+                                    <apex:outputText value="Term" />
+                                </label>
+                                <apex:outputText value="{!quoteObj.Apttus_Proposal__Payment_Term__c}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="blue_hr"/>
+            </div>
+            <apex:outputPanel rendered="{!!isOfflineMode}">
+                <div id="main" class="row p0 m0">
+                    <div class="row" id="search" style="margin:20px 0 0;">
+                        <div class="col-xs-12 p0 m0">
+                            <div class="col-xs-8 p0 pull-left">
+                                <div class="input-group col-md-3" style="width: 270px !important;display: inline-block;float:left">
+                                    <div class="reviewQuoteSearchIcon search_button moveRight"></div>
+                                    <input class="custom_filter increaseWidth" type="text" id="reviewQuoteSearchPanel" onkeyup="reviewQuoteSearchBox();" placeholder="Search by Site Name or Address" />
+                                </div>
+                                <apex:outputPanel rendered="{!(quoteObj.Product__r.productcode!='ASE')}"><apex:commandButton styleClass="col-md-2 btn-primary" style=" margin-left:30px;margin-top:-8px;" value="{!$Label.Add_Address}" status="loading" rendered="{!!isSuccess || quoteObj.Apttus_Proposal__Approval_Stage__c = 'Deal Reg Denied'}" reRender="addaddresspopup"  action="{!AddAddress}" /></apex:outputPanel>
+                                <apex:outputPanel rendered="{!(quoteObj.Product__r.productcode=='ASE')}">
+                                    <apex:commandButton styleClass="col-md-2 btn-primary" style=" margin-left:30px;" value="{!$Label.Add_Address}" status="loading" rendered="{!(techReviewStatus  == 'Approved')}" reRender="addaddresspopup" onclick="openAddAddressPop();" />
+                                    <apex:commandButton styleClass="col-md-2 btn-primary" style=" margin-left:30px;" value="{!$Label.Add_Address}" status="loading" rendered="{!(techReviewStatus  != 'Approved')}" reRender="addaddresspopup" action="{!AddAddress}" />
+                                </apex:outputPanel>
+                            </div>
+                            <div class="col-xs-4 p0 pull-right" style="margin-top:-8px;">
+                                <ul class="siteExportBlock">
+                                    <li>
+                                        <apex:outputText id="totalTableSitesCount" styleClass="totalSitesCount" value="{!custSiteList.size} Site{!IF(custSiteList != null && custSiteList.size>1,'s','')} Total"></apex:outputText> 
+                                    </li>
+                                    <li>
+                                        <div class="exportLink"> 
+                                            <apex:commandLink onclick="window.open('/apex/quoteInexcelformat?quoteId={!quoteObj.id}'); return false" target="_parent">Export Quote</apex:commandLink>
+                                            <span style="color:#000;" class="tooltipTrigger glyphicon glyphicon-info-sign reviewQuoteInfoIcon" data-toggle="tooltip" rel="tooltip" data-placement="top" title="This will export an Excel file based on the filtered and sorted results"></span>                       
+                                        </div> 
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div> 
+                     
+                    <apex:outputPanel id="sitelistPanel" styleClass="m-t-20 tableDataSection">
+                        <apex:inputHidden id="promoUpdateRequiredFlag" value="{!promoUpdateRequired}"/>
+                        <table id="sitesTable" class="sitesDataTable table table-bordered table-hover" style="clear:both;"> <!-- pls don't remove, hack for firefox to make it happy -->
+                            <thead style="font-weight: bold; font-size: 17px; color: #056fab;">
+                                <tr>
+                                    <th>Site Name<div class="reorder_btn"></div></th>
+                                    <th id="columnId" style="min-width:250px;">Site Address<div class="reorder_btn"></div></th>
+                                    <th style="min-width:200px;"><div class="col-xs-9 p0">{!$Label.Monthly}</div><div class="reorder_btn"></div></th>
+                                    <th style="min-width:150px;">One-Time<div class="reorder_btn"></div></th>                       
+                                    <th class="actionColumn">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <apex:repeat value="{!custSiteList}" var="site">
+                                    <tr>
+                                        <td title="{!site.Site_Name__c}">{!site.Site_Name__c}</td>
+                                        <td title="{!site.Address_Line__c}, {!site.City__c}, {!site.State__c} {!site.Zip_Code__c}">{!site.Address_Line__c}, {!site.City__c}, {!site.State__c} {!site.Zip_Code__c}</td>
+                                        <td class="{!IF(mapSiteTotalPriceUpdated[site.id]==true,'highlightPriceUpdate','putDollarSign')}"> <!-- Total Price -->
+                                            <apex:outputPanel rendered="{!IF(mapSiteOriginalTotalPrice[site.id] != 0.0 && mapSiteOriginalTotalPrice[site.id] != mapSiteTotalPrice[site.id],true,false)}" styleClass="listPrice pull-left">
+                                                <apex:outputText style="color: #000;" value="${0, number, ###,###,##0.00}">
+                                                    <apex:param value="{!mapSiteOriginalTotalPrice[site.id]}" />
+                                                </apex:outputText>
+                                            </apex:outputPanel>
+                                            <apex:outputText styleClass="pull-right" value="${0, number, ###,###,##0.00}">
+                                                <apex:param value="{!mapSiteTotalPrice[site.id]}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td class="{!IF(mapSiteOneTimePriceUpdated[site.id]==true,'highlightPriceUpdate','putDollarSign')}"> <!-- Total One-Time -->
+                                            <apex:outputPanel rendered="{!IF(mapSiteOriginalOneTimePrice[site.id] != 0.0 && mapSiteOriginalOneTimePrice[site.id] != mapSiteTotalOneTime[site.id],true,false)}" styleClass="listPrice pull-left">
+                                                <apex:outputText style="color: #000;" value="${0, number, ###,###,##0.00}">
+                                                    <apex:param value="{!mapSiteOriginalOneTimePrice[site.id]}" />
+                                                </apex:outputText>
+                                            </apex:outputPanel>                                         
+                                            <apex:outputText styleClass="pull-right" value="${0, number, ###,###,##0.00}">
+                                                <apex:param value="{!mapSiteTotalOneTime[site.id]}"/>
+                                            </apex:outputText>                                          
+                                        </td>
+                                        <td class="actionColumn blueText">
+                                            <apex:commandLink value="{!$Label.Reconfigure}" status="loading" action="{!checkReconfigure}"  rendered="{!(((quoteObj.Product__r.productcode=='AVPN')||(quoteObj.Product__r.productcode=='AMIS') || (quoteObj.Product__r.productcode=='AIA') ||  (quoteObj.Product__r.productcode=='ASE' && (techReviewStatus  != 'Approved'))))}" rerender="reConfigurePopup" >
+                                                <apex:param value="{!site.id}" assignTo="{!siteConfigureId}" name="pNo" />
+                                            </apex:commandLink>
+                                            <apex:commandLink value="{!$Label.Reconfigure}" status="loading"  rerender="reConfigurePopup" rendered="{!((quoteObj.Product__r.productcode=='ASE') && (techReviewStatus  == 'Approved'))}" oncomplete="openReConfPop();">
+                                                <apex:param value="{!site.id}" assignTo="{!siteConfigureId}" name="pNo" />
+                                            </apex:commandLink>
+                                            <span class="reconfigureRemove"> | </span>
+                                            <apex:commandLink value="{!$Label.Remove}" status="loading"  reRender="sitelistPanel,totalTableSitesCount,price,btnSec,tstpopup,RemovePopup,ExtPopup" rendered="{!(((quoteObj.Product__r.productcode=='AVPN')||(quoteObj.Product__r.productcode=='AMIS') || (quoteObj.Product__r.productcode=='AIA') ) && (custSiteList.size > 1))}" oncomplete="openAddAddressPop('remove');">
+                                                <apex:param value="{!site.id}" assignTo="{!siteRemoveId}" name="pNo" />
+                                            </apex:commandLink>
+                                            <apex:commandLink value="{!$Label.Remove}" status="loading"  rendered="{!(((quoteObj.Product__r.productcode=='AVPN')||(quoteObj.Product__r.productcode=='AMIS') || (quoteObj.Product__r.productcode=='AIA')) && (custSiteList.size == 1))}" oncomplete="openRemovePop();">
+                                                <apex:param value="{!site.id}" assignTo="{!siteRemoveId}" name="pNo" />
+                                            </apex:commandLink>                                            
+                                            <apex:commandLink value="{!$Label.Remove}" status="loading" reRender="sitelistPanel,totalTableSitesCount,price,btnSec,tstpopup,RemovePopup,ExtPopup" rendered="{!((quoteObj.Product__r.productcode=='ASE') && (techReviewStatus  == 'Approved'))}" onclick="openRemovePop1('{!site.id}');">
+                                            </apex:commandLink>
+                                            <apex:commandLink value="{!$Label.Remove}" status="loading" action="{!checkSite}" reRender="sitelistPanel,totalTableSitesCount,price,btnSec,tstpopup,RemovePopup,ExtPopup" rendered="{!(quoteObj.Product__r.productcode=='ASE') && (techReviewStatus  != 'Approved') && (custSiteList.size > 1) }" rerender="reConfigurePopup,sitelistPanel,totalTableSitesCount,price,btnSec,tstpopup,RemovePopup,ExtPopup">
+                                                <apex:param value="{!site.id}" assignTo="{!siteRemoveId}" name="pNo" />
+                                            </apex:commandLink>
+                                            <apex:commandLink value="{!$Label.Remove}" status="loading" reRender="sitelistPanel,totalTableSitesCount,price,btnSec,tstpopup,RemovePopup,ExtPopup" rendered="{!(quoteObj.Product__r.productcode=='ASE') && (techReviewStatus  != 'Approved') && (custSiteList.size == 1) }" rerender="reConfigurePopup" onclick="openRemovePop1('{!site.id}');" >
+                                            </apex:commandLink>
+                                            
+                                        </td>
+                                    </tr>
+                                </apex:repeat>
+                            </tbody>
+                        </table>
+                        <input type="hidden" id="custSiteListVal" value="{!custSiteList.size}"/>
+                        <script>
+                            var success = '{!isSuccess}';                     
+                            var callDataTable;
+                            var techReviewStatus = '{!techReviewStatus}';
+                            if(techReviewStatus == 'Denied' || success == 'true'){
+                                $('.actionColumn').css('display','none');
+                            }
+                            
+                            jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+                                "currency-pre": function ( a ) {
+                                    a= a.substring(a.lastIndexOf('<span '));
+                                    a = (a==="-") ? 0 : a.replace( /[^\d\-\.]/g, "" );
+                                    return parseFloat( a );
+                                },
+                             
+                                "currency-asc": function ( a, b ) {
+                                    return a - b;
+                                },
+                             
+                                "currency-desc": function ( a, b ) {
+                                    return b - a;
+                                }
+                            }); 
+                            $('#sitesTable').DataTable({
+                                "columnDefs": [{ type: 'currency', targets: 2 }],
+                                "aaSorting": [[ 2, 'asc' ]],
+                                "bPaginate": false,
+                                "bFilter": false,
+                                "bInfo": false
+                                
+                            }); 
+                            setTimeout(function(){ makeAllSortable(); }, 2000);                                                  
+                            var tableInitialized = $('#sitesTable thead tr th:nth-child(3)').DataTable.length;
+                            if(tableInitialized>0){
+                                //commented the below code since it is breaking price sorting
+                                /*$('#sitesTable').dataTable().fnDestroy();*/
+                            }
+                            function callSitesTable(){
+                            callDataTable=$('#sitesTable').DataTable({
+                            "columnDefs": [{ type: 'currency', targets: 2 },
+                                            { "width": "20px", targets: 0 },
+                                            { "maxwidth":"250px", targets: 1},
+                                            { "width": "60px", targets: 2 },
+                                            { "width" :"60px" , targets:3}
+                                            ],
+                            
+                            "aaSorting": [[ 2, 'asc' ]],
+                            "bPaginate": false,
+                            "bFilter": false,
+                            "bInfo": false,
+                            "autoWidth": true
+                            }); 
+                            $("#sitesTable").removeClass("tbody tr td:nth-child(2)");
+                           
+                            $("#columnId").addClass("widthtable");
+                        }        
+                        </script>
+                    </apex:outputPanel>
+                   
+                    <apex:outputPanel id="price">
+                        <div class="col-xs-12 m-b-40 p0 pricingSummarydiv">
+                            <div class="col-xs-5 col-md-5 pull-right p0 m0">
+                                <span class="f-s-28" style="margin-left: 10px !important;"><b>Quote Pricing Summary</b></span>
+                                <apex:outputPanel id="subTotal" rendered="{!IF((quoteObj.Product__r.productcode == 'AVPN' || quoteObj.Product__r.productcode == 'AMIS'),true,false)}">
+                                    <table id="pricingSmryTable" class="table subTotalSummary">
+                                        <tr>
+                                            <td style="font-size: initial; color:black;font-weight: bold;"><strong>{!$Label.REVIEW_QT_SUBTT}</strong><span><small>&nbsp;{!$Label.DISC_APPLIED_VERB}</small></span></td>
+                                            <td class="text-right" style="color:black;font-weight: bold;">
+                                                <div class="monthlyTotalCharges" style="margin-right:-10px;">
+                                                    <strong> 
+                                                        <apex:outputText value="${0, number, ###,###,##0.00}/mo">
+                                                            <apex:param value="{!monthlyInstallationCharges}" />
+                                                        </apex:outputText>
+                                                    </strong>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="additionalDiscount"><strong>{!$Label.AVPN_Label75}</strong></td>
+                                            <td class="text-right additionalDiscount" >
+                                                <div class="oneTimeTotal" style="margin-right:-10px;">
+                                                    <strong> 
+                                                        <apex:outputText value="-${0, number, ###,###,##0.00}">
+                                                            <apex:param value="{!monthlySPOrderDiscounts}" />
+                                                        </apex:outputText>
+                                                    </strong>
+                                                    <apex:outputPanel rendered="{!promotionsExist}">
+                                                        <span class="glyphicon glyphicon-chevron-down promotionPopover"></span>
+                                                    </apex:outputPanel>
+                                                </div>                                                   
+                                            </td>                                       
+                                        </tr>   
+                                    </table>                                                                
+                                    <div class="promotionAppliedData">
+                                        <h5> Promotion Applied</h5>
+                                        <table class="promoTable">
+                                            <apex:repeat rendered="{!IF( (wirelinePromoMap != null  && wirelinePromoMap['Deal Reg'] != null),true,false)}" value="{!wirelinePromoMap['Deal Reg']}" var="promoAttr" >    
+                                                <tr>
+                                                    <td><apex:outputText value="{!promoAttr.Promotion_Name__c}" /></td>
+                                                    <td><span style="padding-right:8px;">Saved</span>{!promoAttr.Discount_Percentage__c}%</td>
+                                                    <td><apex:outputText value="{0, date, MM/dd/yy}" rendered="{!promoAttr.Display_Promotion_End_Date__c}">expires on
+                                                            <apex:param value="{!promoAttr.End_Date__c}" />
+                                                        </apex:outputText>
+                                                    </td>
+                                                </tr>                                                                           
+                                            </apex:repeat>
+                                        </table>
+                                    </div>                              
+                                    <hr class="grey_hr"/>
+                                </apex:outputPanel>
+                                <table id="pricingSmryTable" class="table" style="margin-top: 20px;">
+                                     <tr>
+                                        <td style="font-size: initial; color:black;font-weight: bold;"><strong>Monthly Total</strong></td>
+                                        <td class="text-right" style="color:black;font-weight: bold;">
+                                            <div class="monthlyTotalCharges" style="margin-right:-10px;">
+                                                <strong> 
+                                                    <apex:outputText value="${0, number, ###,###,##0.00}/mo">
+                                                        <apex:param value="{!monthlyDiscountableCharges}" /> 
+                                                    </apex:outputText>
+                                                </strong>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="margin-left: 60px !important; font-size: initial; color:black;font-weight: bold;"><strong>One-Time Total</strong></td>
+                                        <td class="text-right" style="margin-left: 60px !important; font-size: initial; color:black;font-weight: bold;">
+                                            <div class="oneTimeTotal" style="margin-right:-10px;">
+                                                <strong> 
+                                                    <apex:outputText value="${0, number, ###,###,##0.00}">
+                                                        <apex:param value="{!oneTimeTotal}" />
+                                                    </apex:outputText>
+                                                </strong>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <p class="fine-print m0">All prices shown are pre-tax.</p>
+                                            <apex:outputPanel rendered="{!IF((quoteObj.Product__r.productcode == 'AVPN' || quoteObj.Product__r.productcode == 'AMIS'),true,false)}">
+                                                <p class="lockVerbage">{!$Label.PRICE_LOCK_VERB}</p> 
+                                            </apex:outputPanel>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </div>
+                <div style="margin-left: 115%;margin-left;margin-top: -82%;">
+                    <a href="#" class="scrollToTop arrowImageDim"> <apex:image value="{!($Resource.TopArrow)}" styleClass="arrowImageDim"/></a>
+                </div>
+                <hr class="blue_hr" style="clear:both;"/>             
+                <apex:outputPanel id="btnSec" style="margin-top: 10px !important;" styleClass="col-md-12 p0">
+                    <apex:outputPanel rendered="{!IF(quoteObj.Product__r.productcode == 'ASE', true,false)}">
+                        <div class="col-md-5 p0 pull-right aseBottom">
+                            <a href="/apex/PortalDashboard_UI" class="aseDashLink" style="margin-right: 12px;float:left;margin-top:7px;">Go to My Dashboard</a>
+                            <div>
+                                <apex:commandButton id="submitQuoteAse" styleclass="col-md-6 btn-primary submitButtonAse" action="{!submitDealASE}" status="loading"  value="{!submitQuoteLabel}" html-data-toggle="modal" disabled="{!(IF(custSiteList.size==0,true,false))}" reRender="reviewPanelId" rendered="{!quoteObj.Product__r.productcode == "ASE"}" oncomplete="showApplyPromotion();"  />                        
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(quoteObj.Product__r.productcode != 'ASE', true,false)}" id="submitActions">
+                        <div class="col-md-12 p0 pull-right reviewQuoteNextActions">
+                            <apex:commandButton id="submitQuote" styleclass="btn-primary pull-right" action="{!SubmitDeal}" status="loading" value="{!$Label.REGISTER_QUOTE}" html-data-toggle="modal" disabled="{!(IF(custSiteList.size==0,true,false))}" oncomplete="showApplyPromotion();" reRender="reviewPanelId" rendered="{!!isSuccess && !checkDiscard}" style="float:right;" /> 
+                            
+                            <apex:commandButton id="saveAndRegisterQuote" styleclass="btn-primary pull-right" status="loading" value="{!$Label.SAVE_REGISTER_QUOTE}" onclick="return showConfirmationDialog();"  disabled="{!(IF(custSiteList.size==0,true,false))}" rendered="{!!isSuccess && checkDiscard}"  /> 
+                            <!--DISCARD_CHANGES-->
+                            <apex:commandButton styleClass="pull-right btn-secondary" id="discardChangesBtn" value="Discard Changes" rendered="{!checkDiscard}" action="{!discardChanges}"></apex:commandButton>
+                            <!-- Cancel deal Reg -->
+                            <apex:commandButton id="cancelReg" styleclass="btn-primary pull-right cancelPendingQuoteBtn" action="{!CancelDealReg}" value="{!$Label.CANCEL_PENDING_QUOTE_REGISTRATION}" rendered="{!IF(isAutoDealReg == false && (isSuccess && NOT(dealCancel)),true,false) && (quoteObj.Apttus_Proposal__Approval_Stage__c != 'Deal Reg Denied')}" oncomplete="showApplyPromotion();" reRender="reviewPanelId" status="loading"/>    
+                            <!-- Save and Exit -->
+                            <apex:commandButton id="saveAndExit" styleclass="btn-secondary pull-right" action="{!SaveandExit}" value="Save & Exit" oncomplete="" reRender="reviewPanelId" status="loading" rendered="{!!isSuccess}"/> 
+                            <apex:commandButton styleclass="btn-primary pull-right" action="{!checkReconfigure}" value="{!$Label.Reconfigure}" rendered="{!isSuccess && (quoteObj.Apttus_Proposal__Approval_Stage__c == 'Deal Reg Denied')}" reRender="reviewPanelId" status="loading" style="margin-left: 50px;"/>   
+                            <!-- My Dashboard -->
+                            <apex:outputPanel rendered="{!isSuccess && !checkDiscard}">
+                                <a href="/apex/PortalDashboard_UI" class="dashboardLink" style="{!IF(isSuccess == true && isAutoDealReg == true,'margin-right:0px !important','')}" >Go to My Dashboard</a>
+                            </apex:outputPanel>
+                            </div>
+                    </apex:outputPanel>
+                </apex:outputPanel>                    
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!isOfflineMode}">
+                <apex:include pageName="offline_BulkProcessing"/>               
+            </apex:outputPanel>
+            
+            <div id="submitSuccess" class="modal" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header br-0">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" style="font-weight: bold; font-size: 14px !important; color: #333; opacity: 1;">close x</button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="font14 text-center">{!$Label.SubmitQuoteNotification}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <div class="modal fade" id="PromoOverlay" role="dialog" data-backdrop="static">
+                <div class="modal-dialog" style="width:645px;margin-bottom: 6px;margin-top: 250px;">                      
+                    <div class="modal-content" >
+                        <div class="modal-body PromoLoadingStyle">
+                            <span>Please wait while we update the promotions on this quote.</span>
+                                <div class="waitingHolder">
+                                    <img class="waitingImage imageStyle" src="{!$Resource.IglooProcessIcon}" title="Please Wait" />
+                                </div>
+                        </div>
+                   </div>
+                </div>
+            </div>
+         
+         <div class="modal fade" id="promotionUpdateAlert" role="dialog" aria-labelledby="promotionUpdateAlertLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog" style="width:680px; margin-top: 250px;">                      
+                <div class="modal-content col-xs-12 m0 p0">
+                    <div class="modal-body PromoStyle">
+                        <!--<div>Promotions have been updated and changes  </div>
+                        <div style="pull-right">have been highlighted.</div>-->
+                        <span>Promotions have been updated and changes have been highlighted.</span>
+                    </div>
+                    <button type="button" class="btn-primary pull-right" data-dismiss="modal" aria-hidden="true" style="margin-right: 75px;">OK</button>
+                </div>
+            </div>
+        </div>      
+            <!--ASE Pop Up Modals-->
+            <div class="modal fade removePop" id="RemovePopup_ASE" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <apex:outputPanel rendered="{!(custSiteList.size > 1)&&(quoteObj.Product__r.productcode=='ASE')}" >
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Remove</h4>
+                            </div>
+                            <div class="modal-body">
+                                <center>The change may affect Technical Review Board decision.</center>
+                                <center>Click Continue to confirm or Cancel to return to the Review Quote page.</center>
+                            </div>
+                            <div class="modal-footer">
+                                
+                                <apex:commandButton styleclass="btn btn-primary" value="Continue" onclick="removeSite_Action1();" reRender="sitelistPanel,totalTableSitesCount,price,btnSec,tstpopup,RemovePopup,ExtPopup" style="width:175px;float:left" html-data-dismiss="modal" />
+                               <apex:commandButton styleclass="btn btn-default" value="Cancel" action="{!closePopup}" rerender="tstpopup" html-data-dismiss="modal" style="width:175px;float:left" />
+                            </div>
+                            <apex:actionFunction action="{!checkSite}" name="removeSite_Action" status="loading" rerender="sitelistPanel,totalTableSitesCount,price,btnSec,tstpopup,RemovePopup,ExtPopup">
+                                <apex:param name="siteId_var" value="" assignTo="{!siteRemoveId}" />
+                            </apex:actionFunction>
+                            
+                        </apex:outputPanel>
+                    </div>
+                </div>
+            </div>          
+            
+            <div class="modal fade removePop" id="RemovePopup_ASE1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog ASE_modal-dialog ">
+                    <div class="modal-content">                    
+                        <apex:outputPanel styleClass="" layout="block">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                                    </button>
+                            <h4 class="modal-title" id="myModalLabelR4">Remove</h4>
+                        </div>
+                        <div class="modal-body">
+                           <center>By removing this site, you will not have minimum sites required for this configuration.</center>
+                           <center>Click Continue to confirm or Cancel to return to the Review Quote page. </center>
+                        </div>
+                        <div class="modal-footer">
+                            
+                            <apex:commandButton styleclass="btn btn-primary" value="Continue" action="{!AVPNremove}" rerender="reConfigurePopup,sitelistPanel,price,btnSec, tstpopup" id="btnAVPNPopupContinue1" style="width:175px;float:left"/>
+                            <apex:commandButton styleclass="btn btn-default" value="Cancel" action="{!closePopup}" rerender="reConfigurePopup" html-data-dismiss="modal" id="btnAVPNPopupCancel1" style="width:175px;float:left"/>
+                        </div>
+                    </apex:outputPanel>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Rate Card Update Modal-->
+            <div class="modal fade" id="RatecardUpdateModal" role="dialog" data-backdrop="static">
+                <div class="modal-dialog" style="width:700px;">                      
+                    <div class="modal-content" style="margin-top: 25%;text-align:center;">
+                        <h3 class="modal-header">New Rates</h3>  
+                        <div class="modal-body" style="padding: 25px 25px !important;border-top:2px solid #d1d1d1;">
+                            <div>Effective {!$Label.Effective_Rate_Card_Date}, rate cards have been updated for this product. </div>
+                            <div>Click <b>Okay</b> to apply the current rates.</div><br/>
+                            <div>Please note: Special pricing applied prior to the rate refresh will be removed.</div>
+                            <div>You may resubmit for approval, if needed.</div><br/>
+                            <div>You can view the updated rate card on the product page.</div>
+                        </div>
+                        <div class="modal-footer" style="padding: 10px 25px 40px;">
+                            <button type="button" class="btn--primary" data-dismiss="modal" aria-hidden="true" style="width: 115px;padding: 5px 10px !important;" onClick="$('#RatecardUpdateModal').modal('hide');callperformRateRefresh();">Okay</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- DPE Price Update Modal-->
+            <div class="modal fade" id="DPERatecardUpdateModal" role="dialog" data-backdrop="static">
+                <div class="modal-dialog" style="width:700px;">                      
+                    <div class="modal-content" style="margin-top: 25%;text-align:center;">
+                        <h3 class="modal-header">New Rates</h3>  
+                        <div class="modal-body" style="padding: 25px 25px !important;border-top:2px solid #d1d1d1;">
+                            <div>Effective {!$Label.Effective_Rate_Card_Date}, rate cards have been updated for this product. </div>
+                            <div>Click <b>Okay</b> to apply the current rates.</div><br/>
+                            <div>Please note: Special pricing applied prior to the rate refresh will be removed.</div>
+                            <div>You may resubmit for approval, if needed.</div><br/>
+                            <div>You can view the updated rate card on the product page.</div>
+                        </div>
+                        <div class="modal-footer" style="padding: 10px 25px 40px;">
+                            <button type="button" class="btn--primary" data-dismiss="modal" aria-hidden="true" style="width: 115px;padding: 5px 10px !important;" onClick="$('#DPERatecardUpdateModal').modal('hide');callPerformPromotionUpdate();">Okay</button>
+                        </div>
+                    </div>
+                </div>
+            </div> 
+
+            <!-- DPE Price Update Modal2 -->
+            <div class="modal fade DPERatecardUpdateModal1" id="DPERatecardUpdateModal1" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content col-xs-12">
+                        <apex:outputPanel rendered="{!(quoteObj.Product__r.productcode=='AMIS' || quoteObj.Product__r.productcode=='AVPN')}">
+                            <div class="modal-body">
+                                <p>
+                                    {!$Label.CONFIRM_REG_TEXT1}
+                                </p>
+                                <p>
+                                    {!$Label.CONFIRM_REG_TEXT2}
+                                </p>
+                                <p>
+                                    {!$Label.CONFIRM_REG_TEXT3}
+                                </p>
+                            </div>
+                            <div class="modal-footer text-center">
+                                <div class="pull-right p0 m0">                                                                 
+                                <apex:commandButton styleclass="btn-primary pull-right" value="Okay" action="{!callDPERateRefresh}" html-data-dismiss="modal" status="loading" />
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                    </div>
+                </div>
+            </div>
+            
+            <apex:outputPanel id="tstpopup">                
+                <div class="modal fade removePop" id="RemovePopup" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+                    <div class="modal-dialog">
+                        <div class="modal-content col-xs-12" style="top:200px;">
+                            <apex:outputPanel styleClass="" id="panelASESPointToPoint" layout="block" rendered="{!(quoteObj.Ethernet_Configuration__c=='Ethernet Private Line (Point-to-Point)')&&(displayPopUp==True)&&(quoteObj.Product__r.productcode=='ASE')}">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                    </button>
+                                    <h3 class="modal-title" id="myModalLabelR1">Remove</h3>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        By removing this site you will not have the minimum sites required for this configuration. If you want to proceed,choose one of the options below and click <b>Continue.</b>
+                                    </p>
+                                    <apex:selectRadio value="{!selectedRemoveValue}" styleClass="removeSiteBtnTrigger" id="ptoPSelectOption" onclick="changeValue(this,'{!$Component.RadioButtonValue}');" >
+                                        <apex:selectOption itemValue="Remove this Site and Add a New Site" itemlabel="Remove this Site and Add a New Site" />
+                                        <apex:selectOption itemValue="Delete this quote and return to Dashboard" itemlabel="Delete this quote and return to Dashboard" />
+                                    </apex:selectRadio>
+                                </div>
+                                <div class="modal-footer">
+                                    <apex:commandButton styleclass="btn btn-primary removeSiteBtn" value="Continue" action="{!statusUpdate}" rerender="tstpopup,sitelistPanel,price,btnSec" id="btnContinueASESPToP"/>
+                                    <apex:commandButton styleclass="btn btn-default" value="Cancel" action="{!closePopup}" rerender="tstpopup" html-data-dismiss="modal" id="btnCancelASESPToP"/>
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel styleClass="" id="panelASESHubSpoke3" layout="block" rendered="{!(quoteObj.Ethernet_Configuration__c=='Ethernet Virtual Private Line (Hub-and-Spoke)')&&(displayPopUp==True)&&(custSiteList.size>3)&&(quoteObj.Product__r.productcode=='ASES')}">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabelR2">Remove</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>
+                                        By removing this site you will not have the minimum sites required for this configuration. If you want to proceed,choose one of the options below and click <b>Continue.</b>
+                                    </p>
+                                    <apex:selectRadio styleclass="removeQuoteModalSelect" value="{!selectedRemoveValue}" id="nonAseSelectOption" onclick="changeValue(this,'{!$Component.RadioButtonValue}');" >
+                                        <apex:selectOption itemValue="Remove this Site and Add a New Site" itemlabel="Remove this Site and Add a New Site" html-name="removeQuoteModalRadioSelect" html-class="removeQuoteModalRadioSelect" />
+                                        <apex:selectOption itemValue="Remove the Site" itemlabel="Remove this Site" html-name="removeQuoteModalRadioSelect"  html-class="removeQuoteModalRadioSelect" />
+                                        <apex:selectOption itemValue="Delete this quote and return to Dashboard" itemlabel="Delete this quote and return to Dashboard" html-name="removeQuoteModalRadioSelect"  html-class="removeQuoteModalRadioSelect" />
+                                    </apex:selectRadio>
+                                </div>
+                                <div class="modal-footer">
+                                    <apex:commandButton styleclass="btn btn-primary disabled removeQuoteModalContinue" value="Continue" action="{!statusUpdate}" rerender="reConfigurePopup,sitelistPanel,price,btnSec,tstpopup" id="btnContinueASESHubSpoke3" html-data-dismiss="modal" status="loading"/>
+                                    <apex:commandButton styleclass="btn btn-default" value="Cancel" action="{!closePopup}" rerender="reConfigurePopup" html-data-dismiss="modal" id="btnCancelASESHubSpoke3" />
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel id="panelASESHubSpoke4" styleClass="" layout="block" rendered="{!(quoteObj.Ethernet_Configuration__c=='Ethernet Virtual Private Line (Hub-and-Spoke)')&&(displayPopUp==True)&&(custSiteList.size==3)&&(quoteObj.Product__r.productcode=='ASES')}">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabelR3">Remove</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>By removing this site you will not have the minimum sites required for this configuration. If you want to proceed,choose one of the options below and click <b>Continue.</b>
+                                    </p>
+                                    <apex:selectRadio value="{!selectedRemoveValue}" id="aseSelectOption" onclick="changeValue(this,'{!$Component.RadioButtonValue}');" >
+                                        <apex:selectOption itemValue="Remove this Site and Add a New Site" itemlabel="Remove this Site and Add a New Site" />
+                                        <apex:selectOption itemValue="Change the network Product to Point-to-Point" itemlabel="Change the network Product to Point-to-Point" />
+                                        <apex:selectOption itemValue="Delete this quote and return to Dashboard" itemlabel="Delete this quote and return to Dashboard" />
+                                    </apex:selectRadio>
+                                </div>
+                                <div class="modal-footer">
+                                    <apex:commandButton styleclass="btn btn-primary" value="Continue" action="{!statusUpdate}" rerender="reConfigurePopup,sitelistPanel,price,btnSec" id="btnContinueASESHubSpoke4" />
+                                    <apex:commandButton styleclass="btn btn-default" value="Cancel" action="{!closePopup}" rerender="reConfigurePopup" html-data-dismiss="modal" id="btnCancelASESHubSpoke4" />
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel id="AVPNPopup" styleClass="" layout="block" rendered="{!((quoteObj.Product__r.productcode=='AVPN')||(quoteObj.Product__r.productcode=='AMIS') || (quoteObj.Product__r.productcode=='AIA'))}">
+                                <!--<div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabelR3">Remove</h4>
+                                </div>-->
+                                <div class="modal-body">
+                                    <p>
+                                    {!$Label.REVIEW_REQ_Remove}
+                                    </p>
+                                </div>
+                                <div class="modal-footer text-center">
+                                    <div class="pull-right p0 m0">
+                                    <!--<apex:commandButton styleclass="btn col-md-3 btn-primary" value="Continue" action="{!AVPNremove}" rerender="reConfigurePopup,sitelistPanel,price,btnSec, tstpopup" id="btnAVPNPopupContinue" style="padding:0px 12px !important;"/>-->
+                                    <apex:commandButton styleclass="btn-primary" value="OK" action="{!closePopup}" rerender="price" oncomplete="setTimeout(function(){showApplyPromotion();},100);" html-aria-hidden="true" html-data-dismiss="modal" id="btnAVPNPopupCancel"/>
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+                        </div>
+                    </div>
+                </div>
+                <apex:inputHidden value="{!selectedRemoveValue}" id="RadioButtonValue" />
+            </apex:outputPanel>
+                
+            <!--End of Pop Up Window-->
+            <div class="modal fade reconfigure" id="reconfigure" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <apex:outputPanel id="reConfigurePopup">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                </button>
+                                <h4 class="modal-title" id="myModalLabel">Change Product Network Configuration</h4>
+                            </div>
+                            <div class="modal-body">
+                                <center>The change may affect Technical Review Board decision.</center>
+                                <center>Click Continue to confirm or Cancel to return to the Review Quote page.</center>
+                            </div>
+                            <div class="modal-footer">
+                                <apex:commandButton styleClass="btn btn-primary" value="Continue" action="{!Reconfigure}" rerender="reConfigurePopup,sitelistPanel,price,btnSec" style="width:175px;float:left" />
+                                <apex:commandButton styleClass="btn btn-default" html-data-dismiss="modal" value="Cancel" action="{!closePopup}" rerender="reConfigurePopup" style="width:175px;float:left" />
+                            </div>
+                        </apex:outputPanel>
+                    </div>
+                </div>
+            </div>
+                
+           <div class="modal fade addAddress" id="addAddress" data-keyboard="false" data-backdrop="static">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <apex:outputPanel id="addaddresspopup">
+                            <apex:outputPanel styleClass="" layout="block" rendered="{!(quoteObj.Product__r.productcode=='ASE')}">
+                                <div class="modal-header">
+                                   <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                   <h4 class="modal-title" id="myModalLabelR2"></h4>
+                                </div>
+                                <div class="modal-body">
+                                    <center>The change may affect Technical Review Board decision.</center>
+                                    <center>Click Continue to confirm or Cancel to return to the Review Quote page.</center>
+                                </div>
+                                <div class="modal-footer">
+                                    <apex:commandButton styleclass="btn btn-default" value="Cancel" action="{!closePopup}" rerender="reConfigurePopup" html-data-dismiss="modal" style="float:right;width:175px" />
+                                    <apex:commandButton styleclass="btn btn-primary" value="Continue" action="{!GotoAddAddressPage}" rerender="reConfigurePopup,sitelistPanel,price,btnSec" style="float:right;width:175px" />
+                                </div> 
+                            </apex:outputPanel>
+                            <apex:outputPanel styleClass="" layout="block" rendered="{!(AddAdress)&&(quoteObj.Product__r.productcode=='ASES')&&(quoteObj.Ethernet_Configuration__c=='Ethernet Virtual Private Line (Hub-and-Spoke)')}">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabelR2"></h4>
+                                </div>
+                                <div class="modal-body">
+                            <center>The change may affect Technical Review Board decision.</center>
+                            <center>Click Continue to confirm or Cancel to return to the Review Quote page.</center>
+                        </div>
+                        <div class="modal-footer">
+                            <apex:commandButton styleclass="btn btn-primary" value="Continue" action="{!GotoAddAddressPage}" rerender="reConfigurePopup,sitelistPanel,price,btnSec" />
+                            <apex:commandButton styleclass="btn btn-default" value="Cancel" action="{!closePopup}" rerender="reConfigurePopup" html-data-dismiss="modal" />
+                        </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel styleClass="" layout="block" rendered="{!(AddAdress)&&(quoteObj.Product__r.productcode=='ASES')&&(quoteObj.Ethernet_Configuration__c=='Ethernet Private Line (Point-to-Point)')}">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                                    </button>
+                                    <h4 class="modal-title" id="myModalLabelR2"></h4>
+                                </div>
+                                <div class="modal-body">
+                                    <p>If you add another Site, your configuration will change to Hub and Spoke
+                                    </p>
+                                    <p>
+                                        Clicking <b>Continue</b> will navigate you to the Add Address page.Do you want to continue ?
+                                    </p>
+                                </div>
+                                <div class="modal-footer">
+                                    <apex:commandButton styleclass="btn btn-primary" value="Continue" action="{!GotoAddAddressPage}" rerender="reConfigurePopup,sitelistPanel,price,btnSec" />
+                                    <apex:commandButton styleclass="btn btn-default" value="Cancel" action="{!closePopup}" rerender="reConfigurePopup" html-data-dismiss="modal" />
+                                </div>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="container">
+                <div class="modal fade" id="removePop_ASE" role="dialog">
+                    <div class="modal-dialog">
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Remove</h4>
+                            </div>
+                            <div class="modal-body">
+                               <center>The change may affect Technical Review Board decision.</center> 
+                               <center>Click Continue to confirm or Cancel to return to the Review Quote page.</center>
+                            </div>
+                            <div class="modal-footer">
+                                 <apex:commandButton styleclass="btn btn-default" value="Cancel" action="{!closePopup}" rerender="tstpopup" html-data-dismiss="modal"  style="width:175px;float:right" />
+                                 <apex:commandButton styleclass="btn btn-primary removeSiteBtn" value="Continue" action="{!statusUpdate}" rerender="tstpopup,sitelistPanel,price,btnSec"  style="width:175px;float:right" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Save & Register Quote Popup -->
+            <div class="modal fade saveAndRegisterConfirmationOverlay" id="saveAndRegisterConfirmationOverlay" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content col-xs-12">
+                    <apex:outputPanel rendered="{!(quoteObj.Product__r.productcode=='AMIS' || quoteObj.Product__r.productcode=='AVPN')}">
+                        <div class="modal-header">
+                            <button type="button" class="close" onclick="showApplyPromotion();" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabelR2"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                {!$Label.CONFIRM_REG_TEXT1}
+                            </p>
+                            <p>
+                                {!$Label.CONFIRM_REG_TEXT2}
+                            </p>
+                            <p>
+                                {!$Label.CONFIRM_REG_TEXT3}
+                            </p>
+                        </div>
+                        <div class="modal-footer text-center">
+                            <div class="pull-right p0 m0">                              
+                               
+                            <apex:commandButton styleclass="btn-primary pull-right" value="Continue" action="{!SubmitDeal}" oncomplete="showApplyPromotion();" reRender="reviewPanelId" html-data-dismiss="modal" status="loading" />
+                                <apex:commandLink styleclass="dashboardLink pull-right" value="Cancel" action="{!closePopup}" rerender="reConfigurePopup" html-data-dismiss="modal" oncomplete="showApplyPromotion();" />
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </div>
+            </div>
+        </div>
+        <!-- Remove Site Overlay For Discard Flow -->
+            <div class="modal fade removeSiteOnDiscardOverlay" id="removeSiteOnDiscardOverlay" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content col-xs-12">
+                    <apex:outputPanel rendered="{!(quoteObj.Product__r.productcode=='AMIS' || quoteObj.Product__r.productcode=='AVPN')}">
+                        <div class="modal-header">
+                            <button type="button" class="close" onclick="showApplyPromotion();" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabelR2"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                {!$Label.REMOVE_CONFIRM_REG_TEXT1}
+                            </p>
+                            <p>
+                                {!$Label.REMOVE_CONFIRM_REG_TEXT2}
+                            </p>
+                            <!--<p>
+                                {!$Label.CONFIRM_REG_TEXT3}
+                            </p>-->
+                        </div>
+                        <div class="modal-footer text-center">
+                            <div class="pull-right p0 m0">                                                             
+                            <apex:commandButton styleclass="btn-primary pull-right" value="Continue" action="{!checkSite}" reRender="reConfigurePopup,sitelistPanel,totalTableSitesCount,price,btnSec,tstpopup,RemovePopup" html-data-dismiss="modal" status="loading" oncomplete="showUpdatePromotion();showApplyPromotion();pageRefreshed();callEligibleSitesDataTable('loadDefault');showApplyPromotion();" />
+                                <apex:commandLink styleclass="dashboardLink pull-right" value="Cancel" action="{!closePopup}" rerender="reConfigurePopup" html-data-dismiss="modal" oncomplete="showApplyPromotion();" />
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </div>
+            </div>
+        </div>
+        
+        <!--Remove Popup -->
+         <div class="modal fade addAddressAndReconfigureActionModal" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+            <div class="modal-dialog">
+                <div class="modal-content col-xs-12">
+                    <apex:outputPanel rendered="{!(quoteObj.Product__r.productcode=='AMIS' || quoteObj.Product__r.productcode=='AVPN')}">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                            </button>
+                            <h4 class="modal-title" id="myModalLabelR2"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>
+                                {!$Label.REVIEW_REQ_MODAL_MSG1}
+                            </p>
+                            <p>
+                                {!$Label.REVIEW_REQ_MODAL_MSG2}
+                            </p>
+                        </div>
+                        <div class="modal-footer text-center">
+                            <div class="pull-right p0 m0">                              
+                                <apex:commandLink styleclass="cancelLink" value="Cancel" action="{!closePopup}" rerender="reConfigurePopup"  html-data-dismiss="modal" />                                  
+                                    <apex:commandButton styleclass="addnewsiteButton goToSamePage" action="{!checkSite}" value="Continue" status="loading" reRender="submitActions,reConfigurePopup,sitelistPanel,totalTableSitesCount,price,btnSec,tstpopup,RemovePopup" html-data-dismiss="modal"/>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </div>
+            </div>
+        </div>
+            
+            <div class="modal waitingSearchDiv" id="remotingScroll" style="display:none; background-color: #fbfbfb; opacity:0.65; position:fixed; width:100%; height:100%; top:0px; left:0px; z-index:1000;">
+                <div class="waitingHolder" style="top: 40%; left: 50%; position: fixed;">
+                    <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+                </div>
+            </div>
+    
+            <apex:actionFunction id="dupRedirect" name="dupRedirect" action="{!Reconfigure}" status="loading" />
+            <apex:actionFunction name="callperformRateRefresh" action="{!performRateRefresh}" rerender="BatchPanel" onComplete="isBatchCompleted();" status="loading" />
+            <apex:actionFunction name="checkBatchStatus" action="{!rateRefreshBatchStatus}" rerender="BatchPanel" onComplete="isBatchCompleted();" status="loading" />                
+            <apex:actionFunction name="callRemoveFunction" action="{!checkSite}" status="loading" oncomplete="showUpdatePromotion();pageRefreshed();showApplyPromotion();callEligibleSitesDataTable('loadDefault');" reRender="reConfigurePopup,sitelistPanel,totalTableSitesCount,btnSec,tstpopup,RemovePopup,price">
+            </apex:actionFunction>
+            <apex:actionFunction id="callPerformPromotionUpdate" name="callPerformPromotionUpdate" action="{!callDPERateRefresh}" status="loading" oncomplete="showApplyPromotion();">
+            </apex:actionFunction>
+            <apex:actionFunction name="checkDPEBatchStatus" action="{!checkDPEBatchStatus}" rerender="DPEBatchPanel" oncomplete="isDPEBatchCompleted();" status="loading" />
+            <apex:actionFunction name="renderDPEUpdate" action="{!checkDPEBatchStatusCompletion}" rerender="reConfigurePopup,sitelistPanel,totalTableSitesCount,btnSec,tstpopup,RemovePopup,price,DPEBatchPanel" oncomplete="showApplyPromotion();showUpdatePromotion();" status="loading" />
+            <script>
+                function reviewQuoteSearchBox(){
+                    var searchValue = $('#reviewQuoteSearchPanel').val();
+                    $(".tableDataSection tbody").find('tr').each(function(index, row){
+                        var allCells = $(row).find('td:not(:last-child)');
+                        if(allCells.length > 0){
+                            var found = false;
+                            allCells.each(function(index, td){
+                                var regExp = new RegExp(searchValue, 'i');
+                                if(regExp.test($(td).text())){
+                                    found = true;
+                                    return false;
+                                }
+                            });
+                            if(found == true)$(row).show();else $(row).hide();
+                            
+                            if($(".tableDataSection tbody").find('tr:visible').length == 0){
+                                var errorMsg = $('<tr class="noSearchDataAvailable"><td colspan="5">No data available in table</td></tr>');                                    
+                                $(".tableDataSection tbody").append(errorMsg);
+                                return false;
+                            }else{
+                                $(".tableDataSection tbody").find('.noSearchDataAvailable').remove();
+                            }                    
+                        }
+                    });
+                }
+    
+                function changeValue(input, textid) {
+                    document.getElementById(textid).value = input.value;
+                }
+                
+                function openRemovePop() {
+                    $('#RemovePopup').modal('show');
+                    toggleContinueButton();
+                    disableRemoveSiteBtn();
+                    $('.removeSiteBtnTrigger input').on('change', function () {
+                        disableRemoveSiteBtn();
+                    });
+                }
+                
+                var siteId_var;
+                function openRemovePop1(siteId) {
+                    siteId_var = siteId;
+                    var custSiteListSize= document.getElementById("custSiteListVal").value;
+                    if(custSiteListSize > 1){
+                        $('#RemovePopup_ASE').modal('show');
+                    }
+                    if(custSiteListSize == 1){
+                        $('#RemovePopup_ASE1').modal('show');
+                    }
+                }
+                
+                function openRemovePop2(){
+                    $('#RemovePopup_ASE').modal('show');
+                }
+                
+                function disableRemoveSiteBtn() {
+                    if ($('.removeSiteBtnTrigger input:checked').length > 0) {
+                        $('.removeSiteBtn').removeClass('disabled');
+                    } else {
+                        $('.removeSiteBtn').addClass('disabled');
+                    }
+                }
+                
+                function openReConfPop() {
+                    $('#reconfigure').modal('show');
+                }
+                
+                function openAddAddressPop() {
+                    $('#addAddress').modal('show');
+                }
+            </script>
+            <apex:actionFunction action="{!updatePromotion}" name="updatePromotionAction" rerender="sitelistPanel,price" oncomplete="hidePromotionUpdateModal();showApplyPromotion();">
+            </apex:actionFunction>
+        </apex:form>
+        <apex:outputPanel id="aseThankyou" rendered="{!isThankYouASE}">
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="reviewQuote">
+                    <apex:include pageName="ASE_ReviewThankYou" />
+                </div>
+            </div>          
+        </apex:outputPanel>         
+    </apex:outputPanel>
+
+    <apex:outputPanel id="BatchPanel">
+        <script>
+            function isBatchCompleted(){
+                var pollingvar = '{!doBatchPolling}';
+                if (pollingvar == 'true') {
+                    checkBatchStatus();
+                }else{
+                    location.reload();
+                }
+            } 
+        </script>
+    </apex:outputPanel>
+    
+    <apex:outputPanel id="DPEBatchPanel">
+        <script>
+            function isDPEBatchCompleted(){
+                var pollingvar = '{!doDPEBatchPolling}';
+                console.log('pollingvar:::::::: '+pollingvar);
+                if (pollingvar == 'false') {
+                    checkDPEBatchStatus();
+                    console.log('DPE Polling Processing');
+                }
+                else{
+                    renderDPEUpdate();
+                    console.log('DPE Polling Completed');
+                }
+            } 
+        </script>
+    </apex:outputPanel>            
+     
+    <script type="text/javascript">
+        function sortTable(table, col, reverse) {
+            var tb = table.tBodies[0], // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
+                tr = Array.prototype.slice.call(tb.rows, 0), // put rows into array
+                i;
+            reverse = -((+reverse) || -1);
+            tr = tr.sort(function (a, b) { // sort rows
+                return reverse // `-1 *` if want opposite order
+                    * (a.cells[col].textContent.trim() // using `.textContent.trim()` for test
+                        .localeCompare(b.cells[col].textContent.trim())
+                       );
+            });
+            for(i = 0; i < tr.length; ++i) tb.appendChild(tr[i]); // append each row in order
+        }
+        
+        function makeSortable(table) {
+            var th = table.tHead, i;
+            th && (th = th.rows[0]) && (th = th.cells);
+            if (th) i = th.length;
+            else return; // if no `<thead>` then do nothing
+            while (--i >= 0) (function (i) {
+                var dir = 1;
+                if(i != 4){
+                    th[i].childNodes[1].addEventListener('click', function () {sortTable(table, i, (dir = 1 - dir))});
+                }
+            }(i));
+        }
+        
+        function makeAllSortable(parent) {
+            parent = parent || document.body;
+            var t = parent.getElementsByClassName('sitesDataTable');
+            makeSortable(t[0]);
+        }
+        
+        function hidePromotionUpdateModal(){
+            $('#PromoOverlay').modal('hide');
+            $('#promotionUpdateAlert').modal('show');
+        }
+        
+        function showConfirmationDialog(){
+            $('.saveAndRegisterConfirmationOverlay').modal();
+            return false;
+        }
+        
+        function showApplyPromotion()
+        {
+            console.log('----inside showApplyPromotion---');
+            $('.glyphicon-chevron-down').on('click',function(){
+                $('.promotionAppliedData').toggle();
+                $('.promotionPopover').toggleClass('glyphicon-chevron-down glyphicon-chevron-up');
+            });
+        }
+        
+        function showUpdatePromotion(){
+            console.log('val>>>>> '+$('[id$=promoUpdateRequiredFlag]').val());
+            var updatePromotion = $('[id$=promoUpdateRequiredFlag]').val();
+            var productCode = '{!quoteObj.Product__r.productcode}';
+            if(('undefined' != typeof updatePromotion && updatePromotion == 'true') && ('undefined' != typeof productCode && ('AVPN' == productCode || 'AMIS' == productCode))){
+                $('#PromoOverlay').modal('show');
+                updatePromotionAction();
+            }
+        }
+        
+        var custSiteIDListSize=0;
+        jQuery(document).ready(function($){
+        custSiteIDListSize = {!custSiteList.size};
+            $("body").tooltip({ selector: '[rel=tooltip]' });
+            $(".tooltipTrigger").tooltip();
+            if(mode == "reviewquote"){
+                reDirectToConfigure = {!reDirectToConfigure};
+                if(reDirectToConfigure){
+                    window.location.href = '{!redirectToConfigPage}';
+                }            
+            }            
+            toggleContinueButton();
+            if({!eligibleRateRefresh}){
+                /*$('#RatecardUpdateModal').modal('show');*/
+                $('#DPERatecardUpdateModal').modal('show');
+            }                           
+            $(window).scroll(function(){
+                if ($(this).scrollTop() > 100) {
+                    $('.scrollToTop').fadeIn();
+                } else {
+                    $('.scrollToTop').fadeOut();
+                }
+            });
+            $('.scrollToTop').click(function(){
+                $('html, body').animate({scrollTop : 0},500);
+                return false;
+            }); 
+            var productCode = '{!quoteObj.Product__r.productcode}';
+            var bulkLimit= parseInt("{!$Label.DPE_BULK_LIMIT}");
+            if(!{!eligibleRateRefresh} && (('undefined' != typeof productCode && ('AVPN' == productCode || 'AMIS' == productCode)) && custSiteIDListSize >= bulkLimit)){
+                checkDPEBatchStatus();
+            }
+            else if(!{!eligibleRateRefresh} && (('undefined' != typeof productCode && ('AVPN' == productCode || 'AMIS' == productCode)) && custSiteIDListSize < bulkLimit)){
+                showUpdatePromotion();
+            }
+            setTimeout(function(){showApplyPromotion();},500);
+        });
+                
+        function toggleContinueButton() {
+            $(".removeQuoteModalRadioSelect").on("change", function () {
+                // If the check box is checked, enable the button
+                // Otherwise disable the button
+                if ($(this).is(":checked")) {
+                    $(".removeQuoteModalContinue").removeClass("disabled");
+                } else {
+                    $(".removeQuoteModalContinue").addClass("disabled");
+                }
+            });
+        }
+
+        function handleReConfigureSite() {
+            if (generatedQuoteId != null && generatedQuoteId != '') {
+                handleReviewQuoteCallBack(generatedQuoteId);
+                $("a[data-name='configSites']").attr('data-toggle', 'tab').attr('href', '#configSites').parent('li').removeClass('disabled').children('a').trigger("click");
+                $("a[data-name='reviewQuote']").removeAttr('data-toggle href').parent('li').addClass("disabled");
+            }
+        }
+    
+        onload = function () {
+            registerListeners();
+        }
+
+        function onReviewShowUp() {
+            registerListeners();
+        }
+
+        function registerListeners() {
+            $('.custDropReviewQTrig').on('click', function () {
+                $('.custDropReviewQ').dropdown('toggle');
+            });
+        }
+
+        function completePricing(cartId) {
+            Visualforce.remoting.timeout = 120000; // Set timeout at page level
+            if (cartId != null) {
+                // added jquery to display grey background with loading img
+                $("[Id$=remotingScroll]").show();
+                Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ReviewQuoteController.IsPricingUpdateRequired}', cartId,
+                    function (result, event) {
+                        if (event.status) {
+                            if (result === true || result == 'true') {
+                                completePricing(cartId);
+                            } else {
+                                dupRedirect();
+                                $("[Id$=remotingScroll]").hide();
+                            }
+                        } else if (event.type === 'exception') {
+                            // added jquery to hide grey background in case of error
+                            $("[Id$=remotingScroll]").hide();
+                        } else {
+                            // added jquery to hide grey background in case of error
+                            $("[Id$=remotingScroll]").hide();
+                        }
+                    }, {
+                        escape: true
+                    }
+                );
+            }
+            $('.main').modal('hide');
+        }
+    
+        function removeSite_Action1(){
+            removeSite_Action(siteId_var);
+        }
+        
+        function openAddAddressPop(action) {
+            if(action != null && action == 'remove'){
+                var checkremoveFlag = {!removePopupOnLoadFlag};
+                if(checkremoveFlag){
+                    $('.goToSamePage').show();
+                $('.removeSiteOnDiscardOverlay').modal();
+                }else{
+                    callRemoveFunction();
+                }
+            }
+        }
+    </script>
+     
+    <apex:outputPanel id="onCompletePanel" rendered="{!isCreationComplete}">
+        <script type="text/javascript">
+            $('.custDropReviewQTrig').on('click', function () {
+                setTimeout(function(){
+                    $('.custDropReviewQ').dropdown('toggle');
+                }, 100000);
+            });
+        </script>
+    </apex:outputPanel>    
+</apex:page>

@@ -1,0 +1,186 @@
+<apex:page controller="ProductInformationController" action="{!handleProductInfoRequest}" docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+
+<apex:stylesheet value="{!$Resource.PortalDesignCSS}"/>
+<apex:includeScript value="{!$Resource.atomjqueryjs}" />
+<style type="text/css">
+#manage_content #sel_prod_wrapper input[type="radio"]{
+    width: auto;
+    margin: 0 10px 0 0;
+}
+#manage_content #sel_prod_wrapper #qname{
+   width: auto;
+}
+.dividerHr {
+    page-break-after: always;
+    height: 3px;
+    background-color: #1B81AD;
+    border: 0px;
+    margin: 35px 0px;
+}
+#manage_content #sel_prod_wrapper ul{
+    border-right: 1px solid #eee;
+    min-height: 345px;
+}
+#manage_content #sel_prod_wrapper ul ul{
+    margin: 0 0 0 22px;
+    border: none;
+    min-height: 20px;
+}
+.grey_text{
+    color: #777;
+}
+</style>
+<div id="sel_prod_wrapper">
+    <apex:actionStatus id="productInfoStatusId" startText="Processing....!!"></apex:actionStatus>
+    <apex:form id="productInfoFormId" styleClass="row">
+    
+    <div class="row">
+        <div class="col-xs-12 col-md-12">
+            <div class="manage_user_search_row">
+            <apex:actionFunction name="updateQuoteName" status="loading" action="{!populateQuoteName}" reRender="qname,prodInfoNextBtnId">
+                        <apex:param name="productId" value=""/>
+                     </apex:actionFunction>
+                 <p class="f-s-larger">Subway</p>
+                 <label class="col-md-2">{!$Label.Quote_Name}</label>
+                 <apex:inputText id="qname" styleclass="col-md-2" value="{!quoteName}"/>
+                 <!-- <input id="quote_number_input" class="col-md-2" type="text" placeholder="optional"/> -->
+                 <label class="col-md-2">{!$Label.Quote_Number}</label>
+                 <label id="qnumber" class="grey_text">[#]{!quoteObj.name}</label>
+            </div>
+        </div>    
+    </div>
+    <hr class="dividerHr"/>
+    <div class="row"> 
+        <div class="col-xs-12 col-md-4 col-lg-4">
+            <p class="blueText f-s-larger">Network Products</p>
+            <apex:dataTable value="{!pWrapperList}" id="productDataTableId" var="prod">
+                        <apex:column >
+                            <input type="radio" value="{!prod.isSelected}" name="productSelectId" id="{!prod.prodObj.id}" style="width:100%" onclick='setProdId("{!prod.prodObj.id}");'/>
+                            <apex:outputText value="{!prod.prodObj.Name}"/> 
+                        </apex:column>                        
+                    </apex:dataTable>
+       <!--      <ul>
+                <li> 
+                    <input type="radio"/>   
+                    <label>AT&amp;T Virtual Private Network</label>
+                    <ul>
+                        <li>
+                            <input class="css-checkbox" id="check_next_step" name="check_next_step" type="checkbox"/>
+                            <label class="css-check-label css-label radGroup1 clr" for="check_next_step">
+                                Add AT&amp;T IP Flexible Reach
+                            </label>
+                        </li> 
+                    </ul>
+                </li>
+                <li>
+                    <input type="radio"/>    
+                    <label>AT&amp;T Managed Internet Service</label>
+                    <ul>
+                        <li>
+                            <input class="css-checkbox" id="check_next_step" name="check_next_step" type="checkbox"/>
+                            <label class="css-check-label css-label radGroup1 clr" for="check_next_step">
+                                Add AT&amp;T IP Flexible Reach
+                            </label>
+                        </li> 
+                    </ul>
+                </li>
+                <li>
+                    <input type="radio"/>
+                    <label>AT&amp;T MPLS Private Network Transport</label>
+                </li>
+                <li>
+                    <input type="radio"/>
+                    <label>AT&amp;T Network-Based IP VPN Remote Access</label>
+                </li>
+                <li>
+                    <input type="radio"/>
+                    <label>AT&amp;T Internet Access</label>
+                </li>
+                <li>
+                    <input type="radio"/>
+                    <label>AT&amp;T Network Based Firewall Service</label>
+                </li>
+            </ul> -->
+        </div>
+        <div class="col-xs-12 col-md-4 col-lg-4">
+            <p class="blueText f-s-larger">Mobile Products</p>
+            <ul>
+                <li> 
+                    <input type="radio"/>   
+                    <label>Wireless</label>
+                    <ul>
+                        <li>
+                            <label class="grey_text">
+                                - AT&amp;T Enhance Push-to-Talk
+                            </label>
+                        </li> 
+                        <li>
+                            <label class="grey_text">
+                                - AT&amp;T Buisness Connect
+                            </label>
+                        </li> 
+                    </ul>
+                </li>
+                <li>
+                    <input type="radio"/>    
+                    <label>RingCentral Office@Hand from AT&amp;T</label>
+                </li>
+            </ul>
+        </div>
+        <div class="col-xs-12 col-md-4 col-lg-4">
+            <p class="blueText f-s-larger">Cloud and Hosting Services</p>
+            <ul>
+                <li> 
+                     <input class="css-checkbox" id="check_next_step" name="check_next_step" type="checkbox"/>
+                    <label class="css-check-label css-label radGroup1 clr" for="check_next_step">
+                        Add AT&amp;T Synaptic Storage as a Service<sup class="grey_text">SM</sup>
+                    </label>
+                </li>
+                <li>
+                    <input class="css-checkbox" id="check_next_step" name="check_next_step" type="checkbox"/>
+                    <label class="css-check-label css-label radGroup1 clr" for="check_next_step">
+                        Add AT&amp;T Synaptic Compute as a Service<sup class="grey_text">SM</sup>
+                    </label>
+                </li>
+                <li>
+                    <input type="radio"/>
+                    <label>AT&amp;T Colocation Hosting Service</label>
+                </li>
+                <li>
+                    <input type="radio"/>
+                    <label>AT&amp;T Private Cloud</label>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <hr class="dividerHr"/>
+     <div class="col-xs-12 col-md-12">
+        <div>
+            Contact Terms for All Sites
+        </div>
+        <div>
+             <div class="col-xs-12 col-md-2 col-lg-2">
+                <input type="radio"/>
+                <label>1 Year</label>
+            </div>
+             <div class="">
+                <input type="radio"/>
+                <label>3 Year <span class="grey_text">(Best Value)</span></label>
+            </div>
+        </div>
+     </div> 
+     <hr class="dividerHr"/>
+     <div class="col-xs-12 col-md-12">
+        <a class="blueText m-l-10" d="prodInfoCancelBtnId" value="{!$Label.Cancel}">Cancel</a>
+        <div>
+            <button id="prodInfoBackBtnId" value="{!$Label.Back}" >Back</button>
+            <apex:commandButton action="{!updateQuote}" disabled="{!IF(productId=='',true,false)}" id="prodInfoNextBtnId" value="{!$Label.Next}" styleClass="btn btn-primary" status="loading" oncomplete="isProductSelected();handleSiteAddress();toggleLookUpIcon()" />
+        </div>    
+     </div> 
+       </apex:form> 
+</div><!-- wrapper ends -->
+
+
+
+
+</apex:page>

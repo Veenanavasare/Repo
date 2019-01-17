@@ -1,0 +1,23 @@
+<apex:page standardController="Apttus_Proposal__Proposal__c" extensions="PricingSchedulerSignController" id="thepage" showChat="false" showHeader="false" sidebar="false">
+<script src="/soap/ajax/32.0/connection.js"></script>
+<apex:form >
+<script>
+    document.body.onload = function() {
+        try{
+        updatestatus();
+        var quoteid = '{!$CurrentPage.parameters.quoteid}';
+        sforce.connection.sessionId = '{!$Api.Session_ID}';
+        var result = sforce.connection.query("Select Id,Apttus_Proposal__Opportunity__c from Apttus_Proposal__Proposal__c where id='"+quoteid+"'");
+        var records = result.getArray("records");
+        }
+        catch(e)
+        {
+            alert(e);
+        }
+        var opptyid = records[0].Apttus_Proposal__Opportunity__c;
+        window.open('{!$Page.redirectToOpportunity}?quoteid='+quoteid, '_parent');
+    }
+</script>
+<apex:actionFunction name="updatestatus" action="{!UpdateStatus}" reRender="thepage"/> 
+</apex:form>
+</apex:page>

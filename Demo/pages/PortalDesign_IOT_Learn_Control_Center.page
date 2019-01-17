@@ -1,0 +1,160 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+   <style type="text/css">
+        .promo .promo-border {
+            border-color: #71c5e8;
+        }
+        .promo-static {
+            color: #000;
+            border: 2px solid #71c5e8;
+        }
+        .stepTabCC {
+            position: relative;
+            display: table-cell;
+            float: none !important;
+        }
+        @media only screen and (min-width: 1200px) {
+            .product-page .promo {
+                min-height: 226px !important;
+            }
+        }
+        @media only screen and (min-width: 1200px) {
+            .unclickable {
+                 min-height: 226px !important;
+            }
+        }
+        #step1CC,
+        #step2CC {
+            padding: 10px;
+            border-radius: 4px; 
+            cursor: pointer;
+            margin-left: 1%;
+            width: 19.2%; 
+            float: left;
+            position: relative;
+        }
+        #step1CC {margin-left: 0;}
+    </style>
+    <div class="row">
+
+        <!-- Intro -->
+        <h2>AT&amp;T Control Center, powered by Cisco Jasper</h2>
+        <p>Manage your connected IoT and machine-to-machine (M2M) device initiatives.</p>
+        <p>AT&amp;T Control Center is a sophisticated, cloud-based platform offering powerful capabilities that enable you to launch, manage, and rapidly scale your connected-device business or enterprise deployment.</p>
+        <p class="mb-40">Gain visibility into the activity and status of your customers&rsquo; Control Center SIMs on the wireless network. The powerful and intuitive interface lets you analyze and strategically manage your end customers' Control Center connected device deployments.</p>        
+
+        <div class="row mb-30">
+            <div class="col-sm-4">
+               <div class="unclickable cases text-center">
+                     <apex:image styleClass="att-icon mt-10" value="{!URLFOR($Resource.ImgStatic,'/linear_ideation_icon_rgb_blu.svg')}" />
+                    <h4>Intelligence</h4>
+                    <p>Manage your business and gain strategic insight with an unparalleled depth of intelligence into your network of connected&nbsp;devices.</p>
+               </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="unclickable cases text-center">
+                    <apex:image styleClass="att-icon mt-10" value="{!URLFOR($Resource.ImgStatic,'/linear_operations_icon_rgb_blu.svg')}" /> 
+                    <h4>Empowerment</h4>
+                    <p>Take control over business processes and optimize operations with robust tools for provisioning, real-time diagnostics and&nbsp;more.</p>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="unclickable cases text-center">
+                <apex:image styleClass="att-icon mt-10" value="{!URLFOR($Resource.ImgStatic,'/linear_APIs_icon_rgb_blu.svg')}" />
+                    <h4>Automation</h4>
+                    <p>Help streamline operations, reduce costs, and scale faster with Control Center's powerful automation&nbsp;engine.</p>
+                </div>
+            </div>
+        </div>
+
+        <hr class="blue_hr mb-40" />
+       
+       <!-- Sales and Technical -->
+       <div class="spacingContent">
+            <div class="row">
+                <ol>
+                    <div class="col-lg-6 mb-30">
+                        <a href="javascript:void(0)" class="promo promo-link text-center bg-dk-blue dk-blue-arrow stepTabCC" id="step1CC">
+                            <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-sales-report.svg')}" />
+                            <h4>{!$Label.heading_sales}</h4>
+                            <p class="paraSet">Take a look at our sales resources for an overview of AT&amp;T&nbsp;Control&nbsp;Center</p>
+                            <span class="transp-bg learn-more">Learn More</span>
+                        </a>
+                    </div>
+                    <div class="col-lg-6 mb-30">
+                        <a href="javascript:void(0)" class="promo promo-link text-center bg-dk-gray dk-gray-arrow stepTabCC" id="step2CC">
+                            <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-settings.svg')}" />
+                            <h4>{!$Label.heading_technical}</h4>
+                            <p class="paraSet">Review our technical information for a deeper look into AT&amp;T&nbsp;Control&nbsp;Center</p>
+                            <span class="transp-bg learn-more">Learn More</span>
+                        </a>
+                    </div>
+                </ol>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="mt-10">
+            <div class="stepCont step1CC-cont">
+                <h3 class="step-heading bg-dk-blue">
+                    {!$Label.heading_sales}
+                    <p>Get an overview of product details.</p>
+                </h3>
+                <div class="step-body">
+                    <apex:outputPanel >
+                        <apex:repeat value="{!DocMapIOTCCSales}" var="docMap">
+                            <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}"  target="_blank" styleClass="document-file">
+                                <div class="document-row">
+                                    <div class="file-type file-{!docMap.type}"></div>
+                                    <div class="details">
+                                        <h4>
+                                            <apex:outputText value="{!docMap.Name}" />
+                                        </h4>
+                                        <p>
+                                            <apex:outputText value="{!docMap.description}" />
+                                        </p>
+                                    </div>
+                                </div>
+                            </apex:outputLink>
+                        </apex:repeat>
+                    </apex:outputPanel>
+                </div>
+            </div>
+            <div class="stepCont step2CC-cont">
+                <h3 class="step-heading bg-dk-gray">
+                    {!$Label.heading_technical}
+                    <p>Take a deeper dive with our technical information.</p>
+                </h3>
+                <div class="step-body">
+                    <apex:outputPanel >
+                        <apex:repeat value="{!DocMapIOTCCTech}" var="docMap">
+                            <apex:outputLink value="{!IF(docMap.URL != null,docMap.URL, fileURL+docMap.id)}"  target="_blank" styleClass="document-file">
+                                <div class="document-row">
+                                    <div class="file-type file-{!docMap.type}"></div>
+                                    <div class="details">
+                                        <h4>
+                                            <apex:outputText value="{!docMap.Name}" />
+                                        </h4>
+                                        <p>
+                                            <apex:outputText value="{!docMap.description}" />
+                                        </p>
+                                    </div>
+                                </div>
+                            </apex:outputLink>
+                        </apex:repeat>
+                    </apex:outputPanel>
+                </div>
+            </div>
+        </div>
+        </div>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $(".stepTabCC").click(function() {
+                var myId = $(this).attr("id");
+                $(".stepTabCC.active").removeClass("active");
+                $(this).addClass("active");
+                $(".stepCont").not("." + myId + "-cont").hide();
+                $("." + myId + "-cont").show();
+            });
+        });
+    </script>
+</apex:page>

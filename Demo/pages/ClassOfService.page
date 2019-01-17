@@ -1,0 +1,1176 @@
+<apex:page standardController="RDS_Premise_Details__c" extensions="ClassOfServiceController">
+
+                              <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+                              <apex:includeScript value="{!$Resource.InputValidationClone}" />
+                              <apex:includeScript value="{!$Resource.RDS_AVPN_Page2JSCloneNew}" />
+                              <apex:includeScript value="{!$Resource.validateInputTypeVLAN}" />
+                              <apex:stylesheet value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.css')}" />
+                              <apex:stylesheet value="{!$Resource.PortalDesignCSS}" />
+
+
+                          <style>
+                            
+                            .tabbed_menu .mainnav li {
+                            padding:25px 0 0 0;
+                            
+                            min-width: 33.33%;
+                            
+                            }
+  
+                             
+                          </style>
+                          
+                          
+                          <script>
+                          
+                          //for enabling or disabling apply and save once u select profile id
+                          function enabledisableapplyandsave()
+                          {
+                              
+                             var selectedprofidcos= $('.profileidselectcos').val();
+                             
+                           //  alert(selectedprofidcos);
+                             
+                             if(selectedprofidcos=="None" || selectedprofidcos=="" || selectedprofidcos==" " || selectedprofidcos==null || selectedprofidcos=="-None-")
+                                 {
+                                
+                                 
+                                 $(".applynsaveforcos").removeClass("objecthide");
+                                 $(".applynsaveforcos").addClass("disabled");
+                                 
+                                 
+                                 }
+                             else
+                                 {
+                                  $(".applynsaveforcos").removeClass("disabled");
+                                 }
+                             
+                             
+                             }
+                              
+                          
+                          
+                          function gotoConfirmationcos(){
+
+            /*                   $("a[data-name='confirmation']").trigger("click");
+                              $("a[data-name='reviewQuote']").parent('li').find('.circlenum').text('').append('<span class="glyphicon glyphicon-ok"></span>'); 
+                              $("a[data-name='configSites'], a[data-name='reviewQuote']").parent('li').addClass("disabled");
+                              $('.disabled a').removeAttr('data-toggle href');
+                              $("a[data-name='confirmation']").parent('li').removeClass("disabled");
+                              $("a[data-name='reviewQuote']").parent('li').removeClass("active");
+                              $("a[data-name='confirmation']").parent('li').addClass("active");
+                              $("#reviewQuote").removeClass("tab-pane fade in active");
+                              $("#reviewQuote").addClass("tab-pane fade");
+                              $("#confirmation").removeClass("tab-pane fade");
+                              $("#confirmation").addClass("tab-pane fade in active"); */
+                              
+                              
+                              $("#TableVlanCosChange").show();
+                              
+                              
+                              $("#confirmation").removeClass("tab-pane fade in active");
+                              $("#confirmation").removeClass("tab-pane fade");
+                              $('.displayclassforreview').hide();
+                              $("#configSites").hide();
+                             // $("#configSites").addClass("tab-pane fade");
+                    }
+                              
+                          
+                          function hidereviewdivdisp()
+                          {
+                            $('#TableVlanCosChange').hide();
+                            $("#confirmation").removeClass("tab-pane fade");
+                            $("#confirmation").addClass("tab-pane fade in active");
+                        }
+                          
+                          
+                          function hideallpanelsCOs()
+                          {
+                              $('#TableVlanCosChange').hide();
+                              
+                              $("#msgdspcos").show();
+                              
+                              $("#configSites").removeClass("tab-pane fade in active");
+                              $("#configSites").removeClass("tab-pane fade");
+                              $("#confirmation").removeClass("tab-pane fade in active");
+                              $("#confirmation").removeClass("tab-pane fade");
+                              
+                              $("#configSites").addClass("tab-pane fade in active");
+                              $("#confirmation").addClass("tab-pane fade");
+                              $('.displayclassforreview').hide();
+                         }
+                          
+                          
+                          function showreviewdisppanel()
+                          {
+                               var val12={!ReviewPanelShowFlag};
+                                   if(val12==true){   
+                                   $('.displayclassforreview').show();
+                                   $("#TableVlanCosChange").hide();
+                                   }
+                           return;
+                          }
+                          
+                          
+                          
+                          function showTableVlanCosChangenew(){
+                              
+                              if($('#TableVlanCosChange').hasClass('objecthide')){
+                               
+                                       $("#TableVlanCosChange").removeClass("objecthide");
+                                       $("#TableVlanCosChange").addClass("objectshow");
+                                   }
+                              
+                              
+                              $("#msgdspcos").hide();
+                              $("#TableVlanCosChange").show();  
+                              $("#configSites").removeClass("tab-pane fade in active");
+                              //$("#configSites").addClass("tab-pane fade");
+                              $('.displayclassforreview').hide();
+/*                               $("#confirmation").removeClass("tab-pane fade");
+                              $("#confirmation").addClass("tab-pane fade in active"); */
+                              
+                              
+                              
+                            } 
+                          
+                          
+                          function scrolltochangeofservice(){
+                              // console.log("ubb scroll..not select action");
+                                      $('html, body').animate({
+                                          scrollTop: $('#changeofCosServiceDiv').offset().top
+                                      },1000);
+                                 
+                            }   
+                          
+                          
+                          </script>
+                          
+                          
+                        
+                          
+
+                          
+
+
+
+
+
+<table>
+
+ <!-- ROW 2 START -->
+ 
+ 
+ <div id="changeofCosServiceDiv"></div>
+
+<apex:form >
+ <apex:actionFunction action="{!initializeAddVLAN}" reRender="coschangepanel,cosVlanPanel,cospanelid,Samplepage,vlanChangeCosRepeat" name="initializeCoschangeVLAN" status="loading"  oncomplete="scrolltochangeofservice();initCosConfigController();">
+ </apex:actionFunction> 
+</apex:form> 
+ 
+         
+ <tr style="display:none;" id="multipleVlan2ndpanelId" >
+    <apex:outputPanel >
+                <td colspan="3">
+                <div>
+                <table> 
+                
+
+            <!-- vlanCOs change functionality start -->
+            <tr class="createdForExapnd">
+                    
+                    
+                    <td>
+                        <apex:form id="vlanChangeCosRepeat">
+                            <apex:variable var="count" value="{!0}"/> 
+                            
+                      
+                            
+                            
+                            <apex:repeat value="{!vlanList}" var="vlanInfo" id="string">
+                                <apex:variable var="count" value="{!count + 1}"/>
+                                
+                                <div id="{!vlanInfo.Ingress_Vlan__c}"></div>
+                                <a href="javascript:void(0)" style="text-decoration: none;">
+                                <table id="vlanPieHeaderCOS{!vlanInfo.Ingress_Vlan__c}{!count}" class="LogicalChannelInfo">
+                                        <tr>
+                                            <td class="LogicalChannelInfo">AVPN Logical Channel Information VLAN {!count} - VPN Name:  <span class="removeBold">{!vlanInfo.VPN_Name__c}</span></td>
+                                            <td class="LogicalChannelSpeed">
+                                            
+                                               
+                                          
+                                               
+                                               <apex:outputPanel id="changecosstatus">
+                                               
+                                            <div style="font-family:omnes_att_iimedium;font-size:1em;font-weight:500;color:#2A6496;display:block;margin-top:10px;margin-bottom:10px;" id="chngCos{!vlanInfo.Ingress_Vlan__c}{!count}">
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    <apex:outputPanel rendered="{!IF(vlanInfo.CoSChange__c == false,true,false)}">
+                                                    
+                                                    <div style="width:170px;height:10px;" id="mbps{!vlanInfo.Ingress_Vlan__c}{!count}" ><font style="color:black;"><b>CoS Profile ID:{!vlanInfo.Ingress_Vlan__c}</b></font></div><br/>
+                                                    
+                                                   
+                                                    <apex:outputPanel rendered="{!IF(vlanInfo.Status_on_Validation__c != 'Submitted',true,false)}">
+                                                   
+                                                    <apex:commandLink styleclass="cosBtnID{!count}" style="margin-left:25px;" value="Change Cos" status="loading" reRender="errmsghead,vlanLevelCospanel,vlanChangeCosRepeat" oncomplete="showTableVlanCosChangenew();" >
+                                                    <apex:param name="changecosid" value="{!vlanInfo.id}" assignTo="{!CosiDNew}" />
+                                                    <apex:param name="changecosname" value="{!vlanInfo.VPN_Name__c}" assignTo="{!VPN_Name}"/>
+                                                    <apex:param name="changecoscountnum" value="{!count}" assignTo="{!ReviewCounter}"/>
+                                                    </apex:commandLink>
+                                                    
+                                                    </apex:outputPanel>
+                                                    
+                                               </apex:outputPanel>
+                                                   
+                                                    <apex:outputPanel rendered="{!IF(vlanInfo.CoSChange__c == true,true,false)}">
+                                                    
+                                                    <div style="width:270px;height:10px;" id="mbps{!vlanInfo.Ingress_Vlan__c}{!count}" ><font style="color:black;"><b>CoS Profile ID:{!vlanInfo.Ingress_Vlan__c} - Pending...</b></font> </div><br/>
+                                                    
+                                                    <apex:outputPanel rendered="{!IF(vlanInfo.Status_on_Validation__c != 'Submitted',true,false)}">
+                                                    
+                                                    <apex:commandLink value="Undo Change Cos" action="{!UndoCosChange}" status="loading" oncomplete="hideallpanelsCOs()" style="margin-left:77px;" reRender="errmsghead,vlanLevelCospanel,vlanChangeCosRepeat">
+                                                    <apex:param name="undochangecosid" value="{!vlanInfo.id}" assignTo="{!checkedDisconnectid}" />
+                                                    </apex:commandLink>
+                                                    </apex:outputPanel>
+                                                    
+                                                    
+                                                    </apex:outputPanel>
+
+                                                    
+                                                   </div>
+                                                </apex:outputPanel>
+                                                  
+                                                  
+                                                  
+                                                
+                                                <div style="font-family:omnes_att_iimedium;font-size:1em;font-weight:500;color:#FFA500;display:none;" id="undoChngCos{!vlanInfo.Ingress_Vlan__c}{!count}">
+                                                    <a href="javascript:clickUndoCos('undoChngCos',{!vlanInfo.Ingress_Vlan__c}{!count},{!vlanInfo.VLAN_Speed__c});"  >Undo Change Cos</a>
+                                                </div>
+                                            </td>
+                                            <!-- <td class="LogicalChannelSpeed"> Change Cos</td> -->
+                                            <td class="arrowStyleNew" >
+                                            
+                                            
+                                           <!--  <img src="{!$Resource.Navigate_down}" height="15" width="15" onClick="collExpandCosVlan({!vlanInfo.Ingress_Vlan__c}{!count})" /> -->
+                                            
+                                            
+                                             <a href="javascript:void(0)" onClick="collExpandCosVlan({!vlanInfo.Ingress_Vlan__c}{!count})" style="text-decoration: none;">
+                                              <img style="margin-top: 26px; margin-right: 10px;" id="Image{!vlanInfo.Ingress_Vlan__c}{!count}" src="{!$Resource.Navigate_down}" height="15" width="15" />
+                                            </a>
+                                            
+                                            
+                                            
+                                            </td>
+                                        </tr>
+                                    </table> 
+                                </a>
+                                
+                                
+                                <table id="vlanPieTableIdCOS{!vlanInfo.Ingress_Vlan__c}{!count}" style="height:250px;" class="vlanPieTable objecthide">
+                                    <!--<tr><td colspan="3" style="padding-left:150px;height:100px;"><div id="progressBarVlanCOS{!vlanInfo.Ingress_Vlan__c}{!count}" class="vlanProgressBarCssClass" ><div class="vlanProgressBarCssClassDiv"></div><span class="progressBarVlanClass"></span></div></td></tr>-->
+                                    <script>
+                                    var usedSpeed = "{!vlanInfo.VLAN_Speed__c}";
+                                    //alert("usedSpeed: "+usedSpeed)
+                                    var totalSpeed = "{!listDisplayValidationRecords.Port_Speed__c}";
+                                    //alert("totalSpeed: "+totalSpeed)
+                                    
+                                    
+                                    
+                                    if({!count}==1){
+                                        tempUsedSpeed = usedSpeed;
+                                        
+                                        var progressBarWidth = usedSpeed* $('#progressBarVlanCOS{!vlanInfo.Ingress_Vlan__c}{!count}').width() / totalSpeed;
+                                        $('#progressBarVlanCOS{!vlanInfo.Ingress_Vlan__c}{!count}').find('div').animate({ width: progressBarWidth }, totalSpeed).html("VPN {!count} - "+usedSpeed);
+                                        
+                                        
+                                        var prgresBarWidthSpan =  (totalSpeed-usedSpeed)* $('#progressBarVlanCOS{!vlanInfo.Ingress_Vlan__c}{!count}').width() / totalSpeed;
+                                        
+                                        $('#progressBarVlanCOS{!vlanInfo.Ingress_Vlan__c}{!count}').find('span').animate({ width: prgresBarWidthSpan }, totalSpeed).html(totalSpeed-usedSpeed); 
+                                        
+                                    }else{
+                                        tempUsedSpeed = parseInt(usedSpeed)+parseInt(tempUsedSpeed);
+                                        
+                                        var progressBarWidth = tempUsedSpeed* $('#progressBarVlanCOS{!vlanInfo.Ingress_Vlan__c}{!count}').width() / totalSpeed;
+                                        $('#progressBarVlanCOS{!vlanInfo.Ingress_Vlan__c}{!count}').find('div').animate({ width: progressBarWidth }, totalSpeed).html("VPN {!count} - "+usedSpeed);
+                                        
+                                        
+                                        var prgresBarWidthSpan =  (totalSpeed-tempUsedSpeed)* $('#progressBarVlanCOS{!vlanInfo.Ingress_Vlan__c}{!count}').width() / totalSpeed;
+                                        
+                                        $('#progressBarVlanCOS{!vlanInfo.Ingress_Vlan__c}{!count}').find('span').animate({ width: prgresBarWidthSpan }, totalSpeed).html(totalSpeed-tempUsedSpeed);  
+                                        
+                                    }
+                                    
+                                    </script> 
+                                    
+
+                                    
+                                    
+                                    <tr>
+                                    
+                                    <td rowspan="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+                                        <td rowspan="2" style="width:470px">
+                                            <table class="IPv4VLANInformation">
+                                            
+                                                <tr><td>&nbsp;</td></tr>
+                                                <tr><td>&nbsp;</td></tr>
+                                                <tr><td>IPv4 Information</td></tr>
+                                                
+                                            </table>
+                                            <table>
+                                                <tr><td class="IPInformation">Routing Protocol:  <span class="removeBold">{!vlanInfo.V4_Routing_Protocol__c}</span></td></tr>
+                                                <tr><td class="IPInformation">Autonomous System Number:  <span class="removeBold">{!vlanInfo.V4_Routing_ASN__c}</span></td></tr>
+                                                <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V4_Send_Default_Indicator__c=='true'}">Restrictive Routing: Yes <span class="removeBold"></span></apex:outputPanel></td></tr>
+                                                <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V4_Send_Default_Indicator__c=='false'}">Restrictive Routing: No <span class="removeBold"></span></apex:outputPanel></td></tr>
+                                                <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V4_Send_Default_Indicator__c==''}">Restrictive Routing: <span class="removeBold"></span></apex:outputPanel></td></tr>
+                                                <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V4_ASN_Override_Indicator__c=='true'}">Autonomous System Number Override: Yes <span class="removeBold"></span></apex:outputPanel></td></tr>
+                                                <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V4_ASN_Override_Indicator__c=='false'}">Autonomous System Number Override: No <span class="removeBold"></span></apex:outputPanel></td></tr>
+                                                <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V4_ASN_Override_Indicator__c==''}">Autonomous System Number Override: <span class="removeBold"></span></apex:outputPanel></td></tr>
+                                                <tr><td class="IPInformation">MD5 Authentication:  <span class="removeBold">{!vlanInfo.V4_Encrypted_Password__c}</span></td></tr>
+                                                <tr><td class="IPInformation">Customer Edge IP Address:  <span class="removeBold">{!vlanInfo.Customer_IP_V4_Address__c}</span></td></tr>                                       
+                                                <tr><td class="IPInformation">AT&amp;T Edge IP Address:  <span class="removeBold">{!vlanInfo.ATT_IP_Address__c}</span></td></tr>                    
+                                                <tr><td class="IPInformation">Subnet Mask:  <span class="removeBold">{!vlanInfo.Subnet_Mask_V4__c}</span></td></tr>
+                                            </table>
+                                        </td>
+                                        <td rowspan="2">
+                                            <table class="IPv4VLANInformation">
+                                                <tr><td>&nbsp;</td></tr>
+                                                <tr><td>&nbsp;</td></tr>
+                                                <tr><td>IPv6 Features and Options</td></tr>
+                                            </table>
+                                            <table>
+                                           <tr><td class="IPInformation">Routing Protocol:  <span class="removeBold">{!vlanInfo.V6_Routing_Protocol__c}</span></td></tr>
+                                           <tr><td class="IPInformation">Autonomous System Number:  <span class="removeBold">{!vlanInfo.V6_Routing_ASN__c}</span></td></tr>
+                                           <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V6_Send_Default_Indicator__c=='true'}">Restrictive Routing: Yes <span class="removeBold"></span></apex:outputPanel></td></tr>
+                                           <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V6_Send_Default_Indicator__c=='false'}">Restrictive Routing: No <span class="removeBold"></span></apex:outputPanel></td></tr>
+                                           <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V6_Send_Default_Indicator__c==''}">Restrictive Routing:  <span class="removeBold"></span></apex:outputPanel></td></tr>
+                                           <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V6_ASN_Override_Indicator__c=='true'}">Autonomous System Number Override: Yes <span class="removeBold"></span></apex:outputPanel></td></tr>
+                                           <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V6_ASN_Override_Indicator__c=='false'}">Autonomous System Number Override: No <span class="removeBold"></span></apex:outputPanel></td></tr>
+                                           <tr><td class="IPInformation"><apex:outputPanel rendered="{!vlanInfo.V6_ASN_Override_Indicator__c==''}">Autonomous System Number Override: <span class="removeBold"></span></apex:outputPanel></td></tr> 
+                                           <tr><td class="IPInformation">MD5 Authentication:  <span class="removeBold">{!vlanInfo.V6_Encrypted_Password__c}</span></td></tr>
+                                                
+                                            </table>
+                                        </td>
+                                    </tr>
+                               
+
+                               
+                                </table>
+                                
+                            </apex:repeat> 
+                            
+                        </apex:form>
+                        
+                        
+                <!--TableVlanCosChange Start  -->        
+                  <div id="TableVlanCosChange" class="objecthide">
+                        
+                  <apex:outputPanel id="vlanLevelCospanel">
+                      <apex:pageMessages id="pg" ></apex:pageMessages>
+                         <table style="width:1100px; margin-left:40px;">
+                          
+                           <tr>
+                           <td>
+
+
+
+
+                         <div class="content_container">      
+                         <div id="manage_content" style="padding: 0; margin-left: 10px; margin-right:0; background-color: #F0F0F0;width: 1100px;" class="page ng-scope" ng-controller="QuoteController as beginQuote">
+
+
+                       
+
+                          <div class="row">
+                            
+                            <div class="col-xs-12">
+                             <br/>      
+                             
+
+<!--                             <div id="main" class="row tabbed_menu" >
+                                <div class="col-xs-12 col-md-12">
+                                    
+                                    <ul class="mainnav" role="tablist">
+                                        <li class="active">
+                                            <a href="#configSites" data-name="configSites" data-tabName="Select Customer" role="tab" data-toggle="tab">
+                                            <div class="circlenum">1</div> Configure </a>
+                                        </li>
+                                        <li class="disabled">
+                                            <a href="#reviewQuote" data-name="reviewQuote" data-tabName="Review Request" role="tab" data-toggle="tab">
+                                            <div class="circlenum" style="margin-left: 50px;">2</div> Review Request </a>
+                                        </li>
+                                        <li class="disabled">
+                                            <a href="#confirmation" data-name="confirmation" data-tabName="Review Pricing Schedule" role="tab" data-toggle="tab"> <div class="circlenum"> 3 </div>View Confirmation Information</a>
+                                        </li>
+                                     </ul>
+                                </div>
+                            </div> -->
+                            
+                            
+                            
+                            <apex:form id="vlanCosChangeFormId">
+                                
+                                <apex:actionFunction name="getmisprofiles" action="{!getmisprofiles}"  immediate="true" oncomplete="enabledisableapplyandsave();" reRender="profileSelect1" status="loading">
+                                    <apex:param name="selectedcounter" value="" assignTo="{!SelectedCounterValue}" />
+                                    <apex:param name="slidervalue" value="" assignTo="{!SelectedSliderValue}" />
+                                </apex:actionFunction>
+                                
+                               
+                                                               
+                                <apex:outputPanel id="cosVlanTabpanel">  
+                                    
+                                 
+                                    
+                                    <div class="tab-content">
+                                    
+                                    
+                                    <!-- Config Site Start -->
+                                    
+                                    <div class="tab-pane fade in active" id="configSites">
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    <h4 style="margin-left:50px;font-size: 0.94em;font-family:omnes_att_iimedium;">Order Number:{!listValidationRecords[0].RelatedQuote__r.Name}</h4>  
+                                    <br/>
+                                     <br/>
+                                    <h4 style="margin-left:50px;font-size: 0.94em;font-family:omnes_att_iimedium;">VLAN Name: VLAN{!ReviewCounter} - {!VPN_Name}</h4>   
+                                    
+                                    <hr class="gray_hr"  style="border-top:1px solid black !important"/>
+                                    
+                                    <br/>
+                                            <div class="" style="margin-left:30px;">
+                                                <h2 style="color:black;margin-left:20px;font-size: 2em;font-family:omnes_att_iimedium;"> Change Class of Service Profile ID</h2>
+                                            </div>
+                                            <br/>
+                                            <hr class="gray_hr"  style="border-top:1px solid black !important"/>
+                                    <br/>
+                                              
+                                             <div style="margin-left:50px;width:1000px;height:100px">
+                                                <p style="font-size: 1.13em;font-family:omnes_att_iimedium;text-align:left;line-height:1.5;">Change your Class of Service (CoS) Profile ID by moving the Real-Time Percentage slider bar to the percentage you want. Then change the value in the dropdown menu. Click <b>Apply &amp; Save</b> to change your CoS Profile ID.Click <b>Cancel All Changes &amp; Exit</b> if you want to stop the proposed change.</p>
+                                                <br/><br/><br/>    
+                                            </div>
+                                            
+                                            <br/> 
+                                            
+                                            <div style="margin-left:30px;">
+                                                <table>
+                                                
+                                                <!-- Slider for COS selection Start -->
+
+                                                                                                
+                                                    <tr>
+                                                        <td style="width:550px;" >
+                                                            
+                                                            
+                                                           
+                                                            <div class="col-xs-4 col-md-4" style=" width:550px;height: 100px;">
+                                                                <h4 style="font-size: 1.13em;font-family: omnes_att_iimedium;"><b>Real-Time percentage :</b></h4><br/> <br/>
+                                                                <div class="col-xs-12 col-md-12 m-l-5" id="vlanCosSlider"></div>
+                                                                <div class="row">
+                                                                    <span class="col-xs-1" style="text-align:center;">0%</span>
+                                                                    <span class="col-xs-10" style="text-align:center; padding-left: 20px; ">50%</span>
+                                                                    <span class="col-xs-1" style="text-align:right;">100%</span>
+                                                                </div>
+                                                            </div> 
+                                                        </td>
+                                                        
+                                                        <td style="width: 250px;">   
+                                                            <div class="col-xs-4 col-md-4" style="width:250px;height:70px;margin-left:60px;margin-bottom: 32px;">
+                                                                <h4 style="font-size: 1.13em;font-family: omnes_att_iimedium;"><b>Profile ID:</b></h4><br/>
+                                                             
+                                                              <apex:actionRegion > 
+                                                              <apex:outputPanel id="cosProfilesSelectlist"> 
+                                                                <apex:selectList id="profileSelect1" styleclass="form-control requiredSelectField profileidselectcos styled-select-small adjust-select-small" value="{!selectedprofile}" multiselect="false" size="1" >
+                                                                    <apex:selectOptions value="{!profileoptions}" />
+                                                                    <apex:actionSupport event="onchange" action="{!fetchcoschartvalues}" oncomplete="enabledisableapplyandsave();"  status="loading" reRender="updatecoschart,,vlanChangeCosRepeat"/> 
+                                                                </apex:selectList> 
+                                                               </apex:outputPanel>
+                                                               </apex:actionRegion> 
+                                                               
+                                                                 
+                                                            </div>
+                                                        </td>
+                                                        
+                                                    </tr> 
+
+
+
+                                                    
+                                                    
+                                               <!-- Slider for COS selection End -->
+                                                    
+                                                    <!-- Pie Chart Selection for Class of service Start -->
+
+                                                                                                                                                              <tr>
+                                                        <td style="width: 550px;"> 
+                                                            <apex:outputPanel id="updatecoschart"> 
+                                                                <div class="m-t-20">
+                                                                    
+                                                                    <div class="col-xs-12 col-md-12">
+                                                                        
+                                                                        <div id="canvas-holder" class="col-xs-7">
+                                                                            <canvas id="vlanCoSchart" width="250" height="250" />
+                                                                        </div>
+                                                                        
+                                                                        
+                                                                        <div id="legend" class="col-xs-5 p0 m-t-20" style="margin-top:70px;">
+                                                                            <div class="legendItemHolder" style="height:30px;">
+                                                                                <div class="legendItem cos1"></div>
+                                                                                <label class="legendLabel" style="margin-top:3px !important">Real Time :{!cos_Real_Time}%</label>
+                                                                            </div>
+                                                                            <div class="legendItemHolder" style="height:30px;">
+                                                                                <div class="legendItem cos2"></div>
+                                                                                <label class="legendLabel" style="margin-top:3px !important">Bursty High : {!cos_BurstyHigh}%</label>
+                                                                            </div>
+                                                                            <div class="legendItemHolder" style="height:30px;">
+                                                                                <div class="legendItem cos3"></div>
+                                                                                <label class="legendLabel" style="margin-top:3px !important">Bursty Low : {!cos_BurstyLow}%</label>
+                                                                            </div>
+                                                                            <div class="legendItemHolder" style="height:30px;">
+                                                                                <div class="legendItem cos4"></div>
+                                                                                <label class="legendLabel" style="margin-top:3px !important">Best Effort :  {!cos_BestEffort}%</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                </div>
+                                                                <script type="text/javascript">
+                                                                var cos_Real_Time = {!cos_Real_Time},cos_BurstyHigh =  {!cos_BurstyHigh},cos_BurstyLow = {!cos_BurstyLow},cos_BestEffort = {!cos_BestEffort};
+                                                                function updateChart() {
+                                                                    //console.log(cos_Real_Time+'***'+cos_BurstyHigh);
+                                                                    var pieData = [
+                                                                        {
+                                                                            value: cos_Real_Time,
+                                                                            color: "#066EAD",
+                                                                            highlight: "#4584af",
+                                                                            label: "Real Time",
+                                                                            description: "Class of Service 1"
+                                                                        },
+                                                                        {
+                                                                            value: cos_BurstyHigh,
+                                                                            color: "#019BDB",
+                                                                            highlight: "#18a2e2",
+                                                                            label: "Bursty High",
+                                                                            description: "Class of Service 2"
+                                                                        },
+                                                                        {
+                                                                            value: cos_BurstyLow,
+                                                                            color: "#48C8EF",
+                                                                            highlight: "#65cfef",
+                                                                            label: "Bursty Low",
+                                                                            description: "Class of Service 3"
+                                                                        },
+                                                                        {
+                                                                            value: cos_BestEffort,
+                                                                            color: "#ADEAFC",
+                                                                            highlight: "#65cfef",
+                                                                            label: "Best Effort",
+                                                                            description: "Class of Service 4"
+                                                                        }
+                                                                    ];
+                                                                    var ctx = $("#vlanCoSchart").get(0).getContext("2d");
+                                                                    var myNewChart = new Chart(ctx).Pie(pieData);
+                                                                }
+                                                                updateChart();
+                                                                </script>
+                                                                
+                                                                 </apex:outputPanel>
+                                                                
+                                                                
+                                                                <script type="text/javascript">
+                                                                
+                                                                function updateSlider() {
+
+                                                                
+                                                                    $("#vlanCosSlider").slider({
+                                                                        value:0,
+                                                                        range: "min",
+                                                                        animate: false,
+                                                                        step: 5,
+                                                                         change: function (event, ui) {
+                                                                             
+                                                                                
+                                                                            
+                                                                               if(ui.value == 55){
+                                                                                   ui.value = ui.value-5;
+                                                                                    
+                                                                                    getmisprofiles(0,ui.value);  
+                                                                                    $("#vlanCosSlider").slider({
+                                                                                    value: 50
+                                                                                     });        
+                                                                                  } 
+                                                                                 else if(ui.value == 65){
+                                                                                  ui.value = ui.value -5;
+                                                                                 getmisprofiles(0,ui.value);  
+                                                                                  $("#vlanCosSlider").slider({
+                                                                                  value: 60
+                                                                                     });        
+                                                                                   }
+                                                                                else if(ui.value == 75){
+                                                       
+                                                                                 ui.value = ui.value-5;
+                                                                                 
+                                                          
+                                                                                 getmisprofiles(0,ui.value);  
+                                                                                 $("#vlanCosSlider").slider({
+                                                                                   value: 70
+                                                                                   });        
+                                                        
+                                                                                  }
+                                                                               
+                                                                               else if(ui.value ==85){
+                                                      
+                                                                                ui.value = ui.value -5;
+                                                        
+                                                                                 getmisprofiles(0,ui.value);  
+                                                                                   $("#vlanCosSlider").slider({
+                                                                                   value: 80
+                                                                                  });        
+                                                        
+                                                                                  }
+                                                                                  else if(ui.value ==95){
+                                                      
+                                                                                  ui.value = ui.value -5;
+                                                        
+                                                                                  getmisprofiles(0,ui.value);  
+                                                                                  $("#vlanCosSlider").slider({
+                                                                                    value: 90
+                                                                                  });        
+                                                        
+                                                                                  }
+                                                                                  else if(ui.value ==100){
+                                                      
+                                                                                  ui.value = ui.value -10;
+                                                        
+                                                                                  getmisprofiles(0,ui.value);  
+                                                                                  $("#vlanCosSlider").slider({
+                                                                                    value: 90
+                                                                                  });
+                                                                                   
+                                                                                   }
+                                                                                  else
+                                                                                      {
+                                                                                      
+                                                                                      getmisprofiles(0,ui.value);
+                                                                                      
+                                                                                      }
+                                                                            
+                                                                            
+                                                                            
+                                                                            
+                                                                        }
+                                                   /*                      slide: function (event, ui) {
+                                                                            
+                                                                            if (ui.value < 10) {
+                                                                                $("#vlanCosSlider").slider("option", "step", 1);
+                                                                            } else if (ui.value >= 10 && ui.value < 100) {
+                                                                                ui.value = nearestValue(ui.value, 10);
+                                                                                $("#vlanCosSlider").slider("option", "step", 10);
+                                                                                   //alert(ui.value);
+                                                                            } else if (ui.value >= 100 && ui.value < 500) {
+                                                                                ui.value = nearestValue(ui.value, 50);
+                                                                                $("#vlanCosSlider").slider("option", "step", 50);
+                                                                               // alert(ui.value);
+                                                                            } else if (ui.value >= 500 && ui.value < 1000) {
+                                                                                ui.value = nearestValue(ui.value, 100);
+                                                                                $("#vlanCosSlider").slider("option", "step", 100);
+                                                                                //alert(ui.value);
+                                                                            }
+                                                                        } */
+                                                                       
+                                                                    });
+                                                                    
+                                                                    
+                                                                  //  if(flag){
+                                                                        //alert("inside auto");
+                                                                    //    autoClick();
+                                                                   // }else{
+                                                                    //    flag = true;
+                                                                   // }
+                                                                }
+                                                                
+                                                                updateSlider();
+                                                                
+/*                                                                 function autoClick(){
+                                                                    flag = false;
+                                                                    jQuery('[class$=cosBtnID{!vlanCounter}]').trigger('click');
+                                                                } */
+                                                               
+
+/*                                                                 function invokeCosChartValues() {
+                                                                    callCosCharValues();
+                                                                } */
+                                                                
+                                                                
+/*                                                                 function invokeApplyAndSave{!vlanCounter}(){
+                                                                    
+                                                                    
+                                                                    // applySave({!counter});
+                                                                   applySave({!vlanCounter});
+                                                                    
+                                                                    $("a[data-name='reviewQuote']").trigger("click");
+                                                                    $("a[data-name='configSites']").parent('li').find('.circlenum').text('').append('<span class="glyphicon glyphicon-ok"></span>');
+                                                                    $("a[data-name='configSites'], a[data-name='confirmation']").parent('li').addClass("disabled");
+                                                                    $('.disabled a').removeAttr('data-toggle href');
+                                                                    $("a[data-name='reviewQuote']").parent('li').removeClass("disabled");
+                                                                    $("a[data-name='configSites']").parent('li').removeClass("active");
+                                                                    $("a[data-name='reviewQuote']").parent('li').addClass("active");
+                                                                    
+                                                                    
+                                                                } */
+                                                                
+                                                                
+                                                                function resetCurrentCos(){
+                                                                    resetCurrentVlanCos();
+                                                                }
+
+/*                                                                 function invokeReconfigureCos{!vlanCounter}(){
+                                                                    
+                                                                    //reconfigureCos({!counter});
+                                                                    reconfigureCos(!vlanCounter});
+                                                                    
+                                                                    $("a[data-name='reviewQuote']").trigger("click");
+                                                                    $("a[data-name='configSites']").parent('li').find('.circlenum').text('').append('<span class="glyphicon glyphicon-ok"></span>');
+                                                                    $("a[data-name='configSites'], a[data-name='confirmation']").parent('li').addClass("disabled");
+                                                                    $('.disabled a').removeAttr('data-toggle href');
+                                                                    $("a[data-name='reviewQuote']").parent('li').removeClass("active");
+                                                                    $("a[data-name='configSites']").parent('li').removeClass("disabled");
+                                                                    $("a[data-name='reviewQuote']").parent('li').addClass("active");
+                                                                    
+                                                                    
+                                                                } */
+                                                                
+                                                                
+/*                                                                 function invokeCancelAllChanges{!vlanCounter}(){
+                                                                    //cancelAllChnages({!counter});
+                                                                    cancelAllChnages({!vlanCounter});
+                                                                } */
+                                                                </script>
+                                                           
+                                                        </td>
+                                                        <td></td>
+                                                    </tr>
+
+
+        
+                                                    
+                                                    <!-- Pie Chart Display for Class of service ENd -->
+                                                     
+                                                </table>
+
+                                            </div>
+                                            <br/>
+
+                                     <div class="row">
+                                        <div class="col-xs-12">
+                                        <hr class="gray_hr"  style="border-top:1px solid black !important"/>
+                                        </div>
+                                    </div> 
+                                            
+
+                                            
+                                            
+                                            <div class="pull-right text-right" style="margin-bottom: 20px;margin-right:50px;">
+                                                <apex:CommandButton value="Reset" action="{!resetall}"  status="loading" rerender="vlanLevelCospanel" styleClass="btn secondary pull-left prodInfoNextBtnId" style="font-size: 16px; margin-left: 10px !important; padding: 0px 10px !important; width:150px !important; height:35px !important; margin-right: 50px !important; background-color: #FFF !important; color:#056FAB !important; border:1px #056FAB !important; border-style: solid !important;" />  
+                                                
+                                                <apex:CommandButton action="{!UpdateCosRecords}"  style="height:35px !important;width:135px !important;" status="loading" rerender="vlanChangeCosRepeat,vlanCosReviewPanel,cosdisplayforreviewpiechart,pg" value="Apply & Save"  styleClass="btn btn-primary applynsaveforcos disabled" oncomplete="showreviewdisppanel();"/>
+                                                
+                                             </div>   
+
+                                        </div>
+                      
+               
+                                          <!-- Config Site End -->
+                      
+                      
+                                    
+                                         <!-- Confirmation page content -->
+                                        <div class="tab-pane fade" id="confirmation">
+                                            
+                                            <div class="row m0"><div class="col-xs-12 m-t-10 m-b-5"><hr size="6" /></div></div>                                  
+                                            <div>
+                                                
+                                                <div class="col-xs-12 col-md-12">
+                                                    <p class="greenText f-s-xxl" style="font-size: 2em;font-color:#4ca90c !important;font-family: omnes_att_iimedium;" >
+                                                        Thank you!
+                                                    </p>
+                                                    
+                                                </div>
+                                            </div>
+                                             
+                                             
+                                            <div class="row m0"><div class="col-xs-12 m-t-10 m-b-5"><hr class="gray_hr" style="border-top:1px solid black !important;width: 1100px;margin-left: -15px !important;"/></div></div>
+                                            <div style="margin-left:20px;">
+                                                <h4 style="font-size: 1.13em;font-family: omnes_att_iimedium;">We received your Order Number:{!listValidationRecords[0].RelatedQuote__r.Name}.You Will receive a confirmation by email.</h4>
+                                            </div>
+                                            <br/>
+                                            <div style="margin-left:20px;">          
+                                                
+                                                <h4 style="font-size: 1.13em;font-family: omnes_att_iimedium;">To View the status of your order,go to <b>My Dashboard</b> and check <b>Manage Quotes &amp; Orders</b>.</h4>
+                                            </div>
+                                            <br/>
+                                            <div class="row m0"><div class="col-xs-12 m-t-20 m-b-20"><hr class="gray_hr" style="border-top:1px solid black !important;width: 1100px;margin-left: -15px !important;"/></div></div>
+                                            
+                                            
+                                            <div class="col-xs-2 p0" style="margin-bottom: 20px;margin-left:7px;">
+                                                
+                                                <a class="blueText btnAsLink" href="/apex/PortalDashboard_UI" style="margin-left:15px;font-size:1.13em;">Go to My Dashboard</a>
+                                                
+                                            </div>
+                                            
+                                            
+                                            <div class="pull-right text-right" style="margin-bottom: 20px;margin-right:50px;">
+                                            
+                                            
+                                           <!--  <apex:commandButton value="Close" action="{!close}" styleClass="btn secondary pull-left prodInfoNextBtnId" />   -->
+                                            
+                                             <apex:CommandButton value="Close" action="{!close}"  status="loading" rerender="vlanLevelCospanel" styleClass="btn secondary pull-left prodInfoNextBtnId" style="font-size: 16px; margin-left: 10px !important; padding: 0px 10px !important; width:150px !important; height:35px !important; margin-right: 50px !important; background-color: #FFF !important; color:#056FAB !important; border:1px #056FAB !important; border-style: solid !important;" />
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            </div>   
+                                        </div>
+                                         <!-- Confirmation page content End-->
+                                        
+                                        
+                                        
+                                        
+                                    </div>
+                                </apex:outputPanel>
+
+
+
+                            
+
+                                    </apex:form> 
+
+
+                             </div>
+                             
+                             </div>
+
+                             </div>
+                             
+                             </div>
+                         
+                          </td></tr>
+                        
+                        </table>
+                        
+                         </apex:outputPanel>
+
+                      </div>
+                
+                   
+                 <!--TableVlanCosChange End  --> 
+                 
+                 
+                 
+                 
+                
+                 
+                 
+                 
+                 
+                 <!-- REVIEW PANEL START -->  
+                 
+                        <div style="width:1100px;background-color:#F0F0F0;margin-left:50px;">
+                      <apex:form >
+                     <apex:outputPanel styleClass="displayclassforreview" style="display:none;" id="cosdisplayforreviewpiechart">
+                     
+                      <br/>
+                      <h4 style="margin-left:50px;color:black;font-size: 0.94em;font-family:omnes_att_iimedium;">Order Number:{!listValidationRecords[0].RelatedQuote__r.Name}</h4>  
+                      <br/>     
+                             
+                     <hr class="gray_hr"  style="border-top:1px solid black !important"/>
+                      
+                     <!-- <h4 style="margin-left:50px;"><b>VLAN Name:{!listValidationRecords[0].RelatedQuote__r.Name}</b></h4>   -->
+                     
+                       <br/>
+                      
+                <!--            <div class="row tabbed_menu" id="mainreviewdisp" style="margin-left:90px">
+                            <div class="col-xs-12 col-md-12">
+                            <ul class="mainnav" role="tablist">
+                            <li class="disabled" style="min-width:25%;">
+                            <a  data-tabname="Select Customer" role="tab"></a>
+                            <div class="circlenum" style="margin-left: 20px;" ><span class="glyphicon glyphicon-ok"></span></div>Configure </li>
+                            <li class="active"><a  data-tabname="Review Request" role="tab"></a>
+                            <div class="circlenum" style="margin-left: 50px;">2</div>Review Request </li>
+                            <li class="disabled"><a  data-tabname="Review Pricing Schedule" role="tab"></a>
+                            <div class="circlenum" style="margin-left:90px;">3</div>View Confirmation Information</li></ul></div></div> -->
+                            
+                                            
+                                           
+                                            
+                                             <div class="" style="margin-left:270px;">
+                                                <h2 style="color:black;font-size: 1.38em;font-family:omnes_att_iimedium;"><b>You have changed the Class of Service Profiles on {!ReviewCounter} VLAN.</b></h2>
+                                            </div>
+                                           <br/>
+                                           <br/>
+                                             <div style="margin-left: 80px;margin-right: 50px;margin-bottom:20px;text-align:20px;">
+                                                 <p style="margin-left:50px;color:black;font-size: 1.13em;font-family:omnes_att_iimedium;line-height:1.1">To change a (CoS) on more VLANs before submitting, click <b>Change CoS</b> on the appropriate VLAN.</p><br/>
+                                                <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;line-height:1.1"> To stop without the changes taking effect, click <b>Cancel All Changes &amp; Exit</b>. To complete your request, click <b>Submit.</b></p>
+                                                <br/>
+                                            </div>
+                            
+                            
+                            <!-- Display DIV START-->
+                                            <div style="display:inline-flex;">
+                                            <div style="margin-left: 200px;border-right: solid 1px #B9B7B7;">
+                                            <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b>Current</b> Class of Service Profile IDs</p>
+                                            <br/>
+                                            <table style="width:350px;">
+                                            
+                                            <tr style="height:30px;">
+                                            <td>
+                                           <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b>VLAN Number and Name</b></p>
+                                            </td>
+                                            <td>
+                                           <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b> Profile ID </b></p>
+                                            </td>
+                                            </tr>
+                                            
+                                            
+                                             <apex:variable var="counterforreviewdisp1" value="{!0}"/> 
+                                            <apex:repeat value="{!vlanList}" var="vlanInfo_reviewdisplay" id="reviewlistdisplay1">
+                                            
+                                            <apex:variable var="counterforreviewdisp1" value="{!counterforreviewdisp1 + 1}"/>
+                                            <tr style="height:30px;">
+                                            <td>
+                                            <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;">VLAN {!counterforreviewdisp1} - {!vlanInfo_reviewdisplay.VPN_Name__c} </p>
+                                            </td>
+                                            <td>
+                                           <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"> {!vlanInfo_reviewdisplay.Ingress_Profile_ID__c}</p>
+                                            </td>
+                                            </tr>
+                                            </apex:repeat>
+                                            
+                                            
+                                            
+                                           </table>
+                                            </div>
+                                            <div style="margin-left:80px;">
+                                                <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b>Proposed</b> Class of Service Profile IDs</p>
+                                            <br/>
+                                            
+                                            <table style="width:350px;">
+                                            <tr style="height:30px;">
+                                            <td>
+                                            <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b> VLAN Number and Name</b></p>
+                                            </td>
+                                            <td>
+                                            <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"><b> Profile ID</b></p>
+                                            </td>
+                                            </tr>
+                                            
+                                            
+                                             <apex:variable var="counterforreviewdisp2" value="{!0}"/> 
+                                            <apex:repeat value="{!vlanList}" var="vlanInfo_reviewdisplay" id="reviewlistdisplay2">
+                                            <apex:variable var="counterforreviewdisp2" value="{!counterforreviewdisp2 + 1}"/>
+                                            
+                                            
+                                           <apex:outputPanel rendered="{!IF(vlanInfo_reviewdisplay.CoSChange__c == true,true,false)}" layout="none">
+                                            <tr style="height:30px;">
+                                            <td>
+                                           <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"> VLAN {!counterforreviewdisp2} - {!vlanInfo_reviewdisplay.VPN_Name__c}</p> 
+                                            </td>
+                                            <td>
+                                           <p style="color:black;font-size: 1.13em;font-family:omnes_att_iimedium;"> {!vlanInfo_reviewdisplay.Ingress_Vlan__c}</p>
+                                            </td>
+                                            </tr>
+                                            </apex:outputPanel>
+                                            
+                                            
+                                            
+                                            
+                                            </apex:repeat>
+                                            
+                                            
+                                            </table>
+                                            
+                                            
+                                            
+                                            
+                                            </div>
+                                            </div>
+                                            
+                            <!-- Display DIV END-->             
+                          
+  
+                                  
+                                               <div class="row">
+                                                <div class="col-xs-12">
+                                                   <hr class="gray_hr"  style="border-top:1px solid black !important"/>
+                                                </div>
+                                                </div>
+                                                
+                                            <div style="background:#F0F0F0;height: 60px;width: 1000px;margin-left: 50px;">
+        
+                              <!--                   <div class="col-xs-2 p0" style="margin-bottom: 20px;margin-left:40px;">
+                                                    
+                                                    <apex:commandLink onclick="invokeCancelRequest();" value="Cancel Request" styleClass="btn secondary pull-left prodInfoNextBtnId" reRender="vlanCosChangeFormId"  />
+                                                    
+                                                </div> -->
+                                                
+                                                
+                                                <div class="pull-right text-right" style="margin-bottom: 20px;">
+                                                  
+                                                 <apex:commandButton styleClass="btn btn-primary prodsubmitCosBtnId"  style="height: 40px; width: 172px ! important;margin-left:50px;" action="{!Submitrecord}" status="loading" value="Submit" rerender="coschangepanel,cosVlanPanel,cospanelid,Samplepage,vlanChangeCosRepeat" oncomplete="gotoConfirmationcos();">
+                                                </apex:commandButton>
+                                                
+                                                
+                                                </div> 
+                                                
+                                           </div>
+                                                
+                                                
+                                                
+                                                <script>
+                                                    
+                                                
+                                                
+/*                                                 function invokeFinalSubmit{!counter}(){
+                                                   
+                                                    $("a[data-name='confirmation']").trigger("click");
+                                                    $("a[data-name='selectProd']").parent('li').find('.circlenum').text('').append('<span class="glyphicon glyphicon-ok"></span>'); 
+                                                    $("a[data-name='configSites'], a[data-name='selectProd']").parent('li').addClass("disabled");
+                                                    $('.disabled a').removeAttr('data-toggle href');
+                                                    $("a[data-name='confirmation']").parent('li').removeClass("disabled");
+                                                    $("a[data-name='selectProd']").parent('li').removeClass("active");
+                                                    $("a[data-name='confirmation']").parent('li').addClass("active");
+                                                    submitChangeOfCos({!counter});                                                                                                                                                          
+                                                } */
+                                                     
+                                                     
+
+                                                     
+                                                  </script>
+                      
+                      </apex:outputPanel>
+                      
+                      
+<!--                           <apex:actionFunction name="callCosCharValues" action="{!fetchcoschartvalues}" rerender="updatecoschart,Page2" status="loading" />
+                          
+                              <apex:actionFunction name="cancelAllChnages" action="{!cancelAllChnages}" reRender="cosVlanPanel" status="loading">
+                        <apex:param name="selectedcounter" value="" assignTo="{!SelectedCounterValue}" />
+                                         </apex:actionFunction>
+                                         
+                                <apex:actionFunction name="invokeCancelRequest" action="{!invokeCancelRequest}"  status="loading">
+                                </apex:actionFunction>          
+                                             
+                                             
+                                             
+                <apex:actionFunction name="applySave" action="{!applyAndContinue}" reRender="cosVlanPanel,Page2" status="loading">
+                            <apex:param name="selectedcounter" value="" assignTo="{!SelectedCounterValue}" />
+                </apex:actionFunction>
+    
+                <apex:actionFunction name="submitChangeOfCos" action="{!submitChangeOfCos}" reRender="" status="loading">
+                <apex:param name="selectedcounter" value="" assignTo="{!SelectedCounterValue}" />
+                </apex:actionFunction>
+    
+                <apex:actionFunction name="resetCurrentVlanCos" action="{!resetCurrentVlanVal}" reRender="vlanLevelCospanel" status="loading">
+                </apex:actionFunction>   -->                          
+                                         
+                      
+                       
+                      </apex:form>
+                      </div>
+                     <!-- REVIEW PANEL END -->  
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                    <!--Submit Panel --> 
+                    
+                    
+                      
+                          <table style="width:1100px; margin-left:50px; heigth:60px">
+                       
+                            <tr>
+                                <td>
+                                    
+
+    
+    
+                                    
+                                    
+                                     <div class="row" id="msgdspcos" style="margin-top:30px">
+                                        
+                                        <div class="col-xs-12" style="background-color: #F3F3F3;width: 1100px;margin-left: 15px;">
+                                            <p style="font-size: 1.13em;font-family: omnes_att_iimedium;text-align:center;line-height:1.7;margin-top:40px;margin-bottom:30px;">
+                                                To change the Class of Service (CoS) Profile ID for a VLAN, click <b>Change CoS</b> for that VLAN. <br/>
+                                                Reconfigure the profile and click <b>Apply &amp; Save</b>. You can reconfigure 1 or more VLANs<br/> before
+                                                submitting your request.
+                                            </p>
+                                            
+                                            <br />
+                                        </div>
+                                    </div>  
+                                    
+                                    
+                                    <br/>
+
+                                    <div class="col-xs-2 p0" style="margin-bottom:20px;width:500px;">
+                                        <apex:form >
+                                            <apex:commandLink styleClass="blueText btnAsLink" style="font-size:1.13em;" action="{!cancel}" reRender="errmsghead" value="Cancel All Changes & Exit" status="loading"  oncomplete="location.reload();"/>
+                                          
+                                        </apex:form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                      
+                      
+                      
+
+                        
+                  <!--Submit Panel --> 
+
+                    </td> 
+            </tr>  
+        </table>
+    </div>
+</td>
+</apex:outputPanel>
+</tr>
+ 
+ 
+<!-- ROW 2 END -->
+</table>
+
+
+
+<style>
+
+ b{font-weight:bold;}
+
+.vlanPieTable
+{
+overflow:initial !important;
+}
+
+
+.legendItem
+{
+width:15px !important;
+height:15px !important;
+
+}
+
+</style>
+
+
+</apex:page>

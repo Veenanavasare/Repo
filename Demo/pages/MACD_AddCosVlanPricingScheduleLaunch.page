@@ -1,0 +1,18 @@
+<apex:page controller="API_VLANCoSAddController" action="{!SendRequest}" sidebar="false" showHeader="false" showChat="false" standardStylesheets="false">
+    <style>
+        .message.errorM3 {
+            margin: auto !important;
+        }
+        .messageCell>.messageText {
+            font-size: 18px;
+            font-weight: normal;
+        }
+    </style>
+    
+    <apex:form >
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:commandLink value="<<Back" action="{!goback}" styleClass="btnAsLink blueText" /><br/><br/>
+        <apex:iframe src="{!response}" scrolling="true" rendered="true" html-class="docuSignFrame" id="pricingSchDocId"/>
+        <apex:actionPoller action="{!checkESignUpdates}" interval="10" enabled="{!pollerEnabled}"/>
+    </apex:form>
+</apex:page>

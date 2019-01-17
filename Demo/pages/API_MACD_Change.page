@@ -1,0 +1,708 @@
+<!--
+Apex Page Name : API_MACD_Change
+Version : 2.0 
+Created Date : 13 Dec 2014
+Modified Date : 30 March 2015
+Function : This page handles display of options for MACD Changes (VLAN Add/VLAN Disconnect/UBB Add/UBB Change/UBB Remove) for multiple Premises
+Modification Log :
+* Developer          Date            Description
+* Gourishankar palo  30 March 2015   Implementation for UBB Add/UBB Change/UBB Remove functionlity
+* Samarjit Debata    30 March 2015   Implemenation to enable multiple Premises for accessing MACD changes to be applied 
+* Aparna Anand Godi  30 March 2015   Implementation for VLAN Add/VLAN Disconnect
+* Raunak Kumar       11 June  2015   Implementation for Port Speed Change/CoS Change/VLAN Speed Change
+-->
+
+<apex:page standardController="RDS_Validation__c" sidebar="false" showChat="false" showHeader="false" extensions="API_MACD_Change_Controller">
+<style>
+
+body .bPageBlock .detailList tr td, body .bPageBlock .detailList tr th, body table.list tr td, body table.list tr th, body .hoverDetail .bPageBlock .detailList tr td, body .hoverDetail .bPageBlock .detailList tr th {
+  border-color: #ececec;
+  background-color: #FFFFFF;
+}
+.individualPalette .Custom67Block .tertiaryPalette, .layoutEdit .individualPalette .Custom67Block .tertiaryPalette {
+  background-color: #35b4e9;
+  border-color: #35b4e9;
+}
+</style>
+<script>
+    
+</script>
+
+<style>
+.statusStyle {
+    background:url(/img/loading.gif) no-repeat 0 0; 
+    padding-left:20px; 
+    margin-left:10px; 
+    padding-bottom:5px; 
+}
+</style>
+
+<script>
+function copyValueToEgress() {
+         copyValueAF();
+    }
+    
+   function onCompletedConfirmUserAdd() {
+        var confObj = confirm("Are you sure you want to proceed?");
+        if (confObj) {
+            confirmUserClick();
+        }
+    } 
+    function onResetConfirmUser() {
+       var confObj = confirm("Are you sure you want to proceed?");
+        if (confObj) {
+            confirmUserResetClick();
+        }
+    }
+    function enableDisable(cb){  
+      $("input:checkbox[id*=looped]").removeAttr('checked');
+      $(cb).attr('checked', 'checked');
+    }
+    function onCompletedConfirmUserdis() {
+        var confObj = confirm("Are you sure you want to proceed?");
+        if (confObj) {
+            confirmUserClickdis();
+        }
+    }
+    function onResetConfirmUserdis() {
+       var confObj = confirm("Are you sure you want to proceed?");
+        if (confObj) {
+            confirmUserResetClickdis();
+        }
+    }
+    function onSaveUser() {
+        var confObj = confirm("Are you sure you want to Save ?");
+        if (confObj) {
+            saveUserClick();
+        }
+    }
+    function onCancelUser() {
+        var confObj = confirm("Are you sure you want to Clear?");
+        if (confObj) {
+            cancelClick();
+        }
+    }
+    
+    function onCompletedConfirmUser() {
+        var confObj = confirm("Are you sure you want to Commit?");
+        if (confObj) {
+            confirmUserFinalClick();
+        }
+    }
+    function onCompletedCancelUser() {
+    
+        var confObj = confirm("Are you sure you want to Cancel?");
+        if (confObj) {
+            cancelUserClick();
+        }
+    }
+    function onCompletedVLANChange() {
+    
+        var confObj = confirm("Are you sure you want to Save?");
+        if (confObj) {
+            savevlanchange();
+        }
+    }
+    function onResetVLANChange() {
+    
+        var confObj = confirm("Are you sure you want to Cancel?");
+        if (confObj) {
+            cancelvlanchange();
+        }
+    }
+    function disableOnSubmit(input) {
+            var btn = input;
+            setTimeout(function(){ 
+                btn.disabled = 'disabled';
+                // Use the Salesforce CSS style to make the button appear disabled
+                btn.className = 'btnDisabled';
+                btn.value = "Saving..."; 
+            }, 50);
+        }
+        function clearVlanChangesJS() {
+        
+        var confObj = confirm("Are you sure you want to Clear?");
+        if (confObj) {
+            clearVlanChanges();
+            }
+        }
+        function enableSaveBtn_CosChange(){
+            //alert("Inside enableSaveBtn_CosChange fn");
+            enableSaveButton_CosChange();
+        }
+        
+        function enableSaveBtn_VlanCosChange(){
+            //alert("Inside enableSaveBtn_VlanCosChange fn");
+            enableSaveButton_VlanCosChange();
+        }
+    
+        /*function enableSaveBtn_UBBAdd(){
+            //alert("Inside enableSaveBtn_UBBAdd fn");
+            enableSaveButton_UBBAdd();
+        }*/
+        function enableSaveBtn_PortSpeed(){
+            //alert("Inside enableSaveBtn_UBBAdd fn");
+            enableSaveButton_PortSpeed();
+        }
+        function enableSaveButtonnAddVlan(){
+        
+           enableSaveButton_AddVlan();
+            
+        }
+        function enableSaveBtn_VlanSpeedChange(){
+            enableSaveButton_VlanSpeedChange();
+        }
+        function enableSaveBtn_VlanDisconnect(){
+            enableSaveButton_VlanDisconnect();
+        }
+    
+</script>
+
+ <Center><p><H1> Perform Save for the Desired Action on the Selected Premise Before Confirm </H1></p> </Center>
+    <apex:form id="parentForm" style="background-color:#35b4e9;">
+    
+        <apex:actionFunction name="copyValueAF" action="{!copyValuetoEgressfromIngress}" oncomplete="enableSaveButtonnAddVlan();" reRender="egress,parentForm"/>
+        <apex:actionFunction name="confirmUserClick" action="{!createValidateRecords}" reRender="parentForm"/>
+        <apex:actionFunction name="confirmUserResetClick" action="{!createValidateRecordsCancel}" reRender="parentForm"/>
+        <apex:actionFunction name="confirmUserClickdis" action="{!disconnectRecords}" reRender="parentForm"/>
+        <apex:actionFunction name="confirmUserResetClickdis" action="{!disconnectRecordsforCancel}" reRender="parentForm"/>
+        <apex:actionFunction name="saveUserClick" action="{!insertValidateRecordsOnSave}" reRender="parentForm"/>
+        <apex:actionFunction name="cancelClick"  action="{!rollbackRecordsOnCancel}" reRender="parentForm"/>
+        <apex:actionFunction name="confirmUserFinalClick"  action="{!updateRecordsOnConfirm}" reRender="parentForm"/>
+        <apex:actionFunction name="cancelUserClick"  action="{!completeRollbackRecordsOnCancel}" reRender="parentForm"/>
+        <apex:actionFunction name="savevlanchange"  action="{!SaveVLANChange}" reRender="parentForm"/>
+        <apex:actionFunction name="clearVlanChanges" action="{!ClearOrderCoS}" reRender="parentForm" status="myStatus" />
+        <apex:actionFunction name="cancelvlanchange"  action="{!RollupVLANChange}" reRender="parentForm"/>
+        <apex:actionFunction name="enableSaveButton_CosChange"  action="{!enableSaveButtonForCosChange}" reRender="parentForm"/>
+        <apex:actionFunction name="enableSaveButton_VlanCosChange"  action="{!enableSaveButtonForVlanCosChange}" reRender="parentForm"/>
+        <!--<apex:actionFunction name="enableSaveButton_UBBAdd"  action="{!enableSaveButtonForUBBAdd}" reRender="parentForm"/>-->
+        <apex:actionFunction name="enableSaveButton_PortSpeed"  action="{!enableSaveButtonForPortSpeed}" reRender="parentForm"/>
+        <apex:actionFunction name="enableSaveButton_AddVlan"  action="{!enableSaveButtonForAddVlan}" reRender="parentForm"/>
+        <apex:actionFunction name="enableSaveButton_VlanSpeedChange"  action="{!enableSaveButtonForVlanSpeedChange}" reRender="parentForm"/>
+        <apex:actionFunction name="enableSaveButton_VlanDisconnect"  action="{!enableSaveButtonForVlanDisconnect}" reRender="parentForm"/>
+        
+    <apex:pageBlock id="pbMain" >
+        <apex:pageBlockSection collapsible="False" title="Deal Hash Basic Information" columns="2">
+            <apex:outputField value="{!RDS_Validation__c.Premise__r.DealHash__r.Customer_Business_Name__c}"/>
+            <apex:outputField value="{!RDS_Validation__c.Premise__r.DealHash__r.Name}" label="Deal Hash"/>
+            <apex:outputField value="{!RDS_Validation__c.Premise__r.DealHash__r.GRID_Deal_Hash_Number__c}" rendered="{!IF(RDS_Validation__c.Premise__r.DealHash__r.GRID_Deal_Hash_Number__c!=null,true,false)}"/>
+            <apex:outputField value="{!RDS_Validation__c.Premise__r.DealHash__r.Invoice_Account_Number__c }"/>
+            <apex:outputField value="{!RDS_Validation__c.Premise__r.DealHash__r.Opportunity__r.End_Customer__c}"/>
+       </apex:pageBlockSection>
+        
+          <apex:outputPanel id="opProductPanel">
+                     {!msg}
+                     
+            <apex:pageMessages id="myError" />                                                   
+          </apex:outputPanel>
+       <apex:repeat value="{!listDataWrapper}" var="eachPremise" id="dataSetRepeat">
+            <table style="border-bottom: thin inset #747e96;background-color:#35b4e9;color:#003366;font-style: normal;font-family: Arial, Helvetica, sans-serif;" width="100%">
+                <tr>
+                    <td  width="5%" style="border-right-style: inset;border-color: #222;text-align:center;">
+                        <apex:inputCheckbox value="{!eachPremise.isRendered}" title="Select" >
+                            <apex:actionSupport action="{!generateDataSheetAndRender}" event="onchange" rerender="parentForm,dataSetRepeat">
+                                <apex:param name="premiseIdSelected" value="{!eachPremise.premise.id}" assignTo="{!selectedPremise}" />
+                            </apex:actionSupport>
+                        </apex:inputCheckbox>
+                    </td>
+                    <td width="15%" style="border-right-style: inset;border-color: #222;text-align:center;">
+                        <u><b>Premise</b></u><br />
+                        <i>
+                        <apex:outputLink value="/{!eachPremise.premise.Id}" target="_blank"><apex:outputField value="{!eachPremise.premise.Name}"/></apex:outputLink>
+                        </i>
+                    </td>
+                    <td width="10%" style="border-right-style: inset;border-color: #222;text-align:center;">
+                        <u><b>GRID#</b></u><br />
+                        <i>
+                        <apex:outputText value="{!RDS_Validation__c.Premise__r.DealHash__r.GRID_Deal_Hash_Number__c}" />
+                        </i>
+                    </td>
+                    <td width="50%" style="border-right-style: inset;border-color: #222;text-align:center;">
+                        <u><b>Address</b></u><br />
+                        <i>
+                        <apex:outputText value="{!eachPremise.premise.Full_Address_MACD__c}" /> 
+                        </i>
+                    </td>
+                    
+                    <td width="20%" style="text-align:center;" >
+                        <u><b>VPN Name</b></u><br />
+                        <i>
+                            <apex:repeat value="{!eachPremise.premise.RDS_Validation_Details__r}" var="validation">
+                                <apex:outputText value="{!validation.VPN_Name__c}" />
+                            </apex:repeat>   
+                        </i>                     
+                    </td>
+                </tr>
+            </table>
+            <apex:selectList value="{!eachPremise.actionChosen}" rendered="{!eachPremise.isRendered}" multiselect="false" size="1" title="Choose an action">
+                <apex:selectOptions value="{!eachPremise.listActionItems}" >   
+                
+                </apex:selectOptions>
+                <apex:actionSupport action="{!renderThePageForChosenAction}" event="onchange" reRender="parentForm,opParentProcess,opMACDUBB"/>
+            </apex:selectList>
+            <apex:outputPanel id="opParentProcess" rendered="{!eachPremise.isPageVisible}">
+                <apex:outputPanel id="opMACDUBB" rendered="{!isUBB}" >
+                     <div id="pageName">
+                         <apex:pageBlock >      
+                                <apex:outputPanel >
+                                    <apex:pageblockSection id="currentBlock">                
+                                        <apex:outputLabel value="Current Configuration" /><br/>
+                                        <apex:pageBlockTable id="currentTable" var="eachCurrentVLan" value="{!eachPremise}"> 
+                                            <apex:column headerValue="Port Speed" value="{!eachCurrentVLan.validationRecordCurrent.Current_Port_Speed__c}" /> 
+                                            <apex:column headerValue="VLAN Speed Total" value="{!eachCurrentVLan.validationRecordCurrent.Current_Vlan_Speed_Total__c}" />  
+                                            <apex:column headerValue="Number of VLAN" value="{!eachCurrentVLan.validationRecordCurrent.Current_No_of_VLANS__c}" rendered="{!eachPremise.actionchosen == 'Port Speed Change' ||  eachPremise.actionchosen == 'CoS Change' || eachPremise.actionchosen == 'VLAN Speed Change'}"/>&nbsp; 
+                                            <apex:column headerValue="Access Speed" value="{!eachCurrentVLan.validationRecordCurrent.Current_Access_Speed__c}" />
+                                            
+                                            <apex:column headerValue="Unilink" value="{!eachCurrentVLan.validationRecordCurrent.Current_Unilink__c}" />                                             
+                                            <apex:column headerValue="UBB" value="{!eachCurrentVLan.validationRecordCurrent.Current_UBB__c}" />
+                                            <apex:column headerValue="IP Version" value="{!eachCurrentVLan.validationRecordCurrent.Current_IP_Verison__c}" />
+                                            <apex:column headerValue="Interface Type" value="{!eachCurrentVLan.validationRecordCurrent.Current_Interface_Type__c}" />
+                                            <apex:column headerValue="MBC" value="{!eachCurrentVLan.validationRecordCurrent.Current_MBC__c}" />  
+                                            <apex:column headerValue="Number of VLAN" value="{!eachCurrentVLan.validationRecordCurrent.Current_No_of_VLANS__c}" rendered="{!eachPremise.actionchosen != 'Port Speed Change' && eachPremise.actionchosen != 'CoS Change' && eachPremise.actionchosen != 'VLAN Speed Change'}"/>&nbsp;&nbsp;
+                                            <apex:column headerValue="COS" value="{!eachCurrentVLan.validationRecordCurrent.Current_Class_of_Service__c}" rendered="{!eachPremise.actionchosen != 'Port Speed Change' && eachPremise.actionchosen != 'VLAN Speed Change'}"/>
+                                            <apex:column headerValue="COS Profile ID" value="{!eachCurrentVLan.validationRecordCurrent.Current_Cos_Profile_ID__c}" rendered="{!eachPremise.actionchosen != 'Port Speed Change' && eachPremise.actionchosen != 'VLAN Speed Change' && eachPremise.validationRecordNew.Unilink__c != 'true'}"/>                                             
+                                        </apex:pageBlockTable>
+                                    </apex:pageblockSection>
+                                    
+                                    <apex:pageblockSection id="newBlock" rendered="{!eachPremise.actionchosen != 'Port Speed Change' && eachPremise.actionchosen != 'CoS Change' && eachPremise.actionchosen != 'VLAN Speed Change'}"> 
+                                        <apex:outputLabel value="New Configuration" id="nw" /><br/>
+                                        <apex:pageBlockTable id="newTable" var="eachNewVLan" value="{!eachPremise}" >                                          
+                                           <apex:column headerValue="Port Speed" value="{!eachNewVLan.validationRecordNew.Port_Speed__c}"/>                                                                                       
+                                                <apex:column headerValue="VLAN Speed Total" value="{!eachNewVLan.validationRecordNew.Vlan_Speed_Total__c}" />   
+                                                <apex:column headerValue="Access Speed" value="{!eachNewVLan.validationRecordNew.Access_Speed__c}" />
+                                                <apex:column headerValue="Unilink" value="{!eachNewVLan.validationRecordNew.Unilink__c}" />                                                                                                    
+                                                <apex:column headerValue="UBB" value="{!eachNewVLan.validationRecordNew.UBB__c}" />
+                                                <apex:column headerValue="IP Version" value="{!eachNewVLan.validationRecordNew.IP_Version__c}" />
+                                                <apex:column headerValue="Interface Type" value="{!eachNewVLan.validationRecordNew.Interface_Type__c}" />
+                                                <apex:column headerValue="MBC">                                                    
+                                                    <apex:selectList value="{!eachNewVLan.selectedMBCSpeed}" size="1" disabled="{!eachNewVLan.isMBCDisabled}" >
+                                                        <apex:selectOptions value="{!optionsMBC}"/>
+                                                        <apex:actionSupport event="onchange" action="{!performUpdateUBBonMBCSelection}" reRender="parentForm"/> 
+                                                    </apex:selectList>
+                                                </apex:column>    
+                                                <apex:column headerValue="Number of VLAN" value="{!eachNewVLan.validationRecordNew.No_of_VLANS__c}"/>
+                                                <apex:column headerValue="COS" value="{!eachNewVLan.validationRecordNew.Class_of_Service__c}"/> 
+                                                <apex:column headerValue="COS Profile ID" value="{!eachNewVLan.validationRecordNew.Current_Cos_Profile_ID__c}" rendered="{!eachPremise.actionchosen == 'CoS Change'}"/>
+                                               
+                                            </apex:pageBlockTable> 
+                                        </apex:pageblockSection> 
+                                        
+                                        <!--Port Speed Change-->
+                                        
+                                        <apex:pageblockSection id="newBlock1" rendered="{!eachPremise.actionchosen == 'Port Speed Change' || eachPremise.actionchosen == 'VLAN Speed Change'}"> 
+                                        <apex:outputLabel value="New Configuration" id="nw"/><br/>
+                                        <apex:pageBlockTable id="newTable" var="eachNewVLan" value="{!eachPremise}" >                                          
+                                           <apex:column headerValue="Port Speed">                                                    
+                                                    <apex:selectList value="{!eachNewVLan.selectedPortSpeed}" onchange="enableSaveBtn_PortSpeed();" size="1" disabled="{!eachNewVLan.isPortDisabled}">
+                                                        <apex:selectOptions value="{!optionsPortSpeed}"/>
+                                                       <!-- <apex:actionSupport event="onchange" action="{!performUpdateUBBonPortSelection}" reRender="parentForm"/> -->
+                                                    </apex:selectList>
+                                                </apex:column>  
+                                                                                       
+                                                <apex:column headerValue="VLAN Speed Total" value="{!eachNewVLan.validationRecordNew.Vlan_Speed_Total__c}" />   
+                                                <apex:column headerValue="Number of VLAN" value="{!eachNewVLan.validationRecordNew.No_of_VLANS__c}"/>
+                                                <apex:column headerValue="Access Speed" value="{!eachNewVLan.validationRecordNew.Access_Speed__c}" />
+                                                <apex:column headerValue="Unilink" value="{!eachNewVLan.validationRecordNew.Unilink__c}" />                                                                                                    
+                                                <apex:column headerValue="UBB" value="{!eachNewVLan.validationRecordNew.UBB__c}" />
+                                                <apex:column headerValue="IP Version" value="{!eachNewVLan.validationRecordNew.IP_Version__c}" />
+                                                <apex:column headerValue="Interface Type" value="{!eachNewVLan.validationRecordNew.Interface_Type__c}" />
+                                                <apex:column headerValue="MBC">                                                    
+                                                    <apex:selectList value="{!eachNewVLan.selectedMBCSpeed}" size="1" disabled="{!eachNewVLan.isMBCDisabled}" >
+                                                        <apex:selectOptions value="{!optionsMBC}"/>
+                                                        <apex:actionSupport event="onchange" action="{!performUpdateUBBonMBCSelection}" reRender="parentForm"/> 
+                                                    </apex:selectList>
+                                                </apex:column>
+                                                <apex:column headerValue="COS" value="{!eachNewVLan.validationRecordNew.Class_of_Service__c}" rendered="{!eachPremise.actionchosen != 'VLAN Speed Change' && eachPremise.actionchosen != 'Port Speed Change'}"/> 
+                                                 <apex:column headerValue="COS Profile ID" rendered="{!eachPremise.actionchosen != 'Port Speed Change' && eachPremise.actionchosen != 'VLAN Speed Change' && (eachPremise.validationRecordNew.Unilink__c == 'false' || eachPremise.validationRecordNew.Unilink__c == '')}">   
+                                                <apex:selectList value="{!eachNewVLan.selectedCosProfileID}" onchange="enableSaveBtn_CosChange();" size="1" disabled="{!eachPremise.validationRecordNew.Unilink__c == 'true' || eachPremise.actionChosen == 'VLAN Speed Change'}" rendered="{!(eachPremise.validationRecordNew.Unilink__c == 'false' || eachPremise.validationRecordNew.Unilink__c == '')}">
+                                                        <apex:selectOptions value="{!COSProfileID}"/>
+                                                       <!-- <apex:actionSupport event="onchange" action="{!performUpdateCosProfileId}" reRender="parentForm"/> -->
+                                                    </apex:selectList>
+                                                </apex:column>                                                                                                                                                           
+                                            </apex:pageBlockTable> 
+                                        </apex:pageblockSection>
+                                        
+                                        <apex:pageblockSection id="newBlock2" rendered="{!eachPremise.actionchosen == 'CoS Change'}"> 
+                                        <apex:outputLabel value="New Configuration" id="nw"/><br/>
+                                        <apex:pageBlockTable id="newTable" var="eachNewVLan" value="{!eachPremise}" >                                          
+                                           <apex:column headerValue="Port Speed" value="{!eachNewVLan.validationRecordNew.Port_Speed__c}" style="opacity: 0.6;"/>                                               
+                                                   
+                                                                                       
+                                                <apex:column headerValue="VLAN Speed Total" value="{!eachNewVLan.validationRecordNew.Vlan_Speed_Total__c}" />   
+                                                <apex:column headerValue="Number of VLAN" value="{!eachNewVLan.validationRecordNew.No_of_VLANS__c}"/>
+                                                <apex:column headerValue="Access Speed" value="{!eachNewVLan.validationRecordNew.Access_Speed__c}" />
+                                                <apex:column headerValue="Unilink" value="{!eachNewVLan.validationRecordNew.Unilink__c}" />                                                                                                    
+                                                <apex:column headerValue="UBB" value="{!eachNewVLan.validationRecordNew.UBB__c}" />
+                                                <apex:column headerValue="IP Version" value="{!eachNewVLan.validationRecordNew.IP_Version__c}" />
+                                                <apex:column headerValue="Interface Type" value="{!eachNewVLan.validationRecordNew.Interface_Type__c}" />
+                                                <apex:column headerValue="MBC">                                                    
+                                                    <apex:selectList value="{!eachNewVLan.selectedMBCSpeed}" size="1" disabled="{!eachNewVLan.isMBCDisabled}" >
+                                                        <apex:selectOptions value="{!optionsMBC}"/>
+                                                        <apex:actionSupport event="onchange" action="{!performUpdateUBBonMBCSelection}" reRender="parentForm"/> 
+                                                    </apex:selectList>
+                                                </apex:column>
+                                                <apex:column headerValue="COS" value="{!eachNewVLan.validationRecordNew.Class_of_Service__c}" rendered="{!eachPremise.actionchosen != 'VLAN Speed Change' && eachPremise.actionchosen != 'Port Speed Change'}"/> 
+                                                 <apex:column headerValue="COS Profile ID" rendered="{!eachPremise.actionchosen != 'Port Speed Change' && eachPremise.actionchosen != 'VLAN Speed Change' && (eachPremise.validationRecordNew.Unilink__c == 'false' || eachPremise.validationRecordNew.Unilink__c == '')}">   
+                                                <apex:selectList value="{!eachNewVLan.selectedCosProfileID}" onchange="enableSaveBtn_CosChange();" size="1" disabled="{!eachPremise.validationRecordNew.Unilink__c == 'true' || eachPremise.actionChosen == 'VLAN Speed Change'}" rendered="{!(eachPremise.validationRecordNew.Unilink__c == 'false' || eachPremise.validationRecordNew.Unilink__c == '')}">
+                                                        <apex:selectOptions value="{!COSProfileID}"/>
+                                                       <!-- <apex:actionSupport event="onchange" action="{!performUpdateCosProfileId}" reRender="parentForm"/> -->
+                                                    </apex:selectList>
+                                                </apex:column>                                                                                                                                                           
+                                            </apex:pageBlockTable> 
+                                        </apex:pageblockSection>
+                                        
+                                        <!--END Port Speed Change-->
+                                        
+                                    </apex:outputPanel>      
+                                </apex:pageBlock>
+                               
+                                <apex:variable var="rowNum" value="{!0}"/>
+                                <apex:pageBlock rendered="{!NOT(VLANOpr) && NOT(VLANOprDisc) && NOT(VLANChange) && NOT(CosChange)}" >      
+                                <apex:outputPanel >
+                                    <apex:pageblockSection id="configurationBlock">                
+                                        <apex:outputLabel value="VLAN Configuration" /><br/>
+                                        <apex:pageBlockTable id="configurationTable" var="eachConfiguration" value="{!eachPremise.listConfiguration}"> 
+                                                                                      
+                                            <apex:column headerValue="Item">
+                                            <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                                            {!rowNum}
+                                            </apex:column>
+                                            <apex:column headerValue="Speed" value="{!eachConfiguration.VLAN_Speed__c}" /> 
+                                            <apex:column headerValue="New Speed" rendered="{eachPremise.actionChosen != 'Port Speed Change'}"/>
+                                           
+                                            <!-- COS Profile ID For Vlan Config-->
+                                            <apex:column headerValue="COS Profile ID" rendered="{!eachPremise.actionChosen == 'CoS Change' && eachPremise.actionChosen == 'UBB Change'}">
+                                            <apex:repeat id="configCos" var="eachNewVLan" value="{!eachPremise}">
+                                                        <apex:selectList value="{!eachNewVLan.selectedCosProfileID}" size="1" disabled="{eachPremise.actionChosen == 'VLAN Speed Change'}">
+                                                            <apex:selectOptions value="{!COSProfileID}"/>
+                                                            <!--<apex:actionSupport event="onchange" action="{!performUpdateCosProfileIdConfig}" reRender="parentForm"/> -->
+                                                        </apex:selectList>
+                                          </apex:repeat>
+                                             </apex:column>
+                                            <!-- COS Profile ID For Vlan Config-->
+                                         
+                                         <apex:column headerValue="COS Profile ID" rendered="{!eachPremise.actionChosen != 'CoS Change' && eachPremise.actionChosen != 'VLAN Speed Change' &&  eachPremise.actionChosen != 'Port Speed Change' && eachPremise.actionChosen != 'UBB Change' && eachPremise.actionChosen != 'UBB Add'}">  
+                                 <apex:pageblocksectionitem >
+                                     <apex:outputPanel >                    
+                                    <apex:outputpanel layout="block" styleClass="requiredInput"></apex:outputpanel>
+                                    <apex:outputpanel layout="block" styleClass="requiredBlock"></apex:outputpanel>
+                                            <apex:selectList size="1" value="{!selectedIngressProfileId }" rendered="{!isInfoAdded}" onchange="copyValueToEgress();" disabled="{!eachPremise.actionChosen == 'UBB Remove'}">
+                                             <apex:selectOptions value="{!pickListIngressProfileIDconfig}" >
+                                             </apex:selectOptions>
+                                            </apex:selectList>                                   
+                                    </apex:outputPanel>
+                                </apex:pageblocksectionitem>         
+                                        </apex:column>
+                                         <!-- End For COS Profile ID Vlan Config-->
+                                            <apex:column headerValue="Customer IP Address V4" value="{!eachConfiguration.Customer_IP_V4_Address__c}" />
+                                            <apex:column headerValue="ATT IP Address V4" value="{!eachConfiguration.ATT_IP_Address__c}" />   
+                                            <apex:column headerValue="Subnet Mask V4" value="{!eachConfiguration.Subnet_Mask_V4__c}" />
+                                            <apex:column headerValue="Customer IP Address V6" value="{!eachConfiguration.Customer_IP_Address_V6__c}" />
+                                            <apex:column headerValue="ATT IP Address V6" value="{!eachConfiguration.ATT_IP_Address_V6__c}" />                                           
+                                        </apex:pageBlockTable>
+                                    </apex:pageblockSection>
+                                  </apex:outputPanel>
+                                  <apex:pageBlockButtons location="bottom">
+                                        <apex:commandButton id="sav" value="Save" disabled="{!isSaveDisabledForUBBAdd && eachPremise.actionchosen != 'UBB Remove'}" onclick="onSaveUser(); return false;" rendered="{!eachPremise.actionchosen != 'Port Speed Change'}"/> 
+                                        <apex:commandButton id="cncl" value="Clear" disabled="{!isClear}" onclick="onCancelUser(); return false;" immediate="true" title="To Clear selected record UBB" reRender="parentForm" rendered="{!eachPremise.actionchosen != 'Port Speed Change'}"/>
+                                  </apex:pageBlockButtons>
+                                  <apex:pageBlockButtons location="bottom" rendered="{!eachPremise.actionchosen == 'Port Speed Change'}">
+                                        <apex:commandButton id="portSpeedSave" value="Save" onclick="onSaveUser();" reRender="parentForm" disabled="{!isSaveDisabledForPortSpeedChange}"/>
+                                        <apex:commandButton id="clearportSpeedChange" value="Clear" disabled="{!isClear}" onclick="onCancelUser(); return false;" immediate="true" title="To Clear selected record Port Speed Change" reRender="parentForm"/>   
+                                </apex:pageBlockButtons>
+                                </apex:pageBlock>    
+                               
+                                
+                                <!--VLAN-->
+                           <apex:pageBlock rendered="{!(VLANOpr) && NOT(VLANOprDisc) && NOT(VLANChange) && NOT(CosChange)}">
+                                <apex:outputPanel >
+                                 <apex:commandButton id="addBtn" value="Add" title="Add" action="{!AddRow}" disabled="{!IF(NOT(disableAddforVLANCheck),true,false) }" rendered="true"/>
+                                   <apex:pageBlockTable id="logicTable" var="Child" value="{!eachPremise.innerwrpList}" rendered="true"> 
+                                             <apex:column headerValue="VLAN" value="{!Child.VLANSerial }" />
+                                             <apex:column headerValue="VLAN Speed" value="{!Child.VLAN_Speed }" />   
+                                             <apex:column headerValue="VPN Name" value="{!Child.VPN_Name}" /> 
+                                             <apex:column headerValue="Customer IP Address V4" value="{!Child.Customer_IP_Address_V4}"/>
+                                             <apex:column headerValue="ATT IP Address V4" value="{!Child.ATT_IP_Address_V4}"/>
+                                             <apex:column headerValue="Subnet Mask V4" value="{!Child.Subnet_Mask_V4}" /> 
+                                             <apex:column headerValue="ATT IP Address V6" value="{!Child.ATT_IP_Address_V6}"/>
+                                             <apex:column headerValue="Customer IP Address V6" value="{!Child.Customer_IP_Address_V6}" /> 
+                                             <apex:column headerValue="Select Record to Cancel VLAN Add" rendered="true">         
+                                                 <apex:inputCheckbox value="{!Child.checkedDisconnect}" disabled="{!IF(Child.VLANCONF_STATUS!='Saved',true,false)}" id="disconnectdone" rendered="true">            
+                                                   <!--  <apex:actionSupport event="onclick" action="{!cancelTransaction}" reRender="parentForm">    
+                                                     </apex:actionSupport> -->      
+                                                 </apex:inputCheckbox>         
+                                             </apex:column>
+                                            
+                                             <apex:column headerValue="Status" value="{!Child.VLANCONF_STATUS}"/>
+                                     </apex:pageBlockTable> 
+                                 <apex:pageBlockSection rendered="{!show}">
+                                   <apex:pageBlockTable id="valRecTable" var="val" value="{!validationRecordforAddDupe}" style="width:100%" rendered="{!show}"> 
+                                         <apex:column headerValue="VLAN Speed" >
+                                              <apex:selectList value="{!selectedSpeed}" multiselect="false" size="1" required="true" >
+                                                   <apex:actionSupport event="onchange" action="{!performAddChangeonSpeedSelection}" oncomplete="enableSaveButtonnAddVlan();" reRender="valRecTable,parentForm,opParentProcess,opMACDUBB,myError,showmsg"/>
+                                                       <apex:selectOptions value="{!SpeedOptions}" />                   
+                                               </apex:selectList>
+                                         </apex:column> 
+                                        
+                                         <apex:column headerValue="Ingress COS Profile ID">  
+                                 <apex:pageblocksectionitem >
+                                     <apex:outputPanel >                    
+                                    <apex:outputpanel layout="block" styleClass="requiredInput"></apex:outputpanel>
+                                    <apex:outputpanel layout="block" styleClass="requiredBlock"></apex:outputpanel>
+                                            <apex:selectList size="1" value="{!selectedIngressProfileId }" rendered="{!isInfoAdded}" onchange="copyValueToEgress();" disabled="{!DisableCoSDropDown == false}">
+                                             <apex:selectOptions value="{!pickListIngressProfileID }" >
+                                             </apex:selectOptions>
+                                            </apex:selectList>                                   
+                                    </apex:outputPanel>
+                                </apex:pageblocksectionitem>         
+                                        </apex:column>
+                                        <apex:column headerValue="Egress COS Profile ID" id="egress"> 
+                               <apex:pageblocksectionitem >
+                                 <apex:outputPanel >                    
+                                <apex:outputpanel layout="block" styleClass="requiredInput"></apex:outputpanel>
+                                <apex:outputpanel layout="block" styleClass="requiredBlock"></apex:outputpanel>
+                                    <apex:inputText value="{!val.Egress_Profile_ID__c}" rendered="{!isInfoAdded}" disabled="{!DisableCoSDropDown == false}"></apex:inputText>  
+                                 </apex:outputPanel>
+                             </apex:pageblocksectionitem>       
+                                      </apex:column> 
+                                     <apex:column headerValue="IP Version" >
+                                        <apex:selectList value="{!selectedIPVersion}" multiselect="false" size="1" required="true" rendered="{!isInfoAdded}" >
+                                            <apex:actionSupport event="onchange" action="{!performIPVersionSelection}" oncomplete="enableSaveButtonnAddVlan();" rerender="parentForm,opParentProcess,opMACDUBB"/>
+                                              <apex:selectOptions value="{!IPVersionOptions}" />                    
+                                        </apex:selectList>
+                                     </apex:column>
+                                     <apex:column headerValue="VPN Name" >
+                                         <apex:actionRegion renderRegionOnly="true">
+                                <apex:pageblocksectionitem >
+                                       <apex:outputPanel >                    
+                                       <apex:outputpanel layout="block" styleClass="requiredInput"></apex:outputpanel>
+                                       <apex:outputpanel layout="block" styleClass="requiredBlock"></apex:outputpanel>
+                                          <apex:inputText value="{!val.VPN_Name__c}" onchange="enableSaveButtonnAddVlan();" rendered="{!isInfoAdded}" ></apex:inputText>
+                                       </apex:outputPanel>
+                               </apex:pageblocksectionitem>
+                                       </apex:actionRegion>      
+                                    </apex:column>                      
+                                    <apex:column headerValue="Customer IP Address V4">
+                               <apex:pageblocksectionitem >
+                                         <apex:outputPanel >                    
+                                         <apex:outputpanel layout="block" styleClass="requiredInput"></apex:outputpanel>
+                                         <apex:outputpanel layout="block" styleClass="requiredBlock"></apex:outputpanel>
+                                             <apex:inputText value="{!val.Customer_IP_V4_Address__c}" onchange="enableSaveButtonnAddVlan();" rendered="{!isInfoAdded && isV4}"></apex:inputText>
+                                         </apex:outputPanel>
+                               </apex:pageblocksectionitem>           
+                                     </apex:column>
+                                     <apex:column headerValue="ATT IP Address V4"> 
+                               <apex:pageblocksectionitem >
+                                         <apex:outputPanel >                    
+                                         <apex:outputpanel layout="block" styleClass="requiredInput"></apex:outputpanel>
+                                         <apex:outputpanel layout="block" styleClass="requiredBlock"></apex:outputpanel>
+                                            <apex:inputText value="{!val.ATT_IP_Address__c}" onchange="enableSaveButtonnAddVlan();" rendered="{!isInfoAdded && isV4}"></apex:inputText>
+                                         </apex:outputPanel>
+                               </apex:pageblocksectionitem>        
+                                     </apex:column>
+                                     <apex:column headerValue="Subnet Mask V4">
+                               <apex:pageblocksectionitem >
+                                         <apex:outputPanel >                    
+                                         <apex:outputpanel layout="block" styleClass="requiredInput"></apex:outputpanel>
+                                         <apex:outputpanel layout="block" styleClass="requiredBlock"></apex:outputpanel>
+                                            <apex:outputText value="{!$Label.V4_Subnet_Mask}" rendered="{!isInfoAdded && isV4}"></apex:outputText>  
+                                         </apex:outputPanel>
+                                </apex:pageblocksectionitem>          
+                                     </apex:column>
+                                     <apex:column headerValue="Customer IP Address V6"> 
+                                <apex:pageblocksectionitem >
+                                         <apex:outputPanel >                    
+                                         <apex:outputpanel layout="block" styleClass="requiredInput"></apex:outputpanel>
+                                         <apex:outputpanel layout="block" styleClass="requiredBlock"></apex:outputpanel>
+                                             <apex:outputText value="{!val.Customer_IP_Address_V6__c}" ></apex:outputText>
+                                         </apex:outputPanel>
+                                </apex:pageblocksectionitem>        
+                                     </apex:column>
+                                     <apex:column headerValue="ATT IP Address V6">
+                                <apex:pageblocksectionitem >
+                                         <apex:outputPanel >                    
+                                         <apex:outputpanel layout="block" styleClass="requiredInput"></apex:outputpanel>
+                                         <apex:outputpanel layout="block" styleClass="requiredBlock"></apex:outputpanel>
+                                              <apex:outputText value="{!val.ATT_IP_Address_V6__c}"></apex:outputText>  
+                                         </apex:outputPanel>
+                                </apex:pageblocksectionitem>          
+                                     </apex:column>
+                                     <apex:column headerValue="Clear">
+                                <apex:pageblocksectionitem >
+                                         <apex:outputPanel >                    
+                                         <apex:commandLink type="image/png" action="{!ClearOrder}" reRender="parentForm,nw,valRecTable,newTable,pbMain,logicTable,opProductPanel,dataSetRepeat,opParentProcess,opMACDUBB,pageName,currentBlock,newBlock" >
+                                       <!--  <apex:image value="http://www.simpleimageresizer.com/_uploads/photos/3aa89530/DeleteRed_50_1_50.png"/>-->
+                                         <apex:image value="{!$Resource.Clear_Icon}"/>
+                                         </apex:commandLink>
+                                         </apex:outputPanel>
+                                </apex:pageblocksectionitem>          
+                                     </apex:column>
+                              </apex:pageBlockTable>           
+                             </apex:pageBlockSection>
+                            </apex:outputPanel>
+                                  <apex:pageBlockButtons location="bottom">
+                                     <apex:commandButton id="cnfrm" value="Save"  disabled="{!isSaveDisabledForAddVlan}" onclick="onCompletedConfirmUserAdd(); return false;"/>
+                                     <apex:commandButton id="cncl" value="Clear" disabled="{!isClear}" onclick="onResetConfirmUser(); return false;" immediate="true" title="To Clear/Cancel selected record VLAN ADD" reRender="parentForm" />
+                                  </apex:pageBlockButtons>                        
+                          </apex:pageBlock>          
+                               
+                        <!-- VLAN Disconnect --> 
+                         <apex:pageBlock rendered="{!VLANOprDisc && NOT(VLANOpr) && NOT(VLANChange) && NOT(CosChange) }">
+                         <apex:pageMessages id="showmsg"></apex:pageMessages>
+                           <apex:outputPanel >
+                              <apex:pageBlockTable id="logicTable" var="Child" value="{!eachPremise.innerwrpList}" rendered="true"> 
+                                     <apex:column >
+                                       <apex:actionRegion >  
+                                         <apex:selectList value="{!Child.selectedCategory}" onchange="enableSaveBtn_VlanDisconnect();" multiselect="false" size="1" id="disconnectdone" disabled="{!IF(Child.VLANCONF_STATUS == 'Saved' || Child.VLANCONF_STATUS == 'Disconnected',true,false) || IF(Child.disHub1,true,false) || IF(Child.isVLANDisabled,true,false)}">
+                                            <apex:selectOptions value="{!Child.categoryList}" /> 
+                                               <apex:actionSupport event="onchange" action="{!disconnectVLAN}" reRender="parentForm,showmsg">
+                                                     <!--  <apex:param id="categoryid" name="selectedconfig" value="{!Child.VLAN_ConfigID}" assignTo="{!valconfid}"/>-->
+                                               </apex:actionSupport>
+                                          </apex:selectList>
+                                        </apex:actionRegion>     
+                                      </apex:column>
+                                      <apex:column headerValue="VLAN" value="{!Child.selectedCategory}" /> 
+                                      <apex:column headerValue="VLAN" value="{!Child.VLANSerial }" />
+                                      <apex:column headerValue="VLAN Speed" value="{!Child.VLAN_Speed }" />   
+                                      <apex:column headerValue="VPN Name" value="{!Child.VPN_Name}" /> 
+                                      <apex:column headerValue="Customer IP Address V4" value="{!Child.Customer_IP_Address_V4}"/>
+                                      <apex:column headerValue="ATT IP Address V4" value="{!Child.ATT_IP_Address_V4}"/>
+                                      <apex:column headerValue="Subnet Mask V4" value="{!Child.Subnet_Mask_V4}" /> 
+                                      <apex:column headerValue="ATT IP Address V6" value="{!Child.ATT_IP_Address_V6}"/>
+                                      <apex:column headerValue="Customer IP Address V6" value="{!Child.Customer_IP_Address_V6}" /> 
+                                      <apex:column headerValue="Selection" rendered="true">   
+                                       <apex:inputCheckbox value="{!Child.checkedDisconnect}" disabled="{!IF(Child.VLANCONF_STATUS!='Disconnected',true,false)}" id="disconnectdonevlan" rendered="true">            
+                                          <apex:actionSupport event="onclick" action="{!cancelTransactionforDisconnect}">    
+                                          </apex:actionSupport>       
+                                       </apex:inputCheckbox>   
+                                     </apex:column>     
+                                     <apex:column headerValue="Status" value="{!Child.VLANCONF_STATUS}"/>                 
+                                 </apex:pageBlockTable> 
+                                </apex:outputPanel>
+                                <apex:pageBlockButtons location="bottom">
+                               <!--     <apex:commandButton id="cnfrm" value="Save" disabled="{!isSaveDisabledForDisVlan}" onclick="onCompletedConfirmUserdis(); return false;"/> -->
+                               <apex:commandButton id="cnfrm" value="Save" disabled="{!eachPremise.issavedisabled}" onclick="onCompletedConfirmUserdis(); return false;"/>
+                                  <apex:commandButton id="cncl" value="Clear" disabled="{!isClear}" onclick="onResetConfirmUserdis(); return false;" immediate="true" title="To Clear/Cancel selected record Disconnect" reRender="parentForm"/> 
+                                 </apex:pageBlockButtons>                      
+                           </apex:pageBlock>     
+                           
+                           <!-- VLAN Speed CHANGE --> 
+                         <apex:pageBlock rendered="{!VLANChange && NOT(CosChange)}">
+                          
+                           <apex:outputPanel >
+                              <apex:pageBlockTable id="logicTable" var="Child" value="{!eachPremise.innerwrpList}" rendered="true"> 
+                              <apex:pageMessages id="myMsgvlan"></apex:pageMessages>
+                                     <apex:column headerValue="MACD Change Feature">
+                                       <apex:actionRegion >  
+                                         <apex:selectList value="{!Child.selectedMacd }" onchange="enableSaveBtn_VlanSpeedChange();" multiselect="false" size="1">
+                                            <apex:selectOptions value="{!Child.macdList }" /> 
+                                              <apex:actionSupport event="onchange" reRender="parentForm" status="myStatus"/>
+                                                      <apex:param id="categoryid" name="selectedconfig" value="{!Child.VLAN_ConfigID}" assignTo="{!valconfid}"/>
+                                              
+                                          </apex:selectList>
+                                        </apex:actionRegion>     
+                                      </apex:column>
+                                      <!--<apex:column headerValue="VLAN Speed Change" value="{!Child.VLANSpeedCopied}" id="def" rendered="{!Child.selectedMacd == 'None' || Child.selectedMacd == null }"></apex:column>-->
+                                      <apex:column headerValue="VLAN Speed Change" >
+                                       <apex:actionRegion >  
+                                         <apex:selectList value="{!Child.VLANSpeedCopied}" onchange="enableSaveBtn_VlanSpeedChange();" multiselect="false" size="1" rendered="{!((Child.selectedMacd != 'None') && (Child.selectedMacd != null)) }" >
+                                            <apex:selectOptions value="{!Child.macdspeedvlanList}"/> 
+                                            <apex:actionSupport event="onchange" action="{!performVLANspeedchangeonselection}" reRender="parentForm,mymsgforvlan" status="myStatus"/>
+                                            <apex:param id="categoryids" name="selectedconfig" value="{!Child.VLAN_ConfigID}" assignTo="{!validationRecordforAdd.id}"/>
+                                      </apex:selectList>
+                                      </apex:actionRegion>     
+                                      </apex:column>      
+                                      <apex:column headerValue="VLAN" value="{!Child.selectedCategory}" rendered="{!eachPremise.actionChosen != 'VLAN Speed Change' && eachPremise.actionChosen != 'CoS Change'}"/> 
+                                      <apex:column headerValue="VLAN" value="{!Child.VLANSerial }" rendered="{!eachPremise.actionChosen != 'VLAN Speed Change' && eachPremise.actionChosen != 'CoS Change'}"/>
+                                      <apex:column headerValue="VLAN Speed" value="{!Child.VLAN_Speed }" />   
+                                      <apex:column headerValue="VPN Name" value="{!Child.VPN_Name}" /> 
+                                      <apex:column headerValue="Customer IP Address V4" value="{!Child.Customer_IP_Address_V4}"/>
+                                      <apex:column headerValue="ATT IP Address V4" value="{!Child.ATT_IP_Address_V4}"/>
+                                      <apex:column headerValue="Subnet Mask V4" value="{!Child.Subnet_Mask_V4}" /> 
+                                      <apex:column headerValue="ATT IP Address V6" value="{!Child.ATT_IP_Address_V6}"/>
+                                      <apex:column headerValue="Customer IP Address V6" value="{!Child.Customer_IP_Address_V6}" /> 
+                                      
+                                     <apex:column headerValue="Status" value="{!Child.VLANCONF_STATUS}"/>                 
+                                 </apex:pageBlockTable> 
+                                </apex:outputPanel>
+                                <apex:pageBlockButtons location="bottom">
+                                
+                                    <apex:commandButton id="cnfrm" value="Save" onclick="onCompletedVLANChange();" RERender="valnListId,myMsgvlan" disabled="{!isSaveDisabledForVlanSpeedChange}"/>
+                                    <apex:commandButton id="cncl" value="Clear" onclick="clearVlanChangesJS();" disabled="{!isClear}" reRender="valnListId,myMsgvlan" />
+                                 </apex:pageBlockButtons>  
+                                 <apex:actionStatus id="myStatus" startText="Processing..." 
+                                     stopText=""   startStyleClass="statusStyle"/>                    
+                           </apex:pageBlock>
+                          <!--END VLAN SPEED CHANGE-->  
+                          
+                          <!--CoS Change-->
+                          
+                          <apex:pageBlock rendered="{!(CosChange && eachPremise.validationRecordNew.Unilink__c == 'true')}">
+                           <apex:outputPanel >
+                              <apex:pageBlockTable id="logicTable" var="Child" value="{!eachPremise.innerwrpList}" rendered="true"> 
+                               <apex:pageMessages id="myMsgvlan"></apex:pageMessages>
+                                     <apex:column headerValue="MACD Change Feature">
+                                       <apex:actionRegion >  
+                                         <apex:selectList value="{!Child.selectedMacdCoS}" onchange="enableSaveBtn_VlanCosChange();" multiselect="false" size="1" disabled="{!eachPremise.validationRecordNew.Unilink__c == 'false'}" >
+                                            <apex:selectOptions value="{!Child.macdCoSchangeList}" /> 
+                                               <apex:actionSupport event="onchange" reRender="parentForm,mymsgforvlan" status="myStatus"/>
+                                                      <apex:param id="categoryid" name="selectedconfig" value="{!Child.VLAN_ConfigID}" assignTo="{!valconfid}"/>
+                                               
+                                          </apex:selectList>
+                                        </apex:actionRegion>                                     
+                                      </apex:column>                                      
+                                      <apex:column headerValue="CoS Profile ID">                               
+                                       <apex:actionRegion >  
+                                         <apex:selectList value="{!Child.selectedCosprofileId}" onchange="enableSaveBtn_VlanCosChange();" multiselect="false" size="1" disabled="{!(eachPremise.validationRecordNew.Unilink__c == 'false') || (eachPremise.actionChosen == 'VLAN Speed Change') || (Child.selectedMacdCoS == 'None' || Child.selectedMacdCoS == null)}" rendered="{!if(Child.selectedMacdCoS <> null,true,false)}">
+                                            <apex:selectOptions value="{!Child.macdCosprofileidList}"/> 
+                                             <apex:actionSupport event="onchange" reRender="parentForm,myMsgvlan" status="myStatus"/>
+                                             <apex:param id="categoryids" name="selectedconfig" value="{!Child.VLAN_ConfigID}" assignTo="{!validationRecordforAdd.id}"/>
+                                      </apex:selectList>
+                                      </apex:actionRegion>
+                                       
+                                      </apex:column>  
+                                       
+                                      <apex:column headerValue="VLAN" value="{!Child.selectedCategory}"  rendered="{!eachPremise.actionChosen != 'VLAN Speed Change' && eachPremise.actionChosen != 'CoS Change'}"/> 
+                                      <apex:column headerValue="VLAN" value="{!Child.VLANSerial }" rendered="{!eachPremise.actionChosen != 'VLAN Speed Change' && eachPremise.actionChosen != 'CoS Change'}"/>
+                                      <apex:column headerValue="VLAN Speed" value="{!Child.VLAN_Speed }" />   
+                                      <apex:column headerValue="VPN Name" value="{!Child.VPN_Name}" /> 
+                                      <apex:column headerValue="Customer IP Address V4" value="{!Child.Customer_IP_Address_V4}"/>
+                                      <apex:column headerValue="ATT IP Address V4" value="{!Child.ATT_IP_Address_V4}"/>
+                                      <apex:column headerValue="Subnet Mask V4" value="{!Child.Subnet_Mask_V4}" /> 
+                                      <apex:column headerValue="ATT IP Address V6" value="{!Child.ATT_IP_Address_V6}"/>
+                                      <apex:column headerValue="Customer IP Address V6" value="{!Child.Customer_IP_Address_V6}" />    
+                                      <apex:column headerValue="Status" value="{!Child.VLANCONF_STATUS}"/>  
+                                               
+                                 </apex:pageBlockTable> 
+                                </apex:outputPanel>
+                                <apex:pageBlockButtons location="bottom">
+                                    <apex:commandButton id="cnfrm" value="Save" disabled="{!isSaveDisabledForVlanCosChange}"  onclick="onCompletedVLANChange();return false;" reRender="myMsgvlan" rendered="{!eachPremise.validationRecordNew.Unilink__c == 'true'}"/>
+                             <!--       <apex:commandButton id="sav" disabled="{!isSaveDisabledForCosChange}" value="Save" onclick="onSaveUser(); return false;" rendered="{!(eachPremise.validationRecordNew.Unilink__c == 'false' || eachPremise.validationRecordNew.Unilink__c == '')}" /> -->
+                                    <apex:commandButton id="cncl" value="Clear" disabled="{!isClear}" onclick="clearVlanChanges();  return false;" immediate="true" title="To Clear/Cancel selected record Disconnect" reRender="parentForm" />
+                                 </apex:pageBlockButtons>   
+                                   <apex:actionStatus id="myStatus" startText="Processing..." 
+                                     stopText=""   startStyleClass="statusStyle"/>                
+                           </apex:pageBlock>
+                                   <apex:commandButton id="sav" disabled="{!isSaveDisabledForCosChange}" value="Save" onclick="onSaveUser(); return false;" rendered="{!(eachPremise.validationRecordNew.Unilink__c == 'false' || eachPremise.validationRecordNew.Unilink__c == '') && (eachPremise.actionChosen == 'CoS Change')}" style="margin-left: 417px;"/>   
+                                   <apex:commandButton id="cncl" value="Clear" disabled="{!isClear}" onclick="clearVlanChanges(); return false;" immediate="true" title="To Clear/Cancel selected record Disconnect" reRender="parentForm" rendered="{!(eachPremise.validationRecordNew.Unilink__c == 'false' || eachPremise.validationRecordNew.Unilink__c == '') && (eachPremise.actionChosen == 'CoS Change')}" />  
+                          <!--CoS Change--> 
+                             
+                        </div>
+              </apex:outputPanel>
+            </apex:outputPanel>
+          </apex:repeat>
+           <apex:pageMessages id="showmsg"></apex:pageMessages>   
+       </apex:pageBlock>
+       <apex:pageBlock id="parentPBSave"> 
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton id="cnfrm" value="Confirm" onclick="onCompletedConfirmUser(); return false;" immediate="true" reRender="parentForm" disabled="{!isConfirmButtonDisabled}" />
+                <apex:commandButton id="parentCancel" value="Cancel" onclick="onCompletedCancelUser(); return false;" immediate="true" reRender="parentForm" />
+            </apex:pageBlockButtons>
+       </apex:pageBlock> 
+       
+       
+       
+                             
+    </apex:form>
+   
+</apex:page>

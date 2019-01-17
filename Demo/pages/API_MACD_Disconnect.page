@@ -1,0 +1,52 @@
+<apex:page standardController="Deal_Hash__c" extensions="API_MACD_Disconnect_Controller">
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+$(".sts").prop('disabled',true);
+});
+</script>
+<script type="text/javascript">
+function confirmDisconnect() {
+if(confirmInvenCall()){
+return confirm('Are you sure you want to perform Disconnect ?');
+}
+}
+</script>
+<script type="text/javascript">
+function confirmInvenCall() {
+return confirm('Have you completed Inventory Lookup Call first ?');
+}
+</script>
+<apex:pageMessages ></apex:pageMessages>
+<apex:form >
+<apex:pageBlock id="page">
+    <apex:pageBlockButtons >
+        <apex:commandButton value="Inventory Lookup" action="{!inventoryLookup}" /> &nbsp;     
+        <apex:commandButton value="Confirm" action="{!processDisconnect}" onClick="if (!confirmDisconnect()) return false;" /> &nbsp;        
+        <apex:commandButton value="Cancel" action="{!cancelDisconnect}"/>
+    </apex:pageBlockButtons>
+    <apex:pageBlockSection columns="2">
+        <apex:outputField value="{!Deal_Hash__c.Customer_Business_Name__c}"/><br/>
+        <apex:outputField value="{!Deal_Hash__c.Customer_ID__c}"/><br/>
+        <apex:outputField value="{!Deal_Hash__c.Invoice_Account_Number__c}"/>
+        <apex:outputField value="{!Deal_Hash__c.Inventory_Lookup_Status__c}"/>
+        <apex:outputField value="{!Deal_Hash__c.Contract_Number__c}"/><br/>
+        <apex:outputField value="{!Deal_Hash__c.Master_Order_Number__c}"/>
+    </apex:pageBlockSection>
+    <br/>
+        <apex:pageBlockTable value="{!premiseList}" var="prem" id="premTable">
+            <apex:column value="{!prem.GRID_Premise_ID__c}" />
+            <apex:column value="{!prem.Service_Type__c}" />          
+            <apex:column value="{!prem.Transport_Type__c}" />
+            <apex:column value="{!prem.Premise_Street_Number__c}" />
+            <apex:column value="{!prem.Premise_Street_Name__c}" />            
+            <apex:column headerValue="Site Status">
+            <apex:inputField value="{!prem.Site_Status__c}" styleClass="sts" />
+            </apex:column>
+            <apex:column headerValue="Disconnect Type">
+            <apex:inputField value="{!prem.Disconnect_Type__c}" />
+            </apex:column>
+        </apex:pageBlockTable>     
+</apex:pageBlock> 
+</apex:form> 
+</apex:page>

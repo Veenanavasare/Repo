@@ -1,0 +1,101 @@
+<apex:page controller="UserFreeze" showHeader="false" sidebar="false"  standardStylesheets="false" docType="html-5.0" applyBodyTag="false" applyHtmlTag="false" showChat="false">
+  <h1>User Freeze</h1>
+
+<apex:form id="FreezeUser">
+
+<input type="radio"  value="{!userNameCheck}" name="button1" onclick="checkUserName()"> User Name</input>
+<input type="radio" value="{!contactNameCheck}" name="button1" onclick="checkContactName()">Contact Name</input > 
+  <br></br>
+  <br></br>
+<apex:inputText value="{!serachUser}" id="serachUser" onchange="enableButton()" disabled="false"/>
+<br></br>
+<br></br>
+<br></br>
+<apex:commandButton value="Search User" action="{!searchUsers}" id="searchbutton" disabled="false"  status="loading"  style="margin-left: 15px;"/>
+<br></br>
+<br></br>
+<br></br>
+
+<table width="80%" style="font-size:12px;text-align:center;" cellspacing="0" border="1">
+<tr>
+<th> User Name </th>
+<th> Contact Name </th>
+<th> Contact Email </th>
+<th> Freeze User </th>
+</tr>
+ <apex:repeat value="{!searchUserList}" var="users">
+<tr>
+<td>{!users.userName}  </td>
+<td>{!users.contactName}  </td>
+<td>{!users.contactEmail}  </td>
+<td> <apex:commandLink action="{!FreezeSelectedUser}" value="FreezeUser" id="theCommandLink" rendered="true" oncomplete="callMethodToReload();">
+  <apex:param name="nickName"    value="{!users.userId}"   assignTo="{!freezeUSerID }"/>
+  </apex:commandLink>
+</td>
+</tr>
+</apex:repeat>
+</table>
+
+<apex:actionFunction name="callContactName" action="{!checkContactName}" status="loading" reRender="userList" />
+<apex:actionFunction name="callUserName" action="{!checkUserName}" status="loading" reRender="userList" />
+
+</apex:form>
+
+<br></br>
+<br></br>
+<br></br>
+
+<apex:form id="userList">
+<apex:commandButton value="Display Active User" action="{!activeUser}" rerender="userList"  style="margin-left: 380px;" status="loading" />
+<apex:commandButton value="Freeze All User" action="{!freezeUser}"   status="loading"  style="margin-left: 15px;"/>
+<apex:commandButton value="UnFreeze All User" action="{!unFreezeUser}" status="loading" style="margin-left: 15px;" />
+<br></br>
+<br></br>
+<br></br>
+
+<table width="80%" style="font-size:12px;text-align:center;" cellspacing="0" border="1">
+<tr>
+<th> User Name </th>
+<th> Contact Name </th>
+<th> Contact Email </th>
+<th> Freeze User </th>
+</tr>
+ <apex:repeat value="{!activeUser}" var="users">
+<tr>
+<td>{!users.userName}  </td>
+<td>{!users.contactName}  </td>
+<td>{!users.contactEmail}  </td>
+<td> <apex:commandLink action="{!FreezeSelectedUser}" value="FreezeUser" id="theCommandLink" rendered="true" oncomplete="callMethodToReload();">
+  <apex:param name="nickName"    value="{!users.userId}"   assignTo="{!freezeUSerID }"/>
+  </apex:commandLink>
+</td>
+</tr>
+</apex:repeat>
+</table>
+<apex:actionFunction name="checkForActiveUser" action="{!activeUser}" status="loading" reRender="userList" />
+</apex:form>
+<script>
+function callMethodToReload(){
+checkForActiveUser();
+
+}
+function checkUserName()
+{
+//document.getElementById('{!$Component.FreezeUser.serachUser}').disabled = false;
+
+
+callUserName();
+}
+function checkContactName()
+{
+//document.getElementById('{!$Component.FreezeUser.serachUser}').disabled = false;
+callContactName();
+}
+
+function enableButton()
+{
+//document.getElementById('{!$Component.FreezeUser.searchbutton}').disabled = false;
+}
+</script>
+
+</apex:page>

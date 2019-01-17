@@ -1,0 +1,295 @@
+<apex:page controller="RDS_MIS_Submit_Excelcontroller" showHeader="false" sidebar="false" standardStylesheets="false" contentType="txt/xml#QuoteExport.xls">
+<script>
+        alert('test');
+        //self.close();
+</script> 
+
+<apex:repeat value="{!siteitems}" var="val">  
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+<apex:outputPanel id="container" style="font-family: Arial;">
+
+<apex:panelGrid >
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="Site Name"/></b>
+        <b><apex:outputLabel value="{!val.SiteName}"/></b>
+   </apex:panelgroup>
+</apex:panelGrid>
+
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="Contact Information"/></b>
+        <b><apex:outputLabel value=""/></b>
+    </apex:panelGroup>
+</apex:panelGrid>
+
+<apex:repeat value="{!contactitems}" var="val2"> 
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Contact Type " /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val2.ContactType}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Prefix" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="First Name" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val2.FirstName}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Last Name" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val2.LastName}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Strata (Refer valid values from the data list)" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val2.Strata}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Preferred Notification (Refer valid values from the data list)" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Phone Number" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val2.ContactType}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Extension" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val2.PhoneNumber}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Alternate Contact Number" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Email Address" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val2.EmailContact}"/></apex:panelGroup>
+</apex:panelGrid>
+</apex:repeat>            
+
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Notes" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Type" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Notes" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+ </apex:panelGrid>
+
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="Location Information"/></b>
+        <b><apex:outputLabel value=""/></b>
+    </apex:panelGroup>
+</apex:panelGrid>
+
+
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Location Type" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="1"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Shipping Type" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Customer Business Name" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val.CustomerName}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Is there an Existing POTS At Site? " /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="npaNxx" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Street Name" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val.Addressline1site}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Unit Type" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Unit Value" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Floor" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Building" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="City*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val.SiteCity}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="State*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val.StateSite}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Zip" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val.Zipcodesite}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Country" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val.SiteCountry}"/></apex:panelGroup>
+</apex:panelGrid>
+
+
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="Account Information"/></b>
+        <b><apex:outputLabel value=""/></b>
+    </apex:panelGroup>
+</apex:panelGrid>
+
+<apex:panelGrid columns="3" width="100%" border="1">
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="MCN*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="GRC*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="SOC*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Billing Option" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="Contract Tariff"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Company Name*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Company Number*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Customer Type*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="1"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Market Strata*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="3"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Contract Term*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Contract Type" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="Pricing Schedule"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+</apex:panelGrid>
+
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="Pricing Information"/></b>
+        <b><apex:outputLabel value=""/></b>
+    </apex:panelGroup>
+</apex:panelGrid>
+
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Product Code Description*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Product Package Code*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Product Discount*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Price Type" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Monthly Recurring Charges" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="MonthlyNon-Recurring Charges" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+</apex:panelGrid>
+            
+
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup style="width:50%"> <b><apex:outputLabel value="Activity Information"/></b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Date Type" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="1"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Date*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+</apex:panelGrid>   
+
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup style="width:50%"> <b><apex:outputLabel value="MIS Information"/></b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="IP Version*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="1"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Domain Name*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Top Level Domain Name*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+</apex:panelGrid>   
+
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup style="width:50%"> <b><apex:outputLabel value="Equipment Details"/></b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Equipment Management" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Install Type*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    
+</apex:panelGrid>   
+
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="Port Information"/></b>
+    </apex:panelGroup>
+</apex:panelGrid>
+
+<apex:repeat value="{!portcircuititems}" var="val1">  
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Service Type*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Is MLPPP*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Port Service" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val1.PortService}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Port Speed" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val1.PortSpeed}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Is Class of Service Requested?*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="PE Ingress Profile" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="PE Egress Profile" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="CE Ingress Profile" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="CE Egress Profile" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="MPLS PNT?" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="MPLS PNT Model*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Port Billing Model*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="Fixed"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Minimum Committed Bandwidth" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Access Bandwidth" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="VPN Name" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val1.VPNName}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="VPN ID" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val1.VPNId}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="If this is PNT is this the Host Site?" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Is this site to be added to an existing network?" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="If this is an existing network, what is the network name?" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="If this is an existing network then provide network type" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+</apex:panelGrid>
+</apex:repeat>
+
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="Circuit Information"/></b>
+    </apex:panelGroup>
+</apex:panelGrid>         
+
+<apex:repeat value="{!portcircuititems}" var="val1">    
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Speed*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val1.PortSpeed}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Access Type*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val1.AccessType}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Ethernet Token" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Working Telephone Number*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val.PhoneSite}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Access Method Type" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="2"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Access Interconnect Type" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="VLAN Tag Control" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val1.VLANTagControl}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Provisioning Access Arrangment*" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="VLAN Speed" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value="{!val1.PortSpeed}"/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="VLAN PE Ingress Profile" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="VLAN PE Egress Profile" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="VLAN CE Ingress Profile" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="VLAN CE Egress Profile" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Service Access Point Identifier" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Local Channel Rate" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><b><apex:outputLabel value="Local Channel NRM" /> </b></apex:panelGroup>
+    <apex:panelGroup style="width:50%"><apex:outputLabel value=""/></apex:panelGroup>
+</apex:panelGrid>
+</apex:repeat>
+
+<apex:panelGrid columns="2" width="100%" border="1">
+    <apex:panelGroup layout="block" style="width:50%">
+        <b><apex:outputLabel value="End"/></b>
+    </apex:panelGroup>
+</apex:panelGrid>  
+</apex:outputPanel>  
+</apex:repeat>
+
+</apex:page>

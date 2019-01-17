@@ -1,0 +1,345 @@
+<apex:page controller="ReviewQuoteController" action="{!handleQuoteReview}" sidebar="false" standardStylesheets="false" showHeader="false">
+   
+    <style>
+        #reviewQuote input[type="radio"] {
+            width: 15px;
+        }
+        input.btn {
+            margin: 0 10px;
+            padding: 7px 20px !important;
+        }
+        #sitesTable thead {
+            background-color: white;
+        }
+        #customerDetailsTable td,
+        #pricingSmryTable td {
+            border: 0px;
+        }
+        #pricingSmryTable td {
+            padding: 0;
+            margin: 0;
+        }
+        #pricingSmryTable tbody tr:nth-child(odd) {
+            background: none !important;
+        }
+        #pricingSmryTable tbody tr:nth-child(even) {
+            background: none !important;
+        }                
+        table#pricingSmryTable {        
+            border-spacing: 10px;       
+            border-collapse: inherit;
+        }
+        .pbSubsection table {
+            width: 100%;
+        }
+        .removePop .modal-body table td {
+            width: 400px;
+            clear: both;
+            float: left;
+            display: table-header-group;
+        }
+        .removePop .modal-body table td input {
+            margin-right: 10px;
+        }
+        .removePop .modal-body table td label {
+            font-size: 16px;
+            text-align: left;
+            margin-left: 25px !important;
+        }
+        boldText {
+            font-weight: bold;
+        }
+        
+        <!-- added by shaik -->
+        .dashboardLink{
+            font-size: 1em;
+            line-height: 1.07em;
+            font-family: omnes_att_iimedium !important;
+            color: #44c8f5;
+            font-style:bold;
+            line-height: 0.89em;
+            letter-spacing:0em
+            text-align: right;
+        }
+
+        .exportLink {
+            float: right;
+            margin:0px 0px 40px 0px;
+        }
+        
+        .blueText {
+            text-align: left;
+        }
+        .sitesDataTable {
+            width: 100% !important;
+        }
+        
+        .sitesDataTable.table-bordered>tbody>tr>td{
+            border:none !important;
+        }
+        .sitesDataTable.table>tbody>tr>td{
+            border-top: 1px dashed #ddd !important;
+            border-right: 1px solid #d3d3d3 !important;
+        }
+        
+        .reviewQuoteSearchIcon.search_button {
+            position: absolute;
+            display: inline;
+            top: 5px;
+        }
+        
+        .sitesDataTable thead th .reorder_btn {
+            display: block;
+            position: relative;
+            float: right;
+            top: 5px;
+        }
+      
+       .noSearchDataAvailable{
+            color: #000;
+            font-weight: bold;
+            background-color: #fff !important;
+        }
+
+       .totalSitesCount{
+            float: right;
+            font-size: 20px;
+            color: #007a3e !important;
+            font-family: omnes_att_iimedium;
+        } 
+
+        .fine-print {
+            margin:0; 
+            font-size:14px; 
+            font-family: omnesatt_iiregular !important;
+        }
+
+        .sitesDataTable thead th:nth-child(5) div.reorder_btn {
+            display: none;
+        }
+        
+        .tooltipTrigger.glyphicon.glyphicon-info-sign.reviewQuoteInfoIcon {
+            margin: 2px 0 0 10px;
+            float: right;
+        }
+        
+        .oneTimeTotal {
+            margin-right: 0px;
+        }
+        
+        .monthlyTotalCharges {
+            color: black;
+            font-weight: bold;
+            font-size:16px;
+        }
+        
+        .headerTerm {
+            float: right;
+            margin-right: 4px;
+        }
+        
+        .reviewQuote.col-xs-12.col-md-12 {
+            padding: 0px;
+        }
+        .tableDataSection .table a {
+            color: #009edb !important;
+            font-family: omnes_att_iimedium;
+            font-size: 16px!important; 
+        }
+        
+        .reconfigureRemove { 
+            color: #000000;
+            font-size: 16px!important; 
+        
+        }
+        
+        .tableDataSection thead{
+            color: #009edb;
+        }
+        .tableDataSection table{
+            border-color: #939393 !important;
+        }        
+        .tableDataSection .table-bordered>thead>tr>th{
+            border-bottom: 1px dashed #939393;
+            border-left-color: #939393;
+            border-right-color: #939393;
+        }
+        .tableDataSection .table-bordered>tbody>tr>td{
+            border:none !important;
+        }
+        .tableDataSection .table>tbody>tr>td{
+            border-top: 1px dashed #939393 !important;
+            border-right: 1px solid #939393 !important;
+        }
+        .tableDataSection tbody tr:nth-child(odd) {
+            background: #f2f2f2;
+        }
+        .tableDataSection tbody tr:nth-child(even) {
+            background: #fff;
+        }
+        .tooltip.fade.top.in {
+            margin-left: -129px !important;
+        }
+        .f-s-20 {
+            font-size: 20px !important;
+        }
+        .thankYouLabel{
+            font-family:omnes_att_iimedium;
+            font-size:32px;
+            color: #007a3e !important;
+            margin-top: 27px;
+        }
+        .m-t-15{
+            margin-top: 15px;
+        }
+        .downloadLink {
+            line-height: 22px;
+            color: #0568ae!important;
+            font-weight: 600;
+        }
+        .orderingFactSheet{
+            font-family: "omnes_att_iimedium" !important;
+            font-size: 1.25em !important;
+            margin-top: 10px;
+            color: #44c8f5;
+        }
+        .m-t-20{
+            margin-top: 20px !important;
+        }
+        .thankYouText{
+            margin-bottom:13px;
+            margin-top: 10px;
+        }
+        .thankYouText1{
+            margin-bottom:18px;
+            margin-top: 10px;
+        }
+        .document-file {
+            background-image: none !important;
+        }
+           
+        .document-file {
+            background-color: #fff;
+            background-image: url(resource/ImgStatic/border-doc-file.gif) !important;
+            background-repeat: repeat-y;
+            background-position: 83px;
+            border: 1px solid #d2d2d2;
+            margin-bottom: 20px !important;
+            display: table;
+            padding: 15px;
+            width: 100%;
+        }
+        .document-row {display: inline-flex;}
+        .document-file h4 {margin-bottom: 5px !important;}
+        .document-file p {
+            color: #333;
+            margin: 0;
+            line-height: 1.3em;
+        }
+        .document-file .file-type {
+            width: 90px;
+            display: table-cell;
+            height: 58px;
+        }
+        .document-file .file-pdf {
+            background: url(resource/ImgStatic/ico-file-pdf.png) no-repeat 5px center;
+        }
+        .document-file .details {
+            display: table-cell;
+            vertical-align: top;
+            width: auto;
+            float: none;
+        }
+    </style>
+    <apex:form id="revewFormId">
+        <apex:pageMessages />
+        <apex:outputPanel id="custSiteId">
+            <div id="main" class="row p-t-20 m0">
+                <div class="row m0 ">
+                    <div class="reviewQuote col-xs-12 col-md-12">
+                        <h3 class="customerProfile m-b-10" style="font-size: 21px !important;"><apex:outputText id="cnameheader" value="{!quoteObj.End_Customer__r.Name}" /></h3> 
+                        <!--div class="panel-body" style="padding: 0; padding: 0; border-bottom: 1px dashed #ddd;"-->
+                        <div class="row p0" style="margin:0;">
+                            <div class="quoteName col-xs-3 p0">
+                                <label style="margin-right: 10px !important;">
+                                    <apex:outputText value="Quote Name" />
+                                </label>
+                                <apex:outputText value="{!quoteObj.Apttus_Proposal__Proposal_Name__c}" />
+                            </div>
+                            <div class="col-xs-3 p0">
+                                <label style="margin-right: 10px !important;">
+                                    <apex:outputText value="Quote ID" />
+                                </label>
+                                <apex:outputText value="{!quoteObj.Name}" />
+                            </div>
+                            <div class="col-xs-4 p0">
+                                <label style="margin-right: 10px !important;">
+                                    <apex:outputText value="Product" />
+                                </label>
+                                <apex:outputText value="{!quoteObj.Product_New_Name__c}" />
+                            </div>
+                            <div class="headerTerm">
+                                <label style="margin-right: 10px !important;">
+                                    <apex:outputText value="Term" />
+                                </label>
+                                <apex:outputText value="{!quoteObj.Apttus_Proposal__Payment_Term__c}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="blue_hr"/>
+                 <apex:outputPanel rendered="{!isTechReviewRequired}">   
+                    <div class="thankYouLabel" >
+                        Thank you for submitting your Quote!
+                    </div>
+                    <div class="thankYouText">
+                        The configurations selected require approval by the Technical Review Board. You will receive an email as soon as the Review Board makes a decision. 
+                    </div>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!dealSubmitted}">   
+                    <div class="thankYouLabel" >
+                        Thank you for submitting your Quote!
+                    </div>
+                    <div>
+                        <p class="thankYouText1">You will receive an email with the Quote information and the Ordering Fact sheet.</p>
+                        <p class="thankYouText1">The Ordering Fact Sheet has important information necessary to submit the ASR. Use it as a reference to ensure a more seamless service delivery.</p>
+                    </div>
+                      <div>
+                            <apex:outputPanel >   
+                                    <apex:outputLink value="{!DocURL}"  target="_blank" styleClass="document-file">
+                                        <div class="document-row">
+                                        <div class="file-type file-pdf"></div>
+                                                <div class="orderingFactSheet">
+                                                    <h4><apex:outputText value="Ordering Fact Sheet"/></h4>
+                                                </div>
+                                        </div>
+                                    </apex:outputLink>    
+                            </apex:outputPanel>             
+                 </div>
+                </apex:outputPanel>
+            </div>
+            <hr class="blue_hr"/> 
+            <!-- changes start by shaik -->
+            <div class="pull-right m-t-15">
+            <span> 
+              <a href="/apex/PortalDashboard_UI" class="dashboardLink" >Go to My Dashboard</a>
+            </span> 
+        </div>
+        </apex:outputPanel>
+
+        <div class="modal waitingSearchDiv" id="remotingScroll" style="display:none; background-color: #fbfbfb; opacity:0.65; position:fixed; width:100%; height:100%; top:0px; left:0px; z-index:1000;">
+            <div class="waitingHolder" style="top: 40%; left: 50%; position: fixed;">
+                <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+            </div>
+        </div>
+        <script>
+            jQuery(document).ready(function($){
+                $("body").tooltip({ selector: '[rel=tooltip]' });
+                $(".tooltipTrigger").tooltip();          
+            }); 
+        
+        
+
+        </script>
+    </apex:form>
+</apex:page>

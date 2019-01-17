@@ -1,0 +1,79 @@
+<apex:page controller="OffCartDealController" tabStyle="Account" sidebar="false" showHeader="true">
+<script>
+    function setActiveTab( args ){
+        setThisAsActiveTab( args );
+    }
+
+</script>
+    <style>
+        .accountTab .tertiaryPalette, .individualPalette .accountBlock .tertiaryPalette, .layoutEdit .individualPalette .accountBlock .tertiaryPalette {
+            background-color: #1797C0;
+            border-color: #1797C0;
+        }
+        .accountTab .secondaryPalette, .individualPalette .accountBlock .secondaryPalette {
+            background-color: #1797C0;
+            border-color: #1797C0;
+        }
+        td, .btn {
+            font-size: 12px;
+            font-family: Arial;
+        }
+        .rich-tab-header {
+            color: #000;
+            font-size: 12px;
+            font-family: Arial,Verdana,sans-serif;
+        }
+        body .pbBody table.list tr.headerRow td, body .pbBody table.list tr.headerRow th {
+            background: none repeat scroll 0% 0% #F2F3F3;
+            border-width: 0px 0px 1px 1px;
+            border-color: #E0E3E5;
+            color: #000;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 5px 2px 4px 5px;
+        }
+        /*.opportunityTab .tertiaryPalette, .individualPalette .opportunityBlock .tertiaryPalette, .layoutEdit .individualPalette .opportunityBlock .tertiaryPalette {
+            background-color: #1797C0;
+            border-color: #1797C0;
+        }
+        .opportunityTab .secondaryPalette, .individualPalette .opportunityBlock .secondaryPalette {
+            background-color: #1797C0;
+            border-color: #1797C0;
+        }*/
+    </style>
+    <style>
+      .activeTab {background-color: ##00FFFF; color:black; 
+         background-image:none}
+      .inactiveTab { background-color:#99CCFF; color:white; 
+         background-image:none}
+      /*{
+          font-size : 100%;
+          font-family: TimesNewRoman;
+      }
+      .btn{
+          font-size : 100%;
+          font-family :TimesNewRoman;
+      }
+      td,.btn{
+          font-size : 100%;
+          font-family :TimesNewRoman;
+      }*/
+    </style>
+    <apex:form >
+    
+        <apex:actionFunction name="setThisAsActiveTab" action="{!setThisTabActive}" reRender="" >
+            <apex:param assignTo="{!activeTabName}" id="activeTab" name="tabs" value="" />
+        </apex:actionFunction>
+    
+    </apex:form>
+    <apex:tabPanel value="{!activeTabName}" tabClass="activeTab" inactiveTabClass="inactiveTab" width="100%" switchType="Ajax">      
+        <apex:tab label="Upload CSV Files" onclick="setActiveTab('csv');" id="csv" name="csv">
+            <apex:include pageName="AttachCSVFilePage"/> 
+        </apex:tab>
+       <!-- <apex:tab label="Off Cart Deals"><c:TestTab2 ></c:TestTab2></apex:tab> -->
+       
+          <apex:tab id="offCartManual" name="offCartManual" label="Manual Creation" switchType="client" onclick="setActiveTab('offCartManual');">
+              <apex:include pageName="OffCartDealCreation"/>
+          </apex:tab>
+    </apex:tabPanel>
+</apex:page>

@@ -1,0 +1,106 @@
+<apex:page controller="AIARDSController" cache="true" sidebar="false" showChat="false" showHeader="false" standardStylesheets="false" docType="html-5.0" id="pagecontainer">
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:includeScript value="{!$Resource.atomjqueryjs}" />
+    <apex:includeScript value="{!URLFOR($Resource.bootstrapMin, 'js/bootstrap.min.js')}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalExchangeCSS}" />
+    <apex:stylesheet value="{!$Resource.PortalDesignLayoutCSS}" />
+    <apex:stylesheet value="{!$Resource.PortalDesignCSS}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCss}" />
+    <apex:stylesheet value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.js')}" />
+    <apex:includeScript value="{!$Resource.chartJSMin}" />
+    <style>
+        .tabbed_menu li {
+            width: 33.33% !important;
+            text-align: center;
+        }
+        .container {
+            width: 98% !important;
+        }
+        .tabbed_menu .active {
+            background: #056fab;
+        }
+        .tabbed_menu .active a {
+            color: #fff;
+        }
+        .tabbed_menu li {
+            padding: 0;
+        }
+        .tabbed_menu li a {
+            padding: 20px 50px;
+            display: block;
+        }
+        .dataTables_length {
+            display: none;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+            cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+            cursor: no-drop;
+        }
+        div#footerDiv .btn {
+            text-align: left;
+        }
+         .tabbed_menu .mainnav li.active::after {
+            content: ' ';
+            display: inline;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            position: absolute;
+            border-top: 14px solid #056fab;
+            /*bottom: -12px;
+            left: 9%; 
+            margin-left: 8%;*/
+            z-index: 99999;
+        }
+    </style>
+    <div id="header-wrap">
+        <apex:include pageName="PortalDesignHeader" />
+    </div>
+    <div class="content_container">
+        <div id="manage_content" class="page">
+            <div id="main" class="row">
+                <div class="row tabbed_menu">
+                    <div class="col-xs-12 col-md-12">
+                        <ul class="mainnav" role="tablist">
+                            <li class="disabled">
+                                <a data-name="genQuoteTab"><span class="border-r-10 glyphicon glyphicon-ok"></span> Review Request</a>
+                            </li>
+                            <li class="disabled">
+                                <a data-name="reviewDealRegTab" ><span class="border-r-10 glyphicon glyphicon-ok"></span> Terms &amp; Conditions</a>
+                            </li>
+                            <li class="active">
+                                <a href="#submitOrderTab" data-name="FinalizeOrderTab" role="tab" data-toggle="tab"><span class="circlenum">3</span> Finalize Order</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-content">
+                    <div class="tab-pane fade" id="genQuoteTab"></div>
+                    <div class="tab-pane fade" id="reviewDealRegTab"></div>
+                    <div class="tab-pane fade in active" id="FinalizeOrderTab">
+                        <apex:include pageName="RDSSiteConfig_AIA" rendered="{!!page4}" />
+                        <apex:outputPanel rendered="{!page4}">
+                            <br/>
+                            <br/>
+                            <apex:include pageName="RDSConfirmation" />
+                        </apex:outputPanel>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="footerDiv">
+        <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+    </div>
+    <script>
+        //Global Variables
+        mode = '{!$CurrentPage.parameters.mode}';
+        UrlQuoteId = '{!$CurrentPage.parameters.quoteid}';
+    </script>
+</apex:page>

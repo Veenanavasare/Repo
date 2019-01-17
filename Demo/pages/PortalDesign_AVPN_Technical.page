@@ -1,0 +1,134 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" controller="GetPdfsController">
+    <div class="technical">
+
+        <h3>AT&amp;T Virtual Private Network Service Interoperability</h3>
+        
+        <section>        
+            <h3>AT&amp;T Virtual Private Network Service Intercorporate Logical Channel</h3>
+            <p>Service Interoperability (SIO) is a soft-bundle feature that facilitates the migration of an AT&amp;T MPLS PNT (Multiprotocol Label Switching Private Network Transfer) to an end-user customer’s AT&amp;T VPN. It creates an any-to-any VPN on all ports in the customer’s VPNs. In the United States, the AT&amp;T Managed (Plus) and Unmanaged (Basic) plans support SIO.</p>    
+            <p>A single AT&amp;T VPN (including all AT&amp;T VPN Border Gateway Protocol [BGP] domains) can accommodate SIO with a single PNT VPN (It will not prevent that same AT&amp;T VPN from connecting to other U.S.-based BGP domains.).</p>
+            <p>The following candidates are ideal for this soft-bundle feature:</p>
+            <ul class="bullets">
+                <li>Existing AT&amp;T MPLS PNT customers who want to expand onto AT&amp;T VPN</li>
+                <li>Customers who want to connect their existing PNT VPN with an existing AT&amp;T VPN</li>
+                <li>Customers who want to support both AVPN and PNT (managed and non-managed)</li>
+            </ul>
+            <p><strong>Note:</strong> PNT only supports IPv4 while AVPN supports IPv6 and Dual Stack (IPv4 and IPv6). The PNT locations cannot pass the IPv6 traffic.</p> 
+            <p>The ordering and provisioning of the SIO feature is implemented via AT&amp;T VPN provisioning. There can be only one order per customer SIO request. Orders will be processed overnight for completion. Afterward, all ports in both VPNs can pass the IPv6 traffic.</p>
+            <p>The following guidelines must be followed before an SIO can be implemented:</p>
+            <ul class="bullets">
+                <li>PNT circuits must be on PNT dedicated routers</li> 
+                <li>The RDS order form for PNT/AVPN SIO must be complete</li>
+            </ul>
+        </section>
+    
+        <section>                
+            <h3>SIO Requirements</h3>
+            <p>SIO can only support PNT customers on dedicated Provider Edge (PE) routers. Sales must determine whether the customer has any ports on shared PNT PE routers by completing the following steps:</p>
+            <ol class="numbered">
+                <li>Check the IP Service Database (IPDB) to identify any shared ports.</li>
+                <li>If any ports are shared, submit a request to the PNT rehoming team.</li>
+                <li>After the AVPN CI review board gives approval, rehome these ports to the dedicated PNT Gigabit Switched Router (GSR) PE routers.</li>
+            </ol>
+            <p>If one port in the PNT VPN is on a shared PE router, the PNT VPN will not be eligible to perform SIO with an AT&amp;T VPN VPN.</p>
+            <p>When a PNT customer asks for a PNT-AT&amp;T VPN SIO, the maximum VRF limit must be set at a minimum of 2,000. Sales must first check with PNT customer care to determine the virtual routing forwarding (VRF). If the VPN limit isn’t set to a minimum of 2,000, the AT&amp;T VPN SIO order can’t be completed.</p>
+        </section>
+    
+        <section>                
+            <h3>Restrictions and Limitations</h3>
+            <p>SIO has the following restrictions and limitations:</p>
+            <ul class="bullets">
+                <li>The features for each service boundary have limits. The customer will not receive AT&amp;T VPN service features from a PNT port. Only some features can be maintained across services, such as Class of Service (CoS). For example, multicast traffic can’t cross the service boundary.</li>
+                <li>This project doesn’t support reuse of PNT circuits for AT&amp;T VPN migration.</li>
+                <li>If no SIO disconnect order exists, customers can discontinue the SIO functionality, either in whole or in part, by making router configuration changes on customer-provided equipment (CPE).</li>
+                <li>If an AT&amp;T VPN customer orders a CoS-6 connection, some of their markings may not be understood by the PEs supporting PNT customers. Only the AT&amp;T VPN PEs can support the CoS 6 markings. If an SIO is needed, AT&amp;T recommends using CoS 4.</li>
+                <li>AT&amp;T VPN Hub and Spoke VPN can’t be SIO with PNT VPN.</li>
+                <li>PNT VPN can undergo SIO with a VPN that has AT&amp;T VPN Route Group (RG) features. However, the AT&amp;T VPN portion of the SIO VPN can only support RG features.</li>
+                <li>At least one site must be on AT&amp;T VPN and one site on PNT.</li>
+                <li>Load balancing over two ports on two services won’t work.</li>
+                <li>Each service will continue to offer their respective Service Level Agreements (SLAs) within the service boundary. Both services will honor a network-based average SLA and will share the same backbone average loss, latency, and jitter. Port-to-port, PE-to-PE, site-to-site across services aren’t supported. SLAs crediting processes and mechanisms are different. The AT&amp;T Engineer must follow each service-defined process.</li>
+            </ul>
+        </section>
+    
+        <section>  
+            <h3>AT&amp;T Virtual Private Network Service Intercorporate Logical Channel</h3>     
+            <p>AT&amp;T Virtual Private Network Service (VPN) Transport (non-managed) supports Intercorporate Logical Channels for the United States. This support occurs when End User Customer A wants to arrange a logical channel (VLAN on an Ethernet port) from their site to End User Customer B’s VPN. This channel can be set up as a separate logical channel on an AT&amp;T VPN port via the Unlink feature.</p>
+            <p>U.S. contracts are supported with the addition of an Interconnect Agreement for the Intercorporate Logical Channel. Each end user customer consenting to an Intercorporate arrangement must sign the Interconnect Agreement authorization. The agreement is for AT&amp;T VPN Intercorporate Logical Channel of VLAN (between two AT&amp;T VPN customers). The Intercorporate connection (such as Multicast, CoS, and Dual Stack) supports any CI or GA feature as business as usual.</p>
+            <p>The ordering process is business as usual except that one end user customer orders a separate Intercorporate connection (logical channel or VLAN or ePVC) to the VPN the other end user customer owns.</p>
+        </section>
+    
+        <section>
+            <h3>AT&amp;T VPN to AT&amp;T VPN Intercorporate Example</h3>
+            <p>AT&amp;T VPN Customer A orders an AT&amp;T VPN Intercorporate Logical Channel or VLAN from their site to Customer B’s AT&amp;T VPN VPN.</p>
+            <p>AT&amp;T VPN Unilink charges apply business as usual to Customer A.</p>
+            <p><strong>Note:</strong> For AT&amp;T VPN, the Access/Port/PVC (or VLAN) connection can be separate, but the majority of requests are for Unilink.</p>
+            <a href="https://www.att.com/partnerexchange/pdf/authenticated/?pdfname=ATT_ICC_Overview_Doc.pdf" target="_blank">
+                <apex:image url="{!URLFOR($Resource.portalDesignImg,'/AVPN_intercorporate.png')}"/>
+            </a>    
+        </section>
+      
+        <section class="file-download">
+            <apex:repeat value="{!DocumentMap}" var="doc">
+                <apex:outputLink value="{!DocumentMap[doc]}" rendered="{!doc == 'ATT_VPN_Implementation_Guide'}" target="_blank" styleClass="icon hidden-sm hidden-xs">
+                      <apex:image url="{!URLFOR($Resource.portalDesignImg,'/pdf-icon.png')}"/>
+                </apex:outputLink>
+            </apex:repeat>
+            <div class="details">
+                <h4>
+                    <apex:repeat value="{!DocumentMap}" var="doc">
+                        <apex:outputLink value="{!DocumentMap[doc]}" rendered="{!doc == 'ATT_VPN_Implementation_Guide'}" target="_blank">  
+                            AT&amp;T VPN Implementation Guide
+                        </apex:outputLink>
+                    </apex:repeat>
+                </h4>
+                <p>
+                    The AT&amp;T VPN Implementation Guide lists the setup steps and responsibilities for testing and activation.
+                </p>
+            </div>
+            <div class="clearfix"></div>
+        </section>
+            
+        <section class="file-download">
+            <apex:repeat value="{!DocumentMap}" var="doc">
+                <apex:outputLink value="{!DocumentMap[doc]}" rendered="{!doc == 'ATT_VPN_Service_Guide'}" target="_blank" styleClass="icon hidden-sm hidden-xs">
+                    <apex:image url="{!URLFOR($Resource.portalDesignImg,'/pdf-icon.png')}"/>
+                </apex:outputLink>
+            </apex:repeat>
+            <div class="details">
+                <h4>
+                    <apex:repeat value="{!DocumentMap}" var="doc">
+                        <apex:outputLink value="{!DocumentMap[doc]}" rendered="{!doc == 'ATT_VPN_Service_Guide'}" target="_blank">  
+                            AT&amp;T VPN Service Guide
+                        </apex:outputLink>
+                    </apex:repeat>
+                </h4>
+                <p>
+                    The AT&amp;T VPN Service Guide provides service descriptions, Service Level Agreements, country-specific provisions (if applicable) and general information about AT&amp;T business services.
+                </p>
+            </div>
+            <div class="clearfix"></div>
+        </section>
+
+        <section class="file-download">
+            <apex:repeat value="{!DocumentMap}" var="doc">
+                <apex:outputLink value="{!DocumentMap[doc]}" rendered="{!doc == 'Access_Service_Guide'}" target="_blank" styleClass="icon hidden-sm hidden-xs">
+                      <apex:image url="{!URLFOR($Resource.portalDesignImg,'/pdf-icon.png')}"/>
+                </apex:outputLink>
+            </apex:repeat>
+            <div class="details">
+                <h4>
+                    <apex:repeat value="{!DocumentMap}" var="doc">
+                        <apex:outputLink value="{!DocumentMap[doc]}" rendered="{!doc == 'Access_Service_Guide'}" target="_blank">  
+                            Access Service Guide
+                        </apex:outputLink>
+                    </apex:repeat>
+                </h4>
+                <p>
+                    The Access Service Guide provides service descriptions, Service Level Agreements, country-specific provisions (if applicable) and general information about AT&amp;T business services.
+                </p>
+            </div>
+            <div class="clearfix"></div>
+        </section>
+        
+    </div>
+</apex:page>

@@ -1,0 +1,38 @@
+<apex:page controller="PricingScheduleLaunchcontroller" action="{!SendRequest}" sidebar="false" showHeader="false" showChat="false" standardStylesheets="false">
+    <apex:includeScript value="{!$Resource.atomjqueryjs}" />
+    <style>
+        .message.errorM3 {
+            margin: auto !important;
+        }
+        .messageCell>.messageText {
+            font-size: 18px;
+            font-weight: normal;
+        }
+    </style>
+    <apex:form >
+        <c:Dealreg_QuoteInfoTable quoteObj="{!quoteObj}"></c:Dealreg_QuoteInfoTable>
+        <apex:commandLink value="<<Back" action="{!goback}" styleClass="btnAsLink blueText" />
+        <br/>
+        <br/>
+        <apex:pageMessages ></apex:pageMessages>
+        <apex:iframe src="{!response}" scrolling="true" rendered="true" html-class="docuSignFrame"/> 
+    </apex:form>
+    <script type="text/javascript">
+        var j$ = jQuery.noConflict();
+        var docuSignFrame = j$('.docuSignFrame');
+       
+        function onloadIFrame() {
+            console.log('onloadIFrame Loaded');
+            var hideBlock = docuSignFrame.contents().find('#other-actions > ul.secondary-menu-items');
+            console.log(hideBlock);
+            hideBlock.hide();
+            //docuSignFrame.contents().find('#other-actions > ul.secondary-menu-items').remove();
+        }
+         //docuSignFrame.load = onloadIFrame();
+        j$('.docuSignFrame').load(function () {
+            var doc = this.contentDocument || this.contentWindow.document;
+            var target = doc.getElementsByClassName('secondary-menu-items');
+            target.hide();
+        });
+    </script>
+</apex:page>

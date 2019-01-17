@@ -1,0 +1,243 @@
+<apex:page controller="RenewContractController" standardStylesheets="false" sidebar="false" showHeader="false">
+    <head>
+        <apex:includeScript value="{!$Resource.jquery_confirm_js}"/>
+        
+    </head>
+    <style>
+        .termLabel h1{
+            font-family: omnes_light;
+            font-size: 2.5em;
+            color:#000; 
+            margin-bottom:0px !important;
+        }
+        #manage_content .quoteSec h3{
+            margin-top:25px !important;
+            margin-bottom:24px !important;
+        }
+        #manage_content .quoteContent label{
+            margin:5px 0 14px 0;
+        }
+        .selecttermLabel h4 {
+            font-family: omnes_att_iimedium_italic !important;
+            font-size: 1.6em;
+            color: #056fab;
+            margin-top: 0px;
+            font-weight:bold;
+        }
+        .termListId tbody tr:nth-child(odd) {
+            background: none;
+        }
+        .termListId td{
+            width:110px;
+        } 
+        .termListId{
+         width: auto;
+        }
+        #selectterm label {
+            float: left;
+            padding-left: 10px !important;
+            padding-right: 15px !important;
+            font-family: omnesatt_iiregular;
+            font-size: 18px;
+            font-weight: normal;
+            margin:0px !important;
+        }
+        #selectterm input {
+            margin-top: 6px !important;
+        } 
+        #selectterm td:last-child label.special:after {
+            content: '&#40;Best value&#41;';
+            margin-left: 2px;
+            color: #999;
+        }
+        #selectterm td:last-child {
+            width: auto;
+        }
+        #selectterm .blue_hr{
+            margin-bottom: 32px;
+        }
+        #lastSec .blue_hr{
+            margin-top: 40px;
+            margin-bottom:40px;
+        }
+        .cancelLink, .dashBoardLink {
+            font-size: 16px;
+            font-family: omnes_att_iimedium;
+            color: #0568ad;
+            display: inline-block;
+            font-weight: bold;
+        }
+        .termInfoNextBtn {
+            padding: 0px 20px !important; 
+            height: 40px;
+        }
+        .footer_copy{
+            margin-top: 40px !important;
+        }
+        .cancelLinkDiv{
+            padding-top: 10px;
+            padding-right: 50px;
+        }
+        .goBackBtn{
+            padding: 0px 20px !important; 
+            background: #fff !important; 
+            color: #595959 !important;
+            min-width: 180px; 
+            border: 1px solid #595959!important; 
+            height: 40px; font-size: 16px; 
+            font-family: omnes_att_iimedium !important;
+        }
+        .thankYouMsg h3{
+            font-family: omnes_att_iimedium !important;
+            font-size: 32px !important;
+            color: #007a3d !important;    
+            margin-top: 30px;           
+        }
+        
+        ::-webkit-input-placeholder {
+           text-align: center;
+        }
+
+        :-moz-placeholder { /* Firefox 18- */
+           text-align: center;  
+        }
+
+        ::-moz-placeholder {  /* Firefox 19+ */
+           text-align: center;  
+        }
+
+        :-ms-input-placeholder {  
+           text-align: center; 
+        }
+        .processingMsg h5{
+            font-family: omnesatt_iiregular;
+            font-weight: bold;
+            line-height: 22px;
+            margin:0px;
+        }
+        #thankYouSection .blue_hr{
+            margin-top: 200px;
+            margin-bottom: 34px;
+        }
+        
+    </style>
+    <apex:form id="renewContractFormId" styleClass="row m0">
+    <apex:pageMessages />      
+    <apex:outputPanel rendered="{!IF(isRenewSubmitted == false,true,false)}">
+        <div class="row m0 p0 col-xs-12 col-md-12" id="updateContractTerm">
+            <div class="col-xs-12 col-md-12 p0 termLabel">
+                            <h1 class="page_content-header">{!$Label.SELECT_TERM_LABEL}</h1>
+            </div>
+            <div class="row m0 p0" id="termheader">
+                <div class="col-xs-12 p0 quoteSec" id="quoteSec"><h3>{!$Label.RENEWAL_QUOTENAME}</h3></div>
+                <div class="col-xs-8 p0 quoteContent">
+                    <!-- Quote Name -->
+                    <label class = "pull-left">{!$Label.Quote_Name}</label>
+                    <apex:inputText id="qname" html-placeholder="Optional" styleclass="border-r-0 quoteName col-md-3" style="margin-left:10px;" value="{!quoteName}" />
+                </div>
+            </div>        
+            <script> 
+                $('#selectterm td:last-child label').addClass('special');
+            </script>
+                    <div>
+                        <div class="row m0" id="selectterm">
+                            <div class="col-xs-12 m-b-20 p0">
+                                <hr class="blue_hr" />
+                            </div>
+                            <div class="selecttermLabel"><h4>{!$Label.RENEWAL_CONTRACTTERM}</h4></div>                                         
+                            <apex:selectRadio value="{!selectedTerm}" id="TermlistId"  styleClass="termListId" onClick="enableNext(this.value)"> 
+                                <apex:selectOptions value="{!Termlist}"> </apex:selectOptions>
+                            </apex:selectRadio>
+                        </div>  
+                     </div>              
+                    <div class="row m0 p0">
+                        <div class="col-xs-12 p0" id="lastSec">
+                            <hr class="blue_hr" />
+                        </div>
+                    </div>        
+                    <div class="col-xs-12 p0">
+                            <ul class="row m0 m-t-20 p0 pull-right">
+                                
+                                <li style="display: inline-block;margin-right:15px;">
+                                    <div style="display:inline-block;">
+                                        <div class="pull-left cancelLinkDiv">
+                                            <apex:commandLink styleClass="cancelLink" id="renewalTermCancelId2" value="{!$Label.CANCEL_REQ}" action="{!cancelContractRenew}" rerender="" status="loading"/> 
+                                        </div>
+                                        <div class="pull-right">
+                                            <!--<input type="button" value="{!$Label.Back}" class="btn btn-secondary pull-right" onclick = "callToUpdateQuoteBack();"/>-->
+                                            <apex:commandButton action="{!redirectToStartPage}" id="BckBtnId" value="Back" styleClass="btn-primary pull-right goBackBtn m0" rerender="" status="loading"/> 
+                                        </div>
+                                    </div>
+                                </li>
+                                <li style="display: inline-block;">
+                                    <apex:commandButton action="{!renewContract}" id="termInfoNextBtnId" value="Next: Review Quote" styleClass="btn-primary pull-right termInfoNextBtn m0" reRender="opHDNCookie,contractDetailsPanel,renewContractFormId" status="loading"/>                          
+                                </li>                        
+                            </ul>
+                        <!--<apex:actionFunction name="updateQuote" action="{!updateQuote}" status="loading" oncomplete="setProductType();isProductSelected();" rerender="productInfoFormId">
+                            <apex:param name="selectedTerm" value="" assignTo="{!selectedTerm}" />
+                        </apex:actionFunction> -->                                       
+                    </div>                      
+
+                    <script>                
+                        // Function to prevent enter click on the quote name text box
+                        function preventEnter() {            
+                            $(".quoteName").on({"keypress":function(event)
+                                {
+                                    if(event.keyCode && 13 === event.keyCode){
+                                            return false;
+                                        }
+                                },
+                                "keyup": function(event){
+                                    if(event.keyCode && 13 === event.keyCode){
+                                            return false;
+                                        }
+                                }
+                            });
+                           
+                            var chkProdLength = $("input[id='TermlistId']:checked").length;
+                            if (chkProdLength === 0 ) {
+                                $('.termInfoNextBtnId').attr('disabled', 'true');
+                            }
+                        }
+                        preventEnter();                
+                    </script>
+        </div>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!IF(isRenewSubmitted == true,true,false)}">
+        <div class="row m0 p0 col-xs-12 col-md-12" id="thankYouSection">
+            <div class="col-xs-12 col-md-12 p0 thankYouMsg">
+                            <h3>{!$Label.RENEWAL_TERM_THANKU}</h3>
+            </div>
+            <div class="col-xs-12 col-md-12 p0 processingMsg">
+                <h5>{!$Label.RENEWAL_TERM_PROCES_MSG1}</h5>
+                <h5><strong>{!$Label.RENEWAL_MANAGE_QUOTE}</strong>&nbsp; {!$Label.RENEWAL_TERM_PROCES_MSG2}</h5>
+            </div>
+            <div class="row m0 p0">
+                        <div class="col-xs-12 p0">
+                            <hr class="blue_hr" />
+                        </div>
+            </div>
+            <div class=" row col-xs-12 p0 m0">
+                <div class="pull-right cancelLinkDiv p0 m0">
+                    <a href="/apex/PortalDashboard_UI" class="dashBoardLink" id="dashBoardLinkId">{!$Label.Dashboard}</a>
+                </div>
+            </div>
+        </div>
+    </apex:outputPanel>
+    </apex:form>
+    
+    <script>
+    var selectedTerm;
+    function enableNext(termValue){
+        selectedTerm = termValue;
+        console.log('termValue==',termValue);
+        if($('input[name="productSelectId1"]').is(':checked')){
+            $('.prodInfoNextBtnId').attr('disabled',false);
+        }
+    }
+    $(document).ready(function(){
+         $('#selectterm td:last-child label').addClass('special');
+    });
+    </script>  
+
+</apex:page>

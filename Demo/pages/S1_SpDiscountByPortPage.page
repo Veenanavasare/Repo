@@ -1,0 +1,95 @@
+<apex:page extensions="SI_SpDiscountByPort"  standardController="Opportunity" tabStyle="SPProduct__c" id="pageId">
+    <apex:sectionHeader title="Special Pricing By Port"/>
+        <apex:form rendered="{!IF((isProduct==true),false,true)}">
+            <Center><apex:outputLabel >
+            <font size="4" color="Gray"><p> No Product has been Special Pricing requested to the discount by Port Name.</p></font>
+            </apex:outputLabel></Center>
+            <Center><apex:commandButton value="Back" action="{!cancel}"/></Center>
+        </apex:form>  
+        <apex:form rendered="{!IF((isProduct==true),true,false)}">
+            <!--<apex:pageMessages />-->
+            <apex:pageBlock >
+                <apex:pageBlockButtons location="top">
+                    <apex:commandButton value="Calculate" action="{!calculate}" reRender="All_Products"/>
+                    <apex:commandButton value="Close" action="{!Cancel}" />
+                </apex:pageBlockButtons>
+                <apex:pageBlockTable value="{!productList}" var="q">
+                    <apex:column >
+                        <apex:facet name="header"> 
+                            <apex:inputCheckbox >
+                               <apex:actionSupport event="onclick" action="{!GetSelected}" onsubmit="checkAll(this)" rerender="Selected_PBS"/>
+                            </apex:inputCheckbox>
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!q.selected}" id="checkedone">
+                           <apex:actionSupport event="onclick" action="{!GetSelected}" rerender="Selected_PBS"/>
+                        </apex:inputCheckbox>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Product</apex:facet>
+                            {!q.acc.Record_Type_Name__c}
+                    </apex:column>  
+                    <apex:column >
+                        <apex:facet name="header">Port Type</apex:facet>
+                            {!q.acc.Port_Speed_Name__c}
+                    </apex:column>   
+                    <apex:column >
+                        <apex:facet name="header">Discount %</apex:facet>
+                            <apex:InPutText value="{!q.acc.Discount_Percentage__c}"/>
+                    </apex:column>               
+                </apex:pageBlockTable>
+            </apex:pageBlock>
+      
+        
+        <!-- ************************ Display Products By Port Name***************************** -->
+        <apex:pageBlock title="Products By Port Name" id="All_Products">
+            <apex:pageMessages /> 
+            <apex:pageBlockButtons location="bottom" rendered="{!IF((isSpResult==true),true,false)}"> 
+                <apex:commandButton value="Submit" action="{!save}"/>
+                <apex:commandButton value="Cancel" action="{!Cancel}" />
+            </apex:pageBlockButtons>    
+                <apex:pageBlockTable value="{!SpProductsList}" var="q" style="background-color:#A9BCF5;">
+                    <apex:column >
+                        <apex:facet name="header">Product No</apex:facet>
+                            <apex:OutPutField value="{!q.Name}"/> 
+                    </apex:column> 
+                    <apex:column >
+                        <apex:facet name="header">Product</apex:facet>
+                            <apex:OutPutField value="{!q.Record_Type_Name__c}"/> 
+                    </apex:column>  
+                    <apex:column >
+                        <apex:facet name="header">Port Type</apex:facet>
+                            <apex:OutPutField value="{!q.Port_Speed_Name__c}"/> 
+                    </apex:column> 
+                    <apex:column >
+                        <apex:facet name="header">List Price</apex:facet>
+                            <apex:OutPutField value="{!q.List_Price__c}"/> 
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Discounted Price</apex:facet>
+                             <apex:OutPutField value="{!q.Discounted_Price__c}"/> 
+                    </apex:column>   
+                    <apex:column >
+                        <apex:facet name="header">Discount %</apex:facet>
+                            <apex:OutPutField value="{!q.Discount_Percentage__c}"/> 
+                    </apex:column>  
+                    <apex:column >
+                        <apex:facet name="header">Special Pricing Discount</apex:facet>
+                            <apex:OutPutField value="{!q.Discount_Amount__c}"/>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Final Price</apex:facet>
+                            <apex:OutPutField value="{!q.Final_Price__c}"/>
+                    </apex:column>               
+                </apex:pageBlockTable>
+             </apex:pageBlock>
+        </apex:form>
+<script>
+function checkAll(cb){
+    var inputElem = document.getElementsByTagName("input");
+    for(var i=0; i<inputElem.length; i++){
+        if(inputElem[i].id.indexOf("checkedone")!=-1)
+        inputElem[i].checked = cb.checked;
+    }
+}    
+</script>
+</apex:page>

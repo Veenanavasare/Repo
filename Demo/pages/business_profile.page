@@ -1,0 +1,394 @@
+<apex:page controller="SI_Business_Profile" showChat="false" cache="true" docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" >
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader" />
+    <style>
+
+        h1 {
+            font-family: omnesatt_iiregular;
+        }
+        .errorTextInput {
+            border-color: #a94442;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+        }
+        .errorText {
+            color: #a94442;
+            font-size: 18px;
+        }
+        .searchBlock {
+            float: left;
+        }
+        .searchBlock .manage_user_search_row {
+            margin: 0;
+        }
+        .m-t-20 {
+            margin-top: 20px;
+        }
+
+        .labSty { margin-left:50px;}
+        .currentTierSty{color:#3BC1F4; text-decoration: none;}
+        .inputTextBoxSty{width:17px !important; height:17px;margin-left:30px; margin-right:10px;}
+        .BillingCheckBoxSty{margin-left:15px; margin-top:10px;margin-bottom:40px;}
+        input[type="checkbox"] {
+            margin: -7px 5px 0px 0px;
+            line-height: normal;
+        }
+        .trainComplSty{ margin-top: 20px; font-size:16px;}
+        .trainingCompSty{ font-size:24px; color:#EF6F00;}
+        .attProdSty{float:left; margin-right:40px;}
+        #manage_content h1, .manage_content h1 {margin-bottom: 10px;font-size: 42px; color:#666666; font-style:normal; text-align:left; line-height:30px; letter-spacing:0em; effect:none;}
+        .businessLeadSty{margin-right:20px; font-family:Arial; font-weight:bold;font-size: 14px; color:#333333; font-style:normal; text-align:left; line-height:40px; letter-spacing:0.01em; effect:none;}
+        .businessLeadIDSty{font-family:Arial; color:#666666; font-size:14px;}
+        .labelTextSty{ font-family:Arial; font-weight:bold;font-size: 14px; color:#333333; font-style:normal; text-align:left; line-height:20px; letter-spacing:0.01em; effect:none;}
+
+        /*CSS for removing the select dropdown icon */
+        .styled-select-small select { -webkit-appearance: none;-moz-appearance: none;appearance: none;padding: 0 5px;height: 30px;line-height: 20px;border: 0;border-radius: 0;-webkit-appearance: none;background: transparent;cursor: pointer;height: 26px; }
+        .adjust-select-small {width: 145px !important;height: 32px;margin-top: -4px;}
+        .add_new_customer_header {margin-bottom: 15px;}
+        .businessInfoSty{ font-size: 24px; margin-top:35px;color:#ef6f00; width:232px !important;font-style:normal; text-align:left; line-height:30px; letter-spacing:0em; effect:none;}
+        .dataXoomTitleSty{ font-size: 42px; color:#666666; font-style:normal; text-align:left; line-height:30px; letter-spacing:0em; effect:none; display:block; margin-bottom:40px;}
+        .glyphicon { cursor:pointer;}
+        #businessButtonDisable { width:16% !important; display:block;padding: 7px 40px;font-family: clearviewattregular;color: #ccc; background: #eee;border: 0;-webkit-border-radius: 4px;border-radius: 4px;width: auto !important; cursor:none;}
+        #descriptionClose{ width:10px !important; margin-top:2px;}
+        .statesDisable {background:#EBEBE4; height: 32px;}
+        .productTrainingCompSty{font-size: 14px; margin-top:30px;color:#333333; font-style:normal; text-align:left; line-height:16.8px; letter-spacing:0.01em; effect:none;}
+
+        .glyphicon1 {background: url('{!$Resource.questionMarkInfo}}') no-repeat scroll 5px -40px;}
+        .txtBoxWidth {width:298px !important;margin-right:20px;margin-top: -5px;font-family: Arial;font-size: 14px;color: #666666;}
+        .selectBoxWidth {width:147px !important;font-family: Arial;font-size: 14px;color: #666666;}
+        .selectBoxZipWidth {width:142px !important;font-family: Arial;font-size: 14px;color: #666666;margin-top: -6px;}
+        .MT10{margin-top:0px;}
+        .col-xs-6{margin-top:-4px;}
+        .styled-select-small { height: 32px; background-size: 30px 30px;}
+    </style>
+    <script>
+        function validateContactFirstName(thisEle, sFieldName) {
+            if (/^\s/.test(thisEle.value)) {
+                $(this).addClass('errorTextInput');
+                $(".errorText." + sFieldName).remove();
+                $(thisEle).after("<p class='errorText " + sFieldName + "'>Field Cannot Start with a space</p>");
+            } else {
+                $(this).removeClass('errorTextInput');
+                $(".errorText." + sFieldName).remove();
+            }
+        }
+      function enableUpdateButtonAddress(){
+
+            $('[id$=u59]').show();
+            $('[id$=businessButtonDisable]').hide();
+
+      }
+      function enableUpdateButtonFloor(){
+            $('[id$=u59]').show();
+            $('[id$=businessButtonDisable]').hide();
+      }
+      function enableUpdateButtonCity(){
+            $('[id$=u59]').show();
+            $('[id$=businessButtonDisable]').hide();
+      }
+      function enableUpdateButtonZip(){
+            $('[id$=u59]').show();
+            $('[id$=businessButtonDisable]').hide();
+      }
+      function enableUpdateButtonState(){
+            $('[id$=u59]').show();
+            $('[id$=businessButtonDisable]').hide();
+      }
+      function submitEnableFun(){
+            $('[id$=u59]').hide();
+            $('[id$=businessButtonDisable]').show();     
+      }
+      function updateUserDetails(){                           
+          var address  = $('[id$=u6_input]').val();         
+          var addressInfo = $('[id$=u9_input]').val();         
+          var city = $('[id$=u12_input]').val();          
+          var Statecode = $('[id$=states]').val();         
+          var zipcode = $('[id$=u19_input]').val();    
+          $('[id$=businessButtonDisable]').show();
+          $('[id$=updateBtn]').hide();  
+          doUpdateAccountRecord(address,addressInfo,city,Statecode,zipcode);  
+      }
+    </script>
+    
+    <!-- HERO MODULE -->
+    <div id="hero_banner" class="hero_manage jumbotronContainer">
+        <div class="row">
+            <div class="col-sm-12"></div>
+        </div>
+    </div> 
+    <div class="content_container">
+        <div class="mainDivContent">
+        <div ng-view="" class="ng-scope">
+            <div id="manage_content">
+               <apex:form >
+                 <apex:actionFunction name="doUpdateAccountRecord" action="{!doUpdateAccountDetails}" status="loading" reRender="resultPanel">
+                    <apex:param name="address" id="addres" value="" assignTo="{!accountAddress}"/>
+                    <apex:param name="addressInfo"  id="address" value=""  assignTo="{!accountAddressInfo}"/>
+                    <apex:param name="city" id="city" value="" assignTo="{!accountBusinessDetails.BillingCity}"/>
+                    <apex:param name="Statecode" id="state" value="" assignTo="{!accountBusinessDetails.BillingState}"/>
+                    <apex:param name="zipcode" id="zip" value="" assignTo="{!accountBusinessDetails.BillingPostalCode}"/>
+                </apex:actionFunction>  
+                <apex:outputPanel id="resultPanel">                                   
+                        <apex:pageMessages ></apex:pageMessages>
+                        <apex:outputText value="{!accountBusinessDetails.name}" styleClass="dataXoomTitleSty"></apex:outputText>
+                        <apex:outputText value="Business Information" styleClass="businessInfoSty"></apex:outputText>
+                        <!-- <p class="whiteSpaceError"></p> -->         
+                        <div class="row" id="pageBlockSection1" style="margin-top:20px; margin-left:0px;">
+                            <div class="">                          
+                                <apex:outputPanel rendered="{!isEditable=true}" style="float:left; margin-right: 55px;">
+                                    <div>
+                                        <div>
+                                            <apex:outputText value="Business Lead ID" styleClass="businessLeadSty"/>
+                                            <apex:outputText value="{!SPAcconttemp}" styleClass="businessLeadIDSty"/>
+                                            <span class="glyphicon1" id="descriptionClose" data-placement="right" style="padding-top: 8px;position: absolute;margin-left: 5px;">
+                                                <apex:image value="{!$Resource.questionMarkInfo}" style="height:18px; width:18px;"/>
+                                            </span>
+                                        </div>
+                                        <div class="MT10"> 
+                                            <apex:outputLabel value="Business Address" styleClass="labelTextSty" style="margin-bottom:-14px;"></apex:outputLabel><br/>
+                                            <label class="labelTextSty">Address</label>
+                                        </div>
+                                        <div>
+                                            <input id="u6_input" type="text" Class="reqField firstName txtBoxWidth" value="{!accountAddress}" onchange="enableUpdateButtonAddress();" maxlength="150"/>                                             
+                                        </div> 
+                                        <div>
+                                            <label class="labelTextSty">Suite/Floor</label>
+                                        </div>
+                                        <div>
+                                            <input id="u9_input" type="text" Class="reqField firstName txtBoxWidth" value="{!accountAddressInfo}" onchange="enableUpdateButtonFloor();" maxlength="15"/>                                                                                   
+                                        </div> 
+                                        <div>
+                                            <label class="labelTextSty">City</label>
+                                        </div>
+                                        <div>
+                                            <input id="u12_input" Class="reqField firstName txtBoxWidth" type="text" value="{!accountBusinessDetails.BillingCity}" onchange="enableUpdateButtonCity();" maxlength="40"/>                                       
+                                        </div> 
+                                        <div>
+                                            <label class="labelTextSty">State</label><label style="margin-left:120px;" class="labelTextSty">Zip</label>
+                                        </div>  
+                                        <div style="float:left;">                                      
+                                           <div>
+                                                <div class="add_state_input_div">
+                                                    <div class="add_site_location_adjust">
+                                                        <div class="styled-select-small adjust-select-small">
+                                                            <apex:selectList id="states" styleClass="reqField selectBoxWidth"  size="1" value="{!accbillState}" multiselect="false" onchange="enableUpdateButtonState();">
+                                                                <apex:selectOptions value="{!StatePickList}"/>
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <input type="text" Class="reqField firstName selectBoxZipWidth" value="{!accountBusinessDetails.BillingPostalCode}" style="margin-top: -2px;margin-left: 10px" id="u19_input" onchange="enableUpdateButtonZip();" maxlength="5"/>                                                                              
+                                        </div>        
+                                    </div> 
+                                    <div id="u59" class="ax_shape" style="display:none; margin-top:15px;float:none;">
+                                       <a href="javascript:void(0);" onclick="updateUserDetails();return false;" id="updateBtn">
+                                            <button class="" title="Update Details" style="padding: 7px 40px; margin-top:40px; margin-left: 0px;" >
+                                                <div class="blue_button pull-right" style="padding: 0; margin: 0; float: left;"></div>
+                                                Update
+                                            </button>                                    
+                                       </a>
+                                    </div>
+                                <input type="button" value="Update" id="businessButtonDisable" style="cursor :initial; display:block;margin-top:38px;" /> 
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!isEditable=false}" style="float:left; margin-right: 55px;">
+                                    <div>
+                                        <div>
+                                            <apex:outputText value="Business Lead ID" styleClass="businessLeadSty"/>
+                                            <apex:outputText value="{!SPAcconttemp}"/>
+                                            <span class="glyphicon1" id="descriptionClose" data-placement="right" style="padding-top: 8px;position: absolute;margin-left: 5px;">
+                                                <apex:image value="{!$Resource.questionMarkInfo}" style="height:18px; width:18px;"/>
+                                            </span>
+                                        </div>
+                                        <div class="MT10"> 
+                                            <apex:outputLabel value="Business Address" styleClass="labelTextSty" style="margin-bottom:-14px;"></apex:outputLabel><br/>
+                                            <label class="labelTextSty">Address</label>
+                                        </div>
+                                        <div>
+                                            <apex:input id="u6_inputDisable" type="text" styleClass="reqField firstName txtBoxWidth" value="{!accountAddress}" onchange="enableUpdateButtonAddress();" disabled="true" style="cursor:no-drop;"/>                                             
+                                        </div> 
+                                        
+                                        <div>
+                                            <label class="labelTextSty">Suite/Floor</label>
+                                        </div>
+                                        <div>
+                                            <input id="u9_input" type="text" Class="reqField firstName txtBoxWidth" value="{!accountAddressInfo}" onchange="enableUpdateButtonFloor();" disabled="true" style="cursor:no-drop;"/>                                                                                   
+                                        </div> 
+                                        
+                                        <div>
+                                            <label class="labelTextSty">City</label>
+                                        </div>
+                                        <div>
+                                            <input id="u12_input" Class="reqField firstName txtBoxWidth" type="text" value="{!accountBusinessDetails.BillingCity}" onchange="enableUpdateButtonCity();" disabled="true" style="cursor:no-drop;"/>                                       
+                                        </div> 
+                                        
+                                        <div>
+                                            <label class="labelTextSty">State</label><label style="margin-left:120px;" class="labelTextSty">Zip</label>
+                                        </div>  
+                                        <div>                                      
+                                           <div style="cursor:initial;">
+                                                <div class="add_state_input_div">
+                                                    <div class="add_site_location_adjust">
+                                                        <div class="styled-select-small adjust-select-small">
+                                                            <apex:selectList id="statesDisable" styleClass="reqField" value="{!state}" size="1" multiselect="false" onchange="enableUpdateButtonState();" disabled="true" style="background:#EBEBE4;cursor:no-drop;height: 32px;">
+                                                                <apex:selectOptions value="{!StatePickList}"/>
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                    <!-- <input ng-model="form.site_state" type="text" id="add_site_state" name="add_site_state" placeholder="" class="ng-pristine ng-valid"/> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <input type="text" Class="reqField firstName selectBoxZipWidth" value="{!accountBusinessDetails.BillingPostalCode}" style="cursor:no-drop; margin-top: -30px;margin-left: 157px" id="u19_input" onchange="enableUpdateButtonZip();" disabled="true"/>                                                                              
+                                        </div>        
+                                    </div>  
+                                                                                                                                  
+                                <div id="u59" class="ax_shape" style="display:none; margin-top:15px;float:none;">
+                                   <a href="javascript:void(0);" onclick="updateUserDetails();return false;" id="updateBtn">
+                                        <button class="" title="Update Details" style="padding: 7px 40px; margin-top:38px; margin-left: 0px; margin-bottom:2px;">
+                                            <div class="blue_button pull-right" style="padding: 0; margin: 0; float: left;"></div>
+                                            Update
+                                        </button>                                    
+                                   </a>
+                                </div>
+                                <input type="button" value="Update" id="businessButtonDisable" style="cursor :initial; display:block;margin-top:38px;" />  
+                              </apex:outputPanel>
+                              </div>                 
+                            <div class="" style="float:left; margin-right: 55px;">
+                                <div>
+                                    <div>
+                                        <apex:outputText value="Tier Level" style="margin-right:110px;" styleClass="businessLeadSty"/>
+                                        <apex:outputLink style="text-decoration:none;" value="{!$Label.BusinessProfileDoc}">
+                                            <apex:outputText value="{!Tier}" styleClass="currentTierSty" />
+                                        </apex:outputLink>    
+                                    </div>
+                                    <div class="MT10">
+                                        <apex:outputLabel value="Billing Address" styleClass="labelTextSty" style="margin-bottom:-14px;"></apex:outputLabel><br/>
+                                        <label class="labelTextSty">Address</label>
+                                    </div>
+                                    <div>
+                                        <apex:inputText styleClass="reqField txtBoxWidth" value="{!accountBillingAddress}" onkeyup="validateContactFirstName(this,'BusinessName')" disabled="true" style="cursor:no-drop;"/>
+                                                                                        
+                                    </div>
+                                    <div>
+                                        <label class="labelTextSty">Suite/Floor</label>
+                                    </div>
+                                    <div>
+                                        <apex:inputText styleClass="reqField txtBoxWidth" value="{!accountBillingAddressline}" onkeyup="validateContactFirstName(this, 'BusinessName')" disabled="true" style="cursor:no-drop;">
+                                        </apex:inputText>
+                                    </div>
+                                    <div>
+                                        <label class="labelTextSty">City</label>
+                                    </div>
+                                    <div>
+                                        <apex:inputText value="{!accountDetails.Billing_City__c}" styleClass="reqField txtBoxWidth" onkeyup="validateContactFirstName(this, 'BusinessName')" disabled="true" style="cursor:no-drop;">
+                                        </apex:inputText>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="labelTextSty">State</label><label style="margin-left:120px; cursor:initial;" class="labelTextSty">Zip</label>
+                                    </div> 
+                                    <div>                                      
+                                       <div>
+                                            <div class="add_state_input_div">
+                                                <div class="add_site_location_adjust">
+                                                    <div class="styled-select-small adjust-select-small">
+                                                        <apex:selectList id="state1" styleClass="reqField selectBoxWidth" value="{!state}" size="1" multiselect="false" onchange="enableUpdateButtonState();" disabled="true" style="background:#EBEBE4; cursor:no-drop;height: 32px;">
+                                                            <apex:selectOptions value="{!CustomStatePicklist}" />
+                                                        </apex:selectList>
+                                                    </div>
+                                                </div>
+                                                <!-- <input ng-model="form.site_state" type="text" id="add_site_state" name="add_site_state" placeholder="" class="ng-pristine ng-valid"/> -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <apex:inputText styleClass="reqField firstName selectBoxZipWidth" onkeyup="validateContactFirstName(this, 'firstName')" value="{!accountDetails.Billing_Zip_Code__c}"  style="cursor:no-drop; margin-top: -30px;margin-left: 157px" disabled="true">
+                                            <apex:actionFunction name="s" oncomplete="validateContactFirstName(this, 'firstName')" />
+                                        </apex:inputText>
+                                    </div> 
+                                </div>
+                            </div>  
+                            <div class="" style="margin-bottom:20px; margin-top: 40px;">
+                                <div>
+                                    <div class="MT10">
+                                        <apex:outputLabel value="Billing Contact" styleClass="labelTextSty" style="margin-bottom:-14px;"></apex:outputLabel><br/>
+                                        <label class="labelTextSty">First Name</label>
+                                    </div>
+                                    <div>
+                                        <apex:inputText styleClass="txtBoxWidth" value="{!contactDetails.FirstName}" onkeyup="validateContactFirstName(this, 'BusinessWebSite')" disabled="true" style="cursor:no-drop;float:none;"/>                                        
+                                    </div>
+                                    <div>
+                                        <label class="labelTextSty">Last Name</label>
+                                    </div>
+                                    <div>
+                                        <apex:inputText styleClass="txtBoxWidth" value="{!contactDetails.LastName}" onkeyup="validateContactFirstName(this, 'BusinessWebSite')" disabled="true" style="cursor:no-drop; float:none;"/>                                        
+                                    </div>
+                                    <div>
+                                        <label class="labelTextSty">Email</label>
+                                    </div>
+                                    <div>
+                                        <apex:inputText styleClass="txtBoxWidth" value="{!contactDetails.Email}" onkeyup="validateContactFirstName(this, 'BusinessWebSite')" disabled="true" style="cursor:no-drop; float:none;"/>                                        
+                                    </div>
+                                    <div>
+                                        <label class="labelTextSty">Phone</label>
+                                    </div>
+                                    <div>
+                                        <apex:inputText styleClass="txtBoxWidth" value="{!contactDetails.Phone}" onkeyup="validateContactFirstName(this, 'BusinessWebSite')" disabled="true" style="cursor:no-drop; float:none;margin-top: -2px;"/>                                        
+                                    </div>
+                                </div>                         
+                            </div>
+                            
+                        </div>
+                        
+                        <div style="margin-top:40px; margin-bottom:36px; border-top: 1px dashed gray; width: 1059px;"></div>
+                        <apex:outputText value="Training Completed" styleClass="trainingCompSty"></apex:outputText>                        
+                        <table style="margin-top:17px;"> 
+                                <div style="margin-top:38px;"></div>     
+                                   <tr>
+                                       <apex:outputText value="Network Services" style="text-decoration:underline;margin-left:2px;" styleClass="productTrainingCompSty"></apex:outputText>
+                                       <td> 
+                                            <apex:repeat value="{!CollOfProdWrapperList }" var="prodWrapper" >
+                                                 <apex:outputPanel rendered="{!prodWrapper.productFamily == 'Network Services' }" style="display:block;margin-bottom: 10px;">
+                                                    <apex:inputCheckbox value="{!prodWrapper.productValue}" disabled="true" style="width:17px; height:17px; margin-top:1px;"/>
+                                                    <apex:outputText value="{!prodWrapper.productLabel}" styleClass="productTrainingCompSty" ></apex:outputText>
+                                                    
+                                                </apex:outputPanel>
+                                            </apex:repeat> 
+                                       </td> 
+                                       <apex:outputText value="Mobile Services" style="text-decoration:underline; margin-left:203px;" styleClass="productTrainingCompSty"></apex:outputText>
+                                       <td style=" margin-left:30px;">   
+                                           <apex:repeat value="{!CollOfProdWrapperList }" var="prodWrapper" >  
+                                                <apex:outputPanel rendered="{!prodWrapper.productFamily == 'Mobility' }" style="display:block;margin-bottom: 10px;">
+                                                    <apex:inputCheckbox value="{!prodWrapper.productValue}" disabled="true" style="width:17px; height:17px; margin-top:1px; margin-left:48px;"/>
+                                                    <apex:outputText value="{!prodWrapper.productLabel}" styleClass="productTrainingCompSty"></apex:outputText>                            
+                                                </apex:outputPanel>                            
+                                           </apex:repeat>
+                                       </td>
+                                       <apex:outputText value="Cloud & Hosting Services" style="text-decoration:underline;margin-left:57px;" styleClass="productTrainingCompSty"></apex:outputText> 
+                                       <td style="margin-left:30px; ">  
+                                           <apex:repeat value="{!CollOfProdWrapperList }" var="prodWrapper" >    
+                                                <apex:outputPanel rendered="{!prodWrapper.productFamily == 'Cloud & Hosting' }" style="display:block;margin-bottom: 10px;">
+                                                    <apex:inputCheckbox value="{!prodWrapper.productValue}" disabled="true" style="width:17px; height:17px; margin-top:1px; margin-left:48px;"/>
+                                                    <apex:outputText value="{!prodWrapper.productLabel}" styleClass="productTrainingCompSty"></apex:outputText>                                                
+                                                </apex:outputPanel>
+                                           </apex:repeat> 
+                                       </td>
+                                  </tr>
+                          </table>                
+                    </apex:outputPanel>                     
+                </apex:form>               
+            </div>
+        </div>
+    </div>
+    </div>
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+    <script>
+        $(document).ready(function(){
+            $("#descriptionClose").tooltip({
+                title : 'This Solution Provider Account ID can be used for identification when calling Partner Exchange Support.'
+            });
+        });
+    </script>
+</apex:page>

@@ -1,0 +1,288 @@
+<apex:page controller="AddNewCustomerController" showChat="false" name="Add New Customer" cache="true" docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" />
+    <apex:stylesheet value="{!$Resource.ATTPortalExchangeCSS}" />
+    <apex:includeScript value="{!URLFOR($Resource.bootstrapMin, 'js/bootstrap.min.js')}" />
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet" />
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+    <apex:includeScript value="{!$Resource.jqueryeditable}" />
+    <style>
+        /*DEC 12 - for leon*/
+        .tableHeaderRow td{
+            cursor: pointer;
+        }/*End DEC 12*/
+    
+        input[type="submit"] {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-family: clearviewattregular;
+            color: #fff;
+            background: #056fab;
+            border: 0;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+            width: auto;
+        }
+        input[type="submit"]:hover {
+            background: #3bc1f4;
+        }
+        .add_state_input_div .adjust-select-small {
+            float: left;
+            top: 0 !important;
+            /*width: 100%;*/
+        }
+        input[type="submit"].add_site_btn {
+            position: relative;
+            top: 0;
+            padding: 4px 10px;
+            width: 100px;
+            font-size: 0.875em;
+        }
+        #tbody_added_sites_here {
+            display: table-row-group;
+        }
+        .add_sites_tbody input.add_site_loc2 {
+            width: 21% !important;
+            margin-left: 5px;
+            margin-top: -2px;
+        }
+        .btn_deactivate_user {
+            margin: 0 10px 0;
+            padding: 10px 20px !important;
+            font-family: clearviewattregular;
+            color: #fff;
+            background: #056fab;
+            border: 0 !important;
+            height: 36px !important;
+            -webkit-border-radius: 4px;
+            width: auto !important;
+        }
+        h1 {
+            font-family: omnesatt_iiregular;
+        }
+        /* Begin Add Sites table styles*/
+        #add_site_table td {
+            width: 12.5%;
+        }
+        #add_site_table > thead > tr.tableHeaderRow {
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        #add_site_table > thead > tr.tableHeaderRow > td {
+            border-right: 1px solid #ddd;
+            padding: 11px 8px 0px 8px;
+        }
+
+        #add_site_table > thead > tr.tableHeaderRow > td.noBorders {
+            border-right: 0;
+        }
+        /* End Add Sites table styles*/
+        input[type="file"] {
+            font-family: clearviewattregular;
+            border: 0;
+            -webkit-border-radius: 4px;
+            border-radius: 4px;
+            width: 279px;
+        }
+        .reorder_btn {
+            top: -20px;
+        }
+        .reorderlink {
+            margin: 6px 0 0 0;
+            display: block;
+        }
+        .errorTextInput {
+            border-color: #a94442;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+        }
+        .errorText {
+            color: #a94442;
+            font-size: 18px;
+        }
+        .searchBlock {
+            float: left;
+        }
+        .searchBlock .manage_user_search_row {
+            margin: 0;
+        }
+        .bulkUploadBlock {
+            float: right;
+        }
+        .m-t-20 {
+            margin-top: 20px;
+        }
+        .disabled-btn {
+            pointer-events: none;
+            cursor: not-allowed;
+            filter: alpha(opacity=65);
+            -webkit-box-shadow: none;
+            box-shadow: none;
+            opacity: .65;
+        }
+        .dataTables_length {
+            display: none;
+        }
+        .dataTables_info {
+            /*bottom: 22px; */
+            /* position: absolute; */
+            width: 50%;
+            /* right: 180px; */
+            float: left;
+        }
+        #site_table_wrapper .dataTables_paginate {
+            float: right;
+            margin: auto;
+        }
+        #site_table_wrapper .pagination > a {
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #056fab;
+            margin-left: 5px;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+            cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+            cursor: no-drop;
+        }
+        /* Begin Add Site Table styles */
+        .add_sites_location {
+            float: left;
+            width: 50%;
+        }
+        .add_sites_location input {
+            width: 60%;
+            margin: -5px 0px -5px 25px;
+        }
+        .addSiteChkLbl {
+            width: 45px;
+        }
+        .add_sites_location select,
+        .add_sites_state select {
+            height: 30px;
+            margin-top: -5px;
+        }
+        .add_sites_state select {
+            width: 95%;
+            margin-top: 0;
+        }
+        /* End Add Site Table styles */
+        /*CSS for removing the select dropdown icon */
+        .styled-select-small select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+
+            padding: 0 5px;
+            width: 100%;
+            height: 23px;
+            line-height: 20px;
+            border: 0;
+            border-radius: 0;
+            -webkit-appearance: none;
+            background: transparent;
+            cursor: pointer;
+        }
+        
+        .completeBtn{
+            margin-left: 0 !important;
+        }
+        .completeBtn:hover {
+            color: #fff;
+        }
+        #add_site_table div.add_site_location_adjust > .styled-select-small.adjust-select-small {
+            margin-top: -2px;
+            margin-left: 10px;
+        }
+        .zipInput {
+            height: 26px;
+            margin-top: 2px;
+        }
+        input.completeBtn {
+            padding: 7px 20px !important;
+            color: #333;
+        }
+        input.disabled-btn {
+            color: #333;
+            background: #eeeeee;
+        }
+        .user_badge {
+            margin-top: 6px !important;
+        }
+        .paginate_button_disabled, .paginate_disabled_previous, .paginate_disabled_next {
+            color: #cfcfcf !important;
+        }
+        .paginate_disabled_previous, .paginate_disabled_next {
+            cursor: no-drop;
+            display: none;
+        }
+        
+        .search_user_container {
+            height: 25px !important;
+        }
+
+        </style>
+    <script>
+            
+        
+        
+        function validateContactFirstName(event, thisEle, sFieldName, sRequired) { 
+            //This will prevent the keyup on press of Tab
+            var keyCode = event.keyCode || event.which;
+            if(keyCode == 9) 
+            { 
+            return;
+            } 
+                    
+            if (/^\s/.test(thisEle.value)) {
+                $(this).addClass('errorTextInput'); 
+                $(".errorText." + sFieldName).remove();
+                $(thisEle).after("<p class='errorText " + sFieldName + "'>Field Cannot Start with a space</p>");         
+
+            } else   if ('' === thisEle.value && sRequired === 'Required')
+                {
+                $(this).addClass('errorTextInput'); 
+                $(".errorText." + sFieldName).remove();
+                $(thisEle).after("<p class='errorText " + sFieldName + "'>Field Cannot be blank</p>");
+                }         
+            
+                                     
+            else {
+                $(this).removeClass('errorTextInput');
+                $(".errorText." + sFieldName).remove();
+            }
+        }
+    </script>
+
+    <div class="content_container">
+        <!-- angular templating content will be injected here -->
+        <div ng-view="" class="ng-scope">
+            <!-- HERO MODULE -->
+            <div id="hero_banner" class="hero_manage jumbotronContainer ng-scope">
+                <div class="row">
+                    <div class="col-sm-12"></div>
+                </div>
+            </div>
+
+            <!-- CONTENT MODULE -->
+            <div id="manage_content">
+                <h1>Insufficient Privileges</h1>
+
+                <p style="margin-top:40px">We’re sorry. You need permission to access this content. Ask your <a href="/apex/manage_users">Admin</a> for details.</p>
+            </div>
+        </div>
+    </div>
+
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" />
+
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/libs/jquery.dataTables.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/modernizr.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'/vendors/bootstrap.min.js')}" />
+
+</apex:page>

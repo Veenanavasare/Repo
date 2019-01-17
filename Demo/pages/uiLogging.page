@@ -1,0 +1,214 @@
+<apex:page docType="html-5.0" controller="uiLoggingController" action="getAllRecords" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:includeScript value="{!$Resource.atomjqueryjs}" />
+    <apex:stylesheet value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.js')}" />
+    
+    <style>
+        body{
+            width: 980px;
+            margin:0 auto;
+        }
+        .performanceHeading {
+            text-align: center;
+            font-size: 28px;
+            margin: 73px 73px 50px;
+            color: #056fab;
+        }
+        
+        #uiLoggingTable {
+            margin-bottom: 45px;
+        }
+        
+        .noteSection{
+            margin-bottom:20px;
+            margin-top:50px;
+        }
+        
+        .footer_logo_container {
+            float: left;
+            margin-right: 12px;
+            height: 100px;
+        }
+        
+        .uiLoggingFooter {
+            margin: 55px 0px;
+        }
+        
+        #top_nav_bar {
+            width: 100%;
+        }
+        
+        .containerFooter {
+            width: 100% !important;
+        }
+        
+       .uiLoggingCalIcon {
+            height: 100% !important;
+            font-size: 22px;
+            line-height: 1.33;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        
+       .uiLoggingSubmit {
+            float: right;
+        }
+        
+        .calenderField {
+            padding-bottom: 40px;
+        }
+        
+        .blue_hr {
+            height: 2px;
+            background: #056fab;
+            border-bottom: 1px solid #056fab;
+        }
+        .errorMsg{
+            text-align: center;
+            font-size: 20px;
+        }
+    </style>
+            <div id="top_nav_bar" class="navbar navbar-default navbar-fixed-top" role="navigation">
+            <div class="containerFooter">
+                <div class="navbar-header">    
+                    <a class="navbar-brand navbar-logo" href="/apex/PortalDashboard_UI">
+                        <apex:image url="{!URLFOR($Resource.portalDesignImg,'/logo_retina.png')}" width="222" height="32" title="AT&amp;T Partner Exchange" alt="AT&amp;T Partner Exchange"/>
+                    </a>
+                </div>
+            </div>
+        </div>
+    
+    <apex:form >
+        <div class="performanceHeading">
+            Performance Metrics
+        </div>
+        <apex:outputPanel id="uiLoggingPanel" styleClass="m-t-20 tableDataSection">
+            <apex:outputLabel rendered="{!IF(buttonValue == 'Reset',true,false)}">Results for Selected Date:</apex:outputLabel>
+            <table id="uiLoggingTable" class="uiLoggingDataTable table table-bordered table-hover" style="clear:both;"> 
+                <thead style="font-weight: bold; font-size: 17px; color: #056fab;">
+                    <tr>
+                        <th>Page Name</th>
+                        <th>Pre Processing Time (ms)</th>
+                        <th>Latency (ms)</th>
+                        <th>Processing Time (ms)</th>
+                        <th>Page Load Time (ms)</th>
+                    </tr>
+                </thead>
+                <tbody class="performanceTableData">
+                    <apex:repeat value="{!wpList}" var="gp">
+                        <tr style="font-family: omnes_att_iimedium;">
+                            <td style="font-size: 16px;">{!gp.pageName}</td>
+                            <td style="font-size: 16px;">{!gp.requestStart}</td>
+                            <td style="font-size: 16px;">{!gp.latencyTime}</td>
+                            <td style="font-size: 16px;">{!gp.processingTime}</td>
+                            <td style="font-size: 16px;">{!gp.pageLoad}</td>
+                        </tr>
+                    </apex:repeat> 
+                    <apex:outputText rendered="{!noRecordsExists}"><tr style="font-family: omnes_att_iimedium;" class="errorMsg"><td colspan="5">No Results Found.</td></tr></apex:outputText> 
+                </tbody>
+            </table>
+        </apex:outputPanel>
+        
+        <apex:outputPanel id="uiLoggingCalender">
+            <div class="calenderField" style="margin-top: 25px;">
+                <div class="container-full">
+                    <div class="row col-xs-12">
+                        <i><b>Select a date to view records for that particular day.</b></i>
+                        <div id="uiLoggingDateField">
+                            <apex:input styleClass="col-xs-5 dPickerUILogging" html-readonly="readonly" html-placeholder="mm/dd/yyyy" label="datePicker" type="text" />
+                            <span class="pull-left glyphicon glyphicon-calendar calendarIcon uiLoggingCalIcon"></span>
+                            <br style="clear:both;" />
+                        </div>
+                    </div>
+                </div>
+            </div>      
+        </apex:outputPanel>
+        
+        <div class="noteSection">
+            <i><p style="clear:both;">
+                <b>Note:</b> Above table displays the average load time recorded.
+                </p>
+                <p>
+                1. <b>Pre Processing Time</b> = (requestStart - fetchStart)
+                Time before the request is sent to the server.
+                </p>
+                <p> 
+                    2. <b>Latency</b> = (responseEnd - requestStart) AND (responseStart - fetchStart)
+                    Time it takes for the request to get to the server, the time it takes the server to render a response, and the time until the first byte of that response gets back to the user.
+                </p>
+                <p> 
+                    3. <b>Processing Time</b> = (responseEnd - responseStart)
+                    How long it takes the browser to download the response from the server from first byte to last byte.
+                    processing = pageEntries.loadEventEnd - pageEntries.domLoading 
+                </p>
+                <p>
+                    4. <b>Page Load Time</b> = Page load time is the average amount of time it takes for a page to show up on your screen. It's calculated from initiation to completion (when the page is fully loaded in the browser). 
+                </p>
+            </i>
+        </div>
+        
+        <hr class="blue_hr" />
+        
+        <apex:outputPanel id="buttonSection">
+            <a class="dashboardLink" href="/apex/PortalDashboard_UI" style="padding: 0px 0px !important;color:#44c8f5;margin-right;">Go to My Dashboard</a>
+            <apex:commandButton id="actionBtn" rendered="{!IF(buttonValue == 'Submit',true,false)}" styleClass="btn btn-primary uiLoggingSubmit" value="{!buttonValue}" onclick="getRecordsForSelectedDate();return false;" reRender="" oncomplete=""/>
+            <apex:commandButton id="resetBtn" rendered="{!IF(buttonValue == 'Reset',true,false)}" action="{!resetAllRecords}" styleClass="btn btn-primary uiLoggingSubmit" value="{!buttonValue}" reRender="uiLoggingPanel,buttonSection" status="loading" oncomplete="resetCalendervalue();return false;"/> 
+        </apex:outputPanel>
+        
+        <apex:actionFunction name="getRecords" action="{!fetchRecordsByDate}" reRender="uiLoggingPanel,buttonSection" status="loading" oncomplete="">
+            <apex:param name="dateSelected" value="" assignTo="{!dateSelected}" />
+        </apex:actionFunction>
+        
+        <script>
+            var uiLoggingMinMoveDate = new Date();
+            uiLoggingMinMoveDate.setDate(uiLoggingMinMoveDate.getDate()-30);
+            
+            var uiLoggingMaxMaxMoveDate  = new Date();
+            uiLoggingMaxMaxMoveDate.setDate(uiLoggingMaxMaxMoveDate.getDate());
+            
+            $(".dPickerUILogging").datepicker(
+                {
+                    numberOfMonths: 2,
+                    minDate: uiLoggingMinMoveDate,
+                    maxDate: uiLoggingMaxMaxMoveDate
+                });
+            
+            $(".uiLoggingCalIcon").on("click", function () {
+                $('.dPickerUILogging').focus();
+            });
+
+            function getRecordsForSelectedDate(){
+                var selectedDateInput = document.getElementById('uiLoggingDateField').getElementsByTagName('input');
+                var selectedDateInputValue = selectedDateInput[0].value;
+                if(selectedDateInputValue){
+                    getRecords(selectedDateInputValue);
+                }else{
+                    alert('Please select a date to filter the records.');
+                }
+            }
+            
+            function resetCalendervalue(){
+                document.getElementsByClassName('dPickerUILogging')[0].value = '';
+            }
+        </script>
+    </apex:form> 
+    
+    <!-- FOOTER SLICE -->
+        <div id="slice_footer">
+            <footer>
+                <div class="row">
+                    <div class="col-sm-3"></div>
+                    <div class="col-sm-12 uiLoggingFooter">
+                        <div class="footer_logo_container">
+                            <img class="footer_logo" src="{!$Resource.logo_footer}" alt="AT&amp;T"/>
+                        </div>
+                        <p>&copy; <script>document.write(new Date().getFullYear())</script> AT&amp;T Intellectual Property. All rights reserved. AT&amp;T, the AT&amp;T logo and all other AT&amp;T marks contained herein are trademarks of AT&amp;T Intellectual Property and/or AT&amp;T affiliated companies. All other marks contained herein are the property of their respective owners.</p>
+                    </div>
+                    <div class="col-sm-3"></div>
+                </div>
+            </footer>
+        </div>
+        <!-- END FOOTER SLICE -->
+     
+</apex:page>

@@ -1,0 +1,18 @@
+<apex:page Controller="SIDirectoryApprovalController">
+<apex:form >
+<div style="color:#FF0000; font-weight:bold">
+    <apex:pageMessages id="pagemessage" />
+  </div>
+  <apex:pageBlock title="Click Approve Button to Approve the Record" tabStyle="Lead">
+     <apex:pageBlockSection title="Should the record be sent to the Legal Reviewer" collapsible="false" rendered="{!NOT(Directory.Marketing_Consultant_Approved__c)}">
+                    <apex:pageBlockSectionItem >
+                        <apex:selectRadio value="{!type}">
+                        <apex:selectOptions value="{!items}"/>
+                        </apex:selectRadio>
+                    </apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
+     <apex:commandButton value="Approve" action="{!Approve}"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     <apex:commandButton value="Cancel" action="{!Cancel}"/>
+     </apex:pageBlock>
+     </apex:form>
+</apex:page>

@@ -1,0 +1,2909 @@
+<apex:page controller="API_MACD_SiteConfigureController"  standardStylesheets="false" sidebar="false" showHeader="false" action="{!checkAndInitializeCart}">
+
+    <apex:includeScript value="{!$Resource.ConfigureSitesJs}"/>
+    <apex:stylesheet value="{!$Resource.ConfigurSiteCss}"/>
+    <apex:stylesheet value="{!$Resource.App_CSS}"/>
+    <style>
+    .quoteInfo {margin:30px 0 35px 0;}
+    .modal-open .modal{background: rgba(0, 0, 0, 0.6);}
+    .btn:hover{
+        background:rgb(5, 111, 171) !important;
+        color:#fff !important;
+    }   
+    .configureSiteContainer{padding:0px !important;}
+    .highlightEligbleSites{background-color:#FAE7D8 !important}
+    .rightPanelTitle{
+        margin-top:0.5%;
+        width:310px;
+     }
+     #apltConfElisiteID .modal-body {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+    .tab-pane h4{margin-right: 40px;}
+    .disabletheCrossBtn{pointer-events: none;}
+    .disablethebtn{                       
+        pointer-events: none;
+        cursor: not-allowed;
+        cursor: default !important;
+        color: #FFFEFE !important;
+        opacity: .65;
+        background-color: #357ebd !important;
+    }
+    .btn[disabled] {
+        font-family: omnes_att_iimedium !important;
+        background-color: #d1d1d1 !important;
+        border-color: #d1d1d1 !important;
+    }
+    .btn[disabled]:hover{
+        background-color: #d1d1d1 !important;
+        border-color: #595959 !important;
+        color: #595959 !important;
+    }
+    .modal-content.applyAllPopUp {width: 665px;}
+    .wrapLabel{width: 325px;}
+    .tooltip.right {
+        padding: 0 5px;
+        margin-left: 18px;
+        min-width: 250px;
+    }
+    .tooltip.fiberCodeToolTipWithoutEMUX{
+         max-width:180px;
+         padding: 0 5px;
+         margin-left: 18px;
+         filter: drop-shadow(0 0 1px #999);
+
+    }
+    .tooltip.fiberCodeToolTipWithEMUX{
+         padding: 0 5px;
+         margin-left: 10px;
+         max-width: 256px;
+         filter: drop-shadow(0 0 1px #999);
+
+     }
+     .tooltipTrigger+.tooltip.fiberCodeToolTipWithEMUX>.tooltip-arrow {
+         border-right-color: #fff;
+         border-right: 10px solid #fff;
+         border-width: 10px !important;
+         left: -14px;
+         top: 40% !important;
+         filter: drop-shadow(0 0 0px #999);  
+      }
+     .tooltipTrigger+.tooltip.fiberCodeToolTipWithoutEMUX>.tooltip-arrow {
+        border-right-color: #fff;
+        border-right: 10px solid #fff;
+        border-width: 10px !important;
+        left: -14px;
+        top: 35% !important;
+        filter: drop-shadow(0 0 0px #999);          
+     }
+     .tooltipTrigger + .tooltip.fiberCodeToolTipWithoutEMUX > .tooltip-inner,.tooltipTrigger + .tooltip.fiberCodeToolTipWithEMUX > .tooltip-inner {
+         background-color: #fff;
+         color:#000;
+         font-family:omnes_att_iimedium;
+         text-align: left;
+         font-weight: normal;
+         max-width: 290px;
+         padding:10px
+     }
+     .tooltip.fiberCodeToolTipWithoutEMUX.in,.tooltip.fiberCodeToolTipWithEMUX.in{
+         opacity:1 !important;
+    }               
+    #rightPanelContent .acceptBtnNoResponseCls input[type="submit"]{
+        margin:10px 0px;
+        width:160px !important;       
+    }
+    #rightPanelContent .acceptBtnReviewReqCls input[type="submit"]{
+        margin:10px 10px !important; 
+        width:160px !important;
+    }
+    .fiberCodelabelsTextClass {
+        font-family: omnesatt_iiregular;
+        font-size: 16px;
+        font-weight: bold;
+        color: #000000;
+        text-align: left;
+    }
+    .fiberCodeSpanCls {
+        color: #ffa500!important;
+        font-weight: bold;
+        line-height : 1.8em;
+    }      
+    .IplflexError{display:none;}
+
+    #tableBlock{
+        max-height: 552px;
+        margin-top: -1px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    .displayPhoneError{
+        color: #D92825;
+        font-size: 16px;
+        font-family: omnes_att_iimedium;
+        font-weight:bold;
+    }  
+    .fixedPanel{position:fixed;width:850px;margin:0 auto;top:0px;}
+    .tooltipTrigger + .tooltip > .tooltip-inner {
+        background-color: #fff;
+        color:#000;
+        font-family:omnes_att_iimedium;
+        text-align: left;
+        font-weight: normal;
+        max-width: 290px;
+    }
+    .tooltipTrigger + .tooltip.top > .tooltip-arrow {
+        border-top-color:#fff; 
+        border-top:10px solid #fff;
+    }
+    .tooltipTrigger + .tooltip.top{
+        width:195px;
+    }
+    .tooltipTrigger + .tooltip.right > .tooltip-arrow {
+        border-right-color:#fff; 
+        border-right:10px solid #fff;
+    }
+    .checkbox-inline input[type=checkbox] {
+         position: relative !important;
+    }
+    .checkbox-inline {
+        float: left;
+        width: 70%;
+        cursor:default;
+    }
+      
+    .undoRemoveLnk {
+        width: 30%;
+        white-space: normal;
+        float: right;
+        padding: 10px 15px;
+        display:none;
+    }
+    .siteNameConfigured {
+        cursor:pointer;
+        text-decoration: underline;
+        color: #3BC1F4;
+    }
+    .siteNameConfiguredRev {
+    cursor:pointer;
+        text-decoration: underline;
+        color: #D92825;
+    }
+        
+    #tableBlock{
+        max-height: 552px;
+        margin-top: -1px;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+    #headerBlock{border: 1px solid #ddd;}
+    #configaddedsitesNew { 
+        margin-top: 25px; 
+        background: #fff !important; 
+        border: 1px solid #ddd;
+        overflow: hidden;
+        overflow-y: auto;
+    }
+    .siteListPanel{
+        width:100%;
+    }
+    .leftPanelheight{
+        max-height:708px;
+    }
+    .resizeLeftPanel{max-height:613px;}
+    .table>table>thead>tr>td.active{
+        //background-color: #f5f5f5;
+        background-color: #fff !important;
+    }
+    .siteListPanel>tbody>tr>td {
+        border: 1px solid #d1d1d1;
+        border-bottom-style:dashed;
+        border-top-style:dashed;
+        padding: 10px;
+        font-family:omnes_light;
+        font-size:16px;
+        font-weight:bold;
+        line-height:1.5em;
+        max-width: 250px;
+        white-space: nowrap;
+        vertical-align:top;
+    }
+    .siteListPanel>thead>tr>th {
+        padding: 10px;
+        text-align: left;
+        border: 1px solid #ddd;
+        border-top:0;
+        font-family:omnes_att_iimedium;
+        font-size:16px;
+        font-weight:bold;
+    }
+
+    .changeinterface1{color :#a3a3a3 !important;}
+    .changeinterface2{       
+       background-image:url("{!($Resource.portalDesignImg)}/new_arrow_small_grey.png"); 
+       background-size:35px 38px !important;
+    }
+    .styled-select-small select.changeinterface3 {
+        background:none repeat scroll 0% 0% rgba(163, 163, 163, 0.54) !important;
+        opacity: 0.65 !important; 
+    }
+
+    .enableLink{
+      color: #3BC1F4;
+      pointer-events: all;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .enableSiteLink {
+        color: #4A6496;
+        padding: 0 20px;
+        font-weight: bold;
+    }        
+    .thinDividerLine{
+        border-bottom:1px solid #ddd;
+        margin: 30px 0;
+    }
+
+    #okayBtn {
+        text-align: center;
+        margin-top: 35px;
+    }
+
+    .modal-body.requireOneSite {height: 154px;}
+    .modal-dialog.requireOneSite {margin-top: 200px!important;}
+
+    p.removeSelectedModal {
+        padding: 40px 55px 0 33px;
+        font-size: 24px;
+    }
+
+    .modal-content.requireOneSite {width: 665px;}
+    #closeBtn {margin: -15px;}
+    .onetime {
+    font-family: omnesatt_iiregular;
+    font-size: 18px;
+    font-weight: normal;
+    margin-top:25px;
+    }  
+
+    .modal-body.iglooCallErrorMsgModal {
+        font-family: omnes_light;
+        color: #333;
+        line-height: 18px;
+        font-weight: bold;
+        font-size:16px;
+        padding: 35px 20px 75px 30px;
+        text-align : center;
+    }
+    .modal-dialog.iglooCallErrorMsgModal {margin-top: 200px!important;}
+    .modal-content.iglooCallErrorMsgModal {width: 665px;}
+    .iglooTimerMsg {text-align : left;}
+
+    .configureBtnSection{
+        border:1px solid #ddd;
+        background-color: #ea7400;
+        float:left;
+        padding:10px;
+        width: 100%;
+    }
+    .configureBtnSection .headerBlock{
+        color: #ffffff; 
+        margin-bottom:10px;
+        font-size: 14px;
+        font-family:omnes_att_iimedium;
+    }    
+    .configureBtnSection .configureBtn{
+        background-color:#fff;
+        color:#656565;
+        border: 1px solid grey !important;
+        padding: 0 12px !important;
+        margin:0;
+    }
+    .disableBtn{
+        background-color: #ddd !important;
+        pointer-events: none;
+        color: #fff !important;
+        border:none;
+    }
+    .disableLink{
+        color: #ddd !important;
+        pointer-events: none;        
+    }
+    .highlightConfigurableSite{
+        background-color: rgba(234,116,0,0.15);
+    }
+    .modal-header.ITPA-custom-header{
+        padding: 25px 10px 20px 60px;
+        border-bottom: 1px solid #000;
+        
+    }
+    .modal-body.ITPA-custom-body{
+        padding: 20px 60px;
+        font-family: omnes_light;
+        color: #333;
+        line-height: 18px;
+        font-weight: bold;
+    }
+    .modal-header #closeBtnForEditModal{
+          margin-top: -25px;
+          margin-right: 0px;
+    }
+    .configureBtn.fontForConfigureBtn{font-family:omnes_att_iimedium !important;}
+    tbody tr:nth-child(odd),tbody tr:nth-child(even)  {
+        background: none !important;
+    }
+    .m-b-20 {margin-bottom: 20px;}
+    .m-t-20 {margin-top: 20px;}
+    .list.siteListPanel{border: 1px solid #ddd;}
+    .paginationArrow {
+        border: 1px solid #ddd !important;
+        padding: 0 10px !important;
+        color: #056fab !important;
+        font-weight: bold !important;
+        background: #fff !important;
+        font-size: 16px !important;
+        margin: 0 !important;        
+    }
+    .siteAddressInLeftPanel{
+        word-break: break-word;
+        white-space: normal;        
+    }
+
+    .iglooBorder{
+    position : absolute;
+    border: 1px solid red;
+    width:100%;
+    margin-top:10px;
+    margin-left: -15px;
+    z-index: -100;
+    }
+    
+    .iglooBorderMIS{
+        position : absolute;
+        border: 1px solid red;
+        width:100%;
+        margin-top:45px;
+        margin-left: -15px;
+        z-index: -100;
+    
+    }
+
+    .removeIglooBorder {
+        border-bottom:1px solid #ddd;
+        margin-bottom: 25px;
+        margin-top: 0px;
+        width: 100%; 
+        position:absolute; 
+    }
+    .removeIglooBorderMIS {
+        border-bottom:1px solid #ddd;
+        width: 100%; 
+        position:absolute;
+    }
+
+    .rightPanelBotBorder {
+    border-top:1px solid #ddd;
+    margin-top:30px;
+    margin-bottom:24px;
+    }
+    .iglooErrorMsg{
+        color: #D92825;
+        font-size: 16px;
+        font-family: omnes_att_iimedium;
+        font-weight:bold;
+        width: 100%;
+        padding-top:5px;
+    }
+    .iglooErrorMsgWrap{
+        white-space:nowrap;
+    }
+    
+    .iglooErrorMsgMIS{
+        color: #D92825;
+        font-size: 16px;
+        font-family: omnes_att_iimedium;
+        font-weight:bold;
+        width: 100%;
+        padding-top:30px;
+    }
+    
+    #configaddedsites .leftPanelSiteReview{
+        color: #D92825;
+        background: #f5f5f5;
+        font-size: 16px;
+        font-weight:bold;
+        font-family: omnes_att_iimedium !important;
+        text-decoration: underline;
+        cursor: pointer;
+        margin-top: 2px;
+        height: 18px;
+    }
+    #configaddedsites .leftPanelSite{
+        color: #3bc1f4;
+        background: #f5f5f5;
+         font-size: 16px;
+        font-weight:bold;
+        font-family: omnes_att_iimedium !important;
+        text-decoration: underline;
+        cursor: pointer;
+        margin-top: 2px;
+        height: 18px;
+    }
+    #configaddedsites .leftPanelPriceReview{
+        display: inline-block;
+        color: #D92825 !important;
+        font-family: omnes_att_iimedium;
+        float: right;
+        padding: 0px 0 0 0;
+        font-size: 16px;
+        font-weight:bold;
+        margin-top: -20px;
+        margin-right: 20px;
+    }
+    #configaddedsites .leftPanelPrice{
+        display: inline-block;
+        color: #444 !important;
+        float: right;
+        padding: 0px 0 0 0;
+        font-size: 16px;
+        font-weight:bold;
+        font-family: omnes_att_iimedium;
+        margin-top: -20px;
+        margin-right: 20px;
+    }
+    .iglooGenericErrMsgCls{
+    margin-top: 32px;
+    margin-bottom: 15px;
+    }
+     .applyAllModal{
+        font-size : 20px;
+        margin-bottom: 25px;
+    }
+     
+     </style>
+    <script type="text/javascript">
+    var timerOne;
+    var timerTwo;
+    function disableCmdBtnInRegion(){
+        disableCmdBtn('n');
+    }
+    function validateFormAndEnableApplyInRegion(){
+        validateFormAndEnableApply(null,'on');
+    }
+    function showPopupOnIglooCall(){
+        var portType = $('.portTypeDivCls select').val();
+        if(typeof portType != 'undefined' && (portType == 'Switched Ethernet' || portType == ''))
+        {
+            var timerOneLimit = 0;
+            var timerTwoLimit = 0;
+            if(typeof $('[id$=configPageTimeout1]').val() != 'undefined' && typeof $('[id$=configPageTimeout1]').val() != '' && $.isNumeric($('[id$=configPageTimeout1]').val())){
+                timerOneLimit = parseInt($('[id$=configPageTimeout1]').val());
+            }
+            if(typeof $('[id$=configPageTimeout2]').val() != 'undefined' && typeof $('[id$=configPageTimeout2]').val() != '' && $.isNumeric($('[id$=configPageTimeout2]').val())){
+                timerTwoLimit = parseInt($('[id$=configPageTimeout2]').val());
+            }
+            timerOne = setTimeout(function(){
+                console.log('inside timer 1');
+                $('#iglooCallProcessModal').modal('show');
+            },timerOneLimit);
+            timerTwo = setTimeout(function(){
+                console.log('inside timer 2');
+                $('#iglooCallProcessModal').modal('hide');
+                $('#iglooCallErrorMsg2Modal').modal('show');
+            },timerTwoLimit);
+        }        
+    }
+    
+    function clearIglooTimer(){
+        var portType = $('.portTypeDivCls select').val();
+        var inRegionFlag = $('[id$=inRegionFlag]').val();
+        if(typeof portType != 'undefined' && (portType == 'Switched Ethernet' || portType == '' )&& inRegionFlag == 'false')
+        {  
+            if(typeof timerOne != 'undefined'){
+                clearTimeout(timerOne);
+            }
+            if(typeof timerTwo != 'undefined'){
+                clearTimeout(timerTwo);
+            }
+            if(typeof $('#iglooCallProcessModal') != 'undefined' && $('#iglooCallProcessModal').is(':visible')){
+                $('#iglooCallProcessModal').modal('hide');
+            }
+            if(typeof $('#iglooCallErrorMsg2Modal') != 'undefined' && $('#iglooCallErrorMsg2Modal').is(':visible')){
+                $('#iglooCallErrorMsg2Modal').modal('hide');
+            }
+        }
+        
+    }
+    
+    function showSecondErrorOnExceedingRetry(){
+        var portType = $('.portTypeDivCls select').val();
+        var inRegionFlag = $('[id$=inRegionFlag]').val();
+        if(typeof portType != 'undefined' && portType == 'Switched Ethernet' && inRegionFlag == 'false')
+        {
+            var retryFlag = $('[id$=iglooRetryCountFlag]').val();
+            var errorFlag = $('[id$=iglooErrorFlag]').val();
+            console.log('type of errorFlagflag '+errorFlag+'  retryFlag  ' + retryFlag);
+            if(typeof retryFlag != 'undefined' && parseInt(retryFlag) >=4 && (typeof errorFlag != 'undefined' && errorFlag == 'true')){
+                $('#iglooCallRetryMsgModal').modal('show');
+            }      
+            else if(typeof errorFlag != 'undefined' && errorFlag == 'true'){
+                console.log('  check inside ' + errorFlag);
+                setTimeout(function(){$('#iglooCallErrorMsg2Modal').modal('show')},500);
+            } 
+        }
+    }
+    
+    function enableApplyOnIglooPopup(){
+        closePopup();
+        validateFormAndEnableApply(null,'on');
+    }
+
+    function removeUnEligiblileAccessSpeed(){
+        var IglooCallProcessingFlag = $('[id$=IglooCallProcessingId]').val();
+        var IglooSpeedBump = '{!isIglooSpeedBump}';
+        var inRegion ='{!inRegionSite}';
+        var portType = $('.portTypeDivCls select').val();
+        if(typeof inRegion != 'undefined' && inRegion != null && inRegion=='false'){
+            if(typeof IglooCallProcessingFlag != 'undefined' && IglooCallProcessingFlag == 'true'){
+                var accessSpeedVal = $('#accessSpeedCurVal').val();
+                var portspeedIndex = $('.portSpeedDivCls option[value="'+accessSpeedVal+'"]').index();
+                if(portspeedIndex==-1 && accessSpeedVal != null && accessSpeedVal != ''){
+                    portspeedIndex =0;
+                }           
+                if(typeof IglooSpeedBump != 'undefined' && IglooSpeedBump == 'true'  && portspeedIndex >0){
+                    $('.portSpeedDivCls option:gt('+portspeedIndex+')').remove();
+                }
+                if(portspeedIndex >0){
+                    $('.portSpeedDivCls option:eq('+portspeedIndex+')').remove();
+                }
+            }
+        }
+        else if((typeof inRegion != 'undefined' && inRegion != null && inRegion=="true") 
+            && (typeof portType != 'undefined' && portType != null && portType == 'Switched Ethernet')){
+            
+            var element = 'portSpeedDivCls';
+            var list = {!speedsNotAvailableITPAList};
+            $.each(list, function( index, value ) {
+                var dropDownIndex = $("."+element+" option[value='"+value+"']").index();
+                if(dropDownIndex>0){
+                    $("."+element+" option").eq(dropDownIndex).remove();
+                }
+            });
+        }
+    }
+    
+    function onPortSpeedChange(){       
+        var IglooSpeedBump = '{!isIglooSpeedBump}';
+        var accessSpeedCurVal = $('#accessSpeedCurVal').val();
+        var inRegion ='{!inRegionSite}';
+        var portType = $('.portTypeDivCls select').val();
+        if(typeof inRegion != 'undefined' && inRegion != null && inRegion=='false'){
+            if(typeof accessSpeedCurVal != 'undefined' && accessSpeedCurVal != ''){            
+                var accessSpeedIndex = $('.accessSpeedDivCls option[value="'+accessSpeedCurVal+'"]').index();
+                if(accessSpeedIndex==-1 && accessSpeedCurVal != null && accessSpeedCurVal != ''){
+                    accessSpeedIndex =0;
+                }
+                if(typeof IglooSpeedBump != 'undefined' && IglooSpeedBump == 'true'  && accessSpeedIndex > 0){
+                    $('.accessSpeedDivCls option:gt('+accessSpeedIndex+')').remove();
+                }
+                if(accessSpeedIndex > 0){
+                    $('.accessSpeedDivCls option:eq('+accessSpeedIndex+')').remove();
+                }
+            }
+        }
+        else if((typeof inRegion != 'undefined' && inRegion != null && inRegion=="true") 
+            && (typeof portType != 'undefined' && portType != null && portType == 'Switched Ethernet')){
+            
+            var element = 'accessSpeedDivCls';
+            var list = {!speedsNotAvailableITPAList};
+            $.each(list, function( index, value ) {
+                var dropDownIndex = $("."+element+" option[value='"+value+"']").index();
+                if(dropDownIndex>0){
+                    $("."+element+" option").eq(dropDownIndex).remove();
+                }
+            });
+        }
+    }
+    
+    
+    function updateIglooBorderHeight(){
+        var IglooPortSpeed = $('[id$=IglooPortSpeed]').val();
+        var IglooAccessSpeed = $('[id$=IglooAccessSpeed]').val();
+        var IglooInterfaceTypeFlag = $('[id$=IglooInterfaceTypeFlag]').val();       
+        var IglooReviewRequired = false;
+        if(IglooPortSpeed == 'true' || IglooAccessSpeed == 'true' || IglooInterfaceTypeFlag == 'true'){
+            IglooReviewRequired = true;
+        }        
+        
+        
+        if(IglooReviewRequired == true){
+            var startPosition =$("#rightPanelTopBorder").offset().top;
+            var endPosition =$("#rightPanelBotBorderId").offset().top;
+            var divHeight = (endPosition)-startPosition;
+            $("#rightPanelTopBorder").css({'height':divHeight+'px'});
+        }
+        
+    }
+    
+    function changeinterfaceonapplyandget(){
+        var valporttype=$(".privatedrop").find("select").val();
+        
+        if(valporttype!=null && valporttype == 'Private Line'){
+            $(".id123").addClass("changeinterface1");
+            $(".id123drop").addClass("changeinterface2");
+            $(".id123drop").find("select").addClass("changeinterface3");
+        }else {        
+            $(".changeinterface1").removeClass("changeinterface1");
+            $(".changeinterface2").removeClass("changeinterface2");
+            $(".changeinterface3").removeClass("changeinterface3");
+        }
+        //Disable btn after pricing
+        var priceBtnObj = $('.createUserButtonDisable');
+        if(priceBtnObj != null && typeof priceBtnObj != undefined){
+            priceBtnObj.prop('disabled',true);
+        }
+        return true;
+    }
+    
+    function changeinterface(inpObj){
+        if(inpObj!=null && inpObj.value == 'Private Line'){
+            $(".id123").addClass("changeinterface1");
+            $(".id123drop").addClass("changeinterface2");
+            $(".id123drop").find("select").addClass("changeinterface3");
+        }else {
+            $(".changeinterface1").removeClass("changeinterface1");
+            $(".changeinterface2").removeClass("changeinterface2");
+            $(".changeinterface3").removeClass("changeinterface3");
+        }
+        return;
+    }    
+    
+    function changeinterfaceonapplyandget(){
+        var valporttype=$(".privatedrop").find("select").val();
+        
+        if(valporttype!=null && valporttype == 'Private Line'){
+            $(".id123").addClass("changeinterface1");
+            $(".id123drop").addClass("changeinterface2");
+            $(".id123drop").find("select").addClass("changeinterface3");
+        }else {
+            $(".changeinterface1").removeClass("changeinterface1");
+            $(".changeinterface2").removeClass("changeinterface2");
+            $(".changeinterface3").removeClass("changeinterface3");
+        }
+        return true;
+    }
+    
+    function changeinterface(inpObj){
+        if(inpObj!=null && inpObj.value == 'Private Line'){
+            $(".id123").addClass("changeinterface1");
+            $(".id123drop").addClass("changeinterface2");
+            $(".id123drop").find("select").addClass("changeinterface3");
+        }
+        else {
+            $(".changeinterface1").removeClass("changeinterface1");
+            $(".changeinterface2").removeClass("changeinterface2");
+            $(".changeinterface3").removeClass("changeinterface3");
+        }
+        return;
+    }
+    
+    function refreshJSVariables(){
+        requiredfields = document.getElementById("hdnFieldIndices").value;
+        fieldIndexAr = requiredfields.split(",");
+        lastValue = fieldIndexAr[fieldIndexAr.length-1];
+        lastValueAfterIncr = parseInt(lastValue) + 1;
+        fieldIndexArNew = requiredfields.split(",");
+        portTypeIndex = parseInt(document.getElementById("hdnPortTypeIndex").value);
+        hiCapFlexIndex = parseInt(document.getElementById("hdnHiCapIndex").value);
+    }
+    
+    var requiredfields = "{!fieldIndices}";
+    var fieldIndexAr = [];
+    var fieldIndexArNew = [];
+    var lastValue;
+    fieldIndexAr = requiredfields.split(",");
+    lastValue = fieldIndexAr[fieldIndexAr.length-1];
+    var lastValueAfterIncr = parseInt(lastValue) + 1
+    fieldIndexArNew = requiredfields.split(",");
+    var portTypeIndex = parseInt('{!portTypeIndex}');
+    var hiCapFlexIndex = parseInt('{!HicapIndexInt}');
+    var requiredCheckboxes = "{!selectCheckBox}";
+    var checkboxIndexArray = [];
+    checkboxIndexArray = requiredCheckboxes.split(",");
+    var requiredDropdowns = "{!selectDropdown}";
+    var dropdownIndexArray = [];
+    dropdownIndexArray = requiredDropdowns.split(",");
+    
+    function disableCheckboxes() {
+        for( var i = 0; i < checkboxIndexArray.length; i++ ) {
+            cntr = parseInt(checkboxIndexArray[i]);
+            var currIndexId = 'container'+cntr;
+            var currElementTr = document.getElementById(currIndexId);
+            
+            if( typeof currElementTr != 'undefined' ) {
+                var innerTds = currElementTr.getElementsByTagName("td");
+                var checkedElem = innerTds[1].getElementsByTagName("input");
+                checkedElem[0].disabled=true;
+            }   
+        }         
+    }
+    
+    function disableDropdowns()  {
+        for( var i = 0; i < dropdownIndexArray.length; i++ ) {
+            cntr = parseInt(dropdownIndexArray[i]);
+            var currentIndexId = 'container'+cntr;
+            var currentElementTr = document.getElementById(currentIndexId);
+            
+            if( typeof currentElementTr != 'undefined' ) {
+                var innerTd = currentElementTr.getElementsByTagName("td");
+                var checkedElement = innerTd[1].getElementsByTagName("select");
+                checkedElement[0].disabled=true;
+            }   
+        } 
+    }
+    
+    function closeComPricing(){
+        document.getElementById('apltConfElisiteID').setAttribute("aria-hidden", "false");
+        document.getElementById('apltConfElisiteID').style.display = "none";   
+        document.getElementById('loadingImg').style.display = "block";
+        var cartId = document.getElementById('{!$Component.form1.selectedCart}').value;
+        var isIglooOffline = $('[id$=isIglooOfflineHdn]').val();
+        if(isIglooOffline == "true"){
+            window.open('/apex/MACD_BuyFlow_VASABulk?quoteId='+'{!quoteid}'+'&vmode=A','_self');
+        }else{
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.API_MACD_SiteConfigureController.checkLiemsPriceStatus}',
+                cartId,
+                handleResult
+            );
+        }   
+    }
+    
+    function handleResult(result, event){
+        if( event.status ){
+            if( result === 'Inprogress' ){
+                closeComPricing();
+            }else{
+                refreshpage();
+            }
+        }
+    }
+    
+    function refreshPrices() {
+        location.reload(); 
+    }
+    
+    function getSelRadVal(theoptGrpVal,theIdVal,oSelectedRadio){
+        $(".IPType input[type='radio']").each(function(){
+            this.checked = false
+        });
+    }
+    
+    function parseAndCheckPortTypeRelatedValidation(cntr){
+        var currIndexId = 'container'+parseInt(cntr);
+        var currElementTr = document.getElementById(currIndexId);
+        if( typeof currElementTr != 'undefined' ){
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("select");
+            if( typeof selectElem != 'undefined' ){
+                
+                if( selectElem[0].value == 'Switched Ethernet' ){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        
+    }
+    var isAppended = false;
+    var inpPortType;
+    var interfaceTypeIndex;
+    var VLANLogicChannelIndex; 
+    function validateFormAndEnableApply(inpObj,token){
+        if(token == 'off'){
+            $("[id$=btnId]").prop('disabled',true);
+            $("[id$=acceptBtn]").prop('disabled',true);
+            $('[id$=IglooPortSpeed]').val('false');
+            $('[id$=IglooAccessSpeed]').val('false');
+            $('[id$=IglooInterfaceTypeFlag]').val('false');
+        }
+        
+        setTimeout(function(){ 
+            var isIntefaceTypeReqd;
+            isIntefaceTypeReqd = parseAndCheckPortTypeRelatedValidation( portTypeIndex );
+            if( productName == 'AT&T Virtual Private Network' ){
+                requredFieldIndices = "{!fieldIndices}";
+                interfaceTypeIndex = parseInt("6");
+            }
+            if( productName == 'AT&T Managed Internet Service' ){
+                var hiCapFlexFieldIndex = '1';
+                var hiCapFlexField = getFieldReference(hiCapFlexFieldIndex);
+                var requredFieldIndices;
+                if(hiCapFlexField.checked == true){
+                    requredFieldIndices  = "{!fieldIndicesUBBAddSite}";
+                    interfaceTypeIndex = parseInt("7");
+                }else{
+                    requredFieldIndices = "{!fieldIndices}";
+                    interfaceTypeIndex = parseInt("6");
+                }
+            }
+            fieldIndexAr = requredFieldIndices.split(",");
+            
+            if(isIntefaceTypeReqd){
+                fieldIndexAr.push(interfaceTypeIndex);
+            }
+            
+            var isAllFilled = true;
+            
+            for( var i = 0; i < fieldIndexAr.length; i++ ){
+                cntr = parseInt(fieldIndexAr[i]);
+                var currIndexId = 'container'+cntr;
+                var currElementTr = document.getElementById(currIndexId);
+                if( typeof currElementTr != 'undefined' ){
+                    var innerTds = currElementTr.getElementsByTagName("td");
+                    var selectElem = innerTds[1].getElementsByTagName("select");
+                    if( typeof selectElem != 'undefined' ){
+                        if( selectElem[0].value != '--None--' && selectElem[0].value != ''){
+                        }else{
+                            isAllFilled = false;
+                        }
+                    }
+                }else{
+                    isAllFilled = false;
+                }
+            }
+            var IglooPortSpeed = $('[id$=IglooPortSpeed]').val();
+            var IglooAccessSpeed = $('[id$=IglooAccessSpeed]').val();
+            var IglooInterfaceTypeFlag = $('[id$=IglooInterfaceTypeFlag]').val();
+            var IglooReviewRequired = false;
+            var nonIglooObj = $('[id$=applyBtn]');
+            var iglooObj = $('[id$=applyBtn1]');
+            if(IglooPortSpeed == 'true' || IglooAccessSpeed == 'true' || IglooInterfaceTypeFlag == 'true'){
+                IglooReviewRequired = true;
+            }  
+            
+           if(isAllFilled && !IglooReviewRequired){
+              if(typeof iglooObj != 'undefined' && iglooObj.length > 0) {
+                 
+                document.getElementById("{!$Component.frmUp.applyBtn1}").disabled = false;
+                document.getElementById("{!$Component.frmUp.applyBtn1}").className = 'btn btn-primary pull-right m-r-20';
+             }
+            if(typeof nonIglooObj != 'undefined' && nonIglooObj.length > 0){    
+                document.getElementById("{!$Component.frmUp.applyBtn}").disabled = false;
+                document.getElementById("{!$Component.frmUp.applyBtn}").className = 'btn btn-primary pull-right m-r-20';
+               }     
+            }else{
+               if(typeof iglooObj != 'undefined' && iglooObj.length > 0) {
+                document.getElementById("{!$Component.frmUp.applyBtn1}").disabled = true;
+                document.getElementById("{!$Component.frmUp.applyBtn1}").className = 'btn btn-primary pull-right m-r-20 createUserButtonDisable';
+               }
+            if(typeof nonIglooObj != 'undefined' && nonIglooObj.length > 0){     
+                document.getElementById("{!$Component.frmUp.applyBtn}").disabled = true;
+                document.getElementById("{!$Component.frmUp.applyBtn}").className = 'btn btn-primary pull-right m-r-20 createUserButtonDisable';
+               } 
+            }
+            changeinterfaceonapplyandget();
+            checkinterface();
+            filterInstallationType();
+        }, 50);
+    }
+    
+    function checkinterface(){
+        var valhtml=$(".changeinterface2").html();
+        if(valhtml!=null && valhtml!='undefined'){
+            $(".id123drop").find("select").addClass("changeinterface3");
+        }
+        return;
+    }
+    
+    function setTheBgColor(){
+        document.getElementById("configaddedsites").style.bgcolor='#f5f5f5';
+    }
+    
+    function highlightTheRow(inpObj){
+        inpObj.bgColor = "white";
+    }
+    function checkForReviewRequired(){
+        var reviewRequiredCount = 0;
+        var isApplyAllFlag = $("[id$=isApplyAllFlag]").val();
+        if(typeof $('[id$=ReviewRequiredSites]') != 'undefined' && $.isNumeric($('[id$=ReviewRequiredSites]').val())){
+            reviewRequiredCount = parseInt($('[id$=ReviewRequiredSites]').val());
+        }
+        if(reviewRequiredCount > 0 && isApplyAllFlag == 'true'){
+            $('#applyAllPopUp').modal('show');
+        }
+    }
+    </script>
+    
+    <apex:pageMessages escape="true" id="errmsghead"></apex:pageMessages>
+    
+    <apex:form id="frmUp"> 
+        <style type="text/css">
+        .changeinterface1
+            {
+            
+            color :#a3a3a3 !important;
+            }
+            
+            .changeinterface2
+            {
+        
+       background:url(/resource/1422580292000/portalDesignImg/new_arrow_small_grey.png) no-repeat right #fff !important;
+       background-size:35px 38px !important;
+        }
+        
+        
+        .changeinterface3
+        {
+        
+        background:none repeat scroll 0% 0% rgba(163, 163, 163, 0.54) !important;
+        color:#a3a3a3;
+        }
+        
+    .selectedSiteHighlighted{ background-color:#D8DFDF !important }
+    .styled-select-small select {
+        background: none repeat scroll 0% 0% transparent;
+        
+        padding: 5px;
+        line-height: 16px;
+        border: 0px none;
+        border-radius: 0px;
+        height: 40px !important;
+        width:299px;
+        cursor: pointer;
+        -moz-appearance:none;
+    }
+    .avpnSelect select{
+        height: 30px !important;
+    }
+    #configaddedsites { margin-top: 20px; background: #fff !important; height: 370px; overflow-y: auto; border: 1px solid #ddd; }
+    #configaddedsites tr { border-bottom: 1px dashed #ddd; }
+    #configaddedsites td { border: 0 !important; }
+    #configaddedsites td:nth-child(odd) { display: none; }
+    #configaddedsites td:nth-child(even) { width: 100%; padding: 10px 20px; }
+    #theTable1 td { border: none !important; padding: 15px; }
+    @-moz-document url-prefix() { .priceAligned{margin-top:-11px;} }
+    .monthlyprice { font-family: 'omnes_att_iimedium'; background: #fff; border-radius: 4px; padding: 6px 12px; text-align: right; width: 100%; line-height: 1.42857143; }
+    .noborders td { border: 0 !important; }
+    .tooltipTrigger {
+            cursor: pointer;
+        }
+        .markCSS {
+            background-color: #FFFFFF;
+            color: black;
+        }
+        .disableClearForm{ 
+            pointer-events: none;
+            cursor: default; 
+            color: gray; 
+        }
+    
+        .usageDiv{
+            Font-Family: omnes_att_iimedium;
+            Font-Size: 16px;
+            font-weight: bold;
+            color: #D92825;
+            Text-Align: left;
+            position: absolute;            
+        } 
+        
+        #errorMessageFlag {
+            margin-bottom: 10px !important;
+            padding-top:10px;
+        }
+        /*Radhika : 12 Dec 2015 UBB Font change on on in and out region fix */
+        .uBBItalic{
+            font-family:omnes_att_iilight_italic;
+            font-size:14px;
+            color:#000000 !important;
+            text-align:left;
+            margin-left:27px;
+        }
+        .uBBItalicDisable
+        {
+            font-family:omnes_att_iilight_italic;
+            font-size:14px;
+            color:#a2a2a2 !important;
+            text-align:left;
+            margin-left:25px;
+        }
+        .uBBLabel {
+            font-family:omnes_light;
+            font-size:16px;
+            color:#000000 !important;
+            text-align:left;
+            margin-right:8px;
+        }
+        .uBBLabelDisable {
+            font-family:omnes_light;
+            font-size:16px;
+            color:#a2a2a2 !important;
+            text-align:left;
+            margin-right:8px;
+        }
+        .uBBItalicDivIN {
+            margin-bottom: 16px;
+        }
+        .uBBItalicDivOUT {
+            margin-bottom: 0px;
+        }
+        
+        /*Radhika : UBB Font change on on in and out region fix END*/
+           .dropDownValue{      
+            font-family: omnes_light !important;            
+            color: #000000;             
+            font-size: 16px;            
+            text-align: left;           
+            margin-top:1%    
+            width:300px;
+            height:40px;
+            }               
+                 
+            .styled-select-small{       
+            background-size: 35px 38px;
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            } 
+            .bandwidthDiv{      
+            width: 300px;       
+            color: #4CA90C;     
+            font-family: omnes_att_iimedium;        
+            font-size: 16px;        
+            margin-top: 4%;     
+            margin-bottom: 3%; 
+            white-space: nowrap;    
+            }      
+             .labelsTextClass{
+            font-family: omnes_att_iimedium;
+            font-size: 16px;
+            font-weight: normal;
+            color: #000000;
+            text-align:left;
+            }
+            .OverageDiv{
+            font-family: omnes_light !important;
+            font-size: 12px;
+            margin-left: -3%;
+            text-align: left;
+            color: #000000;
+            }
+            .usageItalicHeader{     
+            margin-left: 8%;        
+            font-size: 16px;        
+            color: #000000;     
+            text-align: left;       
+            font-family: omnes_att_iilight_italic;      
+            }       
+            .tooltipSpace{      
+            margin-left: 2.1%;      
+            }
+             .labelsTextClass{
+            font-family: omnes_att_iimedium;
+            font-size: 16px;
+            font-weight: normal;
+            color: #000000;
+            text-align:left;
+            } 
+             .glyphicon {
+                cursor: pointer;
+            }
+           
+            .arrowImageDim {
+            height:65px !important;
+            width:65px !important;
+        }
+        
+         .scrollToTop{ padding:10px; text-align:center; font-weight: bold; color: #444; text-decoration: none; position:fixed; top:80%; right:30px; display:none; .background: url(url('!$Resource.scrollTop') no-repeat center;) no-repeat 0px 20px; width:72px; height:106px; z-index: 9999; }    
+         .scrollToTop:hover{
+            text-decoration:none;
+        }
+    
+        i.glyphicon span{
+            display:none;
+            position: absolute;
+            //bottom: 25px;
+            top:-35px;
+            //left: 25px;
+            left:35px;
+            width: 275px;
+            padding: 10px;
+            z-index: 100;
+            background: #fff;
+            //height:90px;
+            color: #000000;
+            text-align:left;
+            //text-shadow: rgba(0, 0, 0, 0.1) 1px 1px 1px;
+              box-shadow: rgba(0, 0, 0, 0.1) 1px 1px 2px 1px;
+            -moz-border-radius: 5px; /* this works only in camino/firefox */
+            -webkit-border-radius: 5px; /* this is just for Safari */
+            font-family:omnes_light !important;
+            font-size:13px !important;
+            
+        }   
+        i.glyphicon span:before{
+            content:'';
+            display:block;
+            width:0;
+            height:0;
+            position:absolute;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent; 
+            border-right:15px solid white;
+            //border-color: #ccc;
+            left:-14px;
+            top:28px;
+            filter: drop-shadow(rgba(0, 0, 0, 0.3) 0 2px 10px);
+        }    
+        i:hover.glyphicon span {
+            display: block;
+             
+        } 
+        
+        h1.manage_content-header, div.tabbed_menu {
+            margin-bottom: 20px !important;
+            margin-top: 20px !important;
+        }
+         
+        
+        .navLinkConfig{}
+        .modal-backdrop { background-color:#fff;}
+        .createUserButtonDisable {-webkit-border-radius: 4px !important;}
+        .priceText{height: 24px !important; text-align: right !important; width: 100% !important; margin-left: 20px !important; border: 1px solid #FFF !important; margin-top: -6px !important;}
+        .orangeText {
+            color: orange;
+            font-weight: bold;          
+        }
+        .OORSENote{
+            display:none;
+            float:right;
+            margin-top:40px;
+        }
+        .OORSEErrMsg{
+            display:none;
+            position:relative;
+        }        
+    </style>
+        <apex:outputPanel rendered="true">
+            <div class="container p0">
+                <div class="col-xs-12 p0">
+                    <div class="tab-pane ng-scope active" ng-repeat="tab in tabs" ng-class="{active: tab.active}" tab-content-transclude="tab">
+                        <div class="ng-scope">
+                            <div class="ng-scope">
+                                <apex:pageMessages escape="true" id="errmsg"></apex:pageMessages>
+                            </div>
+                            <div class="panel-group" ng-transclude="">
+                                <div class="br-1">
+                                    <div id="configBlock" class="panel-collapse collapse in" style="height: auto;">
+                                        <div class="panel-body" style="padding: 0; padding: 0;">
+                                            <h3 style="font-size: 21px !important;margin-top: 25px;">{!quoteObj.End_Customer__r.Name}</h3>
+                                            <div class="row p0 quoteInfo">
+                                                <div class="col-xs-3 p0">
+                                                    <label style="margin:0px 10px 0px 0px !important;font-weight:bold;"><apex:outputText id="ot1" value="Quote Name" /></label>
+                                                    <apex:outputText id="pname" value="{!proposalData.Apttus_Proposal__Proposal_Name__c}" />
+                                                </div>
+                                                <div class="col-xs-3 p0">
+                                                    <label style="margin:0px 10px 0px 0px !important;font-weight:bold;"><apex:outputText id="ot2" value="Quote ID" /></label>
+                                                    <apex:outputText id="pname1" value="{!proposalData.Name}" />
+                                                </div>
+                                                <div class="col-xs-4 p0">
+                                                    <label style="margin:0px 10px 0px 0px !important;font-weight:bold;"><apex:outputText id="ot3" value="Product" /></label>
+                                                    <apex:outputText id="pname2" value="{!proposalData.Product_New_Name__c}" />
+                                                </div>
+                                                <div class="col-xs-2 p0" style="text-align:right;">
+                                                    <label style="margin:0px 10px 0px 0px !important;font-weight:bold;"> <apex:outputText id="ot4" value="Term" /></label>
+                                                    <apex:outputText id="ot5" value="{!proposalData.Apttus_Proposal__Payment_Term__c}" />
+                                                </div>
+                                            </div>
+                                            <hr class="blue_hr" />
+                                            <div class="col-xs-12 p0 m-t-10">
+                                                <p class="pull-right">                                                     
+                                                    <apex:commandButton value="{!$Label.Add_Address}"  styleClass="blueText pull-right p0 m0"  oncomplete="openAddAddressPop();" style="background: none !important; color: #2A6496 !important;" action="{!GotoAddAddressPage}"/>
+                                                </p>
+                                                <p>Select a site below, then configure your product.</p>
+                                            </div>
+                                            <div class="col-xs-12 p0 m-t-10">
+                                                <div class="col-xs-6" style="padding-left:0px;">
+                                                    <div class="styled-select-small adjust-select-small">
+                                                        <apex:selectList id="optgrp" styleClass="form-control" style="width: 158px; height: 40px; margin-top:-10px;" value="{!selectedFilter}" size="1" rendered="true" onchange="handlefilterSites()">
+                                                            <apex:selectOptions value="{!FilterOptions}"/>
+                                                        </apex:selectList>
+                                                    </div>
+                                                    <div class="siteTrigger" id="configaddedsites">
+                                                        <apex:pageBlock id="PageBlockSelectSite">  
+                                                            <!-- In our table we are displaying the cContact records -->
+                                                            <apex:pageBlockTable value="{!listCustomerSiteMaster}" var="c" id="pbtable" styleclass="table siteListPanel" >  
+                                                                <apex:column id="Column1">
+                                                                    <apex:facet name="header" >
+                                                                        <apex:inputCheckbox onclick="headSynchFun(this)" onchange="javascript:updateNextBtn(this);" id="chk1" disabled="false"/> 
+                                                                    </apex:facet>
+                                                                    <apex:outputText id="ot6" value="Select All" />
+                                                                </apex:column>
+                                                                <apex:column id="Column2" colspan="2" style="padding: 10px 8px;" styleClass="{!c.cellFilterSitesClass}">
+                                                                    <apex:inputCheckbox value="{!c.selected}" id="chk2" onchange="javascript: synchFun(this,tick{!c.custSiteIns.Id});" onselect="javascript: synchFun(this,tick{!c.custSiteIns.Id});" disabled="false" rendered="{!c.showSites}" />
+                                                                    <apex:commandButton id="cmdBtn" value="{!c.custSiteIns.Site_Name__c}" action="{!togglesitesconfigpage}" reRender="detail,addaddress,form1,grandTot,thetable1,siteTot,otTot,PageBlockSelectSiteHeader,siteinfoHeader,PageBlockSelectSite" styleClass="{!c.cellFilterSitesClass} {!IF(c.isIglooReviewReq || c.OORSEExpired ,'leftPanelSiteReview','leftPanelSite')} {!IF(c.OORSEExpired,'OORSEExpiredSite','')}{!IF(c.isOORSESite,'OORSEConfiguredSite','')}"  status="loading" rendered="{!c.showSites}">
+                                                                        <apex:param assignTo="{!selectedSiteId}" name="siteid" value="{!c.custSiteIns.Id}" />
+                                                                    </apex:commandButton>
+                                                                    <br />
+                                                                    <span id="tick{!c.custSiteIns.Id}" class="{!IF(c.isIglooReviewReq == true,'leftPanelPriceReview','leftPanelPrice')}">
+                                                                        <apex:outputPanel rendered="{!c.attCustomerSiteTotal != null && c.attCustomerSiteTotal>0 && c.showSites}"> 
+                                                                            <span><apex:outputText id="ot7" styleClass="{!c.cellFilterSitesClass}" value="${0, number, ###,###,##0.00}/mo"><apex:param value="{!c.attCustomerSiteTotal}"/></apex:outputText></span>          
+                                                                        </apex:outputPanel>                                          
+                                                                    </span>
+                                                                    <span id="process{!c.custSiteIns.Id}" style=" float: right; padding: 0px 0 0 0;font-size:25px; display:none;margin-top:-30px;margin-right: 20px;">
+                                                                        <apex:image url="{!URLFOR($Resource.processIcon)}" style="width: 40px; height: 50px;padding-top: 15px;" /> 
+                                                                    </span>
+                                                                    <apex:outputText id="ot8" value="{!c.custSiteIns.Address_Line__c}," style="margin-left:37px;" rendered="{!c.showSites}" /><br/>
+                                                                    <apex:outputText id="ot9" value="{!c.custSiteIns.City__c}, {!c.custSiteIns.State__c}" style="margin-left: 37px;" rendered="{!c.showSites}" />
+                                                                </apex:column>
+                                                            </apex:pageBlockTable>
+                                                            <script>
+                                                            $('.siteListPanel tbody tr td:nth-child(2)').each(function() {
+                                                                if($(this).hasClass( "selectedSiteHighlighted" )){
+                                                                    if($(this).find('.OORSEExpiredSite').length > 0){
+                                                                        $('.OORSEErrMsg ').css('display','block');
+                                                                        $('.OORSENote').css('display','none');
+                                                                        $("[id$=acceptBtn]").prop('disabled',true);
+                                                                    }else{
+                                                                        $('.OORSEErrMsg ').css('display','none');
+                                                                        if($(this).find('.OORSEConfiguredSite').length > 0){
+                                                                            $('.OORSENote').css('display','block');
+                                                                        }
+                                                                    }
+                                                                }
+                                                            });                                                        
+                                                            </script>
+                                                        </apex:pageBlock>
+                                                    </div>
+                                                </div> 
+                                                <div id="rightPanelContent" class="col-xs-6" style="padding-right:0px;">   
+                                                    <div class="products-container bglightgrey2 ng-scope">
+                                                        <form class="form-horizontal ng-pristine ng-valid" role="form">
+                                                            <apex:actionFunction id="af2" name="selectedValue" action="{!grandTotalPopulate}" status="loading"                                                              
+                                                                                 reRender="grandTot,grandTot2,sumOneTime,hiddenValId,radio1,radio2" onComplete="setRadioButtonValue();linkRefreshed();">
+                                                                <apex:param name="selectRadioVal" value=""/>
+                                                            </apex:actionFunction>
+                                                            <apex:outputPanel id="PageBlockSelectSiteHeader">
+                                                                <apex:outputText id="ot10" value="{!selectedSiteInfo.Site_Name__c}" styleClass="{!selectedSiteInfo.Id}">
+                                                                </apex:outputText>
+                                                                <br/>
+                                                                <apex:outputText id="ot11" value="{!selectedSiteInfo.Address_Line__c}, {!selectedSiteInfo.City__c}, {!selectedSiteInfo.State__c}" />
+                                                                <div>
+                                                                    <apex:outputPanel styleClass="fiberCodelabelsTextClass fiberCodeSpanCls" rendered="{!IF(fiberCode= 'E' ,true,false)}">{!$Label.FIBER_LIT_EMUX}
+                                                                    </apex:outputPanel>
+                                                                    <apex:outputPanel styleClass="fiberCodelabelsTextClass fiberCodeSpanCls" rendered="{!IF(fiberCode='F',true,false)}">{!$Label.FIBER_LIT_TEXT}
+                                                                    </apex:outputPanel>
+                                                                    <apex:outputPanel rendered="{!IF(fiberCode= 'F' ,true,false )}" styleClass="tooltipSpace">
+                                                                        <span class="tooltipTrigger glyphicon glyphicon-info-sign" data-toggle="tooltip" rel="tooltip" data-placement="fiberCodeToolTipWithoutEMUX" title="{!$Label.fiberCodeWithoutEMUX}"></span>
+                                                                    </apex:outputPanel>
+                                                                    <apex:outputPanel rendered="{!IF(fiberCode= 'E' ,true,false )}" styleClass="tooltipSpace">
+                                                                        <span class="tooltipTrigger glyphicon glyphicon-info-sign" data-toggle="tooltip" rel="tooltip" data-placement="fiberCodeToolTipWithEMUX" title="{!$Label.fiberCodeWithEMUX}"></span>
+                                                                    </apex:outputPanel>
+                                                                </div>
+                                                                <div class="pull-right text-right">
+                                                                    <h5 style="margin-bottom: 14px;"><a href="javascript:void(0);" onclick="handleClearUI()" class="clearForm" style="color: #4A6496 !important; font-weight: bold;" >Clear Form</a></h5>
+                                                                    <h5><strong>Price</strong></h5>
+                                                                </div>
+                                                                <div>
+                                                                    <h3 style="margin-top:11px;margin-bottom:15px;">{!proposalData.Product_New_Name__c}</h3>
+                                                                </div>
+                                                            </apex:outputPanel>                             
+                                                            <apex:outputpanel id="detail">  
+                                                                <script>
+                                                                // Scripts for "AT&T Internet Access" flow only
+                                                                var sCheckedItem, sProductName = '{!custSiteQuoteIns.AT_T_Quote__r.Product__r.Name}';
+                                                                if("AT&T Internet Access" === sProductName){
+                                                                    $("input:checkbox").on('click', function() {
+                                                                        var $box = $(this);
+                                                                        if ($box.is(":checked")) {
+                                                                            var group = "input[name*='checkdone1']";
+                                                                            $(group).prop("checked", false);
+                                                                            $box.prop("checked", true);
+                                                                            // Update the global variable with the checkbox value
+                                                                            sCheckedItem = $box.next().html();
+                                                                        } else {
+                                                                            $box.prop("checked", false);
+                                                                        }
+                                                                    });
+                                                                }
+                                                                
+                                                                function selectCheckbox (){
+                                                                    var counter =0;
+                                                                    // Only run for "AT&T Internet Access" flow
+                                                                    if("AT&T Internet Access" === sProductName){
+                                                                        var group = "input[name*='checkdone1']";
+                                                                        $(group).each(function(){
+                                                                            // Check if the next items value is equal to the selected one and check this
+                                                                            if($.trim($(this).next().html()) === sCheckedItem){
+                                                                                $(this).prop("checked",true);
+                                                                                console.log("checking: "+$(this).next().html());
+                                                                            }else if(counter == 0 && sCheckedItem == null){
+                                                                                $(this).prop("checked",true);
+                                                                            }else{
+                                                                                // Otherwise uncheck
+                                                                                $(this).prop("checked",false);
+                                                                                console.log("un-checking: "+$(this).next().html());
+                                                                            }
+                                                                            counter++;
+                                                                        });
+                                                                    }
+                                                                }
+                                                                </script>                                                          
+                                                                <apex:outputPanel id="panelAttrRO" rendered="{!isMIS}" >
+                                                                    <apex:inputHidden id="IglooPortSpeed" value="{!listAttrVal.IGLOO_Port_Speed_Substituted__c}"/>
+                                                                    <apex:inputHidden id="IglooAccessSpeed" value="{!listAttrVal.IGLOO_Access_Speed_Substituted__c}"/>
+                                                                    <apex:inputHidden id="IglooInterfaceTypeFlag" value="{!listAttrVal.IGLOO_Interface_Type_Substituted__c}"/>
+                                                                    <apex:inputHidden id="IglooCallProcessingId" value="{!listAttrVal.IGLOO_Speed_Unavailable__c}"/>
+                                                                    <input type="hidden" id="accessSpeedCurVal" value="{!listAttrVal.IGLOO_Old_Access_Speed__c}"/>
+                                                                    <table style="margin-top: 30px;">
+                                                                        <apex:variable var="cntr" value="{!0}"/>
+                                                                        <apex:repeat value="{!dataWrap}" var="itemAttr" >
+                                                                            <tr id="container{!cntr}" style="padding-bottom:10px;">
+                                                                                <td>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <apex:outputPanel rendered="{!IF( AND(cntr > 1, itemAttr.attr != 'Install_Option_MIS__c') ,true,false ) }">
+                                                                                        <apex:outputPanel rendered="{!IF((listAttrVal.IGLOO_Port_Speed_Substituted__c == true || listAttrVal.IGLOO_Access_Speed_Substituted__c == true || listAttrVal.IGLOO_Interface_Type_Substituted__c == true)&& $ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Port Type',true,false)}">
+                                                                                            <div class="iglooErrorMsgMIS iglooGenericErrMsgCls">
+                                                                                                {!$Label.IGLOO_REQ_MSG1 } 
+                                                                                                {!$Label.IGLOO_REQ_MSG2 }  
+                                                                                            </div>
+                                                                                        </apex:outputPanel>
+                                                                                        <div style="margin-top:0.5%">
+                                                                                            <b class="labelsTextClass {!IF(($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Interface Type'),'id123','id234')}">{!$ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label}
+                                                                                                <apex:outputPanel rendered="{!IF(listAttrVal.Hi_Cap_Flex__c == true  && cntr == 4 ,true,false ) }">
+                                                                                                    <i class="glyphicon glyphicon-info-sign">
+                                                                                                        <span style="height:73px">Minimum bandwidth commitment is <br/>a monthly rate. Overage billing may <br/>apply at the rate displayed for each <br/> MB used over the selected MBC.</span>
+                                                                                                    </i>
+                                                                                                    <br/>
+                                                                                                </apex:outputPanel>
+                                                                                            </b> 
+                                                                                        </div>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF( itemAttr.attr == 'Install_Option_MIS__c' ,true,false ) }">
+                                                                                        <div style="margin-top:20px">
+                                                                                            <b style="font-family:omnesatt_iiregular;font-size: 18px;font-weight: normal;">One Time Charges</b> <br />
+                                                                                            <b style="font-family:omnesatt_iiregular;font-size: 14px;font-weight: normal;">Installation Type</b> <br />
+                                                                                        </div>
+                                                                                    </apex:outputPanel>
+                                                                                    <div onclick="{!IF((($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Access Speed') || ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Interface Type')),'populateNewInterfaceOptions();','')}" style="{!IF(cntr > 1, 'width:300px;margin-top: 5px;height:40px !important', 'width:325px;margin-top:-2%')}" class="{!IF(cntr > 1, 'styled-select-small adjust-select-large', '')} {!IF(($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Interface Type'),'id123drop','id234drop')} {!IF(($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Port Type'),'privatedrop','')} {!IF(($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Port Type'),'portTypeDivCls','')} {!IF(($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Port Speed'),'portSpeedDivCls','')} {!IF(($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Access Speed'),'accessSpeedDivCls','')}">
+                                                                                        <apex:inputfield value="{!listAttrVal[itemAttr.attr]}" onchange="validateFormAndEnableApply(this,'off'); {!IF(cntr == portTypeIndexInt, 'filterAndRenderPortSpeed(this, null);', '')} {!IF(cntr == portSpeedIndexInt, 'filterAndRenderAccessSpeed(this);', '')} {!IF(cntr == 1, 'enableShowHideUBBDDL(this);', '') } " styleClass="dropDownValue"  />
+                                                                                    </div>
+                                                                                    <apex:outputPanel rendered="{!IF(listAttrVal.IGLOO_Port_Speed_Substituted__c == true &&  ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Port Speed'),true,false)}">
+                                                                                        <div class="iglooErrorMsg">
+                                                                                            {!$Label.IGLOO_SUBST_MSG} {!listAttrVal.IGLOO_Old_Port_Speed__c}                                     
+                                                                                        </div>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(listAttrVal.IGLOO_Access_Speed_Substituted__c == true && ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Access Speed'),true,false)}">
+                                                                                        <div class="iglooErrorMsg">
+                                                                                            {!$Label.IGLOO_SUBST_MSG} {!listAttrVal.IGLOO_Old_Access_Speed__c}                                                           
+                                                                                        </div>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(isIglooSpeedBump == true && listAttrVal.IGLOO_Speed_Unavailable__c == true && (listAttrVal.IGLOO_Access_Speed_Substituted__c == false && listAttrVal.IGLOO_Port_Speed_Substituted__c == false && listAttrVal.IGLOO_Interface_Type_Substituted__c == false) &&  ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Access Speed'),true,false)}">
+                                                                                        <div class="iglooErrorMsg iglooErrorMsgWrap">
+                                                                                            {!listAttrVal.IGLOO_Old_Access_Speed__c} {!$Label.IGLOO_NO_RES}                                                           
+                                                                                        </div>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(isIglooSpeedBump == false && listAttrVal.IGLOO_Speed_Unavailable__c == true && (listAttrVal.IGLOO_Access_Speed_Substituted__c == false && listAttrVal.IGLOO_Port_Speed_Substituted__c == false && listAttrVal.IGLOO_Interface_Type_Substituted__c == false) &&  ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Access Speed'),true,false)}">
+                                                                                        <div class="iglooErrorMsg iglooErrorMsgWrap">
+                                                                                            {!listAttrVal.IGLOO_Old_Access_Speed__c} {!$Label.IGLOO_NO_RES_FALSE}                                                           
+                                                                                        </div>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF((inRegionSite==false && listAttrVal.IGLOO_Speed_Unavailable__c == true &&  ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Access Speed')) ||(inRegionSite==true),true,false)}">
+                                                                                        <script>
+                                                                                        setTimeout(function(){ 
+                                                                                            $('.portTypeDivCls select').on('change', function() {
+                                                                                                removeUnEligiblileAccessSpeed();
+                                                                                            });
+                                                                                        }, 50);
+                                                                                        </script>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(listAttrVal.IGLOO_Interface_Type_Substituted__c == true && ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Interface Type'),true,false)}">
+                                                                                        <div class="iglooErrorMsg">
+                                                                                            {!$Label.IGLOO_INTF_MESSAGE}                                                           
+                                                                                        </div>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(listAttrVal.UBB_Speed_MIS__c != null && cntr ==4 &&  isPricingDataAvailable,true,false)}">                                                                                                     
+                                                                                        <div id="bandwidthLine" class="bandwidthDiv"><apex:outputText id="ot12" value="" > Bandwidth usage over the MBC is charged at a rate of ${!overgePerMb} per MB.</apex:outputText>  </div>          
+                                                                                    </apex:outputPanel>  
+                                                                                    <!-- Radhika : 12 Dec 2015, updated the code as UBB font changes on condition -->
+                                                                                    <apex:outputPanel styleClass="tooltipSpace"  rendered="{!IF(cntr == 0 ,true,false ) }">
+                                                                                        &nbsp;&nbsp;<b style="font-family:omnes_light;font-size: 16px;font-weight: normal;margin-left:-1%">{!$ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label}</b>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel styleClass="tooltipSpace"  rendered="{!IF(cntr == 1 ,true,false ) }">
+                                                                                        <span id="uBBLabelId" class="uBBLabel">{!$ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label}</span>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel styleClass="tooltipSpace"  rendered="{!IF(cntr == 0 ,true,false ) }">
+                                                                                        <span class="tooltipTrigger glyphicon glyphicon-info-sign" data-toggle="tooltip" rel="tooltip" data-placement="right" title="{!$Label.CoSInfo}"></span>
+                                                                                        <br />
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(cntr == 1,true,false)}">
+                                                                                        <i class="glyphicon glyphicon-info-sign">
+                                                                                            <span>{!$Label.UBBInfo}</span>
+                                                                                        </i>
+                                                                                        <br />
+                                                                                        <div id="uBBItalicDiv" class="uBBItalicDivIN">
+                                                                                            <span id="uBBItalicId" class="uBBItalic"> Only available for Ethernet </span>
+                                                                                        </div>
+                                                                                        <div id="errorMessageFlag" style="display: none;{!IF(listAttrVal.IGLOO_Port_Speed_Substituted__c == false && listAttrVal.IGLOO_Access_Speed_Substituted__c == false && listAttrVal.IGLOO_Interface_Type_Substituted__c == false ,'margin-bottom:40px !important; ','')}"><span class="usageDiv" > Hi-Cap Flex is not available for sites that are out of region.</span></div>
+                                                                                        <div class="OORSEErrMsg usageDiv">Configuration pricing has expired for this site.</div>
+                                                                                        <div class="OORSEErrMsg usageDiv" style="margin-bottom: 40px;">Click Apply and Get Price to get pricing.</div>                                                                                                      
+                                                                                        <div id="rightPanelTopBorder" class="{!IF(listAttrVal.IGLOO_Port_Speed_Substituted__c == true || listAttrVal.IGLOO_Access_Speed_Substituted__c == true || listAttrVal.IGLOO_Interface_Type_Substituted__c == true ,'iglooBorderMIS ','removeIglooBorderMIS')}"> </div> 
+                                                                                    </apex:outputPanel>
+                                                                                    <br />
+                                                                                </td>
+                                                                                <apex:outputText id="ot13" value="" rendered="{!isPricingDataAvailable && itemAttr.isPricable &&  !listAttrVal.IGLOO_Speed_Unavailable__c && !listAttrVal.IGLOO_Call_Failure__c}">
+                                                                                    <td>
+                                                                                        <div class="priceAligned" style="{!IF(cntr >0, '', '')} {!IF(cntr == 0 ,'margin-top:-25px !important;-webkit-margin-after:26px;','' ) }{!IF(((listAttrVal.IGLOO_Port_Speed_Substituted__c == true || listAttrVal.IGLOO_Access_Speed_Substituted__c == true || listAttrVal.IGLOO_Interface_Type_Substituted__c == true)&& listAttrVal.IGLOO_Speed_Unavailable__c == false),'padding-right: 10px;', '')}">
+                                                                                            <div style="position: absolute;color:#000000;text-align: right;width: 140px;height:40px;-moz-background-color:#FFFFFF;-moz-border-radius: 6px;padding-bottom: 10px;-moz-margin-top:3px;-moz-margin-left:10px;font-weight:bold;{!if(itemAttr.attr == 'Install_Option_MIS__c','margin-top:43px;','margin-top:26px;')}{!IF(cntr == 2,'margin-top:5px !important;','')};{!IF(((listAttrVal.IGLOO_Port_Speed_Substituted__c == true || listAttrVal.IGLOO_Access_Speed_Substituted__c == true || listAttrVal.IGLOO_Interface_Type_Substituted__c == true)&& listAttrVal.IGLOO_Speed_Unavailable__c == false),'margin-left:-140px;', 'margin-left:60px;')}padding-right:10px;background-color:#FFF;padding-top:10px;">
+                                                                                                <apex:outputText id="ot14" value="${0, number, ###,###,##0.00}">
+                                                                                                    <apex:param value="{!itemAttr.lineItemObj.Apttus_Config2__NetPrice__c}" />
+                                                                                                </apex:outputText>
+                                                                                                <apex:outputText id="ot15" value="" rendered="{!IF(cntr == 9 || cntr ==4 || (cntr ==8 && isHiCapFlex !=true) ,false,true)}">/mo</apex:outputText>
+                                                                                                <apex:outputText id="ot16" value="" rendered="{!IF(cntr == 4,true,false)}">/mo*</apex:outputText>
+                                                                                            </div>
+                                                                                            <br/>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </apex:outputText>
+                                                                            </tr>
+                                                                            <apex:variable var="cntr" value="{!cntr+1}"/>
+                                                                        </apex:repeat>
+                                                                    </table>
+                                                                </apex:outputPanel>                                                           
+                                                                <apex:outputPanel id="panelAttrROAVPN" rendered="{!isAvpn}" >
+                                                                    <table style="margin-top: 30px;">
+                                                                        <apex:variable var="cntr" value="{!0}"/>
+                                                                        <input type="hidden" id="accessSpeedCurVal" value="{!listAttrVal.IGLOO_Old_Access_Speed__c}"/>
+                                                                        <apex:repeat value="{!dataWrap}" var="itemAttr" >
+                                                                            <tr id="container{!cntr}" style="padding-bottom:10px;">
+                                                                                <td>
+                                                                                </td>
+                                                                                <td>
+                                                                                    <apex:outputPanel rendered="{!IF($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Port Type',true,false)}">
+                                                                                        <br/>
+                                                                                        <div class="OORSEErrMsg usageDiv">Configuration pricing has expired for this site.</div>
+                                                                                        <div class="OORSEErrMsg usageDiv" style="margin-bottom: 10px;">Click Apply and Get Price to get pricing.</div>                                          
+                                                                                        <br/>
+                                                                                        <div id="rightPanelTopBorder" class="{!IF(listAttrVal.IGLOO_Port_Speed_Substituted__c == true || listAttrVal.IGLOO_Access_Speed_Substituted__c == true || listAttrVal.IGLOO_Interface_Type_Substituted__c == true ,'iglooBorder','removeIglooBorder')}">
+                                                                                        </div> 
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(AND(cntr > 1, itemAttr.attr != 'Install_Option_AVPN__c'),true,false ) }">
+                                                                                        <apex:outputPanel rendered="{!IF((listAttrVal.IGLOO_Port_Speed_Substituted__c == true || listAttrVal.IGLOO_Access_Speed_Substituted__c == true || listAttrVal.IGLOO_Interface_Type_Substituted__c == true)&& $ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Port Type',true,false)}">
+                                                                                            <div class="iglooErrorMsg iglooGenericErrMsgCls">
+                                                                                                {!$Label.IGLOO_REQ_MSG1 } 
+                                                                                                {!$Label.IGLOO_REQ_MSG2 }  
+                                                                                            </div>
+                                                                                        </apex:outputPanel>  
+                                                                                        <div class="rightPanelTitle" style="{!IF((listAttrVal.IGLOO_Port_Speed_Substituted__c == false && listAttrVal.IGLOO_Access_Speed_Substituted__c == false && listAttrVal.IGLOO_Interface_Type_Substituted__c == false) && $ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Port Type'  ,'margin-top:20px;','')}">
+                                                                                            <b class="labelsTextClass {!IF(($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Interface Type'),'id123','id234')}">{!$ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label}</b> <br />
+                                                                                        </div>
+                                                                                        <apex:inputHidden id="IglooPortSpeed" value="{!listAttrVal.IGLOO_Port_Speed_Substituted__c}"/>
+                                                                                        <apex:inputHidden id="IglooAccessSpeed" value="{!listAttrVal.IGLOO_Access_Speed_Substituted__c}"/>
+                                                                                        <apex:inputHidden id="IglooInterfaceTypeFlag" value="{!listAttrVal.IGLOO_Interface_Type_Substituted__c}"/>
+                                                                                        <apex:inputHidden id="IglooCallProcessingId" value="{!listAttrVal.IGLOO_Speed_Unavailable__c}"/>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF( itemAttr.attr == 'Install_Option_AVPN__c' ,true,false ) }">
+                                                                                        <div style="margin-top:20px">
+                                                                                            <b style="font-family:omnesatt_iiregular;font-size: 18px;font-weight: normal;">One Time Charges</b> <br />
+                                                                                            <b style="font-family:omnesatt_iiregular;font-size: 14px;font-weight: normal;">Installation Type</b> <br />
+                                                                                        </div>
+                                                                                    </apex:outputPanel>
+                                                                                    <div onclick="{!IF((($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Access Speed') || ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Interface Type')),'populateNewInterfaceOptions();','')}"  style="{!IF(cntr > 1, 'width:300px;margin-top: 5px;height:40px', 'width:225px;')}" class="{!IF(cntr > 1, 'styled-select-small adjust-select-large', '')} {!IF(($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Interface Type'),'id123drop','id234drop')} {!IF(($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Port Type'),'privatedrop','')} {!IF(($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Port Type'),'portTypeDivCls','')} {!IF(($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Port Speed'),'portSpeedDivCls','')} {!IF(($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Access Speed'),'accessSpeedDivCls','')}">
+                                                                                        <apex:inputfield value="{!listAttrVal[itemAttr.attr]}" onchange="validateFormAndEnableApply(this,'off');{!IF(($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Port Type'),'changeinterface(this);','')} {!IF(cntr == portTypeIndexInt, 'filterAndRenderPortSpeed(this, null);', '')} {!IF(cntr == 1, 'filterPortType();', '') } {!IF(cntr == portSpeedIndexInt, 'filterAndRenderAccessSpeed(this);', '')} " styleClass="dropDownValue"  />
+                                                                                    </div>
+                                                                                    <apex:outputPanel rendered="{!IF(cntr <= 1 ,true,false ) }">
+                                                                                        &nbsp;&nbsp;<b style="font-family:omnesatt_iiregular;font-size: 16px;font-weight: normal;">{!$ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label}</b>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(cntr == 0 ,true,false ) }">
+                                                                                        <span class="tooltipTrigger glyphicon glyphicon-info-sign" data-toggle="tooltip" rel="tooltip" data-placement="right" title="{!$Label.CoSInfo}"></span> <br />
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(cntr == 1 ,true,false ) }">
+                                                                                        <span class="tooltipTrigger glyphicon glyphicon-info-sign" data-toggle="tooltip" rel="tooltip" data-placement="right" title="{!$Label.VLAN_info}"></span>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(listAttrVal.IGLOO_Port_Speed_Substituted__c == true &&  ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Port Speed'),true,false)}">
+                                                                                        <div class="iglooErrorMsg">
+                                                                                            {!$Label.IGLOO_SUBST_MSG} {!listAttrVal.IGLOO_Old_Port_Speed__c}                                     
+                                                                                        </div>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(listAttrVal.IGLOO_Access_Speed_Substituted__c == true && ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Access Speed'),true,false)}">
+                                                                                        <div class="iglooErrorMsg">
+                                                                                            {!$Label.IGLOO_SUBST_MSG} {!listAttrVal.IGLOO_Old_Access_Speed__c}                                                           
+                                                                                        </div>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(isIglooSpeedBump == true && listAttrVal.IGLOO_Speed_Unavailable__c == true && (listAttrVal.IGLOO_Access_Speed_Substituted__c == false && listAttrVal.IGLOO_Port_Speed_Substituted__c == false && listAttrVal.IGLOO_Interface_Type_Substituted__c == false) &&  ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Access Speed'),true,false)}">
+                                                                                        <div class="iglooErrorMsg iglooErrorMsgWrap">
+                                                                                            {!listAttrVal.IGLOO_Old_Access_Speed__c} {!$Label.IGLOO_NO_RES}                                                           
+                                                                                        </div>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(isIglooSpeedBump == false && listAttrVal.IGLOO_Speed_Unavailable__c == true && (listAttrVal.IGLOO_Access_Speed_Substituted__c == false && listAttrVal.IGLOO_Port_Speed_Substituted__c == false && listAttrVal.IGLOO_Interface_Type_Substituted__c == false) &&  ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Access Speed'),true,false)}">
+                                                                                        <div class="iglooErrorMsg iglooErrorMsgWrap">
+                                                                                            {!listAttrVal.IGLOO_Old_Access_Speed__c} {!$Label.IGLOO_NO_RES_FALSE}                                                           
+                                                                                        </div>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF((inRegionSite==false && listAttrVal.IGLOO_Speed_Unavailable__c == true &&  ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Access Speed')) ||(inRegionSite==true),true,false)}">
+                                                                                        <script>
+                                                                                        setTimeout(function(){ 
+                                                                                            $('.portTypeDivCls select').on('change', function() {
+                                                                                                removeUnEligiblileAccessSpeed();
+                                                                                            });
+                                                                                        }, 50);
+                                                                                        </script>
+                                                                                    </apex:outputPanel>
+                                                                                    <apex:outputPanel rendered="{!IF(listAttrVal.IGLOO_Interface_Type_Substituted__c == true && ($ObjectType.Apttus_Config2__ProductAttributeValue__c.Fields[itemAttr.attr].label=='Interface Type'),true,false)}">
+                                                                                        <div class="iglooErrorMsg">
+                                                                                            {!$Label.IGLOO_INTF_MESSAGE}                                                           
+                                                                                        </div>
+                                                                                    </apex:outputPanel>
+                                                                                    <br />
+                                                                                </td>
+                                                                                <apex:outputText id="ot17" value="" rendered="{!isPricingDataAvailable && itemAttr.isPricable &&  !listAttrVal.IGLOO_Speed_Unavailable__c && !listAttrVal.IGLOO_Call_Failure__c}">
+                                                                                    <td style="/*background-color:#FFFFFF;color:#000000*/">
+                                                                                        <div class="priceAligned" style="{!IF(cntr >0, 'padding-top: 25px;', '')} {!IF(cntr == 0 ,'margin-top:-25px !important;-webkit-margin-after:26px;','' ) }{!IF(cntr == 1 ,'margin-top:-50px !important;-webkit-margin-after:26px;','' ) } {!IF(((listAttrVal.IGLOO_Port_Speed_Substituted__c == true || listAttrVal.IGLOO_Access_Speed_Substituted__c == true || listAttrVal.IGLOO_Interface_Type_Substituted__c == true)&& listAttrVal.IGLOO_Speed_Unavailable__c == false),'padding-right: 10px;', '')}">
+                                                                                            <div style="position: absolute;color:#000000;text-align: right;width: 140px;-moz-background-color:#FFFFFF;-moz-border-radius: 6px;padding-bottom: 10px;-moz-margin-top:3px;-moz-margin-left:10px;font-weight:bold;{!if(itemAttr.attr == 'Install_Option_AVPN__c','margin-top:27px;','margin-top:8px;')}{!IF(((listAttrVal.IGLOO_Port_Speed_Substituted__c == true || listAttrVal.IGLOO_Access_Speed_Substituted__c == true || listAttrVal.IGLOO_Interface_Type_Substituted__c == true)&& listAttrVal.IGLOO_Speed_Unavailable__c == false),'margin-left:-140px;', 'margin-left:90px;')}padding-right:10px;background-color:#FFF;padding-top:3px;">
+                                                                                                <apex:outputText id="ot18" value="${0, number, ###,###,##0.00}">
+                                                                                                    <apex:param value="{!itemAttr.lineItemObj.Apttus_Config2__NetPrice__c}" />
+                                                                                                </apex:outputText>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </td>
+                                                                                </apex:outputText>
+                                                                            </tr>
+                                                                            <apex:variable var="cntr" value="{!cntr+1}"/>
+                                                                        </apex:repeat>
+                                                                    </table>
+                                                                </apex:outputPanel> 
+                                                            </apex:outputpanel>
+                                                            <apex:commandButton rendered="{!IF((listAttrVal.IGLOO_Port_Speed_Substituted__c == true || listAttrVal.IGLOO_Access_Speed_Substituted__c == true || listAttrVal.IGLOO_Interface_Type_Substituted__c == true)&& iglooSpeedNotAvailable == false,true,false)}" id="acceptBtn" value="{!$Label.IGLOO_ACCEPT_BTN}" styleClass="col-md-2 btn btn-primary pull-right {!IF((listAttrVal.IGLOO_Port_Speed_Substituted__c == true || listAttrVal.IGLOO_Access_Speed_Substituted__c == true || listAttrVal.IGLOO_Interface_Type_Substituted__c == true) && listAttrVal.IGLOO_Speed_Unavailable__c == false,'acceptBtnReviewReqCls','acceptBtnNoResponseCls')}" style="margin: 10px 10px; width: 160px !important;" rerender="frmUp,panelAttrRO, panelAttrROAVPN, btnId, errmsg, pbtable, detail, siteTot, otTot, grandTot,grandTot2,sumOneTime,applyBtn ,PageBlockSelectSite, btnId"  action="{!executeIglooSpeedAcceptedLogic}" status="loading"  oncomplete="disableCmdBtn('n');disableApplyBtnOnAccept();disableThisApplyBtn(this);validateAndEnableHiCapFlexCheckBox();changeinterfaceonapplyandget();removeContinueCSS();initVASARestriction();enableSaveAndExit();setTheBgColor();makeTableActive();validateFormAndEnableApply(null,'on');"/> 
+                                                        </form>
+                                                    </div>
+                                                </div> 
+                                            </div>
+                                            <div class="clear m-b-20 ng-scope"></div>
+                                            <div class="col-xs-6 " style="float:right;padding-right: 0px !important;{!IF((listAttrVal.IGLOO_Port_Speed_Substituted__c == true || listAttrVal.IGLOO_Access_Speed_Substituted__c == true || listAttrVal.IGLOO_Interface_Type_Substituted__c == true),'margin-top:35px;', '')}">                 
+                                                <div id="rightPanelBotBorderId" class="col-xs-12 p0 {!IF(listAttrVal.IGLOO_Port_Speed_Substituted__c == true || listAttrVal.IGLOO_Access_Speed_Substituted__c == true || listAttrVal.IGLOO_Interface_Type_Substituted__c == true,'','rightPanelBotBorder')}" ></div>
+                                                <script>
+                                                updateIglooBorderHeight();
+                                                </script>
+                                                <div class="row" style="margin: 32px 0;">
+                                                    <p style="font-family:omnesatt_iiregular; font-size:18px;">Site Pricing Summary </p>
+                                                </div>
+                                                <div class="row" style="margin: 10px 0;">
+                                                    <div class="col-xs-6 p0 text-left" style="font-family:omnes_att_iimedium; color:#000000;">
+                                                        Monthly Total
+                                                    </div>
+                                                    <div class="col-xs-6 text-right p0">
+                                                        <apex:outputText value="${0, number, ###,###,##0.00}/mo" id="siteTot">
+                                                            <apex:param value="{!totalPerSite}" />
+                                                        </apex:outputText>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-6 p0 text-left" style="font-family:omnes_att_iimedium; color:#000000;">
+                                                    One-Time Total
+                                                </div>
+                                                <div class="col-xs-6 text-right p0">
+                                                    <apex:outputText value="${0, number, ###,###,##0.00}" id="otTot">
+                                                        <apex:param value="{!oneTimeFee}" />
+                                                    </apex:outputText>
+                                                </div>   
+                                                <div class="orangeText OORSENote">Pricing expires in 90 days for out-of-region sites with switched ethernet.</div>    
+                                                <apex:commandButton rendered="true" id="applyBtn" value="Apply and Get Price" styleClass="btn btn-primary pull-right m-r-20 createUserButtonDisable" style="padding: 7px 20px !important;margin:15px 0;width: 160px !important;" action="{!initializePricingData}" rerender="{!IF(inRegionSite == true,'frmUp,panelAttrRO, panelAttrROAVPN, btnId, errmsg, pbtable, detail, siteTot, otTot, grandTot,grandTot2,sumOneTime,applyBtn,PageBlockSelectSite, btnId,configaddedsites','')}" onclick="{!IF(inRegionSite==false,'showPopupOnIglooCall();','')}disableCmdBtn('y');disableCheckboxes();disableDropdowns();disableThisApplyBtn(this);showPricingProcessIcon('{!selectedSiteId}');" oncomplete="{!IF(inRegionSite==false,'filterSitesEligibleForIglooCallAction();','disableCmdBtnInRegion();disableThisApplyBtn(this);validateAndEnableHiCapFlexCheckBox();changeinterfaceonapplyandget();removeContinueCSS();initVASARestriction();enableSaveAndExit();setTheBgColor();makeTableActive();validateFormAndEnableApplyInRegion();')}" />
+                                                <div class="col-xs-12 m-b-20 m-t-20 p0">
+                                                    <div class="col-xs-11 p0" style="float:right;">
+                                                        <apex:commandLink action="{!eligibleSitesPop}" value="Apply Configuration To Eligible Sites" rerender="addaddress,form1" styleClass="addaddressTrigger pull-right m-t-10 font14" style="display: block; width: 100%; text-align: right; margin-bottom: 20px; color: #4A6496 !important;font-weight: bold;" oncomplete="displayPopup();" status="loading" />
+                                                    </div>
+                                                </div>
+                                                <div class="clear"></div>
+                                                <div  class="row" style="margin:0px 0px 20px;padding-bottom: 40px;border-bottom: 1px solid #ddd;">
+                                                    <div class="pull-right">
+                                                        <apex:commandButton styleClass="btn" id="prevSite1" value="<" action="{!siteTraverseMethodPrevious}" rendered="true" reRender="detail,addaddress,form1,grandTot,thetable1,prevSite,nextSite,siteTot,otTot"
+                                                                            oncomplete="linkRefreshed();" status="loading" style="border: 1px solid #ddd !important; padding: 0 10px !important; color: #056fab !important; font-weight: bold; background: #fff !important; font-size: 16px; margin-top: -6px !important;">                                                
+                                                        </apex:commandButton>
+                                                        <apex:commandLink id="prevSite" styleClass="navLinkConfig" value=" Previous Site" action="{!siteTraverseMethodPrevious}" rendered="true" reRender="detail,addaddress,form1,grandTot,thetable1,prevSite,nextSite,siteTot,otTot" 
+                                                                          oncomplete="linkRefreshed();" status="loading" style="padding: 0 10px; border-right: 1px solid #ddd;color: #4A6496 !important;font-weight: bold;">   
+                                                        </apex:commandLink> &nbsp;&nbsp;
+                                                        <apex:commandLink id="nextSite" styleClass="navLinkConfig" value="Next Site " action="{!siteTraverseMethodNext}" rendered="{!NOT(disableNext)}" reRender="detail,addaddress,form1,grandTot,thetable1,prevSite,nextSite,siteTot,otTot" oncomplete="linkRefreshed();" status="loading" style="padding: 0 10px;color: #4A6496 !important;font-weight: bold;">                                               
+                                                        </apex:commandLink>  
+                                                        <apex:commandButton styleClass="btn" id="nextSite1" style="border: 1px solid #ddd !important; padding: 0 10px !important; color: #056fab !important; background: #fff !important; font-weight: bold; font-size: 16px;float:right; margin-top: -6px !important;"
+                                                                            value=">" action="{!siteTraverseMethodNext}" rendered="{!NOT(disableNext)}" reRender="detail,addaddress,form1,grandTot,thetable1,prevSite,nextSite,siteTot,otTot"
+                                                                            oncomplete="linkRefreshed();" status="loading">
+                                                        </apex:commandButton>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" id="hdnFieldIndices" value="{!fieldIndices}"/>
+                                                <input type="hidden" id="hdnPortTypeIndex" value="{!portTypeIndex}"/>
+                                                <input type="hidden" id="hdnHiCapIndex" value="{!HicapIndexInt}"/>
+                                                <input type="hidden" id="hdnHiCapFlexFlag" value="{!isHiCapFlex}"/>
+                                                <input type="hidden" id="isContinueEnabledHdn" value="{!isContinueEnabled}" />
+                                                <apex:inputHidden id="configPageTimeout1" value="{!configPageTimeout1}"/>
+                                                <apex:inputHidden id="configPageTimeout2" value="{!configPageTimeout2}"/>
+                                                <apex:inputHidden id="iglooRetryCountFlag" value="{!listAttrVal.Quote_Total_Failure_Count__c}"/>
+                                                <apex:inputHidden id="iglooErrorFlag" value="{!listAttrVal.IGLOO_Call_Failure__c}"/>
+                                                <apex:inputHidden id="inRegionFlag" value="{!inRegionSite}"/>
+                                                <apex:inputHidden id="ReviewRequiredSites" value="{!noOfReviewRequiredSites}"/>
+                                                <apex:inputHidden id="isApplyAllFlag" value="{!quoteObj.applyAllFlag__c}"/>
+                                               
+                                                
+                                                <apex:actionFunction id="callPricingMethodAgain" name="callPricingMethodAgain" action="{!initializePricingData}" rerender="frmUp,panelAttrRO, panelAttrROAVPN, btnId, errmsg, pbtable, detail, siteTot, otTot, grandTot,grandTot2,sumOneTime,applyBtn,applyBtn1,PageBlockSelectSite, btnId"  oncomplete="removeContinueCSS();initVASARestriction();enableSaveAndExit();validateAndEnableHiCapFlexCheckBox();setTheBgColor();makeTableActive();validateFormAndEnableApply(null,'on');hidePricingProcessIcon('{!selectedSiteId}');changeinterfaceonapplyandget();" />
+                                                <apex:actionFunction id="filterSitesEligibleForIglooCallAction" name="filterSitesEligibleForIglooCallAction" action="{!filterSitesEligibleForIglooCallerMethod}" rerender="frmUp,panelAttrRO, panelAttrROAVPN, btnId, errmsg, pbtable, detail, siteTot, otTot, grandTot,grandTot2,sumOneTime,applyBtn,applyBtn1, PageBlockSelectSite, btnId" oncomplete="clearIglooTimer();disableCmdBtn('n');disableThisApplyBtn($('[id$=applyBtn1]'));validateAndEnableHiCapFlexCheckBox();changeinterfaceonapplyandget();removeContinueCSS();initVASARestriction();enableSaveAndExit();setTheBgColor();makeTableActive();validateFormAndEnableApply(null,'on');hidePricingProcessIconOnIgloo();showSecondErrorOnExceedingRetry();">
+                                                    <apex:param name="quoteId" value=""/>
+                                                    <apex:param assignTo="{!selectedSiteId}" name="selectedSiteId" value="{!selectedSiteId}" />
+                                                </apex:actionFunction>
+                                                <apex:actionFunction id="pollingMethod" name="pollingMethod" action="{!pollingMethod}" reRender="" status="loading"/>
+                                                <apex:actionFunction id="af7" name="selectOptGrpAF" action="{!selectedOptGrpQuery}" reRender="detail,grandTot,grandTot2,sumOneTime,siteTot,otTot,theTable1,theTable2,applyBtn,applyBtn1,btnId" status="loading" oncomplete="disableFirstOpt();selectCheckbox();">
+                                                    <apex:param name="selectOptGrp" assignTo="{!selectOptGrp}" value=""/>
+                                                    <apex:param name="selectOptGrpVal" assignTo="{!selectOptGrpVal}" value=""/>
+                                                </apex:actionFunction>
+                                                <apex:actionFunction id="af1" name="handleConfigureSitePage" action="{!setupCartWithSelectedSites}" reRender="frmUp,detail,grandTot,grandTot2,sumOneTime,siteTot,otTot,theTable2,PageBlockSelectSite,applyBtn,form1,applyBtn1" status="loading" oncomplete="linkRefreshed();activeFirstSite('false');">
+                                                    <apex:param name="quoteId" value=""/>
+                                                </apex:actionFunction>
+                                                <apex:actionFunction id="reConfigFuncId" name="handleReviewQuoteCallBack" action="{!setupCartWithSelectedSites}" reRender="frmUp,detail,grandTot,grandTot2,sumOneTime,siteTot,otTot,theTable2,applyBtn,applyBtn1,form1" status="loading" oncomplete="linkRefreshed();activeFirstSite('true');">
+                                                    <apex:param name="quoteId" value=""/>
+                                                </apex:actionFunction>
+                                                <apex:actionFunction id="applyEligibleConfigUI" name="handleApplyEligibleConfigUI" action="{!handleApplyEligibleConfigUI}" reRender="frmUp,detail,grandTot,grandTot2,sumOneTime,siteTot,otTot,theTable2,applyBtn,form1" status="loading" oncomplete="linkRefreshed();activeFirstSite('true');">
+                                                    <apex:param name="quoteId" value=""/>
+                                                    <apex:param name="cartId" value=""/>
+                                                    <apex:param name="siteId" value=""/>
+                                                </apex:actionFunction>
+                                                <apex:actionFunction id="clearUI" name="handleClearUI" action="{!cleaFormUI}" reRender="panelAttrRO, panelAttrROAVPN, detail,grandTot,grandTot2,sumOneTime,siteTot,otTot,theTable2,applyBtn,applyBtn1,form1,PageBlockSelectSite,pbtable" status="loading" oncomplete="linkRefreshed();activeFirstSite('true');window.location.reload();">
+                                                    <apex:param name="quoteId" value=""/>
+                                                </apex:actionFunction>
+                                                <apex:actionFunction id="filterSites" name="handlefilterSites" action="{!handlefilterSites}" reRender="frmUp,detail,grandTot,grandTot2,sumOneTime,siteTot,otTot,theTable2,pbtable,applyBtn,applyBtn1,form1" status="loading" oncomplete="linkRefreshed();activeFirstSite('true');setTheBgColor();makeTableActive();initVASARestriction();validateFormAndEnableApply(null,'on');validateAndEnableHiCapFlexCheckBox();">
+                                                    <apex:param name="quoteId" value=""/>
+                                                </apex:actionFunction>
+                                                <apex:actionFunction id="fetchUpdatedPrice" name="doFetchUpdatedPrice" action="{!fetchUpdatedPriceOnLoad}" rerender="frmUp,panelAttrRO, panelAttrROAVPN, btnId, errmsg, pbtable, detail, siteTot, otTot, grandTot,grandTot2,sumOneTime,applyBtn ,applyBtn1, PageBlockSelectSite, btnId" oncomplete="validateAndEnableHiCapFlexCheckBox();makeTableActive();validateFormAndEnableApply(null,'on');initVASARestriction();removeContinueCSS();" />
+                                                <apex:actionFunction id="checkAndEnableDisableUBBDDL" name="enableShowHideUBBDDLAjax" action="{!handleHiCapCheckUncheck}" status="loading" rerender="frmUp,panelAttrRO, panelAttrROAVPN, btnId, errmsg, pbtable, detail, siteTot, otTot, grandTot,grandTot2,sumOneTime,applyBtn,applyBtn1, PageBlockSelectSite, btnId, hdnHiCapFlexFlag" oncomplete="refreshJSVariables();linkRefreshed();activeFirstSite('true');setTheBgColor();makeTableActive();initVASARestriction();resetApttusFormHiCap();validateFormAndEnableApply(null,'on');" >
+                                                    <apex:param name="hicapFlex" value="" assignTo="{!isHiCapFlex}"/>
+                                                </apex:actionFunction>
+                                                <apex:actionFunction id="resetApttusFormHiCapAjax" name="resetApttusFormHiCapAjax" action="{!initializeData}" status="loading" rerender="frmUp,panelAttrRO, panelAttrROAVPN, btnId, errmsg, pbtable, detail, siteTot, otTot, grandTot,grandTot2,sumOneTime,applyBtn,applyBtn1, PageBlockSelectSite, btnId" oncomplete="refreshJSVariables();linkRefreshed();activeFirstSite('true');setTheBgColor();makeTableActive();initVASARestriction();validateFormAndEnableApply(null,'on');setTimeout(function(){ checkUnCkeckHiCapFlex();}, 200);removeAndAddPrivateLineOnHicapFlexSelection();" >
+                                                </apex:actionFunction>
+                                                <apex:actionFunction name="closeApplyAllPopUp" rerender="isApplyAllFlag" action="{!updateApplyAllFlag}"  />
+                                                <apex:actionFunction name="refreshpage" id="refreshpage" action="{!refreshPage}"/>
+
+                                            </div>
+                                        </div>
+                                        <div class="row ng-scope">
+                                            <div class="col-xs-6 pull-right" style="padding-right:0px;">
+                                                <div class="row">                                 
+                                                    <div class="row" style="margin: 15px 0;">
+                                                        <p style="font-family:omnesatt_iiregular; font-size:18px;">Quote Pricing Summary </p>
+                                                    </div>
+                                                    <div class="row" style="margin: 10px 0;">
+                                                        <div class="col-xs-6 p0 text-left" style="font-family:omnes_att_iimedium; color:#000000;">
+                                                            Monthly Total
+                                                        </div>
+                                                        <div class="col-xs-6 text-right p0">
+                                                            <apex:outputText value="${0, number, ###,###,##0.00}/mo" id="grandTot2">
+                                                                <apex:param value="{!totalPerCart}" />
+                                                            </apex:outputText>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-6 p0 text-left" style="font-family:omnes_att_iimedium; color:#000000;">
+                                                        One-Time Total
+                                                    </div>
+                                                    <div class="col-xs-6 text-right p0">
+                                                        <apex:outputText value="${0, number, ###,###,##0.00}" id="sumOneTime">
+                                                            <apex:param value="{!sumOneTimeFee}" />
+                                                        </apex:outputText>
+                                                    </div>        
+                                                    <div class="col-xs-12 p0">                                                       
+                                                        <p class="fine-print" style="margin:10px 0px 36px 0px;">All prices shown are pre-tax.</p>
+                                                    </div>
+                                                    <div class='col-xs-12'>     
+                                                        <apex:outputPanel styleClass="OverageDiv" rendered="{!IF(isUBBinCart == true &&isPricingDataAvailable == true,true,false)}">        
+                                                            <apex:outputText id="ot19" value="" >* Overage billing may apply.</apex:outputText>        
+                                                        </apex:outputPanel>
+                                                    </div>   
+                                                </div>   
+                                            </div>
+                                            <div style="margin-left: 115%;margin-left;margin-top: -82%;">
+                                                <a href="#" class="scrollToTop arrowImageDim"> <apex:image value="{!($Resource.TopArrow)}" styleClass="arrowImageDim"/></a>
+                                            </div>
+                                            <hr class="blue_hr" style="clear:both;"/>                                                                       
+                                            <div class="col-xs-12 p0" style="margin: 20px 0;">
+                                                <apex:commandButton styleClass="btn btn-primary pull-right nextToReview m0" id="btnId" status="loading" action="{!finalizeCart}" oncomplete="redirectToReviewPricingPage();" value="Continue" style="padding: 7px 20px !important;" disabled="{!!isContinueEnabled}"></apex:commandButton>
+                                                <apex:commandButton styleClass="m-r-10 pull-right btn-secondary" id="btnId2" action="{!SaveandExit}" status="loading" value="Save and Exit" style="padding: 7px 20px !important;border: 1px solid #ccc !important;"></apex:commandButton>
+                                            </div>                                                    
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </apex:outputPanel>
+        <script>
+            disableFirstOpt();
+        </script>
+   </apex:form>
+    <!-- table starts -->
+    <div class="modal fade addaddressConfig"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"></div>
+    
+    <!-- Modal popup for igloo process msg -->
+    <div class="modal fade" id="iglooCallProcessModal" tabindex="-1" role="dialog" aria-hidden="true" 
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog iglooCallErrorMsgModal">
+            <div class="modal-content iglooCallErrorMsgModal">              
+                <div class="modal-body iglooCallErrorMsgModal">                
+                    <div class="waitingHolder">
+                        <img src="{!$Resource.IglooProcessIcon}" title="Please Wait" />
+                    </div>
+                    <p class="">{!$Label.IGLOO_TIMER_1MSG}</p>                                    
+                </div> <!-- /.modal-body -->   
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    
+    <!-- Modal popup for igloo secong limit and error msg -->
+    <div class="modal fade" id="iglooCallErrorMsg2Modal" tabindex="-1" role="dialog" aria-hidden="true" 
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog iglooCallErrorMsgModal">
+            <div class="modal-content iglooCallErrorMsgModal">
+                <div class="modal-body iglooCallErrorMsgModal">                
+                    <p class="iglooTimerMsg">{!$Label.IGLOO_TIMER_2MSG}</p>
+                    <div id="okayBtn">
+                        <button type="button" class="col-md-2 btn-primary okay pull-right" data-dismiss="modal" onclick="enableApplyOnIglooPopup();" styleClass="selectAllClass" >Okay</button>
+                    </div>
+                </div> <!-- /.modal-body -->   
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    
+    <!-- Modal popup for igloo secong limit and error msg -->
+    <div class="modal fade" id="iglooCallRetryMsgModal" tabindex="-1" role="dialog" aria-hidden="true" 
+         data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog iglooCallErrorMsgModal">
+            <div class="modal-content iglooCallErrorMsgModal">
+                <div class="modal-body iglooCallErrorMsgModal">                
+                    <p class="">{!$Label.IGLOO_RETRYMSG}</p>
+                    
+                    <div id="okayBtn">
+                        <button type="button" class="col-md-2 btn-primary okay pull-right" data-dismiss="modal" onclick="enableApplyOnIglooPopup();" styleClass="selectAllClass" >Okay</button>
+                    </div>
+                </div> <!-- /.modal-body -->   
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    
+    <div class="modal fade" id="applyAllPopUp" role="dialog" data-backdrop="static">
+        <div class="modal-dialog">                      
+            <div class="modal-content applyAllPopUp" style="margin-top: 25%;text-align:center;">
+                <h3 class="modal-header">{!$Label.ApplyAll_ReviewReqMsgTitle}</h3>  
+                <div class="modal-body" style="padding: 25px 25px !important;border-top:2px solid #d1d1d1;">
+                    <div>{!$Label.ApplyAll_ReviewReqMsg1}</div>
+                    <div>{!$Label.ApplyAll_ReviewReqMsg2}</div>
+                </div>
+                <div class="modal-footer" style="padding: 10px 25px 40px;">
+                    <button type="button" class="btn" data-dismiss="modal" aria-hidden="true" style="width: 115px !important;padding: 8px 10px !important;" onClick="closePopup();closeApplyAllPopUp();">Okay</button>
+                </div>
+            </div>
+        </div>
+    </div> 
+    
+    <div class="waitingSearchDiv" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;z-index:999999; display:none; top:0; left:0; " id="loadingImg">
+        <div class="waitingHolder" style="top: 400px; left:600px; width: 91px; position: fixed;">
+            <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+        </div>
+    </div>
+    <div class="waitingSearchDiv" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;z-index:1000; display:none; top:0; left:0; " id="loadingImg15">
+        <div class="waitingHolder" style="top: 400px; left:600px; width: 91px; position: fixed;">
+            
+        </div>
+    </div>
+    
+    <div class="modal fade" id="OORSEExpiredModal" role="dialog" data-backdrop="static">
+        <div class="modal-dialog">                      
+            <div class="modal-content" style="margin-top: 25%;text-align:center;">
+                <h3 class="modal-header">Configuration Expired</h3>  
+                <div class="modal-body" style="padding: 25px 25px !important;border-top:2px solid #d1d1d1;">
+                    <div>Configurations for out-of-region switched ethernet sites</div>
+                    <div>expire at 90 days. Please resubmit your configuration, and</div>
+                    <div>if applicable, request special pricing again. Thank you.</div>
+                </div>
+                <div class="modal-footer" style="padding: 10px 25px 40px;">
+                    <button type="button" class="btn" data-dismiss="modal" aria-hidden="true" style="width: 115px !important;padding: 8px 10px !important;" onClick="$('#OORSEExpiredModal').removeClass('in');">Close</button>
+                </div>
+            </div>
+        </div>
+    </div> 
+    
+    <div class="modal-dialog" id="apltConfElisiteID" style="display:none; position: absolute;  margin-top: -1245px; margin-left: 293px;z-index: 9000" data-keyboard="false" data-backdrop="static"   data-target="#apltConfElisiteID" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close" data-dismiss="modal" type="button" onclick="closeFun();"><span aria-hidden="true">x</span><span class="sr-only">Close</span></button>
+                <h4 class="m-t-0">Apply Configuration to Eligible Sites</h4>  
+            </div>
+            <apex:form styleClass="form-horizontal" id="form1">
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <apex:pageMessages escape="true" id="errmsgModal"></apex:pageMessages> 
+                            <blockquote><apex:outputLabel value="Choose from eligible sites to apply the configuration." for="theEligibleModal" rendered="{!AND(eligibleSitesLst != null,eligibleSitesLst.size > 0)}"/></blockquote>
+                            <apex:pageBlock rendered="{!AND(eligibleSitesLst != null,eligibleSitesLst.size > 0)}">
+                                <apex:pageBlockTable value="{!eligibleSitesLst}" var="item" id="EligibleSitesTable" styleClass="table table-bordered table-striped table-hover">
+                                    <apex:column value="{!item.custSiteIns.Site_Name__c}" />
+                                    <apex:column value="{!item.custSiteIns.Address_Line__c}" />
+                                    <apex:column value="{!item.custSiteIns.City__c}" />
+                                    <apex:column value="{!item.custSiteIns.State__c}" />
+                                    <apex:column headerValue="Select">
+                                        <apex:inputCheckbox value="{!item.eligibleSelected}" />
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                                <apex:commandButton styleClass="btn btn-primary br-0 m-t-10 pull-right" status="loading" value="Apply" action="{!eligibleSitesApply}" rerender="addaddress,detail,grandTot2,sumOneTime,form1" oncomplete="closeComPricing();" style="margin-bottom: 10px !important;"/>
+                            </apex:pageblock>
+                            <input type="hidden" id="isIglooOfflineHdn" value="{!isIglooOffline}"/>
+                            <apex:inputHidden value="{!quoteId}" id="selectedQuote" /> 
+                            <apex:inputHidden value="{!cartId}" id="selectedCart" /> 
+                            <apex:inputHidden value="{!siteId}" id="selectedSite" />  
+                        </div>
+                    </div>   
+                </div>   
+            </apex:form>
+        </div>
+    </div>
+    <!-- table ends --> 
+    <div class="modal waitingSearchDiv" id="remotingScroll" style="display:none; background-color: #fbfbfb;  height: 40%;opacity:0.65;width:40%;position: absolute;z-index:1">
+        <div class="waitingHolder" style="top: 40%; left: 50%; position: fixed;">
+            <img class="waitingImage" src="{!$Resource.LoadingImage}" title="Please Wait" />
+        </div>   
+    </div>
+    <script>
+    function redirectToReviewPricingPage(){
+        window.location.href = '{!redirectToReviewPricingPage}';
+    }
+    
+    var productName = '{!proposalData.product_name__c}';
+    
+    function enableShowHideUBBDDL(inputObj){
+        enableShowHideUBBDDLAjax(inputObj.checked);
+    }
+    
+    function checkUnCkeckHiCapFlex(){
+        var hiCap = document.getElementById("hdnHiCapFlexFlag").value;
+        if( productName == 'AT&T Virtual Private Network' ){
+            var trElemId = 'container'+'2'; 
+        }
+        if( productName == 'AT&T Managed Internet Service' ){
+            var trElemId = 'container'+'1'; 
+        }
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' ){
+            
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("input");
+            if( typeof selectElem[0] != 'undefined' ){
+                if( hiCap == 'true' ){
+                    selectElem[0].checked = true;
+                }else{
+                    selectElem[0].checked = false;;
+                }
+                
+            }
+        }
+    }
+    
+    function resetApttusFormHiCap(){
+        var hiCap = document.getElementById("hdnHiCapFlexFlag").value;
+        setTimeout(function(){ 
+            resetApttusFormHiCapAjax(Boolean(hiCap));
+        }, 200);
+    }
+    
+    function removeAndAddPrivateLineOnHicapFlexSelection(){
+        setTimeout(function(){
+            var hiCap = document.getElementById("hdnHiCapFlexFlag").value;
+            if( hiCap == 'true' ){
+                var trElemId = 'container'+parseInt(portTypeIndex); 
+                var currElementTr = document.getElementById(trElemId);
+                if( typeof currElementTr != 'undefined' ){
+                    var innerTds = currElementTr.getElementsByTagName("td");
+                    var selectElem = innerTds[1].getElementsByTagName("select");
+                    if( typeof selectElem[0] != 'undefined' ){
+                        selectElem[0].remove(getIndexOfTheOption(selectElem[0], 'Private Line'));
+                        selectElem[0].onchange();
+                        
+                    }
+                }   
+            }
+        }, 300);
+    }
+    
+    function disableCmdBtn(cmd){
+        var arItemsToDisable = [];
+        var pbTableElem = document.getElementById("{!$Component.frmUp.PageBlockSelectSite.pbtable}");
+        var prevElem = document.getElementById("{!$Component.frmUp.prevSite}");
+        var nextElem = document.getElementById("{!$Component.frmUp.nextSite}");
+        var arCmdBtn = pbTableElem.getElementsByTagName("input");
+        for( var i = 0; i < arCmdBtn.length; i++ ){
+            if( arCmdBtn[i].id.indexOf( "cmdBtn" ) != -1 ){
+                arItemsToDisable.push( arCmdBtn[i] );
+            }
+        }
+        for( var i = 0; i < arItemsToDisable.length; i++ ){
+            if( cmd == 'y' ){
+                arItemsToDisable[i].disabled = true;
+                $('.navLinkConfig').addClass('disableClearForm');
+                $('.btn').addClass('disableClearForm');
+            }else{
+                arItemsToDisable[i].disabled = false;
+                $('.navLinkConfig').removeClass('disableClearForm');
+                $('.btn').removeClass('disableClearForm');
+            }
+        } 
+    }
+    
+    function initVASARestriction(){
+        try{
+            setTimeout(function(){ routeOrPauseTheParsingCall(); }, 200);
+            setTimeout(function(){ 
+                initPortSpeedOnPageLoad();
+                initAccessSpeedOnPageLoad();
+            }, 300);
+        }catch(e){ alert(e.message); }
+    }
+    
+    
+    function disableThisApplyBtn(inpObj){
+        
+        inpObj.disabled = true;
+        inpObj.value = 'Processing...';
+        document.getElementById('{!$Component.frmUp.btnId2}').disabled = true;
+        $('.clearForm').addClass('disableClearForm');
+        $('.addaddressTrigger').addClass('disableClearForm');
+        changeinterfaceonapplyandget();
+    }
+    
+    function disableApplyBtnOnAccept(){
+        var nonIglooObj = $('[id$=applyBtn]');
+        var iglooObj = $('[id$=applyBtn1]');
+        setTimeout(function(){
+            if(typeof nonIglooObj != 'undefined' && nonIglooObj.length > 0){
+                document.getElementById("{!$Component.frmUp.applyBtn}").disabled = true;
+                document.getElementById("{!$Component.frmUp.applyBtn}").className = 'btn btn-primary pull-right m-r-20 createUserButtonDisable';
+            }
+            if(typeof iglooObj != 'undefined' && iglooObj.length > 0)   
+            {        
+                document.getElementById("{!$Component.frmUp.applyBtn1}").disabled = true;
+                document.getElementById("{!$Component.frmUp.applyBtn1}").className = 'btn btn-primary pull-right m-r-20 createUserButtonDisable';
+            }
+        },200);
+        
+    }
+    function enableSaveAndExit(){
+        document.getElementById('{!$Component.frmUp.btnId2}').disabled = false;
+        $('.clearForm').removeClass('disableClearForm'); 
+        $('.addaddressTrigger').removeClass('disableClearForm');
+    }
+    var removeSwitchedEthernet=false;
+    var disableHicapOnMinimumSpeedAvail=false;
+    $(document).ready(function () {
+        var list = {!speedsNotAvailableITPAList};
+        var inRegion = '{!inRegionSite}';
+        if(typeof list != 'undefined' && list != null && list.length==9 && (typeof inRegion != 'undefined' && inRegion == 'true')){
+            removeSwitchedEthernet=true;
+        }
+        else if(typeof list != 'undefined' && list != null && list.length>=7 && (typeof inRegion != 'undefined' && inRegion == 'true')){
+            var difference = [];
+            var list2 = ['5 Mbps','10 Mbps'];
+            $.grep(list2, function(el) {
+                    if ($.inArray(el, list) == -1) difference.push(el);
+            });
+            if(difference.length>0 && difference.length<=2){
+                console.log('2222');
+                disableHicapOnMinimumSpeedAvail=true;
+            }
+        }
+        $('.portTypeDivCls select').on('change', function() {
+            removeUnEligiblileAccessSpeed();
+        });
+        $(window).scroll(function(){
+            if ($(this).scrollTop() > 100) {
+                $('.scrollToTop').fadeIn();
+            } else {
+                $('.scrollToTop').fadeOut();
+            }
+        });
+        $('.scrollToTop').click(function(){
+            $('html, body').animate({scrollTop : 0},500);
+            return false;
+        }); 
+        
+        $("body").tooltip({ selector: '[rel=tooltip]' });
+        $('#configaddedsites tbody tr td:nth-child(2)').addClass('active');
+        
+        setTimeout(function(){ validateFormAndEnableApply(null,'on'); }, 100);
+        
+        setTimeout(function(){ 
+            routeOrPauseTheParsingCall();
+        }, 200);
+        setTimeout(function(){ 
+            initPortSpeedOnPageLoad();
+            initAccessSpeedOnPageLoad();
+        }, 300);
+        setTimeout(function(){ 
+            doFetchUpdatedPriceJS();
+        }, 500);
+        
+        if(productName == 'AT&T Managed Internet Service'){
+            validateAndEnableHiCapFlexCheckBox();
+            removeAndAddPrivateLineOnHicapFlexSelectionClone();
+        }
+        setTimeout(function(){
+            checkForReviewRequired();
+        }, 4000);
+        
+        /*showOORSEExpired = {!showOORSEExpired};
+        if(showOORSEExpired){
+            $('#OORSEExpiredModal').modal('show');
+        }*/        
+        $('.siteListPanel tbody tr td:nth-child(2)').each(function() {
+            if($(this).hasClass( "selectedSiteHighlighted" )){
+                if($(this).find('.OORSEExpiredSite').length > 0){
+                    $('#OORSEExpiredModal').modal('show');
+                }
+            }
+        });        
+    });
+    
+    
+    function doFetchUpdatedPriceJS(){
+        doFetchUpdatedPrice();
+    }
+    
+    function initPortSpeedOnPageLoad(){
+        var trElemId = 'container'+parseInt(portTypeIndex); 
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' ){
+            
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("select");
+            if( typeof selectElem[0] != 'undefined' ){
+                filterAndRenderPortSpeed(selectElem[0], 'y');
+            }
+        }
+    }
+    
+    function filterInstallationType() {
+        if( productName == 'AT&T Managed Internet Service' ){
+            var hiCapFlexFieldIndex = parseInt('{!HicapIndexInt}');
+            var hiCapFlexField = getFieldReference(hiCapFlexFieldIndex);
+            var installationTypeElemId = '';
+            if (hiCapFlexField.checked == true) {
+                installationTypeElemId = 'container'+9;
+            }
+            else {
+                installationTypeElemId = 'container'+8; 
+            }
+            var currInstallationTypeElemTr = document.getElementById(installationTypeElemId);
+            var innerInstallationTypeTds = currInstallationTypeElemTr.getElementsByTagName("td");
+            var selectInstallationTypeElem = innerInstallationTypeTds[1].getElementsByTagName("select");
+            var onsiteInstallOption = getIndexOfTheOption(selectInstallationTypeElem[0], 'Onsite Install');
+            selectInstallationTypeElem[0].remove(onsiteInstallOption);
+        }
+    }
+    
+    function initAccessSpeedOnPageLoad(){
+        var portSpeedIndex = parseInt(portTypeIndex) + 1;
+        var trElemId = 'container'+parseInt(portSpeedIndex); 
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' ){
+            
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("select");
+            if( typeof selectElem[0] != 'undefined' ){
+                filterAndRenderAccessSpeed(selectElem[0]);
+            }
+        }
+    }
+    
+    function disableFirstOpt() {   
+        $('#configSites select').each(function(){
+            $(this).children('option:first-child').attr('disabled', 'false');
+        });
+        $('#configaddedsites tbody tr td a').on('click', function(){
+            highlightRowId = $(this).attr('class');            
+            $('#configaddedsites tbody tr td a.'+highlightRowId).parent('td').parent('tr').addClass('active');
+        });
+    }
+    
+    function showPricingProcessIcon(siteId) {
+        var elemIdDollar = 'tick'+siteId;
+        var elemIdProcess = 'process'+siteId;
+        var elemDollarObj = document.getElementById(elemIdDollar);
+        var elemProcessObj = document.getElementById(elemIdProcess);
+        elemDollarObj.style.display = 'none';
+        elemProcessObj.style.display = 'block';
+    }
+    
+    function hidePricingProcessIcon(siteId) {
+        var elemIdDollar = 'tick'+siteId;
+        var elemIdProcess = 'process'+siteId;
+        var elemDollarObj = document.getElementById(elemIdDollar);
+        var elemProcessObj = document.getElementById(elemIdProcess);
+        elemDollarObj.style.display = 'block';
+        elemProcessObj.style.display = 'none';
+    }
+    function removeContinueCSS(){
+        var isEnabled = document.getElementById("isContinueEnabledHdn").value;
+        if( isEnabled == 'true' ){
+            $("[id$=btnId]").prop('disabled',false);
+        }
+    }
+    function makeTableActive(){
+        $('#configaddedsites tbody tr td:nth-child(2)').addClass('active');
+    }
+    
+    /*********************VASA Overlay Code Starts here.*******************************/
+    var jsonVasaResponse = '{!jsonServiceAvailability}';
+    var jsonObject = JSON.parse(jsonVasaResponse);
+    var portTypeAr = [];
+    var portSpeedAr = [];
+    var firstStackRegion;
+    var secondStackRegion;
+    var portTypeToBeFiltered = [];
+    var portSpeedToBeFiltered = [];
+    var isSEAvailable = true;
+    var isPLAvailble = true;
+    var otherSpeedsAr = [];
+    var portSpeedToBeFiltered = [];
+    var spareQuantity;
+    var portTypeObj;
+    var accessSpeedToBeFiltered = [];
+    vlanIndex = '{!vlanIndex}';
+    function disableVlanChkBox(){
+        var trElemId = 'container'+parseInt(vlanIndex); 
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' ){
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("input");
+            if( typeof selectElem[0] != 'undefined' ){
+                selectElem[0].disabled = true;
+            }
+        }
+    }
+    
+    function routeOrPauseTheParsingCall(){
+        try{
+            for( var i = 0; i < jsonObject.AddressServiceAvailability.length; i++  ){
+                if( typeof jsonObject.AddressServiceAvailability[i] != 'undefined' ){
+                    if( i == 0 ){
+                        firstStackRegion = jsonObject.AddressServiceAvailability[i].region;
+                    }else{
+                        secondStackRegion = jsonObject.AddressServiceAvailability[i].region;
+                    }
+                }
+            }
+            if( (firstStackRegion != 'Y' || firstStackRegion != 'y') && (secondStackRegion != 'Y' || secondStackRegion != 'y') ){
+                parseTheJsonResponseAndPrepareDataStructure();
+            }
+        }catch( e ){
+            
+        }
+    }
+    
+    function validateAndEnableHiCapFlexCheckBox(){
+        var seRegion;
+        for( var i = 0; i < jsonObject.AddressServiceAvailability.length; i++  ){
+            if( typeof jsonObject.AddressServiceAvailability[i] != 'undefined' ){
+                if( i == 0 ){
+                    seRegion = jsonObject.AddressServiceAvailability[i].region;
+                }
+            }
+        }
+        
+        if( seRegion == 'Y' || seRegion == 'y' ){
+            if(jsonObject.AddressServiceAvailability[0].ServiceAvailabilityDetails != null || jsonObject.AddressServiceAvailability[0].ServiceAvailabilityDetails != '') {
+                // Manish : Added this check since Ethernet Check was failing for In Region Site without Ethernet Block.
+                if(jsonObject.AddressServiceAvailability[0].statusCode!='4' && jsonObject.AddressServiceAvailability[0].statusCode!='9' && jsonObject.AddressServiceAvailability[0].statusCode!='503'){  
+                    if(jsonObject.AddressServiceAvailability[0].ServiceAvailabilityDetails.Ethernet != null || jsonObject.AddressServiceAvailability[0].ServiceAvailabilityDetails.Ethernet != '' ){  
+                        
+                        if( productName == 'AT&T Virtual Private Network' ){
+                            var trElemId = 'container'+'2'; 
+                        }
+                        if( productName == 'AT&T Managed Internet Service' ){
+                            var trElemId = 'container'+'1'; 
+                        }
+                        /*Radhika 12 Dec 2015, UBB in and out region font change fix */
+                        var currElementTr = document.getElementById(trElemId);
+                        if( typeof currElementTr != 'undefined' ){
+                            
+                            var innerTds = currElementTr.getElementsByTagName("td");
+                            var selectElem = innerTds[1].getElementsByTagName("input");
+                            if( typeof selectElem[0] != 'undefined' ){
+                                if(typeof $("#errorMessageFlag") != 'undefined' && $("#errorMessageFlag") != null && $("#errorMessageFlag").length>0){
+                                    document.getElementById("errorMessageFlag").style.display = "none";
+                                }
+                                $("#uBBLabelId").addClass('uBBLabel');
+                                $("#uBBLabelId").removeClass('uBBLabelDisable');
+                                $("#uBBItalicId").addClass('uBBItalic');
+                                $("#uBBItalicId").removeClass('uBBItalicDisable');
+                            }
+                        }
+                    }
+                } 
+            } 
+        }else if (seRegion==null){
+            parseTheJsonResponseAndPrepareDataStructure();
+        }else{
+            if( productName == 'AT&T Virtual Private Network' ){
+                var trElemId = 'container'+'2'; 
+            }
+            if( productName == 'AT&T Managed Internet Service' ){
+                var trElemId = 'container'+'1'; 
+            }
+            var currElementTr = document.getElementById(trElemId);
+            if( typeof currElementTr != 'undefined' ){
+                var innerTds = currElementTr.getElementsByTagName("td");
+                var selectElem = innerTds[1].getElementsByTagName("input");
+                if( typeof selectElem[0] != 'undefined' ){
+                    selectElem[0].disabled = true;
+                    if(typeof $("#errorMessageFlag") != 'undefined' && $("#errorMessageFlag") != null && $("#errorMessageFlag").length>0){
+                        document.getElementById("errorMessageFlag").style.display = "block";
+                    }
+                    $("#uBBLabelId").addClass('uBBLabelDisable');
+                    $("#uBBLabelId").removeClass('uBBLabel');
+                    $("#uBBItalicId").addClass('uBBItalicDisable');
+                    $("#uBBItalicId").removeClass('uBBItalic');
+                    $("#uBBItalicDiv").addClass('uBBItalicDivOUT');
+                    $("#uBBItalicDiv").removeClass('uBBItalicDivIN');
+                }
+            }
+        }
+        filterPortType();
+    }
+    
+    function parseTheJsonResponseAndPrepareDataStructure(){
+        prepareAndInitializePortType();
+    }
+    
+    function prepareAndInitializePortType(){
+        portTypeToBeFiltered = [];
+        for( var i = 0; i < jsonObject.AddressServiceAvailability.length; i++  ){
+            
+            // **Fix is done for accomodate when there is no second block. Defect-69242 -Vineet
+            if(jsonObject.AddressServiceAvailability.length == 1){ 
+                if(jsonObject.AddressServiceAvailability[0].ServiceAvailabilityDetails.PrivateLine == '' || jsonObject.AddressServiceAvailability[0].ServiceAvailabilityDetails.PrivateLine == null){
+                    portTypeToBeFiltered.push('Private Line');
+                    isPLAvailble = false;
+                }
+                else if(jsonObject.AddressServiceAvailability[0].ServiceAvailabilityDetails.Ethernet == '' || jsonObject.AddressServiceAvailability[0].ServiceAvailabilityDetails.Ethernet == null){
+                    portTypeToBeFiltered.push('Switched Ethernet');
+                    isSEAvailable = false;
+                    disableChkBoxhicap();
+                    if( productName == 'AT&T Virtual Private Network' ){
+                        disableVlanChkBox();
+                    }
+                } 
+            }else{
+                if( i == 0 && jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails == null ){
+                    portTypeToBeFiltered.push('Switched Ethernet');
+                    isSEAvailable = false;
+                    disableChkBoxhicap();
+                    if( productName == 'AT&T Virtual Private Network' ){
+                        disableVlanChkBox();
+                    }
+                }else if(i == 0 && jsonObject.AddressServiceAvailability[i].statusCode!='4' && jsonObject.AddressServiceAvailability[i].statusCode!='9' && jsonObject.AddressServiceAvailability[i].statusCode!='503'){ 
+                    if( i == 0 && (jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails != null && jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.Ethernet != null && jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.Ethernet.ethernetAvailability != 'Y' ) ){
+                        
+                        portTypeToBeFiltered.push('Switched Ethernet');
+                        isSEAvailable = false;
+                        disableChkBoxhicap();
+                        if( productName == 'AT&T Virtual Private Network' ){
+                            disableVlanChkBox();
+                        }
+                    }
+                }
+                if ( i == 0 && jsonObject.AddressServiceAvailability[i].statusCode =='503'){
+                    
+                    portTypeToBeFiltered.push('Switched Ethernet');
+                    isSEAvailable = false;
+                    disableChkBoxhicap();
+                    if( productName == 'AT&T Virtual Private Network' ){
+                        disableVlanChkBox();
+                    }
+                }   
+                if ( i == 0 && jsonObject.AddressServiceAvailability[i].statusCode =='4'){
+                    
+                    portTypeToBeFiltered.push('Switched Ethernet');
+                    isSEAvailable = false;
+                    disableChkBoxhicap();
+                    if( productName == 'AT&T Virtual Private Network' ){
+                        disableVlanChkBox();
+                    }
+                }
+                if ( i == 0 && jsonObject.AddressServiceAvailability[i].statusCode =='9'){
+                    
+                    portTypeToBeFiltered.push('Switched Ethernet');
+                    isSEAvailable = false;
+                    disableChkBoxhicap();
+                    if( productName == 'AT&T Virtual Private Network' ){
+                        disableVlanChkBox();
+                    }
+                } 
+                if( i == 1 && jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails == null ){
+                    portTypeToBeFiltered.push('Private Line');
+                    isPLAvailble = false;
+                }   
+                if( i == 1 && jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.PrivateLine == null ){
+                    portTypeToBeFiltered.push('Private Line');
+                    isPLAvailble = false;
+                }  
+                if(i == 1 && jsonObject.AddressServiceAvailability[i].statusCode =='4'){
+                    portTypeToBeFiltered.push('Private Line');
+                    isPLAvailble = false;
+                }    
+                if(i == 1 && jsonObject.AddressServiceAvailability[i].statusCode =='9'){
+                    portTypeToBeFiltered.push('Private Line');
+                    isPLAvailble = false;
+                }                
+            }
+        }
+        filterPortType();            
+    }
+    
+    function disableChkBoxhicap(){
+        var trElemId = 'container'+parseInt(hiCapFlexIndex);
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' && currElementTr != null){
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("input");
+            if( typeof selectElem[0] != 'undefined' ){
+                selectElem[0].disabled = true;
+                $("#uBBLabelId").addClass('uBBLabelDisable');      
+                $("#uBBLabelId").removeClass('uBBLabel');      
+                $("#uBBItalicId").addClass('uBBItalicDisable');        
+                $("#uBBItalicId").removeClass('uBBItalic');
+            }
+        }
+    }
+    
+    function getIndexOfTheOption( elem, token ){
+        console.log('token '+token+' ele '+elem.options );
+        for( var i = 0; i < elem.options.length; i++ ){
+            if( elem.options[i].innerHTML == token ){
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    function filterPortType(){
+        var inRegion = '{!inRegionSite}';
+        if(removeSwitchedEthernet==true){
+            portTypeToBeFiltered.push('Switched Ethernet');
+            if( productName == 'AT&T Virtual Private Network' ){
+                disableVlanChkBox();
+                $('.portTypeDivCls select').on('change', function() {
+                    removeUnEligiblileAccessSpeed();
+                    $('.portSpeedDivCls select').on('change', function() {
+                        if('{!isAVPN}'=='true'){onPortSpeedChange();}
+                    });
+                });
+                $('.portSpeedDivCls select').on('change', function() {
+                    if('{!isAVPN}'=='true'){onPortSpeedChange();}
+                });
+            }
+        else{
+                disableChkBoxhicap();
+            }
+        }
+        else if(typeof inRegion != 'undefined' && inRegion == 'true'){
+            removeUnEligiblileAccessSpeed();
+        }
+        if(disableHicapOnMinimumSpeedAvail==true){
+            disableChkBoxhicap();
+        }
+        if(typeof inRegion != 'undefined' && inRegion == 'true'){
+            $('.portTypeDivCls select').on('change', function() {
+                removeUnEligiblileAccessSpeed();
+                $('.portSpeedDivCls select').on('change', function() {
+                    if('{!isAVPN}'=='true'){onPortSpeedChange();}
+                });
+            });
+            $('.portSpeedDivCls select').on('change', function() {
+                if('{!isAVPN}'=='true'){onPortSpeedChange();}
+            });
+        }
+        var trElemId = 'container'+parseInt(portTypeIndex); 
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' ){
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("select");
+            if( typeof selectElem[0] != 'undefined' ){
+                for( var i = 0; i < portTypeToBeFiltered.length; i++ ){
+                    selectElem[0].remove(getIndexOfTheOption(selectElem[0], portTypeToBeFiltered[i]));
+                }
+            }
+        }
+    }
+    
+    function filterAndRenderPortSpeed(inpObj, cmd){
+        var portSpeedIndex = parseInt(portTypeIndex) + 1;
+        var hiCap = document.getElementById("hdnHiCapFlexFlag").value;
+        if( inpObj.value == 'Switched Ethernet' ){
+            if( cmd != null ){
+                setTimeout(function(){ prepareTheEthernetSpeedCollection(); }, 200);
+            }else{
+                
+                setTimeout(function(){ prepareTheEthernetSpeedCollection(); }, 200);
+            }
+        }else if( inpObj.value == 'Private Line' && secondStackRegion != 'Y' ){
+            if( cmd != null ){
+                setTimeout(function(){ prepareThePrivateLineSpeedCollection(); }, 200);
+            }else{
+                
+                setTimeout(function(){ prepareThePrivateLineSpeedCollection(); }, 200);
+            }
+        }
+        if( hiCap == 'true' && inpObj.value == 'Switched Ethernet' ){
+            setTimeout(function(){
+                var trElemId = 'container'+parseInt(portSpeedIndex); 
+                var currElementTr = document.getElementById(trElemId);
+                if( typeof currElementTr != 'undefined' ){
+                    var innerTds = currElementTr.getElementsByTagName("td");
+                    var selectElem = innerTds[1].getElementsByTagName("select");
+                    if( typeof selectElem[0] != 'undefined' ){
+                        var fivembs = getIndexOfTheOption(selectElem[0], '5 Mbps');
+                        if(typeof fivembs != -1 ){
+                            selectElem[0].remove(fivembs)
+                        }
+                        var tenmbs = getIndexOfTheOption(selectElem[0], '10 Mbps');
+                        selectElem[0].remove(tenmbs);
+                    }
+                } 
+                var inRegion = '{!inRegionSite}';
+                if(typeof inRegion != 'undefined' && inRegion == 'true'){
+                    removeUnEligiblileAccessSpeed();
+                }
+            }, 250); 
+        }
+    }
+    
+    function prepareTheEthernetSpeedCollection(){
+        for( var i = 0; i < jsonObject.AddressServiceAvailability.length; i++  ){
+            if( i == 0 ){
+                if(jsonObject.AddressServiceAvailability[i].statusCode !=null){
+                    if( jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails != null && jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.Ethernet!=null && jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.Ethernet.OtherSpeed != null ){
+                        filterPortSpeedSwitchedEthernetOptions(jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.Ethernet.OtherSpeed, jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.Ethernet.maxAvailableSpeed)
+                    }
+                }
+            }
+        }
+    }
+    
+    function filterPortSpeedSwitchedEthernetOptions( otherSpeeds, maxSpeeds ){
+        otherSpeedsAr = [];
+        otherSpeedsAr.push('--None--');
+        if( firstStackRegion == 'Y' ){
+            setTimeout(function(){ limitPortSpeedByMaxAvailableSpeed(maxSpeeds); }, 200);
+        }else if( firstStackRegion != 'Y' && productName != 'AT&T Virtual Private Network' ){
+            for( var i = 0; i < otherSpeeds.length; i++  ){
+                if( typeof otherSpeeds[i].speed != 'undefined' && parseInt(otherSpeeds[i].speed) <= parseInt(maxSpeeds) ){
+                    otherSpeedsAr.push(otherSpeeds[i].speed+' Mbps' );        
+                }
+            }
+            filterTheOptionsAndRenderUI();
+        }else{
+            setTimeout(function(){ limitPortSpeedByMaxAvailableSpeed(maxSpeeds); }, 200);
+        }
+    }
+    
+    function limitPortSpeedByMaxAvailableSpeed(maxAvailSpeed){
+        var portSpeedIndex = parseInt(portTypeIndex) + 1;
+        var trElemId = 'container'+parseInt(portSpeedIndex); 
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' ){
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("select");
+            if( typeof selectElem[0] != 'undefined' ){
+                var optionList = [];
+                for(var i = 0; i < selectElem[0].options.length; i++){
+                    optionList.push( selectElem[0].options[i].innerHTML );
+                }
+                
+                for( var i = 0; i < optionList.length; i++ ){
+                    if( optionList[i].indexOf('M') != -1 ){
+                        if( parseInt(optionList[i].substring(0, optionList[i].indexOf('M') - 1)) > parseInt(maxAvailSpeed)  ){
+                            selectElem[0].remove(getIndexOfTheOption(selectElem[0], optionList[i]));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    function segragateTheUnavailableSpeeds( elem ){
+        portSpeedToBeFiltered = [];
+        for( var i = 0; i < elem.options.length; i++ ){
+            var checkFoundFlag = false;
+            for( var j = 0; j < otherSpeedsAr.length; j++ ){
+                if( elem.options[i].innerHTML == otherSpeedsAr[j]  ){
+                    checkFoundFlag = true;
+                }
+            }
+            if( !checkFoundFlag ){
+                portSpeedToBeFiltered.push(elem.options[i].innerHTML);
+            }
+        }
+    }
+    
+    function filterTheOptionsAndRenderUI(){
+        var portSpeedIndex = parseInt(portTypeIndex) + 1;
+        var trElemId = 'container'+parseInt(portSpeedIndex); 
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' ){
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("select");
+            if( typeof selectElem[0] != 'undefined' ){
+                segragateTheUnavailableSpeeds(selectElem[0]);
+                for( var i = 0; i < portSpeedToBeFiltered.length; i++ ){
+                    selectElem[0].remove(getIndexOfTheOption(selectElem[0], portSpeedToBeFiltered[i]));
+                }
+            }
+        }                 
+    }
+    
+    function prepareThePrivateLineSpeedCollection(){
+        for( var i = 0; i < jsonObject.AddressServiceAvailability.length; i++  ){
+            if( i == 1 ){
+                if( jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails != null && jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.PrivateLine != null ){
+                    filterPortSpeedPrivateLineOptions(jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.PrivateLine[0])
+                }
+            }
+        }
+    }
+    
+    function filterPortSpeedPrivateLineOptions(privateLineObj){
+        spareQuantity = privateLineObj.spareQuantity;
+        if( parseInt(privateLineObj.spareQuantity) < 8 ){
+            filterThePLOptionsAndRenderUI();
+        }
+    }
+    
+    function prepareTheListOFUnavailablePLSpeeds( elem ){
+        var chkToken;
+        portSpeedToBeFiltered = [];
+        for( var i = 0; i < elem.options.length; i++ ){
+            if( elem.options[i].innerHTML.substring(0,1) != '-') {  
+                if( elem.options[i].innerHTML.substring(0,1) == 'T' ){
+                    chkToken = parseInt('1');
+                }else {
+                    chkToken = parseInt(elem.options[i].innerHTML.substring(0,1));
+                }
+                if( chkToken > parseInt(spareQuantity) ){
+                    portSpeedToBeFiltered.push(elem.options[i].innerHTML);
+                }
+            }
+        }
+    }
+    
+    function filterThePLOptionsAndRenderUI(){
+        var portSpeedIndex = parseInt(portTypeIndex) + 1;
+        var trElemId = 'container'+parseInt(portSpeedIndex); 
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' ){
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("select");
+            if( typeof selectElem[0] != 'undefined' ){
+                prepareTheListOFUnavailablePLSpeeds(selectElem[0]);
+                for( var i = 0; i < portSpeedToBeFiltered.length; i++ ){
+                    selectElem[0].remove(getIndexOfTheOption(selectElem[0], portSpeedToBeFiltered[i]));
+                }
+            }
+        }    
+    }
+    
+    var selectedPortSpeed;
+    function filterAndRenderAccessSpeed( inpObj ){
+        var portTypeData;
+        var trElemId = 'container'+parseInt(portTypeIndex); 
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' ){
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("select");
+            if( typeof selectElem[0] != 'undefined' ){
+                portTypeData = selectElem[0].value;
+            }
+        }
+        if( portTypeData == 'Switched Ethernet'){
+            if( inpObj.value != 'Switched Ethernet' && inpObj.value != 'Private Line' && inpObj.value != '' && inpObj.value != '-  -'){  
+                setTimeout(function(){
+                    var executeFilterOne = (function(){
+                        selectedPortSpeed = inpObj.value.substring(0, inpObj.value.indexOf('M')-1);
+                        for( var i = 0; i < jsonObject.AddressServiceAvailability.length; i++  ){
+                            if( i == 0 ){
+                                if( firstStackRegion != 'Y' ){
+                                    if( jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails != null && (jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.Ethernet!=null && jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.Ethernet.OtherSpeed != null && jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.Ethernet.OtherSpeed.length > 0 ) && ( selectedPortSpeed != '' || typeof selectedPortSpeed != 'undefined') ){
+                                        filterAccessSpeedSwitchedEthernetOptions(jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.Ethernet.OtherSpeed, jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.Ethernet.maxAvailableSpeed, selectedPortSpeed);
+                                        
+                                    }
+                                }else{
+                                    restrictAccessSpeedUpToMaxSpeed(jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.Ethernet.maxAvailableSpeed);
+                                }
+                            }
+                        }
+                    });
+                    var executeFilterTwo = function(){
+                    var inRegionFlag = $('[id$=inRegionFlag]').val();
+                    var IglooCallProcessingFlag = $('[id$=IglooCallProcessingId]').val();
+                    if(portTypeData == 'Switched Ethernet' && inRegionFlag =='true'){
+                        executeFilterOne();onPortSpeedChange();
+                    }
+                        if(IglooCallProcessingFlag=='true'){onPortSpeedChange();}
+                    }
+                    executeFilterTwo();
+                }, 200);                    
+            }  
+        } else if( portTypeData == 'Private Line' ){
+            setTimeout(function(){
+                for( var i = 0; i < jsonObject.AddressServiceAvailability.length; i++  ){
+                    if( i == 1 ){
+                        if( jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails != null && jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.PrivateLine != null ){
+                            filterPortSpeedPrivateLineAccessSpeedOptions(jsonObject.AddressServiceAvailability[i].ServiceAvailabilityDetails.PrivateLine[0])
+                        }
+                    }
+                }   
+            }, 200); 
+        }
+    }
+    
+    function restrictAccessSpeedUpToMaxSpeed(maxAvailSpeed){
+        var accessSpeedIndex = parseInt(portTypeIndex) + 3;
+        var trElemId = 'container'+parseInt(accessSpeedIndex); 
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' ){
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("select");
+            if( typeof selectElem[0] != 'undefined' ){
+                var optionList = [];
+                for(var i = 0; i < selectElem[0].options.length; i++){
+                    optionList.push( selectElem[0].options[i].innerHTML );
+                }
+                
+                for( var i = 0; i < optionList.length; i++ ){
+                    if( optionList[i].indexOf('M') != -1 ){
+                        if( parseInt(optionList[i].substring(0, optionList[i].indexOf('M') - 1)) > parseInt(maxAvailSpeed)  ){
+                            selectElem[0].remove(getIndexOfTheOption(selectElem[0], optionList[i]));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    function filterPortSpeedPrivateLineAccessSpeedOptions(privateLineObj){
+        spareQuantity = privateLineObj.spareQuantity;
+        if( parseInt(privateLineObj.spareQuantity) < 8 ){
+            filterThePLAccessSpeedOptionsAndRenderUI();
+        }
+    }
+    
+    function prepareTheListOFUnavailablePLAccessSpeeds( elem ){
+        var chkToken;
+        accessSpeedToBeFiltered = [];
+        for( var i = 0; i < elem.options.length; i++ ){
+            if( elem.options[i].innerHTML.substring(0,1) != '-') {  
+                if( elem.options[i].innerHTML.substring(0,1) == 'T' ){
+                    chkToken = parseInt('1');
+                }else {
+                    chkToken = parseInt(elem.options[i].innerHTML.substring(0,1));
+                }
+                if( chkToken > parseInt(spareQuantity) ){
+                    accessSpeedToBeFiltered.push(elem.options[i].innerHTML);
+                }
+            }
+        }
+    }
+    
+    function filterThePLAccessSpeedOptionsAndRenderUI(){
+        var accessSpeedIndex = parseInt(portTypeIndex) + 3;
+        var trElemId = 'container'+parseInt(accessSpeedIndex); 
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' ){
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("select");
+            if( typeof selectElem[0] != 'undefined' ){
+                prepareTheListOFUnavailablePLAccessSpeeds(selectElem[0]);
+                for( var i = 0; i < accessSpeedToBeFiltered.length; i++ ){
+                    selectElem[0].remove(getIndexOfTheOption(selectElem[0], accessSpeedToBeFiltered[i]));
+                }
+            }
+        }    
+    }
+    
+    function filterAccessSpeedSwitchedEthernetOptions( otherSpeeds, maxSpeeds, portSpeed ){
+        otherSpeedsAr = [];
+        otherSpeedsAr.push('--None--');
+        for( var i = 0; i < otherSpeeds.length; i++  ){
+            if( typeof otherSpeeds[i].speed != 'undefined' && parseInt(otherSpeeds[i].speed) <= parseInt(maxSpeeds) && parseInt(otherSpeeds[i].speed) >= parseInt(portSpeed) ){
+                otherSpeedsAr.push(otherSpeeds[i].speed+' Mbps' );        
+            }
+        }
+        filterTheAccessSpeedOptionsAndRenderUI();
+    }
+    
+    function segragateTheUnavailableAccessSpeeds( elem ){
+        accessSpeedToBeFiltered = [];
+        for( var i = 0; i < elem.options.length; i++ ){
+            var checkFoundFlag = false;
+            for( var j = 0; j < otherSpeedsAr.length; j++ ){
+                if( elem.options[i].innerHTML == otherSpeedsAr[j]  ){
+                    checkFoundFlag = true;
+                }
+            }
+            
+            if( !checkFoundFlag ){
+                accessSpeedToBeFiltered.push(elem.options[i].innerHTML);
+            }
+        }
+    }
+    
+    var interfaceTypeForOR ;  
+    function filterTheAccessSpeedOptionsAndRenderUI(){
+        
+        var accessSpeedIndex = parseInt(portTypeIndex) + 3;
+        var trElemId = 'container'+parseInt(accessSpeedIndex); 
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' ){
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("select");
+            if( typeof selectElem[0] != 'undefined' ){
+                segragateTheUnavailableAccessSpeeds(selectElem[0]);
+                for( var i = 0; i < accessSpeedToBeFiltered.length; i++ ){
+                    selectElem[0].remove(getIndexOfTheOption(selectElem[0], accessSpeedToBeFiltered[i]));
+                }
+            }
+        }
+        InterfaceOptionsForOR(selectedPortSpeed+' Mbps');
+    }
+    
+    function InterfaceOptionsForOR(input){
+        if(input == '5 Mbps'){
+            interfaceTypeForOR= '{!interfaceType5}';
+        }else if(input == '10 Mbps'){
+            interfaceTypeForOR= '{!interfaceType10}';
+        }else if(input == '20 Mbps'){
+            interfaceTypeForOR= '{!interfaceType20}';
+        }else if(input == '50 Mbps'){
+            interfaceTypeForOR= '{!interfaceType50}';
+        }else if(input == '100 Mbps'){
+            interfaceTypeForOR= '{!interfaceType100}';
+        }
+        if(typeof interfaceTypeForOR != 'undefined'){
+            interfaceTypeForOR = interfaceTypeForOR.replace('[', '');
+            interfaceTypeForOR = interfaceTypeForOR.replace(']', '');
+        }
+    }
+    
+    function populateNewInterfaceOptions(){
+        if( firstStackRegion != 'Y' && interfaceTypeForOR != "" && interfaceTypeForOR != null){
+            var trElemId1 = 'container'+(interfaceTypeIndex-1);
+            var currElementTr1 = document.getElementById(trElemId1);
+            if( typeof currElementTr1 != 'undefined' && (typeof currElementTr1 != '' && typeof currElementTr1 != null)){
+                var innerTds1 = currElementTr1.getElementsByTagName("td");
+                var selectElem1 = innerTds1[1].getElementsByTagName("select");
+                if(selectElem1[0].value != '--None--' && selectElem1[0].value != '' && ((selectElem1[0].value).split(' '))[0] <= 100 ){
+                    var trElemId = 'container'+interfaceTypeIndex;
+                    var currElementTr = document.getElementById(trElemId);
+                    if( typeof currElementTr != 'undefined' && (typeof currElementTr != '' && typeof currElementTr != null)){
+                        var innerTds = currElementTr.getElementsByTagName("td");
+                        var selectElem = innerTds[1].getElementsByTagName("select");
+                        var array = [];
+                        array =  interfaceTypeForOR.split(',');
+                        if(array.length == selectElem[0].options.length - 1){
+                            
+                        }else if(array.length == 2){
+                            for(j=0;j<array.length;j++){
+                                for( var i = 0; i < selectElem[0].options.length; i++ ){
+                                    if(selectElem[0].options[i].innerHTML != '--None--'){
+                                        if( selectElem[0].options[i].innerHTML == array[j].trim() ){
+                                            break;
+                                        }else{
+                                            if(i > j){
+                                                selectElem[0].remove(i);
+                                                break;
+                                            }
+                                        }                               
+                                    }
+                                }
+                            }                            
+                        }else{
+                            for( var i = 0; i < selectElem[0].options.length; i++ ){
+                                if(selectElem[0].options[i].innerHTML != '--None--' && selectElem[0].options[i].innerHTML != array[0].trim()){
+                                    selectElem[0].remove(i);
+                                    i--;
+                                }
+                            }                             
+                        }
+                    }                       
+                }    
+            }  
+        }
+    }
+    
+    function doComputeAgain(){
+        callPricingMethodAgain();
+    }
+    
+    function displayPopup(){
+        window.scrollTo(0, 600);
+        document.getElementById("apltConfElisiteID").style.display="block";
+        document.getElementById('loadingImg15').style.display = "block";
+    }
+    
+    function closeFun(){
+        document.getElementById("apltConfElisiteID").style.display="none";
+        document.getElementById('loadingImg15').style.display = "none";
+        
+    }
+    
+    function removeAndAddPrivateLineOnHicapFlexSelectionClone(){
+        setTimeout(function(){
+            if( productName == 'AT&T Managed Internet Service' ){
+                var HiCapOnPageLoad = 'container'+'1'; 
+            }
+            
+            var currElementTr1 = document.getElementById(HiCapOnPageLoad);
+            var porttypecheck ="";
+            var innerTds1 = currElementTr1.getElementsByTagName("td");
+            var selectElem1 = innerTds1[1].getElementsByTagName("input");
+            
+            if( selectElem1[0].checked){
+                document.getElementById("hdnHiCapFlexFlag").value='true';
+                var trElemId = 'container'+'2'; 
+                var currElementTr = document.getElementById(trElemId);
+                if( typeof currElementTr != 'undefined' ){
+                    var innerTds = currElementTr.getElementsByTagName("td");
+                    var selectElem = innerTds[1].getElementsByTagName("select");
+                    if( typeof selectElem[0] != 'undefined' ){
+                        selectElem[0].remove(getIndexOfTheOption(selectElem[0], 'Private Line'));
+                        hicap = true;
+                        porttypecheck = selectElem[0].value;
+                    }   
+                }
+                
+                if(porttypecheck == 'Switched Ethernet'){
+                    setTimeout(function(){
+                        var trElemId2 = 'container'+parseInt(portTypeIndex+1); 
+                        var currElementTr2 = document.getElementById(trElemId2);
+                        if( typeof currElementTr2 != 'undefined' ){
+                            var innerTds2 = currElementTr2.getElementsByTagName("td");
+                            var selectElem2 = innerTds2[1].getElementsByTagName("select");
+                            if( typeof selectElem2[0] != 'undefined' ){
+                                var fivembs = getIndexOfTheOption(selectElem2[0], '5 Mbps');
+                                if(typeof fivembs != -1 ){
+                                    selectElem2[0].remove(fivembs);
+                                }
+                                var tenmbs = getIndexOfTheOption(selectElem2[0], '10 Mbps');
+                                selectElem2[0].remove(tenmbs);
+                                validateFormAndEnableApply(null,'on');
+                            }
+                        }  
+                    }, 250); 
+                }
+            }
+            changeinterfaceonapplyandget();
+        }, 600);
+    }
+    
+    //returns the value of the slect list element 
+    //Parmater should be the index or the container counter of the Field
+    function getFieldReference(elemIndex){
+        var trElemId = 'container'+parseInt(elemIndex); 
+        var currElementTr = document.getElementById(trElemId);
+        if( typeof currElementTr != 'undefined' ){
+            var innerTds = currElementTr.getElementsByTagName("td");
+            var selectElem = innerTds[1].getElementsByTagName("input");
+            if( typeof selectElem[0] != 'undefined' ){
+                return selectElem[0];
+            }
+        }
+    }
+    
+    function hidePricingProcessIconOnIgloo(){
+         var selectedSiteID = '{!selectedSiteId}';
+         hidePricingProcessIcon(selectedSiteID);
+    }
+    </script>
+</apex:page>

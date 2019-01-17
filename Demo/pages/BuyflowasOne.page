@@ -1,0 +1,265 @@
+<apex:page controller="OnePageBuyFlowController" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" title="BuyFlow" cache="false">
+ <apex:include pageName="PortalDesignHeader_UIUX"/>
+    
+<style>
+.dataTables_paginate a.disabled {
+    cursor: no-drop;
+    color: #cfcfcf;
+    pointer-events: auto;
+}
+.dataTables_paginate> a.disabled {
+    background-color: #fff;
+    color:#cfcfcf;
+    padding: 5px 10px;
+    font-family: omnes_att_iimedium;
+    line-height: 1.125em;
+    margin-left: 0;
+    border: 1px solid #ccc;
+}
+.dataTables_paginate a.disabled:hover {
+    text-decoration: none !important;
+    color: #cfcfcf!important;
+}
+.dataTables_paginate a {
+    padding: 5px 10px;
+    font-family: omnes_att_iimedium;
+    background: #fff; 
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+.dataTables_paginate .current{
+    background-color: #428bca;
+    border: 1px solid #428bca;
+    color:#fff;cursor: default;
+}
+.dataTables_paginate .current:hover{
+    color: #fff!important;
+}
+.collapsible {
+    background-color: #777;
+    cursor: pointer;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+}
+
+.active, .collapsible:hover {
+    background-color: #555;
+}
+
+.content {
+    padding: 0 18px;
+    display: none;
+    overflow: hidden;
+    background-color: #f1f1f1;
+}
+ div.dataTables_paginate{
+            margin-top: 24px !important;
+        }
+.manageNetServiceDT td.td_ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis !important;
+    max-width:0px;
+    }
+        .manageNetServiceDT th{
+            border-style: dashed !important;
+            border-right-style: solid !important;
+            border-color:#d1d1d1 !important;
+        }
+        
+</style>
+
+<apex:form id="ManageCustomerId">
+ <div class="row">
+    <div class="col-xs-12">
+        <div class="manage_users_table">
+            <div id="manage_users_table_wrapper" class="dataTables_wrapper" role="grid">
+                <table class="manageNetServiceDT table table-bordered table-striped table-hover hidden" style="white-space: nowrap;">
+                    <thead><tr></tr></thead>
+                            <tbody></tbody>
+                    </table>
+            </div>
+        </div>
+    </div>
+</div> 
+           
+</apex:form>
+  
+<script>
+
+
+        
+function prepareDataForDataTable() { 
+          console.log('inside table');
+            endCustFields =[
+                    {apiName:'Site_Friendly_Name__c',value:'Site Name'},
+                    {apiName:'Site_Address__c',value:'Address'},
+                    {apiName:'Product_Service_Type__c',value:'Service Type'},
+                    {apiName:'Port_Speed_Name__c',value:'Speed'},
+                    {apiName:'Action__c',value:'Action'},
+                    {apiName:'Id',value:''},
+                    {apiName:'Block_RDS_Details__c',value:''}
+            ];         
+            $.each( endCustFields, function( index, columnObj){
+                    if(columnObj.apiName == 'Product'){
+                        $(".manageNetServiceDT thead tr").append('<th style="width:120px;" class="header_'+columnObj.apiName+'ls">'+columnObj.value+'<div class="reorder_btn"></div></th>');
+                    }
+                    else{
+                        $(".manageNetServiceDT thead tr").append('<th class="header_'+columnObj.apiName+'ls">'+columnObj.value+'<div class="reorder_btn"></div></th>');
+                    }
+            });    
+           var quoteId = '{!$CurrentPage.parameters.id}';
+           console.log('quoteId'+quoteId);
+           OnePageBuyFlowController.fetchSPProductRecords(quoteId,function(result, event) {
+                if (event.type != 'exception' && result != null) {
+                    for(row = 0;row<result.length;row++){
+                        var currRow = '<tr>';
+                        $.each( endCustFields, function( index, columnObj){
+                            if(columnObj.apiName == 'Site_Friendly_Name__c' || columnObj.apiName == 'Site_Address__c' || columnObj.apiName == 'Product_Service_Type__c' || columnObj.apiName == 'Port_Speed_Name__c'){
+                                if(typeof result[row][columnObj.apiName] == 'undefined' || result[row][columnObj.apiName] == null){                                    
+                                    currRow += '<td class="td_ellipsis ' +columnObj.apiName+'ls">'+''+'</td>';
+                                }
+                                else if(columnObj.apiName == 'Site_Friendly_Name__c' && (result[row].Block_RDS_Details__c == false)){
+                                    currRow += '<td class="'+columnObj.apiName+'ls>" title="'+result[row][columnObj.apiName]+'"><a href="/RDSDetails?id='+result[row].Id+'">'+result[row][columnObj.apiName]+'</a></td>';
+                                }
+                                else{
+                                    currRow += '<td class="td_ellipsis '+columnObj.apiName+'ls" title="'+result[row][columnObj.apiName]+'">'+result[row][columnObj.apiName]+'</td>';
+                                }
+                                
+                            }else{
+                               currRow += '<td class="td_ellipsis '+columnObj.apiName+'ls" title="'+result[row][columnObj.apiName]+'">'+result[row][columnObj.apiName]+'</td>';
+                            }
+                        });  
+                        currRow += '</tr>';
+                       $(".manageNetServiceDT tbody").append(currRow);
+                       prepareActionDropdown(result[row],row);
+                    }
+                  
+                } else {
+                }  
+                invokeDataTable(); 
+            }); 
+           
+        }
+        var dataTableComp;
+        function invokeDataTable(){
+         
+            $('.manageNetServiceDT').dataTable().fnDestroy();
+            $('.manageNetServiceDT').removeClass('hidden');
+            dataTableComp = $('.manageNetServiceDT').dataTable({
+               'language': {
+                    'search': '_INPUT_',
+                    'searchPlaceholder': 'Search by any displayed criteria',
+                    'info': 'Showing _START_ - _END_ of _TOTAL_',
+                    'zeroRecords': 'No data available in table.'
+                    
+                },
+                "pagingType": "full_numbers",
+                "dom": '<"top"f>rt<"bottom"il><"pull-right"p><"clear">',
+                "aoColumnDefs": [
+                    { "bVisible": true, "bSearchable": true, "aTargets": [0,1,2,3] },
+                    { "bVisible": true, "bSearchable": false, "aTargets": [4] },
+                    { "bVisible": false, "bSearchable": false, "aTargets": [ '_all' ] },
+                    { "width": "15%", "targets": 2 },
+                    { "width": "20%", "targets": 3 },
+                    { "width": "15%", "targets": 0 },
+                    { "width": "15%", "targets": 4 }
+                ],
+                "aaSorting": [[0,'asc']],
+                "bLengthChange": false,
+                "iDisplayLength":8,
+                "searchHighlight": true             
+            });
+            $("#DataTables_Table_0_filter input").before('<span class="search_button"></span>' );
+            $('[data-toggle ="tooltip"]').tooltip();
+            $("#loading").parent().hide();
+            
+        }
+        
+        $.extend({
+            highlight: function (node, re, nodeName, className) {
+                console.log('classs  '+nodeName);
+                    if (node.nodeType === 3) {
+                    var match = node.data.match(re);
+                    if (match) {
+                        var highlight = document.createElement(nodeName || 'span');
+                        highlight.className = className || 'highlight';
+                        var wordNode = node.splitText(match.index);
+                        wordNode.splitText(match[0].length);
+                        var wordClone = wordNode.cloneNode(true);
+                        highlight.appendChild(wordClone);
+                        wordNode.parentNode.replaceChild(highlight, wordNode);
+                        return 1; 
+                    }
+                } else if ((node.nodeType === 1 && node.childNodes) && 
+                !/(script|style)/i.test(node.tagName) && 
+                !(node.tagName === nodeName.toUpperCase() && node.className === className)) { 
+                    for (var i = 0; i < node.childNodes.length; i++) {
+                        i += $.highlight(node.childNodes[i], re, nodeName, className);
+                    }
+                }
+                return 0;
+            }
+        });
+
+        $.fn.unhighlight = function (options) {
+            var settings = { className: 'highlight', element: 'span' };
+            $.extend(settings, options);
+
+            return this.find(settings.element + "." + settings.className).each(function () {
+                var parent = this.parentNode;
+                parent.replaceChild(this.firstChild, this);
+                parent.normalize();
+            }).end();
+        };
+
+        $.fn.highlight = function (words, options) {
+            var settings = { className: 'highlight', element: 'span', caseSensitive: false, wordsOnly: false };
+            $.extend(settings, options);
+
+            if (words.constructor === String) {
+                words = [words];
+            }
+            words = $.grep(words, function(word, i){
+                return word != '';
+            });
+            words = $.map(words, function(word, i) {
+                return word.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+            });
+            if (words.length == 0) { return this; };
+
+            var flag = settings.caseSensitive ? "" : "i";
+            var pattern = "(" + words.join("|") + ")";
+            if (settings.wordsOnly) {
+                pattern = "\\b" + pattern + "\\b";
+            }
+            var re = new RegExp(pattern, flag);
+
+            return this.each(function () {
+                $.highlight(this, re, settings.element, settings.className);
+            });
+        };
+        
+         function prepareActionDropdown(rowObj,row){
+            var dropdownContent = $(".actionLink").clone().removeClass('actionLink');
+            var actionDropdownId = "actionLink"+row;
+            dropdownContent.attr("id",actionDropdownId);
+            $('.Action__cls').eq(row).html(dropdownContent);    
+            if(rowObj.Block_RDS_Details__c){   
+                $("#"+actionDropdownId+' .viewRDSDetailsCls').addClass('disabled');
+            } 
+            $('.viewRDSDetailsCls').eq(row).attr("href",$('.viewRDSDetailsCls').eq(row).attr("href")+"?Id="+rowObj.Id);
+            $(".Action__cls").removeClass("td_ellipsis").removeAttr("title");                       
+            
+        }
+        $(document).ready(function()
+        {
+             prepareDataForDataTable();  
+            });
+
+</script>
+
+</apex:page>

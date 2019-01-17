@@ -1,0 +1,97 @@
+<!----------------------------------------------------------------------------------------------------------------------------------
+@Author : Accenture IDC
+@CreatedDate : 25th March 2015
+@Description : Visualforce page for Inflight Cancel
+------------------------------------------------------------------------------------------------------------------------------------>
+
+<apex:page standardController="Deal_Hash__c" extensions="CancelInflight_Controller" showHeader="true" sidebar="true" tabStyle="Opportunity" standardStylesheets="true"  docType="html-5.0">
+    
+    <script type="text/javascript">
+        function selectAllCheckboxes(obj,receivedInputID){
+            var inputCheckBox = document.getElementsByTagName("input");
+            for(var i=0; i<inputCheckBox.length; i++){
+                if(inputCheckBox[i].id.indexOf(receivedInputID)!=-1){
+                    inputCheckBox[i].checked = obj.checked;
+                }
+            }
+        }
+    </script>
+    
+    
+    <html>
+        <body>
+        <style>
+            .processingDiv{
+                width:190px;
+                height:52px;
+                background-color: rgba (255, 0, 0, 0.4);
+                position:fixed;
+                opacity:0.5;
+                top:50%;
+                left:50%;
+                margin-top:-150px; /* negative half the size of height */
+                margin-left:-150px; /* negative half the size of width */
+            }
+            
+            .opportunityTab .tertiaryPalette, .individualPalette .opportunityBlock .tertiaryPalette, .layoutEdit .individualPalette .opportunityBlock .tertiaryPalette {
+                background-color: #1797C0;
+                border-color: #1797C0;
+            }
+            .opportunityTab .secondaryPalette, .individualPalette .opportunityBlock .secondaryPalette {
+                background-color: #1797C0;
+                border-color: #1797C0;
+            }  
+           
+        </style> 
+        
+   <apex:form id="myForm">
+    <apex:pageBlock >
+    
+    <apex:pageBlockButtons location="both">
+            <apex:commandButton id="Submit" action="{!selectedPremises}" value="Submit" onclick="return confirm('Are you sure you want to proceed?');"/>
+            <apex:commandButton id="Cancel" value="Cancel" action="{!returnToOrigination}"/>
+            
+    </apex:pageBlockButtons>
+    
+     <apex:pageBlockSection collapsible="false" title="Deal Hash Basic Information">
+                    <apex:outputField value="{!Deal_Hash__c.Customer_Business_Name__c}"/>
+                    <apex:outputField value="{!Deal_Hash__c.Name}"/>
+                    <apex:outputField value="{!Deal_Hash__c.GRID_Deal_Hash_Number__c}"/>
+                    <apex:outputField value="{!Deal_Hash__c.Invoice_Account_Number__c}"/>
+                    <apex:outputField value="{!Deal_Hash__c.End_Customer_Name__c}"/>
+                    
+        </apex:pageBlockSection> 
+            <br/>
+            <apex:pageBlockTable value="{!premiseList}" var="p">
+               <apex:column >
+                    <apex:facet name="header">
+                            <apex:inputCheckbox onclick="selectAllCheckboxes(this,'inputId')"/>
+                    </apex:facet>
+                    <apex:inputCheckbox value="{!p.selectedPremise}" id="inputId"/>
+               </apex:column>
+            <apex:column headerValue="Premise Name/Site ID">
+                    {!p.premList.Name} /
+                    {!p.premList.Premise_Number__c}
+            </apex:column>
+            <apex:column value="{!p.premList.Oppty_Order_Number__c}"/> 
+            <apex:column value="{!p.premList.GRID_Premise_ID__c}" />
+             <apex:column headerValue="Address">
+                    {!p.premList.Premise_Street_Number__c},
+                    {!p.premList.Premise_Street_Name__c},
+                    {!p.premList.Premise_Street_Direction__c},
+                    {!p.premList.Premise_Street_Type__c},
+                    {!p.premList.Premise_City__c},
+                    {!p.premList.Premise_State__c},
+                    {!p.premList.Premise_Zipcode__c},
+            </apex:column> 
+            <apex:column headerValue="Status">
+                {!p.premList.Site_Status__c}
+            </apex:column>
+          </apex:pageBlockTable>  
+               
+            <apex:pageMessages />   
+</apex:pageBlock>  
+</apex:form>
+</body>
+</html> 
+</apex:page>

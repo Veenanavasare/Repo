@@ -1,0 +1,20 @@
+<apex:page standardController="Opportunity" sidebar="false" cache="false" showChat="false" showHeader="false" >
+<apex:includeScript value="{!URLFOR($Resource.jQueryForPopup, 'jQuery/jquery-1.8.2.min.js')}"/>
+<script>          
+    window.top.document.onreadystatechange = function(e){
+        if (document.readyState === 'complete')
+            redirectToChatter();
+     };
+     
+    function redirectToChatter(){
+       var arrTags=window.top.document.getElementsByTagName('html');
+       window.top.document.getElementById('bodyTable').style.backgroundColor='#000';   
+       for( var i=0; i<arrTags.length; i++)
+           arrTags[i].style.display='none';
+        if( window.location.href.toString().toLowerCase().indexOf("attpartnerexchange") != -1){
+            //window.open('/basic_manage_template', 'window','toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=600,height=600');
+            window.top.location.href = '/basic_manage_template';
+        }            
+    }
+</script>   
+</apex:page>

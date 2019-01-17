@@ -1,0 +1,43 @@
+<apex:page Controller="Custom_Add_Product_COntroller"  >
+  <apex:form >
+   <apex:pageBlock >
+   
+    <apex:pageBlockButtons >
+      <apex:commandButton action="{!save}" value="Save"/>
+     </apex:pageBlockButtons>
+     <apex:pageBlockSection title="Product Details" id="Page">
+      <apex:selectList value="{!ProductName }" label="Product Name" size="1">
+        <apex:selectOption itemValue="--None--" />
+        <apex:selectOption itemValue="AVPN" />
+        <apex:selectOption itemValue="MIS" />
+        <apex:actionSupport event="onchange" action="{!Parse}"  reRender="termlength"/>
+       </apex:selectList>
+       
+        <apex:selectList value="{!Term}" label="Term" size="1" id="termlength">
+        <apex:selectOption itemValue="--Select--" />
+        <apex:selectOption itemValue="12 months" />
+        <apex:selectOption itemValue="24 months" />
+        <apex:actionSupport event="onchange" action="{!Parse}" reRender="Tier" />
+       </apex:selectList>
+       
+       <apex:selectList value="{!Tier}" label="Tier" size="1" id="Tier">
+        <apex:selectOption itemValue="--Select--" />
+        <apex:selectOption itemValue="Platinum Gold" />
+        <apex:selectOption itemValue="Platinum Elite" />
+        <apex:actionSupport event="onchange" action="{!Parse}"  reRender="Page"/>
+       </apex:selectList>
+       
+       
+       <apex:inputField value="{!cusPrd.Access_Type__c}"/>
+       <apex:inputField value="{!cusPrd.Access_Speed__c}"/>
+       <apex:inputField value="{!cusPrd.Port_Spee__c}"/>
+        <apex:inputField value="{!cusPrd.Price__c}"/>
+        <apex:inputField value="{!cusPrd.Product_Discount__c}"/>
+        <apex:inputField value="{!cusPrd.ATT_Customer_Site__c }"/>
+      <!-- <apex:actionSupport event="onchange" action="{!Parse}"  reRender="Page"/> -->
+      
+      
+     </apex:pageBlockSection>
+   </apex:pageBlock>
+  </apex:form>
+</apex:page>

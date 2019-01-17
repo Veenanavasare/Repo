@@ -1,0 +1,58 @@
+<apex:page standardcontroller="Product_Pricing__c" extensions="SICreateNewPricing" tabStyle="Product_Pricing__c" showHeader="false" sidebar="false">
+<style>
+    .processingDiv{
+        width:190px;
+        height:52px;
+        background-color: rgba (255, 0, 0, 0.4);
+        position:fixed;
+        opacity:0.5;
+        top:50%;
+        left:50%;
+        margin-top:-150px; /* negative half the size of height */
+        margin-left:-150px; /* negative half the size of width */
+    }
+</style>
+<script>
+    function saveandCloseChildWindow(){
+        window.close(); 
+    }
+    window.onunload = function (e) {
+            window.opener.reloadParentWindow();
+    };   
+</script>
+     <apex:actionstatus id="loader">
+        <apex:facet name="start">
+            <div class="processingDiv" id="loaderContainer" > 
+                <img src="{!$Resource.pleasewait_loader}" />
+            </div>
+        </apex:facet> 
+     </apex:actionstatus>
+
+     <apex:form id="formPickList"> 
+         <apex:pageBlock >
+         <apex:pageBlockSection title="Please Select the RecordType">
+                <apex:selectList label="Record Type" id="Picklist1" value="{!str}" size="1" >
+                        <apex:selectOptions value="{!listRecordTypes}" rendered="true">
+                        </apex:selectOptions>
+                        <apex:actionSupport event="onchange" action="{!displayFieldset}" reRender="formContainer,pbsContainer" status="loader"/>
+                </apex:selectList>
+        </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+
+        <apex:form id="formContainer" >
+            <apex:pageBlock rendered="{!formON}">
+                <apex:pageBlockSection id="pbsContainer" Title="Input the Product Details" rendered="{!formON}">
+                    <apex:repeat value="{!fsMember}" var="f">
+                        <apex:inputField value="{!Product_Pricing__c[f]}" />
+                    </apex:repeat>
+                    
+                </apex:pageBlockSection>
+                <apex:pageBlockButtons location="both">
+                    <apex:commandButton id="saveProds" action="{!saveProductPricing}" value="Save" oncomplete="saveandCloseChildWindow();"/>
+                </apex:pageBlockButtons>
+             </apex:pageBlock>
+        </apex:form>
+        
+   
+</apex:page>

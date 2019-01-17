@@ -1,0 +1,138 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false" Controller="GetPdfsController">
+    <style>
+    /*@media only screen and (min-width: 1100px) and (max-width: 1600px) {
+        .fix-height {
+            height: 250px !important;
+        }
+    }*/
+    @media only screen and (min-width: 989px) and (max-width: 1300px) {
+        .clearSty {
+            clear: both;
+        }
+    }/*
+    @media only screen and (min-width: 1481px) and (max-width:1500px) {
+        .dispBlck {
+            padding-bottom: 15px;    
+        }
+    }
+    @media only screen and (min-width: 1332px) and (max-width:1342px) {
+        .dispRgtBlck {
+            padding-bottom: 15px;    
+        }
+    }*/
+    </style>
+    <div class="learnmore">
+        <!-- Intro -->
+        <h2>Learn more about AT&amp;T Dedicated Point-to-Point Ethernet Service</h2>
+        <p>Explore the benefits of private, high speed, point-to-point Ethernet Service.</p>
+    <div class="row">  <apex:image value="{!URLFOR($Resource.FlexWare_Images,'/DedicatedEthernet_Learnmore-graphic.png')}" styleClass="img-responsive pull-left learnMore-img" /> </div>
+        
+    
+         <div class="row mt-25">
+            <div class="col-lg-6 ">
+              <div class="unclickable text-center "> 
+                   <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/ico-ethernet-ptt.svg')}" /> 
+                    <h4>AT&amp;T Dedicated Ethernet (ADE)</h4>
+                   <p>A fiber-based, point-to-point <u><strong>intraLATA</strong></u>  solution that transmits data at speeds up to 100 G.</p>
+           </div>
+             </div>
+             <div class="col-lg-6">
+                <div class="unclickable text-center mb-40">
+                   <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/ico-ethernet-ptt.svg')}" /> 
+                    <h4>AT&amp;T Ethernet Private Line Service - Wide Area Network (EPLS-WAN) </h4>
+                    <p>A fiber-based, point-to-point <u><strong>interLATA</strong></u> solution that transmits data at speeds up to 100 G. </p>
+                </div>
+            </div>
+          </div> 
+  <hr class="blue_hr" />
+    <div class="spacingContent">
+    <!-- List of Steps Tabbed Content -->
+        <div class="row clearSty">
+            <ol>
+            <!-- Network Services Section -->
+                <div class="col-lg-6 mb-30 fix-height">
+                    <a href="javascript:void(0)" class="promo promo-link text-center bg-dk-blue dk-blue-arrow stepTab" id="step1">
+                    <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-sales-report.svg')}" /> 
+                    <h4>{!$Label.heading_sales}</h4>
+                    <p class="paraSet">Our sales resources will provide an overview of AT&amp;T Dedicated Point-to-Point Ethernet Services.</p>
+                    <span class="transp-bg learn-more">Learn More</span>
+                    </a>
+                </div>
+                <div class="col-lg-6 mb-30 ">
+                    <a href="javascript:void(0)" class="promo promo-link text-center bg-dk-gray dk-gray-arrow stepTab" id="step2">
+                    <apex:image styleClass="att-icon" value="{!URLFOR($Resource.ImgStatic,'/icon-head-settings.svg')}" /> 
+                    <h4>{!$Label.heading_technical}</h4>
+                    <p class="paraSet">Our technical information will provide a deeper look into AT&amp;T Dedicated Point-to-Point Ethernet Service.</p>
+                <span class="transp-bg learn-more">Learn More</span>
+                    </a>
+                </div>
+            </ol>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="">
+    <!-- Step 1 -->
+        <div class="stepCont step1-cont">
+            <h3 class="step-heading bg-dk-blue">{!$Label.heading_sales}
+                <p>Review our sales resources for an overview of product details.</p>
+            </h3>
+            <div class="step-body">
+            <!-- Document List: Sales Resources -->
+                <apex:outputPanel >   
+                    <apex:repeat value="{!DocMapDESales}" var="docMap"> 
+                        <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                            <div class="document-row">
+                                <div class="file-type file-{!docMap.type}"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                    <p><apex:outputText value="{!docMap.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>        
+                    </apex:repeat>    
+                </apex:outputPanel> 
+            </div>
+        </div>
+        <!-- Step 2 -->
+        <div class="stepCont step2-cont">
+            <h3 class="step-heading bg-dk-gray">{!$Label.heading_technical}
+            <p>Take a deeper dive with our technical information.</p>
+            </h3>
+            <div class="step-body">  
+            <!-- Document List: Technical Information -->
+                <apex:outputPanel >   
+                    <apex:repeat value="{!DocMapDETechnical}" var="docMap"> 
+                        <apex:outputLink value="{!fileURL}+{!docMap.id}" target="_blank" styleClass="document-file">
+                            <div class="document-row">
+                                <div class="file-type file-{!docMap.type}"></div>
+                                <div class="details">
+                                    <h4><apex:outputText value="{!docMap.Name}"/></h4>
+                                    <p><apex:outputText value="{!docMap.description}"/></p>
+                                </div>
+                            </div>
+                        </apex:outputLink>
+                    </apex:repeat>
+                </apex:outputPanel>
+            </div>
+        </div>
+    </div>
+   
+    <!-- Footnotes -->        
+        <ol class="numbered footnotes mb-40">
+            <!-- <li>Gartner, Magic Quadrant for Network Services, Global, Neil Rickard, Bjarne Munch, 14 January 2016 Gartner does not endorse any vendor, product or service depicted in its research publications, and does not advise technology users to select only those vendors with the highest ratings or other designation. Gartner research publications consist of the opinions of Gartner’s research organization and should not be construed as statements of fact. Gartner disclaims all warranties, expressed or implied, with respect to this research, including any warranties of merchantability or fitness for a particular purpose.</li> -->
+       </ol> 
+           
+      </div>
+      <script type="text/javascript">
+        $(document).ready( function () {
+            $(".stepTab").click( function () {
+                var myId = $(this).attr("id");
+                $(".stepTab.active").removeClass("active");
+                $(this).addClass("active");
+                $(".stepCont").not("."+myId+"-cont").hide();
+                $("."+myId+"-cont").show();
+            });
+        });
+    </script>
+</apex:page>

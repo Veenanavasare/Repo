@@ -1,0 +1,492 @@
+<apex:page controller="RDSASEController" name="RDS Order Provisioning" cache="true" sidebar="false" showChat="false" showHeader="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" docType="html-5.0" id="ASERDSContentPage">
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:includeScript value="{!$Resource.atomjqueryjs}" />
+    <apex:includeScript value="{!URLFOR($Resource.bootstrapMin, 'js/bootstrap.min.js')}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalExchangeCSS}" />
+    <apex:stylesheet value="{!$Resource.PortalDesignLayoutCSS}" />
+    <apex:stylesheet value="{!$Resource.PortalDesignCSS}" />
+    <apex:stylesheet value="{!$Resource.ATTPortalBuyflowCss}" />
+    <apex:stylesheet value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.css')}" />
+    <apex:includeScript value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.js')}" />
+    <apex:includeScript value="{!$Resource.chartJSMin}" />
+    <apex:includeScript value="{!URLFOR($Resource.RDSInputValidationsJS)}" />
+    <apex:includeScript value="{!URLFOR($Resource.RDS_AVPN_Page1JS)}" />
+
+    <style>
+        div#masterSlider {
+            height: 2.6em;
+        }
+        div#masterSlider>.ui-widget-header {
+            background: #0171BB !important;
+        }
+        div#masterSlider>span {
+            display: none !important
+        }
+        .ui-widget-header {
+            background: #AACE00 !important;
+        }
+        .ui-slider {
+            height: 1.6em;
+        }
+        .ui-slider .ui-slider-handle {
+            height: 2.2em;
+            width: 0.75em;
+        }
+        .ui-slider-range {
+            background: #99C800;
+        }
+        .sliderLabelsProgress {
+            position: absolute;
+            top: 40px;
+            left: 40px;
+            z-index: 999999;
+            color: White;
+        }
+        .sliderLabelsMax {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            z-index: 999999;
+            color: grey;
+        }
+        .breather {
+            padding: 10px 0 !important;
+        }
+        .requiredInput, .requiredInputField
+        .requiredInput:focus, .requiredInput:focus {
+            border-left-width: medium !important;
+            border-left-color: #FF0000 !important;
+            border-left: 2px solid #ddd !important;
+        }
+        .validataionSelector {
+            height: 80px;
+        }
+        .ui-widget {
+            font-family: inherit !important;
+            font-size: inherit !important;
+        }
+        .ui-widget-header {
+            border: 1px solid cornflowerblue !important;
+            background: cornflowerblue !important;
+            color: Black;
+            font-weight: bold;
+        }
+        
+        /* Error message for the jQuery Calendar control */
+        .inputRequestedServiceActDate_error
+        {
+            margin-left: 15px;
+        }
+        /*Calendar related styles - Start*/
+        span.calendarIcon, span.calendarToolTip {
+            height: 100% !important;
+            font-size: 20px;
+            line-height: 1.33;
+            margin-left: 10px;
+            cursor: pointer;
+        }
+        .ui-widget {
+            font-family: inherit !important;
+            font-size: inherit !important;
+        }
+        .ui-widget-header {
+            border: 1px solid cornflowerblue !important;
+            background: cornflowerblue !important;
+            color: Black;
+            font-weight: bold;
+        }
+        /*Calendar related styles - End*/
+    </style>
+    <div class="content_container row">
+        <div id="manage_content" class="page">
+            <apex:form id="aserdscontent">
+                <apex:pageMessages escape="true"></apex:pageMessages>
+                <div>
+                    <hr class="dashedHr" />
+                    <div>
+                        <section class="row">
+                            <div>
+                                <h3 class="f-s-large">Local Contact</h3>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-4 validataionSelector">
+                                    <apex:outputLabel value="First Name" />
+                                    <apex:inputText styleClass="form-control inputPriFirstName requiredInputField" value="{!sitecontactfirstname}" required="true" id="FirstName" label="First Name" />
+                                </div>
+                                <div class="form-group col-xs-3 validataionSelector">
+                                    <apex:outputLabel value="Middle Name" />
+                                    <apex:inputText styleClass="form-control inputPriMiddleName requiredInputField" required="true" value="{!sitecontactmiddilename}" id="MiddleName" label="Middle Name" />
+                                </div>
+                                <div class="form-group col-md-4 validataionSelector">
+                                    <apex:outputLabel value="Last Name" />
+                                    <apex:inputText styleClass="form-control inputPriLastName requiredInputField" value="{!sitecontactlastname}" required="true" label="Last Name" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-4 validataionSelector">
+                                    <apex:outputLabel value="Phone Number" />
+                                    <apex:input styleClass="form-control inputPriPhone requiredInputField" value="{!sitecontactphonenumber}" required="true" label="Phone Number" type="tel" />
+                                </div>
+                                <div class="form-group col-md-4 validataionSelector">
+                                    <apex:outputLabel value="Email Address" />
+                                    <apex:inputtext styleClass="form-control inputPriEmail requiredInputField" value="{!sitecontactemailaddress}" required="true" label="Email Address" title="Please enter an valid email address" />
+                                </div>
+                            </div>
+                        </section>
+                        <section class="row">
+                            <div>
+                                <h3 class="f-s-large">Technical Contact</h3>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-4 validataionSelector">
+                                    <apex:outputLabel value="First Name" />
+                                    <apex:inputText styleClass="form-control inputAltFirstName requiredInputField" value="{!sitealtcontactfirstname}" required="true" label="First Name" />
+                                </div>
+                                <div class="form-group col-xs-3 validataionSelector">
+                                    <apex:outputLabel value="Middle Name" />
+                                    <apex:inputText styleClass="form-control inputAltMiddleName requiredInputField" required="true" value="{!sitealtcontactmiddlename}" label="Middle Name" />
+                                </div>
+                                <div class="form-group col-md-4 validataionSelector">
+                                    <apex:outputLabel value="Last Name" />
+                                    <apex:inputText styleClass="form-control inputAltLastName requiredInputField" value="{!sitealtcontactlastname}" required="true" label="Last Name" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-md-4 validataionSelector">
+                                    <apex:outputLabel value="Phone Number" />
+                                    <apex:inputText styleClass="form-control inputAltPhone requiredInputField" value="{!sitealtcontactphonenumber}" required="true" label="Phone Number" />
+                                </div>
+                                <div class="form-group col-md-4 validataionSelector">
+                                    <apex:outputLabel value="Email Address" />
+                                    <apex:inputText styleClass="form-control inputAltEmail requiredInputField" value="{!sitealtcontactemailaddress}" required="true" label="Email Address" />
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                    <hr class="dashedHr" />
+                    <section class="row">
+                        <div>
+                            <h3 class="f-s-larger">Equipment Specification</h3>
+                        </div>
+                        <div>
+                            <label><span class="f-s-large breather">NTE </span> - Network Termination Equipment,</label>
+                            <label><span class="f-s-large">CPE </span> - Customer Premise Equipment</label>
+                            <section class="m-t-10">
+                                <div class="row">
+                                    <div class="form-group col-xs-4">
+                                        <div>
+                                            <apex:outputLabel value="Device Type (CPE)" />
+                                        </div>
+                                        <apex:selectList value="{!SelectedDeviceType}" size="1" styleClass="form-control requiredInputField inputDeviceTypeCPE">
+                                            <apex:selectOption itemLabel="Select" itemValue="" />
+                                            <apex:selectOption itemLabel="Bridge" itemValue="Bridge" />
+                                            <apex:selectOption itemLabel="Switch" itemValue="Switch" />
+                                            <apex:selectOption itemLabel="Router" itemValue="Router" />
+                                        </apex:selectList>
+                                    </div>
+                                    <div class="form-group col-xs-4">
+                                        <div>
+                                            <apex:outputLabel value="Power Type (NTE)" />
+                                        </div>
+                                        <apex:selectList value="{!SelectedPowerType}" size="1" styleClass="form-control requiredInputField inputPowerTypeNTE">
+                                            <apex:selectOption itemLabel="Select" itemValue="" />
+                                            <apex:selectOption itemLabel="AC" itemValue="AC" />
+                                            <apex:selectOption itemLabel="Dual AC" itemValue="Dual AC" />
+                                            <apex:selectOption itemLabel="Single-DC" itemValue="Single-DC" />
+                                            <apex:selectOption itemLabel="Dual DC" itemValue="Dual DC" />
+                                        </apex:selectList>
+                                    </div>
+                                    <div class="form-group col-xs-4">
+                                        <div>
+                                            <apex:outputLabel value="Handoff (NTE)" />
+                                        </div>
+                                        <apex:selectList value="{!SelectedHandoff}" size="1" styleClass="form-control requiredInputField inputHandoffNTE">
+                                            <apex:selectOption itemLabel="Select" itemValue="" />
+                                            <apex:selectOption itemLabel="100 Base T" itemValue="100 Base T" />
+                                            <apex:selectOption itemLabel="1000 Base T" itemValue="1000 Base T" />
+                                            <apex:selectOption itemLabel="1000 Base SX" itemValue="1000 Base SX" />
+                                            <apex:selectOption itemLabel="10GBase SR" itemValue="10GBase SR" />
+                                            <apex:selectOption itemLabel="1000 Base LX/LH" itemValue="1000 Base LX/LH" />
+                                            <apex:selectOption itemLabel="10G Base LR" itemValue="10G Base LR" />
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form-group col-xs-4">
+                                        <div>
+                                            <apex:outputLabel value="Location (NTE)" />
+                                        </div>
+                                        <apex:selectList value="{!SelectedLocation}" size="1" styleClass="form-control requiredInputField inputLocationNTE">
+                                            <apex:selectOption itemLabel="Select" itemValue="" />
+                                            <apex:selectOption itemLabel="Inside" itemValue="Inside" />
+                                            <apex:selectOption itemLabel="Outside" itemValue="Outside" />
+                                        </apex:selectList>
+                                    </div>
+                                    <div class="form-group col-xs-4">
+                                        <div>
+                                            <apex:outputLabel value="Mounting Option (NTE)" />
+                                        </div>
+                                        <apex:selectList value="{!SelectedMountingOption}" size="1" styleClass="form-control requiredInputField inputMoutingOptionNTE">
+                                            <apex:selectOption itemLabel="Select" itemValue="" />
+                                            <apex:selectOption itemLabel="Wall Mount" itemValue="Wall Mount" />
+                                            <apex:selectOption itemLabel="Customer provided rack" itemValue="Customer provided rack" />
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </section>
+                    <hr class="dashedHr" />
+                    <section class="row">
+                        <div>
+                            <h3 class="f-s-larger">Installation Information</h3>
+                        </div>
+                        <div>
+                            <section class="m-t-10 row">
+                                <div class="col-xs-12 col-md-12">
+                                    <apex:outputLabel styleClass="f-s-large breather" value="Requested Service Activation Date" />&nbsp; &nbsp;
+                                </div>
+                                <div class="col-xs-5 m-b-20">
+                                    <!--<apex:input styleClass="requiredInput" value="{!RequestedServiceActivationDate}" required="true" label="Requested Service Activation Date" type="date" />-->
+                                    <div style="display:flex">
+                                        <div style="width:100%">
+                                            <apex:input styleClass="dPicker requiredInputField inputRequestedServiceActDate" html-readonly="readonly" value="{!RequestedServiceActivationDate}" label="Requested Service Activation Date" type="text" id="RequestedServiceActivationDate" />    
+                                        </div>
+                                        <span class="glyphicon glyphicon-calendar calendarIcon"></span>
+                                        <span class="tooltipTrigger glyphicon glyphicon-question-sign calendarToolTip" data-toggle="tooltip" data-placement="right" title="Select the date on which your customer requests their AT&T Switched Ethernet Service to be installed and activated."></span>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </section>
+                    <hr class="dashedHr" />
+                    <section class="row">
+                        <div>
+                            <h3 class="f-s-larger">EVC Details</h3>
+                        </div>
+                        <div>
+                            <section class="m-t-10 row">
+                                <div class="col-xs-12 col-md-12">
+                                    <apex:outputLabel styleClass="f-s-large breather" value="EVC Profile ID"></apex:outputLabel>
+                                </div>
+                                <div class="col-xs-4 m-b-20">
+                                    <apex:outputText label="EVC Profile ID" value="{!EVCProfileID}"/>
+                                </div>
+                            </section>
+                        </div>
+                    </section>
+                    <hr class="dashedHr" />
+                    <section class="row">
+                        <div>
+                            <h3 class="f-s-larger">Additional Information</h3>
+                        </div>
+                        <div>
+                            <section class="m-t-10">
+                                <div class="breather">
+                                    <apex:outputLabel value="Tell us anything else we need to know about this site (68 character limit)." />
+                                </div>
+                                <div>
+                                    <apex:inputTextarea value="{!siteadditionalinfo}" html-maxlength="68" rows="5" cols="90" styleClass="w100p notesTArea requiredInputField inputAdditionalInfo" />
+                                </div>
+                            </section>
+                        </div>
+                    </section>
+                    <hr class="dividerHr" />
+                    <apex:outputPanel id="submitpanel">
+                        <div class="form-group m-t-20">
+                            <div class="pull-right m-r-10">
+                                <apex:commandButton styleClass="btn btn-default" value="Save and Close" action="{!SaveAndClose}" />
+                                <apex:commandButton styleClass="btn btn-primary btnSave" value="{!SubmitButtonLabel}" onclick="SubmitRDS();return false;"/>                                 
+                                <apex:actionFunction name="SubmitRDS" action="{!SubmitRDS}" reRender="pagecontainer" status="loading"/>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </div>
+                <apex:actionFunction name="populateBestAvailDateASE" action="{!populateBestAvailDateASE}"  Id="AseRdsFun" reRender="manage_content" immediate="true">
+                    <apex:param name="BestAvailDateASE" value="" assignTo="{!BestAvailDateASE}"/>
+                </apex:actionFunction> 
+            </apex:form>
+        </div>
+    </div>
+    <script type="text/javascript">
+        var j$ = jQuery.noConflict();
+        var region = '{!VASARegion}';
+        var maxDateValue = 0;
+    //var attHolidays = [[5, 25, 2015, 'Memorial Day'], [7, 4, 2015, 'Independence Day'], [9, 7, 2015, 'Labor day'], [11, 26, 2015, 'Thanks Giving'], [12, 25, 2015, 'Christmas'], [1, 1, 2016, 'New year']];
+        var attHolidays = {!Holidays};
+        var attHolidaysLength = attHolidays.length;
+
+        function holidays(date) {
+            for (i = 0; i < attHolidaysLength; i++) {
+                if (date.getMonth() == attHolidays[i][0] - 1 && date.getDate() == attHolidays[i][1] && date.getFullYear() == attHolidays[i][2]) {
+                    return [false, '', attHolidays[i][3]];
+                }
+            }
+            return [true, ''];
+        }
+
+        function isHoliday(date) {
+            for (i = 0; i < attHolidaysLength; i++) {
+                if (date.getMonth() == attHolidays[i][0] - 1 && date.getDate() == attHolidays[i][1] && date.getFullYear() == attHolidays[i][2]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        function noWeekendsOrHolidays(date) {
+            var noWeekend = j$.datepicker.noWeekends(date);
+            if (noWeekend[0]) {
+                return holidays(date);
+            } else {
+                return noWeekend;
+            }
+        }
+        if (region === 'In Region')
+            maxDateValue = 19;
+        else
+            maxDateValue = 24;
+        
+        function findMaxDate() {
+            var today = new Date();
+            var weekends = [0, 6];
+            var maximumDays = maxDateValue;
+            var i = 0;
+            while (i < maximumDays) {
+                today.setDate(today.getDate() + 1);
+                var todayWeekday = today.getDay();
+                if (jQuery.inArray(todayWeekday, weekends) < 0 && isHoliday(today))
+                    i++;
+            }
+            return today;
+        }
+
+         // Function to enable trimLeft in IE
+        String.prototype.trimLeft = function () {
+            return this.replace(/^\s+/, "");
+        }
+
+        j$(".dPicker").datepicker({
+            numberOfMonths: 2,
+            beforeShowDay: noWeekendsOrHolidays,
+            minDate: findMaxDate(),
+            maxDate: "+1y",
+            onClose: function (selectedDate) {
+                console.log(selectedDate);
+                // Validate the date once the date picker function is closed
+                validateEmptyFields("inputRequestedServiceActDate", "Select a Service Activation Date", "Select a Service Activation Date", true);
+
+            }
+        });
+         j$(document).ready(function(){
+                               var BDD = findMaxDate();
+        var BDDStr = BDD.getMonth()+1+'/'+BDD.getDate()+'/'+BDD.getFullYear();
+        console.log('BDDStr: '+BDDStr);
+        populateBestAvailDateASE(String(BDDStr));
+                               });    
+    
+         onload = function () {
+            // ASE Specific Validation function initialization
+            initializeMiddleNameFields(); // Initialize Middle Name Fields
+            initializeEquipmentSpecValidation(); // Equipment Specification Section
+            initializeAdditionalInfo(); // Additional Information Section
+            // Call to validate
+            //validateRequiredFields();
+            // Function to display the calendar on click of the Calendar Icon
+            j$(".calendarIcon").on("click", function () {
+                j$('.dPicker').focus();
+            });
+            
+        }
+        
+        // ASE Specific validation
+        function initializeEquipmentSpecValidation () {
+            // Device Type DTE
+            j$(".inputDeviceTypeCPE").on({"change":function()
+            {
+                validateEmptyFields("inputDeviceTypeCPE", "Select a Device Type", "Select a Device Type", true);
+            },
+            "blur": function ()
+            {
+                validateEmptyFields("inputDeviceTypeCPE", "Select a Device Type", "Select a Device Type", true);
+            }
+            });
+
+            // Power Type (NTE)
+            j$(".inputPowerTypeNTE").on({"change":function()
+            {
+                validateEmptyFields("inputPowerTypeNTE", "Select a Power Type", "Select a Power Type", true);
+            },
+            "blur":function()
+            {
+                validateEmptyFields("inputPowerTypeNTE", "Select a Power Type", "Select a Power Type", true);
+            }
+            });
+
+            // Handoff (NTE)
+            j$(".inputHandoffNTE").on({"change":function()
+            {
+                validateEmptyFields("inputHandoffNTE", "Select a Handoff", "Select a Handoff", true);
+            },
+            "blur": function()
+            {
+                validateEmptyFields("inputHandoffNTE", "Select a Handoff", "Select a Handoff", true);
+            }
+            });
+            // Location (NTE)
+            j$(".inputLocationNTE").on({"change":function()
+            {
+                validateEmptyFields("inputLocationNTE", "Select a Location", "Select a Location", true);
+            },
+            "blur": function()
+            {
+                validateEmptyFields("inputLocationNTE", "Select a Location", "Select a Location", true);
+            }
+            });
+            // Mounting Option (NTE)
+            j$(".inputMoutingOptionNTE").on({"change":function()
+            {
+                validateEmptyFields("inputMoutingOptionNTE", "Select a Mounting Option", "Select a Mounting Option", true);
+            },
+            "blur": function()
+            {
+                validateEmptyFields("inputMoutingOptionNTE", "Select a Mounting Option", "Select a Mounting Option", true);
+            }
+            });
+        }
+
+        function initializeAdditionalInfo () {
+            // Additional Info
+            j$(".inputAdditionalInfo").on({
+                "keyup": function () {
+                    validateEmptyFields("inputAdditionalInfo", "Additional Information cannot begin with a space", "Please enter a value for Additional Information", true);
+                },
+                "blur": function () {
+                    validateEmptyFields("inputAdditionalInfo", "Additional Information cannot begin with a space", "Please enter a value for Additional Information", true);
+                }
+            });
+        }
+
+        function initializeMiddleNameFields () {
+            // Middle Name
+            j$(".inputPriMiddleName").on({
+                "keyup": function () {
+                    validateEmptyFields("inputPriMiddleName", "Middle Name cannot begin with a space", "Middle Name cannot be blank", true);
+                },
+                "blur": function () {
+                    validateEmptyFields("inputPriMiddleName", "Middle Name cannot begin with a space", "Middle Name cannot be blank", true);
+                }
+            });
+
+            // Middle Name
+            j$(".inputAltMiddleName").on({
+                "keyup": function () {
+                    validateEmptyFields("inputAltMiddleName", "Middle Name cannot begin with a space", "Middle Name cannot be blank", true);
+                },
+                "blur": function () {
+                    validateEmptyFields("inputAltMiddleName", "Middle Name cannot begin with a space", "Middle Name cannot be blank", true);
+                }
+            });
+        }
+    </script>
+</apex:page>

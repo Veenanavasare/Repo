@@ -1,0 +1,133 @@
+<apex:page standardController="Opportunity"  extensions="SI_CompetitivePricingController" id="pageId" >  
+    <script type="text/javascript" src="/resource/jQuery"></script>
+    <script type="text/javascript">
+       var j$ = jQuery.noConflict();
+       j$(document).ready(function(){
+           //j$("[id*=discountPer]").attr("disabled","disabled");
+           j$("input:radio").click(function(){
+                var radioValue = j$(this).attr("value");  
+                if(radioValue=='Fixed Price'){
+                    var radioID = j$(this).attr("id");
+                    var radioArray = radioID.split(":");
+                    var rowNumber = radioArray[4];
+                    //alert(rowNumber);  
+                    j$("#pageId\\:formId\\:pblockId\\:pBlockTableId\\:"+rowNumber+"\\:discountPer").val("").attr("disabled","disabled");
+                    j$("#pageId\\:formId\\:pblockId\\:pBlockTableId\\:"+rowNumber+"\\:flatVal").removeAttr("disabled");
+                }
+                if(radioValue=='Discount %'){
+                    var radioID = j$(this).attr("id");
+                    var radioArray = radioID.split(":");
+                    var rowNumber = radioArray[4];
+                    j$("#pageId\\:formId\\:pblockId\\:pBlockTableId\\:"+rowNumber+"\\:flatVal").val("").attr("disabled","disabled");
+                    j$("#pageId\\:formId\\:pblockId\\:pBlockTableId\\:"+rowNumber+"\\:discountPer").removeAttr("disabled");
+                }
+                if(radioValue=='Approve'){
+                    var radioID = j$(this).attr("id");
+                    var radioArray = radioID.split(":");
+                    var rowNumber = radioArray[4];
+                    j$("#pageId\\:formId\\:pblockId\\:pBlockTableId\\:"+rowNumber+"\\:moreInfo").val("").attr("disabled","disabled");
+                }
+                if(radioValue=='More Info' ||radioValue=='Reject'){
+                    var radioID = j$(this).attr("id");
+                    var radioArray = radioID.split(":");
+                    var rowNumber = radioArray[4];
+                    j$("#pageId\\:formId\\:pblockId\\:pBlockTableId\\:"+rowNumber+"\\:moreInfo").val("").attr("disabled","disabled");
+                    j$("#pageId\\:formId\\:pblockId\\:pBlockTableId\\:"+rowNumber+"\\:moreInfo").removeAttr("disabled");
+                }
+            });  
+        });
+    </script>     
+    <apex:sectionHeader title="Special Pricing Product Family"/>
+    <apex:form rendered="{!IF((isProduct==true),false,true)}">
+            <Center><apex:outputLabel >
+            <font size="4" color="Gray"><p> No Product has been Competitive Pricing Requested.</p></font>
+            </apex:outputLabel></Center>
+            <Center><apex:commandButton value="Back" action="{!cancel}"/></Center>
+        </apex:form>  
+    <apex:form id="formId" rendered="{!IF((isProduct==true),true,false)}">
+    <apex:pageMessages ></apex:pageMessages>
+        <apex:pageBlock id="pblockId">
+           <apex:pageBlockButtons location="top"> 
+                <apex:commandButton value="Calculate" action="{!calculateCheck}"/>
+                <apex:commandButton value="Submit" action="{!save2}"/>
+               <apex:commandButton value="Close" action="{!Cancel}" />    
+            </apex:pageBlockButtons> 
+            <apex:pageBlockTable value="{!caseUpdateList}" var="q" id="pBlockTableId">
+               <apex:column >
+                    <apex:facet name="header"> 
+                        <apex:inputCheckbox >
+                            <apex:actionSupport event="onclick" action="{!GetSelected}" onsubmit="checkAll(this)" rerender="Selected_PBS"/>
+                        </apex:inputCheckbox>
+                    </apex:facet>
+                        <apex:inputCheckbox value="{!q.selected}" id="checkedone">
+                            <apex:actionSupport event="onclick" action="{!GetSelected}" rerender="Selected_PBS"/>
+                        </apex:inputCheckbox>
+              </apex:column>
+
+                <apex:column >
+                    <apex:facet name="header">Product</apex:facet>
+                        {!q.acc.Record_Type_Name__c}
+               </apex:column>  
+                <apex:column >
+                    <apex:facet name="header">List Price</apex:facet>
+                        {!q.acc.List_Price__c}
+               </apex:column>  
+                 <apex:column rowspan="1">
+                    <apex:facet name="header">Discount Type</apex:facet>
+                       <apex:outputPanel styleClass="requiredInput" layout="block">
+                       <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                           <apex:selectRadio value="{!q.acc.Discount_Type__c}">
+                                <apex:selectOptions value="{!Discount}"/>
+                           </apex:selectRadio>
+                        </apex:outputPanel>
+               </apex:column>  
+                 <apex:column >
+                    <apex:facet name="header">Discount %</apex:facet>
+                    <apex:inputField value="{!q.acc.Discount_Percentage__c}" id="discountPer"/>    
+               </apex:column>  
+               <apex:column >
+                    <apex:facet name="header">Flat Value</apex:facet>
+                     <apex:inputField value="{!q.acc.Flat_Discount_Value__c}" id="flatVal"/>    
+               </apex:column>  
+                  <apex:column >
+                    <apex:facet name="header">Special Pricing Discount</apex:facet> 
+                    <apex:outPutField value="{!q.acc.Discount_Amount__c}" id="discountedPrice"/>    
+               </apex:column>  
+                 <apex:column >
+                    <apex:facet name="header">Special Pricing Discount %</apex:facet> 
+                    <apex:outPutField value="{!q.acc.Discounted_Percentage__c}" id="discountedPer"/>  
+               </apex:column>  
+                  <apex:column >
+                    <apex:facet name="header">Total Price</apex:facet>
+                    <apex:outPutField value="{!q.acc.Discounted_Price__c}" id="totalPrice"/>    
+               </apex:column>  
+                 <apex:column headerValue="Select Option" >
+                   <apex:outputPanel styleClass="requiredInput" layout="block">
+                   <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                   <apex:selectRadio value="{!q.acc.Request_Action__c}">
+                           <apex:selectOptions value="{!items}" />
+                       </apex:selectRadio>
+                    </apex:outputPanel>  
+               </apex:column> 
+                <apex:column >
+                    <apex:facet name="header">Reason for Rejections</apex:facet>
+                        <apex:inputField value="{!q.acc.Rejection_Reason__c}"/>
+               </apex:column>  
+                 <apex:column >
+                    <apex:facet name="header">Reject / More Info</apex:facet>
+                        <apex:inputTextArea value="{!q.acc.Reject_More_Info_Comment__c}" id="moreInfo" rows="1"/>
+               </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>       
+    </apex:form>
+    
+    <script>
+    function checkAll(cb){
+        var inputElem = document.getElementsByTagName("input");
+        for(var i=0; i<inputElem.length; i++){
+        if(inputElem[i].id.indexOf("checkedone")!=-1)
+        inputElem[i].checked = cb.checked;
+        }
+    }    
+</script>
+</apex:page>

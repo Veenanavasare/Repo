@@ -1,0 +1,722 @@
+<apex:page controller="MACD_ASE_NetworkSitesController" action="{!checkAndInitializeCart}" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" >
+<style> 
+<!-- GENERIC STYLE -->
+.m-t-10{margin-top:10px} 
+.m-t-20{margin-top:20px}
+.m-t-40{margin-top:40px}
+.m-b-10{margin-bottom:10px}
+.m-b-20{margin-bottom:20px}
+.m-b-40{margin-bottom:40px}
+.p-1-10{padding-right:10px}
+.p-r-10{padding-right:10px}
+
+.disableClass{pointer-events: none;background-color: #d1d1d1 !important;border-color: #d1d1d1;}
+.disableRadioClass{pointer-events: none;}
+.disableRadioClass label{color:#999}
+#rightPanel table input[type="radio"]{
+    top: 5px !important;
+}
+#rightPanel table label{
+    font-family: omnesatt_iiregular !important;
+    font-weight: normal;
+}
+
+<!-- POP UP -->
+#popUpbeforeCloseId{ width:100%; height:100%; opacity:.95; top:0; left:0; position:fixed; background-color:#313131; overflow:auto; z-index:1030 }
+#popupContact { position:absolute; left:41%; top:17%; margin-left:-202px; font-family:'Raleway',sans-serif }
+#popUpCloseDivId{ width:100%; height:100%; opacity:.95; top:0; left:0; position:fixed; background-color:#313131; overflow:auto; z-index:1030 }
+#submit { text-decoration:none; text-align:center; display:block; color:#fff; border:1px solid #000; background:#056FAB; padding:10px 0; font-size:16px; cursor:pointer; border-radius:5px; width: 175px !important; height: 40px; float:right; padding-right:5px; margin-top:-34px; }
+
+<!-- TOOL TIP -->
+.glyphicon{margin-left: 10px;width:30px;cursor: pointer;}
+.tooltipTrigger+.tooltip>.tooltip-inner { background-color: #fff; color: #000; font-family: omnes_att_iimedium; text-align: left; font-weight: normal; max-width: 260px; }
+.tooltipTrigger+.tooltip.top>.tooltip-arrow {border-top-color: #fff; border-top: 10px solid #fff;}
+.tooltipTrigger+.tooltip.top {width: 195px;}
+.tooltipTrigger+.tooltip.right>.tooltip-arrow {border-right-color: #fff; border-right: 10px solid #fff; border-width: 10px !important; left: -20px; top: 40% !important;  }
+.tooltip.right{ filter: drop-shadow(rgba(0, 0, 0, 0.298039) 0px 2px 10px); margin-left:0px; padding: 0px; }
+
+<!-- CURRENT PAGE STYLE -->
+.labelsTextClass {font-family: omnes_att_iimedium; font-size: 16px;font-weight: normal;color: #000000;text-align: left;margin-bottom:10px}
+.pricingStyle{white-space: nowrap;float:right;background-color: white;padding: 6px 12px;font-size: 15px;border: 1px solid #f3f3ec;border-radius: 4px;}
+td{background-color:#f7f7f7}
+.dataCell{border: 1px dashed #ddd;background-color: #fff;}
+#manage_content label{font-weight:normal;margin: 0px 0px 0px 5px}
+#manage_content {padding:40px 5px 0}
+.higlightSelectedSite{background-color: #F5F5F5 !important;} 
+.enableSiteLink {color: #4A6496;padding: 0 20px;font-weight: bold;} 
+.disableLink{color: #ddd;pointer-events: none;}
+.btn-primary[disabled]:hover{color: #fff;border-color: #d1d1d1;}
+.form-control[disabled]{cursor: auto;}
+[role="presentation"] td:nth-child(1){width:200px;}
+[role="presentation"] td:nth-child(2){width:160px;}
+.btn-default:hover{background-color: #fff;}
+.paginationArrow{background-color: #fff; border: 1px solid #ddd; color: #056fab;font-weight: bold;}
+#site-pagination tr{background-color: #f7f7f7}
+.InterfaceTypeASE__c select{height: 34px;padding: 6px 12px;}
+.siteListPgTableCls td{ border: 1px solid #d1d1d1; border-bottom-style: dashed; border-top-style: dashed; padding: 10px; font-family: omnes_light; font-size: 16px; font-weight:bold; line-height: 1.5em; max-width: 250px; white-space: nowrap; vertical-align: top; text-align:right; }
+.siteListPgTableCls th { padding: 10px; text-align: left; border: 1px solid #ddd; border-top: 0; font-family: omnes_att_iimedium; font-size: 16px; font-weight: normal; color:#000 }
+.siteListPgTableCls {border: 2px solid #ddd;}
+.siteListPgTableCls td:first-child{padding-left:30px;text-align:left;font-weight:normal;}
+.apexp{max-height: 790px;overflow-y: scroll;overflow:auto;}
+.btn-primary{background-color: #0568ad;}
+.standard-btn {height: 40px;width:175px;font-family: omnes_att_iimedium;}
+.standard-btn-cnt {width:150px;float:right;font-family: omnes_att_iimedium;}
+.prodLabel{font-family: omnes_att_iimedium}
+.styled-select-small{height: 35px;background-size: 35px 35px;width: 100%;}
+.disableSelect{filter:grayscale(100%) invert(20%);}
+.scrollToTop{ padding:10px; text-align:center; font-weight: bold; color: #444; text-decoration: none; position:fixed; top:80%; right:30px; display:none; .background: url(url('!$Resource.scrollTop') no-repeat center;) no-repeat 0px 20px; width:72px; height:106px;z-index:9999;  }    
+.scrollToTop:hover{
+    text-decoration:none;
+}
+.arrowImageDim {
+    height:65px !important;
+    width:65px !important;
+}        
+</style>
+
+<apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader" />
+    <div id="manage_content">
+        <h1 class="col-xs-12 m-t-20">View/Change Network Sites</h1>
+        <apex:outputPanel id="productContent">
+            <h3 class="col-xs-12" style="font-size: 32px;color: #666;">{!proposalData.End_Customer__r.Name}</h3> 
+            <div class="col-xs-12">
+                <div class="col-xs-3 p0">
+                    <div class="col-xs-4 p0 prodLabel"><apex:outputText value="Quote Name" /></div>
+                    <div class="col-xs-6"><apex:outputText value="{!proposalData.Apttus_Proposal__Proposal_Name__c}" /></div>
+                </div>
+                <div class="col-xs-3 p0">
+                    <div class="col-xs-3 p0 prodLabel"><apex:outputText value="Quote ID" /></div>
+                    <div class="col-xs-6"><apex:outputText value="{!proposalData.Name}"/></div>
+                </div>
+                <div class="col-xs-4 p0">
+                    <div class="col-xs-2 p0 prodLabel"><apex:outputText value="Product" /></div>
+                    <div class="col-xs-10"><apex:outputText value="{!proposalData.Product_New_Name__c}" /></div>
+                </div>
+                <div class="col-xs-2 p0" style="text-align: right;">
+                    <div class="col-xs-8 prodLabel p0"><apex:outputText value="Term" /></div>
+                    <div class="col-xs-4  p0"><apex:outputText value="{!proposalData.Apttus_Proposal__Payment_Term__c}" /></div>
+                </div>
+            </div>
+            <div class="col-xs-12"><hr class="blue_hr" /></div>
+            <div class="col-xs-12 m-t-20" >Filter Sites option enables you to filter the sites which are <b>Active</b> (for which change can be initiated) and <b>In Progress</b> (ASR Submitted), <b>Pending</b> (ASR submission pending) and <b>Modified</b> (Change initiated but not submitted). You cannot make changes to the sites which are in progress or pending.</div>
+            <div class="col-xs-12 m-t-40 p0">
+                <apex:form id="frmId">
+                    <div class="col-xs-6 p0">
+                        <div id="leftPanel" class="col-xs-12 p0">
+                            <div class="col-xs-12" style="color: orange; font-weight: bold;"><span id="filterCount"></span> of <span id="totalSites"></span> Total Sites</div>
+                            <div class="col-xs-6 m-t-10">
+                            <select id="filter" class="styled-select-small form-control">
+                                <option name="All" value="All">All Sites</option>
+                            </select>
+                            </div>
+                            <div class="col-xs-12 m-t-40">
+                                <apex:pageBlock id="pgBlockSitePanel"> 
+                                
+                                    <apex:pageBlockTable value="{!listCustomerSite}" var="currSite" id="siteListPgTable" styleClass="siteListPgTableCls">
+                                        <apex:column id="Column1" styleClass="{!IF(currSite.custSiteIns.Id==selectedSiteId,'higlightSelectedSite','')}" >
+                                            <div><apex:commandLink styleClass="site-name" value="{!currSite.custSiteIns.Site_Name__c}" onclick="displaySiteDetails(this,'{!currSite.custSiteIns.Id}')"  reRender="none"/></div>
+                                            <div><apex:outputText value="{!currSite.custSiteIns.Address_Line__c}," rendered="{!currSite.showSites}" /></div>
+                                            <apex:outputText value="{!currSite.custSiteIns.City__c}, {!currSite.custSiteIns.State__c} {!currSite.custSiteIns.Zip_Code__c}"/>
+                                            <span class="ASRStatus hidden">{!currSite.custSiteIns.ASE_MACD_Site_Status__c}</span>
+                                        </apex:column>
+                                        <apex:column id="Column2" headerValue="Monthly" styleClass="{!IF(currSite.custSiteIns.Id==selectedSiteId,'higlightSelectedSite','')}">
+                                            <div>
+                                                <apex:outputText value="${0,number,###,###,##0.00}">
+                                                    <apex:param value="{!currSite.attCustomerSiteTotal}" />
+                                                </apex:outputText>
+                                            </div>
+                                            <div id="process{!currSite.custSiteIns.Id}" class="hidden" style="text-align: center" >
+                                                <apex:image url="{!URLFOR($Resource.processIcon)}"/>
+                                            </div>
+                                        </apex:column>
+                                        <apex:column id="Column3" headerValue="One-time" styleClass="{!IF(currSite.custSiteIns.Id==selectedSiteId,'higlightSelectedSite','')}">
+                                            <apex:outputPanel rendered="{!currSite.attCustomerSiteTotal != null && currSite.attCustomerSiteTotal>0 && currSite.showSites}">
+                                                <div>
+                                                    <apex:outputText value="${0,number,###,###,##0.00}">
+                                                        <apex:param value="{!currSite.attCustomerSiteOneTime}" />
+                                                    </apex:outputText>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <div id="oneTimeProcess{!currSite.custSiteIns.Id}" class="hidden" style="text-align: center;">
+                                                <apex:image url="{!URLFOR($Resource.processIcon)}"/>
+                                            </div>
+                                        </apex:column>    
+                                    </apex:pageBlockTable>    
+                                </apex:pageBlock>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="rightPanel" class="col-xs-6">
+                        <apex:outputPanel id="rightOPPanel">
+                            <div><apex:outputText value="{!selectedSiteInfo.Site_Name__c}"/></div>
+                            <div><apex:outputText value="{!selectedSiteInfo.Address_Line__c}, {!selectedSiteInfo.City__c}, {!selectedSiteInfo.State__c} {!selectedSiteInfo.Zip_Code__c}" styleClass="m-t-40" /></div>
+                            <div class="col-xs-12 p0">
+                                <div class="col-xs-10 p0">
+                                    <h3>{!proposalData.Product_New_Name__c}</h3>
+                                </div>    
+                                <div class="col-xs-2 m-t-20 p0 text-right"><h5><Strong>Price</strong></h5></div>
+                            </div> 
+                            <div class="col-xs-12 p0">
+                                <div class="labelsTextClass col-xs-11 p0 m-t-20">{!dataWrap[0].label}
+                                <span class="tooltipTrigger glyphicon glyphicon-info-sign" data-toggle="tooltip" rel="tooltip" data-placement="right" title="{!$Label.ASE_CNUM_TT}"> </span>
+                                </div>
+                                
+                                <div class="col-xs-8 p0"><apex:inputField styleClass="disableClass styled-select-small disableSelect form-control" value="{!listAttrVal[dataWrap[0].attr]}"/></div>
+                                <div class="labelsTextClass col-xs-11 p0 m-t-20">{!dataWrap[1].label}
+                                <span class="tooltipTrigger glyphicon glyphicon-info-sign" data-toggle="tooltip" rel="tooltip" data-placement="right" title="{!$Label.ASE_SERVICE_TT}"> </span>
+                                <apex:inputField styleClass="serviceTypeInput hidden" value="{!listAttrVal[dataWrap[1].attr]}"/>
+                                </div>
+                                <div class="col-xs-12 p0 disableRadioClass m-b-10">
+                                    <apex:selectRadio value="{!dataWrap[1].paValue}" styleClass="col-xs-8">
+                                        <apex:selectOption itemLabel="ASE Basic" itemValue="ASE Basic" itemDisabled="true"/>
+                                        <apex:selectOption itemLabel="ASE Broadband" itemValue="ASE Broadband" itemDisabled="true"/>
+                                    </apex:selectRadio>
+                                </div>
+                           
+                                <apex:outputPanel rendered="{!IF(dataWrap[1].paValue=='ASE Basic',true,false)}">
+                                    <div class="labelsTextClass col-xs-11 p0" style="color:green">{!dataWrap[2].label} {!listAttrVal[dataWrap[2].attr]}</div>
+                                </apex:outputPanel>
+                                <div><apex:inputField styleClass="hidden" value="{!listAttrVal[dataWrap[2].attr]}"/></div>
+                           
+                                <div class="labelsTextClass col-xs-11 p0">{!dataWrap[4].label}</div>
+                                
+                                <div class="hidden"><apex:inputField value="{!listAttrVal[dataWrap[4].attr]}"/></div>
+                                <div  class="col-xs-12 p0">
+                                <div  class="col-xs-8 p0"><apex:inputText styleClass="styled-select-small disableSelect form-control" disabled="true" value="{!listAttrVal[dataWrap[4].attr]}"/></div>
+                                <div class="labelsTextClass col-xs-4 p0 ">
+                                    <apex:outputText value="${0, number, ###,###,##0.00}" styleClass="pricingStyle">
+                                        <apex:param value="{!dataWrap[4].lineItemObj.Apttus_Config2__NetPrice__c}"/>
+                                    </apex:outputText>
+                                </div>
+                                </div>
+                                <div class="labelsTextClass col-xs-11 p0 m-t-10">{!dataWrap[5].label}</div>
+                                <div class="col-xs-8 p0">
+                                <apex:outputPanel rendered="{!IF(dataWrap[1].paValue=='ASE Basic',true,false)}">
+                                   <div class="{!dataWrap[5].attr}  line-item-cls  styled-select-small p0 form-control {!IF(contains(listAttrVal.ASR_Status__c,'Active'),'','disableSelect disableClass')}">
+                                       <apex:inputField value="{!listAttrVal[dataWrap[5].attr]}"/>
+                                   </div>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!!IF(dataWrap[1].paValue=='ASE Basic',true,false)}"> 
+                                    <apex:selectList styleClass="{!IF(contains(listAttrVal.ASR_Status__c,'Active'),'','disableSelect disableClass')} styled-select-small form-control" value="{!listAttrVal[dataWrap[5].attr]}" size="1">
+                                        <apex:selectoptions value="{!InterFaceTypes}"></apex:selectoptions>
+                                    </apex:selectList>
+                                </apex:outputPanel> 
+                               </div>
+                               
+                                <div class="labelsTextClass col-xs-11 p0 m-t-10">{!dataWrap[6].label}</div>
+                                <div class="col-xs-12 p0">
+                                    <div class="line-item-cls col-xs-8 p0">
+                                        <apex:selectList styleClass="{!listAttrVal[dataWrap[6].attr]} styled-select-small form-control {!IF(contains(listAttrVal.ASR_Status__c,'Active'),'','disableSelect disableClass')}" value="{!listAttrVal[dataWrap[6].attr]}" size="1">
+                                            <apex:selectoptions value="{!cirPickListOptions}"></apex:selectoptions>
+                                        </apex:selectList>
+                                    </div>
+                                    <div class="labelsTextClass col-xs-4 p0">
+                                         <apex:outputText value="${0, number, ###,###,##0.00}" styleClass="pricingStyle">
+                                             <apex:param value="{!dataWrap[6].lineItemObj.Apttus_Config2__NetPrice__c}"/>
+                                         </apex:outputText>
+                                    </div>
+                                </div>
+                                <div class="labelsTextClass col-xs-11 p0 m-t-10">{!dataWrap[7].label}
+                                <span class="tooltipTrigger glyphicon glyphicon-info-sign" data-toggle="tooltip" rel="tooltip" data-placement="right" title="{!$Label.ASE_COSTYPE_TT}"> </span>
+                                </div>
+                                <apex:inputField styleClass="hidden" value="{!listAttrVal[dataWrap[7].attr]}"/>
+                                <div class="col-xs-12 p0 disableRadioClass">
+                                    <apex:selectRadio value="{!dataWrap[7].paValue}" styleClass="col-xs-8">
+                                        <apex:selectOption itemLabel="Basic" itemValue="Basic" itemDisabled="true"/>
+                                        <apex:selectOption itemLabel="PPCoS" itemValue="PPCoS" itemDisabled="true"/>
+                                    </apex:selectRadio>
+                                </div>
+                                
+                                <div class="labelsTextClass col-xs-11 p0 m-t-10">{!dataWrap[8].label}</div>
+                                <apex:outputPanel > 
+                                    <div class="line-item-cls col-xs-8 p0">
+                                        <apex:selectList styleClass="styled-select-small form-control {!IF(contains(listAttrVal.ASR_Status__c,'Active'),'','disableSelect disableClass')}" value="{!listAttrVal[dataWrap[8].attr]}" size="1">
+                                            <apex:selectoptions value="{!CosValues}"></apex:selectoptions>
+                                        </apex:selectList>
+                                    </div>
+                                </apex:outputPanel>
+                                
+                                <b class="labelTextClass col-xs-12 p0 m-t-10">Additional Configuration Details</b>  
+                                <div class="labelsTextClass col-xs-11 p0 m-t-10">{!dataWrap[9].label}</div>
+                                <div class="hidden"><apex:inputField value="{!listAttrVal[dataWrap[9].attr]}"/></div>
+                                <div class="col-xs-12 p0 disableRadioClass">
+                                    <apex:selectRadio value="{!dataWrap[9].paValue}" styleClass="col-xs-8">
+                                         <apex:selectOption itemLabel="Single End Customer" itemValue="Single End Customer" itemDisabled="true"/>
+                                         <apex:selectOption itemLabel="Multi End Customer" itemValue="Multi End Customer" itemDisabled="true"/>
+                                    </apex:selectRadio>
+                                </div>
+                                
+                                <div class="labelsTextClass col-xs-11 p0 m-t-10">{!dataWrap[10].label}</div>
+                                <div class="hidden"><apex:inputField value="{!listAttrVal[dataWrap[10].attr]}"/></div>
+                                <div class="col-xs-12 p0 disableRadioClass">
+                                    <apex:selectRadio value="{!dataWrap[10].paValue}" styleClass="col-xs-8">
+                                        <apex:selectOption itemLabel="Inter LATA" itemValue="Inter LATA" itemDisabled="true"/>
+                                        <apex:selectOption itemLabel="Intra LATA" itemValue="Intra LATA" itemDisabled="true"/>
+                                    </apex:selectRadio>
+                                </div>
+                                
+                                <div class="labelsTextClass col-xs-11 p0 m-t-10">{!dataWrap[11].label}</div>
+                                <div class="hidden"><apex:inputField value="{!listAttrVal[dataWrap[11].attr]}"/></div>
+                                <div class="col-xs-12 p0 disableRadioClass">
+                                    <apex:selectRadio value="{!dataWrap[11].paValue}">
+                                         <apex:selectOption itemLabel="Point To Point" itemValue="Point To Point" itemDisabled="true"/>
+                                         <apex:selectOption itemLabel="Multi Point" itemValue="Multi Point" itemDisabled="true"/>
+                                         <apex:selectOption itemLabel="Hub & Spoke" itemValue="Hub & Spoke" itemDisabled="true"/>
+                                    </apex:selectRadio>
+                                </div>
+                                
+                                <div class="labelsTextClass col-xs-11 p0 m-t-10">{!dataWrap[12].label}</div>
+                                <div class="hidden"><apex:inputField value="{!listAttrVal[dataWrap[0].attr]}"/></div>
+                                <div class="col-xs-12 p0 disableRadioClass">
+                                    <apex:selectRadio value="{!dataWrap[12].paValue}" styleClass="col-xs-8">
+                                         <apex:selectOption itemLabel="Hub" itemValue="Hub" itemDisabled="true"/>
+                                         <apex:selectOption itemLabel="Spoke" itemValue="Spoke" itemDisabled="true"/>
+                                    </apex:selectRadio>
+                                </div>
+                                
+                                <div class="labelsTextClass col-xs-11 p0 m-t-10">{!dataWrap[13].label}</div>
+                                <div class="hidden"><apex:inputField value="{!listAttrVal[dataWrap[13].attr]}"/></div>
+                                <div class="col-xs-12 p0 disableRadioClass">
+                                    <apex:selectRadio value="{!dataWrap[13].paValue}" styleClass="col-xs-8">
+                                        <apex:selectOption itemLabel="Port Based" itemValue="Port Based" itemDisabled="true"/>
+                                        <apex:selectOption itemLabel="VLAN Based" itemValue="VLAN Based" itemDisabled="true"/>
+                                    </apex:selectRadio>
+                                </div>
+                                
+                                <div class="labelsTextClass col-xs-11 p0 m-t-10">{!dataWrap[14].label}</div>
+                                <div class="hidden"><apex:inputField value="{!listAttrVal[dataWrap[14].attr]}"/></div>
+                                <div class="col-xs-12 p0 line-item-cls">
+                                    <apex:selectRadio value="{!listAttrVal[dataWrap[14].attr]}" styleClass="{!IF(contains(listAttrVal.ASR_Status__c,'Active'),'','disableRadioClass')}">
+                                        <apex:selectOption itemLabel="64" itemValue="64" itemDisabled="{!IF(dataWrap[1].paValue=='ASE Basic',true,false)}"/>
+                                        <apex:selectOption itemLabel="250" itemValue="250" itemDisabled="{!!IF(dataWrap[1].paValue=='ASE Basic',true,false)}"/>
+                                        <apex:selectOption itemLabel="251 - 500" itemValue="251 - 500" itemDisabled="{!!IF(dataWrap[1].paValue=='ASE Basic',true,false)}"/>
+                                    </apex:selectRadio>
+                                </div>
+                            </div>              
+                            <div class="col-xs-12 p0 sectionHr">
+                                <p class="onetime m-t-40" style="font-size:18px">One-Time Charges</p>
+                                <p class="labelsTextClass m-b-40">Not Applicable</p>
+                            </div>
+                            <div class="col-xs-12 p0 m-t-40">
+                                <p style="font-size:18px;">Site Pricing Summary </p>
+                            </div>
+                            <div class="col-xs-12 p0">
+                                <div class="col-xs-6 p0 " style="font-family:omnes_att_iimedium; color:#000000;">Monthly Total</div>
+                                <div class="col-xs-6 text-right p0">
+                                    <apex:outputText value="${0, number, ###,###,##0.00}/mo" id="siteTot">
+                                        <apex:param value="{!totalPerSite}" />
+                                    </apex:outputText>
+                                </div>
+                            </div>
+                            <div class="col-xs-12 p0 m-t-10">
+                                <div class="col-xs-6 p0" style="font-family:omnes_att_iimedium; color:#000000;">One-Time Total</div>
+                                <div class="col-xs-6 text-right p0">
+                                    <apex:outputText value="$0.00" id="otTot"></apex:outputText>
+                                </div>
+                             </div>                                 
+                            <div class="col-xs-12 p0 m-t-10">
+                                    <apex:commandButton id="applyPriceBtnASE" value="Apply and Get Price" styleClass="apply-btn-cls btn-primary standard-btn col-xs-4 pull-right disableClass" rerender="pgBlockSitePanel,rightOPPanel,actionForm" action="{!initializePricingData}" onclick="showProcessingIcon();"  oncomplete="onCompleteApplyAndGetPrice();" status="loading" /> 
+                            </div>                             
+                        
+                        <div class="row sectionHr">
+                            <div class="pull-right m-b-20 m-t-40">
+                                <table id="site-pagination">
+                                    <tbody>
+                                        <tr>
+                                            <td><apex:commandButton styleClass="btn paginationArrow" id="prevSite1" value="<" action="{!siteTraverseMethodPrevious}" rendered="{!NOT(disablePrevious)}"  onClick="changeURL('prev');" reRender="pgBlockSitePanel,rightOPPanel" oncomplete="prepareFilterDropDown();applyToggle()" status="loading" /></td>
+                                            <td style="vertical-align: middle;"><apex:commandLink id="prevSite" styleClass="{!IF(disablePrevious,'disableLink','enableSiteLink')}" value=" Previous Site" action="{!siteTraverseMethodPrevious}" rendered="{!NOT(disablePrevious)}" onClick="changeURL('prev');" reRender="pgBlockSitePanel,rightOPPanel"  oncomplete="prepareFilterDropDown();applyToggle()" status="loading" style="border-right: 1px solid #ddd;" /></td>&nbsp;&nbsp;
+                                            <td style="vertical-align: middle;"><apex:commandLink id="nextSite" styleClass="{!IF(disableNext,'disableLink','enableSiteLink')}" value="Next Site " action="{!siteTraverseMethodNext}"  rendered="{!NOT(disableNext)}" onClick="changeURL('next');"  rerender="pgBlockSitePanel,rightOPPanel" oncomplete="prepareFilterDropDown();applyToggle()" status="loading" /></td>
+                                            <td><apex:commandButton styleClass="btn paginationArrow" id="nextSite1" value=">" action="{!siteTraverseMethodNext}" rendered="{!NOT(disableNext)}" onClick="changeURL('next');" reRender="pgBlockSitePanel,rightOPPanel"  oncomplete="prepareFilterDropDown();applyToggle()" status="loading" /></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>                         
+                        <div class="col-xs-12 p0 m-t-20" style="font-size: 18px;"> Quote Pricing Summary 
+                            <span class="tooltipTrigger glyphicon glyphicon-info-sign" data-toggle="tooltip" rel="tooltip" data-placement="right" title="{!$Label.Quote_Pricing_Summary}"></span>
+                        </div>
+                        <div class="col-xs-12 p0 m-t-20">
+                            <div class="col-xs-6 p0">
+                                <div style="font-family: omnes_att_iimedium; font-size: 19px; color: #000000;">Monthly Total</div>
+                            </div>
+                            <div class="col-xs-6 p0 text-right">
+                                <apex:outputText value="${0, number, ###,###,##0.00}/mo" style="font-size: 19px; font-weight: bold;">
+                                    <div style="display: block; text-align: right;">
+                                        <apex:param value="{!totalPerCart}" />
+                                    </div>
+                                </apex:outputText>
+                            </div>
+                            <div class="col-xs-6 p0">
+                                <h3 style="font-family: omnes_att_iimedium; font-size: 19px; color: #000000;">One-Time Total</h3>
+                            </div>
+                            <div class="col-xs-6 p0 text-right">
+                                <apex:outputText value="${0, number, ###,###,##0.00}" style=" font-size: 19px; font-weight: bold;">
+                                    <h3 style=" margin-top: 10px;">
+                                        <apex:param value="{!sumOneTimeFee }" />
+                                    </h3>
+                                </apex:outputText>
+                            </div>
+                            <div class="col-xs-12 p0" id="submitDiv"><p style="font-family: omnes_light !important; font-size: 0.8em; margin-top: 2%;">All prices shown are pre-tax.</p></div>
+                            <apex:outputPanel rendered="{!IF(dataWrap[1].paValue!='ASE Basic',true,false)}">
+                                <div class="labelsTextClass col-xs-11 p0" style="height:20px;"></div>
+                            </apex:outputPanel>                        
+                        </div>
+                        </apex:outputPanel>
+                    </div>
+                    <div class="modal fade" id="CIRPopUpId" data-keyboard="false" data-backdrop="static">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-body" style="padding: 35px 25px 0px 20px;">
+                                    <p>Change requests with CIR greater than 500Mbps have to go through a Service Inquiry process. Click Continue to confirm or Cancel to return to View/Change Network Sites page.</p>
+                                </div>
+                                <div class="modal-footer" style="padding-bottom: 35px;">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal" style="width:150px;">Cancel</button>
+                                    <apex:commandButton styleClass="btn btn-primary standard-btn" value="Continue" action="{!continueBtn}" style="width:150px;float:right;height:34px;" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </apex:form>
+            </div>
+        </apex:outputPanel>
+        <!-- pop up for MACD Lock Starts Here -->
+        <div id="popUpbeforeCloseId" style="display:none;">
+            <div id="popupContact">
+                <div style="width:600px;height:360px;padding:10px 50px;border:2px solid gray;border-radius:10px;font-family:raleway;background-color:#fff">
+                    <apex:image value="{!($Resource.timerPopUpImg)}" id="close" onclick="div_hide()" style="margin-left:190px; width:115;height:105px;margin-bottom:5px;"/> 
+                    <div style='text-align:center;font-size:16px' ><span style="font-family: omnes_att_iimedium;  font-size:32px;  color: #000000; text-align: center;">Your session is about to expire!</span>
+                        <br/><br/><br/>
+                        <span id="popUpFive" style="display:none;font-family:omnes_att_iimedium!important; font-size:22px; color:#000000; text-align:center;position:relative;top:-24px">Your session will expire in 5 minutes.<br/>
+                            Do you want to continue your change request?
+                        </span>
+                        
+                        <span id="popUpOne" style="display:none;font-family:omnes_att_iimedium; font-size:22px; color: #000000; text-align:center;position:relative;top:-24px">Your session will expire in 1 minute.<br/>
+                            Do you want to continue your change request?
+                        </span>
+                        
+                        <span id="popUpThirty" style="display:none;font-family:omnes_att_iimedium; font-size:22px; color:#000000; text-align:center;position:relative;top:-24px">Your session will expire in 30 seconds.<br/>
+                            Do you want to continue your change request?
+                        </span>
+                    </div>
+                    
+                    <div style="margin-top:37;position:relative;top:16px;">                 
+                        <apex:form >
+                            <apex:commandLink action="{!cancelRequest}" value="No, Cancel Request" style="font-family:omnes_att_iimedium; font-weight:bold" />
+                         </apex:form>     
+                            <button id="submit" style="font-family:omnes_att_iimedium; font-weight:bold" onclick="resetAllCookies();unlockTheScroll();div_hide()">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- pop up for MACD Lock Ends Here -->
+        <!-- pop up for MACD Lock close Starts Here -->
+        <div id="popUpCloseDivId" style="display:none;">
+            <script>window.scrollLock;</script>
+            <div id="popupContact">
+                <div style="width:647px;height:336px;padding:10px 50px;border:2px solid gray;border-radius:10px;font-family:raleway;background-color:#fff">
+                    <apex:image value="{!($Resource.timerPopUpImg)}" id="close1" onclick="div_hide()" style="margin-left:218px; width:115;height:105px;margin-bottom:5px;position:relative;top:8px"/> 
+                    <div style='text-align:center;font-size:16px;margin-top:8px' ><span style="font-family: omnes_att_iimedium;  font-size:32px;  color: #000000; text-align: center;">Your session has expired.</span>
+                        <br/><br/><br/>
+                        <span id="popUpFive" style="font-family:omnes_att_iimedium;  font-size:22px;  color: #000000; text-align: center; margin-left:-25px;position:relative;top:-30px">
+                            We apologize. You will need to start your request again.
+                        </span>
+                    </div>                        
+                    <div style="margin-top:34px; tex-align:center;position:relative;top:-5px;">           
+                        <apex:form >          
+                            <apex:commandButton action="{!redirectOnClose}" style="font-family:omnes_att_iimedium;font-size:16px;text-decoration:none; font-weight:bold; text-align:center; display:block; color:#fff; border:1px solid #000; background:#056FAB;  padding:10px 0; font-size:16px; cursor:pointer; border-radius:5px;  width: 175px !important; height: 40px;  padding-right:5px; margin-left:184px; margin-top:-30px" onclick="div_hide();unlockTheScroll();" value="Close"/>   
+                            <!--button id="submitClose" onclick="div_hide();">Close</button>-->
+                        </apex:form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- pop up for MACD Lock close Ends Here -->
+        <div style="margin-left: 115%;margin-left;margin-top: -82%;">
+            <a href="#" class="scrollToTop arrowImageDim"> <apex:image value="{!($Resource.TopArrow)}" styleClass="arrowImageDim"/></a>
+        </div>  
+        <div class="col-xs-12 m-t-20 m-b-20" id="panelFooter" style="clear:both;">
+            <hr  class="blue_hr"/>
+        </div>
+        <apex:form id="actionForm">
+        <div class="col-xs-offset-6">
+            <div class="col-xs-offset-1 col-xs-3 p0 m-t-10"><apex:commandlink styleClass="standard-btn" action="{!cancelRequest}">Cancel Request</apex:commandlink></div>
+            <div class="col-xs-4 p0"><apex:commandButton styleClass="btn btn-default standard-btn" id="btnId2"  action="{!saveandExit}" status="loading" value="Save & Exit"/></div>
+            <div class="col-xs-4"><apex:commandButton styleClass="btn-primary standard-btn pull-right" action="{!submitRequest}" disabled="{!!enableSubmitRequest}" value="Submit Request"  oncomplete="CheckCIRPopUp()" reRender="CIRSpeed" status="loading"/></div>
+        </div>     
+        
+        <apex:actionFunction id="getSelectedSite" name="getSelectedSite" action="{!dataWrapOnSiteSelection}"  rerender="pgBlockSitePanel,rightOPPanel" status="loading" oncomplete="applyToggle();prepareFilterDropDown();">
+            <apex:param assignTo="{!selectedSiteId}" name="siteid" value="" />
+        </apex:actionFunction>
+          
+        <apex:inputHidden value="{!checkCIRSpeed}" id="CIRSpeed"/> 
+        <apex:outputPanel id="opHDNCookie">
+            <input type="hidden" id="popOneHdn" value="{!popUp1}" />
+            <input type="hidden" id="popTwoHdn" value="{!popUp2}" />
+            <input type="hidden" id="popThreeHdn" value="{!popUp3}" />
+            <input type="hidden" id="popFourHdn" value="{!popUp4}" />
+        </apex:outputPanel>
+        <apex:actionFunction name="resetAllCookies" action="{!resetCookies}" status="loading" rerender="opHDNCookie" oncomplete="startCheckingCookies();" />
+        <apex:actionFunction id="lockMacdOnLoadId" name="lockMacdOnLoad" action="{!lockProposalOnMACD}" rerender="opHDNCookie" status="loading" oncomplete="startCheckingCookies()"/>       
+        <apex:actionFunction name="resetMACDData" action="{!resetDataOnSessionExpiration}" reRender="none"/>        </apex:form>
+      </div>
+      <script>
+            var leftPanelOffSet=0;
+           
+          $(document).ready(function(){ 
+              disableFields();
+              lockMacdForASE();
+              prepareFilterDropDown();
+              leftPanelOffSet=$("#leftPanel").offset().top;
+              fixedSiteTablePanel();
+              
+              numberOfSitesFilter();
+              applyToggle();
+              $("body").tooltip({ selector: '[rel=tooltip]' }); 
+              $(window).scroll(function(){
+                    if ($(this).scrollTop() > 50) {
+                        $('.scrollToTop').fadeIn();
+                    } else {
+                        $('.scrollToTop').fadeOut();
+                    }
+               });
+               
+               //Click event to scroll to top
+             $('.scrollToTop').click(function(){
+                $('html, body').animate({scrollTop : 0},500);
+                return false;
+             }); 
+
+          });
+          function onCompleteApplyAndGetPrice(){
+              prepareFilterDropDown();
+              //fixedSiteTablePanel();
+              applyToggle();
+          }
+          function applyToggle(){
+              setTimeout(function(){
+              $('#rightPanel select, #rightPanel input').data('serialized', $('#rightPanel select, #rightPanel input').serialize())
+               $('#rightPanel select, #rightPanel input').each(function(){
+                   // $(this).data('serialized', $(this).serialize());
+                }).on('change', function(){
+                    console.log("Here"+$(this).val());
+                    var isAllFilled = true;
+                    $('.line-item-cls select,.line-item-cls input').each(function(){
+                         if($(this).val().length == 0){
+                            isAllFilled = false;
+                            return false;
+                         }
+                    });
+                    if(!(!isAllFilled || $('#rightPanel select, #rightPanel input').serialize() == $('#rightPanel select, #rightPanel input').data('serialized'))){
+                        $('.apply-btn-cls').removeClass('disableClass');               
+                    }else{
+                        $('.apply-btn-cls').addClass('disableClass');
+                    }
+                }).closest('form').find('.apply-btn-cls').addClass('disableClass');
+                }, 2000);
+            }
+          function showProcessingIcon(){
+              $('.higlightSelectedSite').nextAll().eq(0).children('div:first').hide();
+              $('.higlightSelectedSite').nextAll().eq(1).children('span').hide();
+              $('.higlightSelectedSite').nextAll().children('.hidden').removeClass('hidden');
+          }
+          function numberOfSitesFilter(){
+              $('#totalSites, #filterCount').text($(".ASRStatus").length);
+          }
+          function disableFields(){
+              $('.PortSpeedASE__c_Value select').attr('disabled',true).addClass('disableClass');
+              
+              
+          }
+          function prepareFilterDropDown(){
+              $("#filter option:gt(0)").remove();
+              var eachStatus;
+              $(".ASRStatus").each(function() {
+                  eachStatus = $(this).text();
+                  $.each(eachStatus.split("-"), function(key, val) {
+                      if(!$("#filter option[value='" + val + "']").length){
+                          $("#filter").append('<option name="'+val+'" value="'+val+'">'+val+'</option>');
+                      }
+                  })                         
+              });
+              $('#filter').on("change",function(){ 
+                 filterSiteListTable();
+              });
+              filterSiteListTable();
+          }
+          function filterSiteListTable(){
+              var siteCount = 0;
+              $(".ASRStatus").each(function() {
+                  $(this).closest('tr').hide();
+                  if($("#filter").val() =='All' || $(this).text().indexOf($("#filter").val()) >=0 ){
+                      $(this).closest('tr').show();
+                      siteCount++;
+                  }
+              });
+              $('#filterCount').text(siteCount);
+          }
+          
+          function reRenderPanel() {
+                rerenderRightPanel();
+          }
+          function displaySiteDetails(obj,siteId){
+              history.pushState('', '', window.location.href.split('&siteid')[0] +'&siteid='+siteId);
+              getSelectedSite(siteId);
+          }
+         function changeURL(direction){
+         var currSiteID;
+         if (typeof window.location.href.split('&siteid=')[1] == 'undefined')
+             currSiteID = '{!selectedSiteID}';
+         else     
+             currSiteID = window.location.href.split('&siteid=')[1];
+             
+         console.log('Backend {!siteLinenumberMap}');
+         var siteLineNumberMap = '{!siteLineNumberMap}'.replace(/ /g,'').split('{')[1].split('}')[0].trim().split(",");
+         console.log('siteLineNumberMap '+siteLineNumberMap );
+         
+        var nextSiteID;
+        console.log('currSiteID'+currSiteID);
+        $.each(siteLineNumberMap ,function( i, val ) {
+            if(val.split("=")[0] == currSiteID ){
+                if(direction=='next')
+                    nextSiteID =  siteLineNumberMap[i+1].split("=")[0];
+                else
+                    nextSiteID =  siteLineNumberMap[i-1].split("=")[0];   
+                return false;
+            }
+            console.log(val+":"+i+'Chck:'+currSiteID +"="+parseInt(i+1)+' siteLineNumberMap '+siteLineNumberMap[i]);
+        });
+        console.log('nextSiteID '+nextSiteID ); 
+             history.pushState('', '', window.location.href.split('&siteid')[0] +'&siteid='+nextSiteID);
+          }
+          function CheckCIRPopUp(){
+              console.log('CheckCIRPopUp');
+              var CIRPopUP = $("[id$=CIRSpeed]").val();
+              if(CIRPopUP == 'true'){
+                  $('#CIRPopUpId').modal('show');
+              }
+          }
+          
+          function fixedSiteTablePanel(){
+            var leftPanelWidth = $("#leftPanel").outerWidth();
+            var headerHeight = $('#top_nav_bar').height();
+            footerOffSet = $('#panelFooter').offset().top;
+            leftPanelHeight = $("#leftPanel").height();
+            scrollPos = $(window).scrollTop()+headerHeight; 
+            leftPanelBottomOffset = scrollPos + leftPanelHeight;
+            panelPosition = footerOffSet-leftPanelHeight-leftPanelOffSet; 
+            
+            if(leftPanelBottomOffset >= footerOffSet)
+                     $("#leftPanel").css({"position":"absolute","top":panelPosition+'px'});
+            
+            $(window).scroll(function(){
+            
+              scrollPos = $(window).scrollTop()+headerHeight; 
+              leftPanelBottomOffset = scrollPos + leftPanelHeight; 
+              panelPosition = footerOffSet-leftPanelHeight-leftPanelOffSet;                                               
+              if(scrollPos >= leftPanelOffSet){
+                  $("#leftPanel").css({'position':'fixed','top':headerHeight+'px','width':leftPanelWidth});                    
+              }else
+                  $("#leftPanel").css({"position":"relative","top":"0px"});
+              
+              if(leftPanelBottomOffset >= footerOffSet){
+                     $("#leftPanel").css({"position":"absolute","top":panelPosition+'px'});
+              }  
+            });
+            
+            }
+
+        function lockMacdForASE(){
+         
+          lockMacdOnLoad();
+        }
+    
+        function startCheckingCookies(){
+            var cntp1 = 0;
+            var cntp2 = 0;
+            var cntp3 = 0;
+            var cntp4 = 0;
+            var pop1 = document.getElementById("popOneHdn").value;
+            var pop2 = document.getElementById("popTwoHdn").value;
+            var pop3 = document.getElementById("popThreeHdn").value;
+            var pop4 = document.getElementById("popFourHdn").value;
+            
+            setInterval(function(){
+                if  ((document.cookie.indexOf(pop1) == -1)  && (document.cookie.indexOf(pop2) != -1) && (document.cookie.indexOf(pop3) != -1) && (document.cookie.indexOf(pop4) != -1) && (cntp1 == 0)) {                                
+                     showPopUpOne();  
+                     cntp1++; 
+                }
+                else if ((document.cookie.indexOf(pop1) == -1)  && (document.cookie.indexOf(pop2) == -1) && (document.cookie.indexOf(pop3) != -1) && (document.cookie.indexOf(pop4) != -1)&& (cntp2 == 0)) {                
+                        showPopUpTwo();
+                        cntp2++;   
+                }
+                else if ((document.cookie.indexOf(pop1) == -1)  && (document.cookie.indexOf(pop2) == -1) && (document.cookie.indexOf(pop3) == -1) && (document.cookie.indexOf(pop4) != -1)&& (cntp3 == 0)) {                
+                        showPopUpThree();                   
+                        cntp3++;   
+                }
+                else if ((document.cookie.indexOf(pop1) == -1)  && (document.cookie.indexOf(pop2) == -1) && (document.cookie.indexOf(pop3) == -1) && (document.cookie.indexOf(pop4) == -1)&& (cntp4 == 0)) {                 
+                        showPopUpFour();  
+                        cntp4++;                    
+                }
+            },1000); 
+        };
+    
+        //Function To Display Popup
+        function showPopUpOne() {
+            lockTheScroll();
+            document.getElementById('popUpbeforeCloseId').style.display = "block";
+            document.getElementById('popUpThirty').style.display = "none";
+            document.getElementById('popUpOne').style.display = "none";
+            document.getElementById('popUpFive').style.display = "block";           
+        }
+        function showPopUpTwo() {
+            lockTheScroll();
+            document.getElementById('popUpbeforeCloseId').style.display = "block";
+            document.getElementById('popUpFive').style.display = "none";
+            document.getElementById('popUpThirty').style.display = "none";
+            document.getElementById('popUpOne').style.display = "block";  
+                     
+        }
+        function showPopUpThree() {
+            lockTheScroll();
+            document.getElementById('popUpbeforeCloseId').style.display = "block";
+            document.getElementById('popUpOne').style.display = "none";
+            document.getElementById('popUpFive').style.display = "none";
+            document.getElementById('popUpThirty').style.display = "block"; 
+                       
+        }
+        function showPopUpFour() {
+            lockTheScroll();
+            resetMACDData();
+            document.getElementById('popUpbeforeCloseId').style.display = "none";
+            document.getElementById('popUpOne').style.display = "none";
+            document.getElementById('popUpFive').style.display = "none";
+            document.getElementById('popUpThirty').style.display = "none";
+            document.getElementById('popUpCloseDivId').style.display = "block";
+                     
+        }
+        
+        //Function to Hide Popup
+        function div_hide(){
+            document.getElementById('popUpbeforeCloseId').style.display = "none";
+            document.getElementById('popUpCloseDivId').style.display = "none";
+            
+        }
+        
+        function lockTheScroll() {
+        $('#CIRPopUpId').modal('hide');
+             $('html, body').css({
+            'overflow': 'hidden',
+            'height': '100%'
+            }); 
+        }
+        
+        function unlockTheScroll() {
+            $('html, body').css({
+            'overflow': 'auto',
+            'height': 'auto'
+            });
+        
+        }
+      </script>
+      <div class="col-xs-12"><apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /></div>         
+</apex:page>

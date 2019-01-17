@@ -1,0 +1,590 @@
+<apex:page controller="detailPageController" sidebar="false" showHeader="false" cache="true" tabStyle="Account" standardStylesheets="true" >   
+    <apex:stylesheet value="{!$Resource.newsroomStyleSheet}"/>
+    <apex:stylesheet value="{!$Resource.Newsroom_hover}"/>
+<style>
+    div#si_primaryMenu ul, div#si_primaryMenu ul li {margin:0; padding:0; list-style-type: none}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}}') no-repeat scroll 5px -40px; width: 982px; height: 40px;}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}') no-repeat scroll -5px -150px transparent; width: 982px; height: 92px;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+     div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem:hover,
+    li#programOverviewTab.programOverviewTabActive,
+    li#Connect.programOverviewTabActive,
+    li#productsTab.productsTabActive,
+    li#newsTab.newsTabActive
+    {
+        background-image: url('{!$Resource.NavConnect}'); 
+        background-repeat:no-repeat;
+        background-attachment:scroll;
+        background-color:transparent;
+        height:63px;
+        position:relative; 
+        top:0px; 
+        left:-70px;
+    }
+    
+    </style>
+    <apex:stylesheet value="{!$Resource.newsroomStyleSheet}"/>
+    <apex:stylesheet value="{!$Resource.Newsroom_hover}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-1.9.1.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.masonry, 'masonry-site/jquery.masonry.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js')}"  />
+    
+    <script type="text/javascript">
+        function countEmail(){}
+    </script>
+    <script type="text/javascript" src="/resource/jQuery"></script>
+    <script type="text/javascript">      
+   $(window).ready(function() { 
+      $("#provider >a ").addClass("linkActive");
+      $("#events >a ").addClass("linkInActive");
+      $("#news >a ").addClass("linkInActive");
+    });   
+</script> 
+
+<!-- css for topics -->
+<style>
+
+    .TopicHeadline
+        {
+           font-family: Arial;
+           font-size: 20px ;
+           //font-weight:bold;
+           line-height: 25px;
+           color: #ef6f00;
+           width:120px;
+           word-break:keep-all;
+           margin-left:5px
+        } 
+        
+    .ActiveTopic 
+    {
+        display:inline-block;
+        font-family: Arial;
+        font-size: 14px ;
+        line-height: 20px;
+        color: #067ab4;
+        //margin:-5px 10px 10px;
+        //padding:5px 5px 5px 5px;
+        vertical-align: top;
+        //font-weight:bold;
+     }    
+     .linkActive
+     {
+        color:#369;
+        text-decoration:underline !important;
+        font-size: 13px ;
+    }
+    
+    .linkInActive
+     {
+        text-decoration:none;
+        font-size: 13px ;
+    }
+.activeDropDown{
+        margin-top:3px;
+        display: inline;
+        height: 4px; 
+        margin-left: 3px;
+        margin-top: 6px;
+        width: 9px;
+}
+.inactiveDropDown{
+        margin-top:3px;
+        display: inline;
+        height: 4px; 
+        margin-left: 3px;
+        margin-top: 6px;
+        width: 9px;
+}
+
+</style>
+
+<!-- css for DetailsPage Style-->
+        <style>                              
+               *{
+                      margin:0; 
+                      padding:0; 
+                  }
+                .main{ 
+                    padding-top:35px; 
+                    padding-left:35px;
+                    
+                    }
+                .overviewMain { 
+                    padding-top:35px; 
+                    padding-left:35px; 
+                }
+                .contactMain{ 
+                    padding-left:35px; 
+                    
+                }
+                ul li{ 
+                    list-style:none; 
+                    }
+                a{ 
+                    text-decoration:none;
+                 }
+                .info{ 
+                    float:left; 
+                    width:445px; 
+                    margin-right:20px; 
+                    font:14px Arial, line-height:17px; 
+                    color:#333;
+                }
+                .cont_info { 
+                    display:inline-block; 
+                    width:445px; 
+                    background:#F9F9F9;
+                    border:1px solid #ccc; 
+                }
+                .overview_info{ 
+                    display:inline-block; 
+                    width:445px; 
+                    background:#F9F9F9;
+                    border-radius:3px; 
+                    border:1px solid #ccc; 
+                }
+                .spacli{ 
+                    display:inline-block; 
+                    width:445px; 
+                    background:#F9F9F9; 
+                    border-radius:3px; 
+                    border:1px solid #ccc; 
+                    
+                    margin-top:100px;
+                }
+                .spacli1{ 
+                    display:inline-block; 
+                    width:445px; 
+                    background:#F9F9F9; 
+                    border-radius:3px; 
+                    border:1px solid #ccc; 
+                    margin-left:465px; 
+                    float:left; 
+                }
+                .emailBtn{ 
+                    float:right; 
+                    background:#7cc6ff; 
+                    color:#fff; 
+                    padding:9px 14px 7px 13px;
+                    border-radius:3px; 
+                    cursor:pointer; 
+                    box-shadow: 0px 2px 4px #7cc6ff; 
+                    margin-top:13px;
+                    margin-right:23px;
+                }
+                .sub_btn{ 
+                    background:#7cc6ff; 
+                    color:#fff;
+                    padding:9px 14px 7px 13px;
+                    border-radius:3px; 
+                    cursor:pointer; 
+                    box-shadow: 0px 2px 4px #7cc6ff;
+                 }
+                .MT20{ 
+                    margin-top:20px; 
+                    font:17px Arial; 
+                    font-weight:bold;  
+                    
+                }
+                .MT201{ 
+                    margin-top:20px; 
+                    font:17px Arial; 
+                    font-weight:bold;  
+                    margin-left:465px; 
+                    float:left;
+                    margin-top:-205px
+                }
+                .add { 
+                    background:#fff;
+                    border:1px solid #ccc;
+                    display:inline-block;
+                    border-radius:3px; 
+                    width:445px; 
+                    border-top:0; 
+                    font:14px arial; 
+                    line-height:17px; 
+                    color:#333;
+                 }
+                .addDetail { 
+                    background:#fff;
+                    border:1px solid #ccc;
+                    display:inline-block;
+                    border-radius:3px; 
+                    width:445px;
+                    border-top:0; 
+                    font:14px arial; 
+                    line-height:17px; 
+                    color:#333;
+                }
+                .addOverview { 
+                    background:#fff;
+                    border:1px solid #ccc;
+                    border-radius:3px; 
+                    width:445px; 
+                    border-top:0; 
+                    font:14px arial; 
+                    line-height:17px; 
+                    color:#333;
+                 }
+                .addContact { 
+                    background:#fff;
+                    border:1px solid #ccc;
+                    display:inline-block;
+                    border-radius:0px 0px 5px 5px; 
+                    width:445px;
+                    border-top:0; 
+                    font:14px arial; 
+                    line-height:17px; 
+                    color:#333; 
+                 }
+                .spacli_link{ 
+                    background:#fff;
+                    border:1px solid #ccc;
+                    display:inline-block;
+                    border-radius:3px; 
+                    width:445px; 
+                    border-top:0; 
+                    margin-left:465px;
+                    
+                 }
+                 .spacli_link_detail{ 
+                    background:#fff;
+                    border:1px solid #ccc;
+                    display:inline-block;
+                    border-radius:3px; 
+                    width:445px; 
+                    border-top:0;                   
+                 }
+                .spacli_link1{ 
+                    background:#fff;
+                    border:1px solid #ccc;
+                    display:inline-block;
+                    border-radius:3px;
+                    width:445px; 
+                    border-top:0; 
+                    margin-left:465px; 
+                    margin-top:-205px;
+                }
+                .links{
+                    float:left; 
+                    width:50%; 
+                    color:#067ab4;  
+                    text-decoration: none; 
+                    margin-top:20px;
+                    margin-bottom:20px;
+                }
+                
+                .links ul li a{ 
+                    color:#067ab4;  
+                    text-decoration: none; 
+                }
+                .menu{ 
+                    margin-top:20px;  
+                    border-radius:3px;
+                    height:50px; 
+                }
+                .menu ul li{ 
+                    float:left;
+                    padding-left:20px;
+                }
+                .menu ul li:first-child{
+                    padding-left:0; 
+                }
+                .menu ul li a{ 
+                    color: #0C2577;
+                    display: block; 
+                    font-family: Arial; 
+                    font-size: 14px; 
+                    font-weight: bold; 
+                    padding: 16.5px 2.5px 10.5px 11px; 
+                }
+                            
+                .CL{ 
+                    clear:both; 
+                    }
+              
+                   .gray_background{
+                    background-image: url({!($Resource.GrayGradient)}); 
+                    background-repeat:repeat; 
+                    height: 57px; 
+                    width: 445px;
+                    border-top-left-radius:5px;
+                    border-top-right-radius:5px;
+                }  
+                .marginNavs{
+                    margin-left:-17px;
+                }
+                .marginMidNavs{
+                    margin-left:-31px;
+                }
+                .secPhMarStyle{
+                    margin-left:20px;
+                }
+                .fontStyle {
+                    font-size: 14px;
+                    line-height: 17px;
+                }
+                .breadcomActive {
+                    color: #3381B7;
+                    cursor: pointer;
+                    font-family: Arial;
+                    font-size: 12px;
+                    line-height: 130%;
+                }
+</style>
+<!-- End of css for DetailsPage Style-->  
+<style>
+.active{
+    color:#3381B7;
+    font-family: Arial;
+    font-size: 11px;
+    font-weight:bolder;
+    cursor:pointer;
+}
+deActive{
+    color:#666666;
+    font-family: Arial;
+    font-size: 11px;
+    font-weight:bolder;
+}
+</style>      
+<body>
+    <apex:form >
+   
+ <title>Newsroom</title> 
+     
+<!-- MAIN DIV -->
+<!-- START PAGE -->
+
+            <div class="mainDiv">
+             <c:LoggedInUser ></c:LoggedInUser>
+            <!--
+                <div  class="pName">
+                    <apex:outPutText value="{!hi}"/>
+                    <apex:outPutText value=" "/>
+                    <apex:outPutText value="{!lastName}"/>
+                </div>
+                -->
+                <div id="menuContainer" style="padding-top:11px;">
+                     <c:navconnectheaderwithlinks ></c:navconnectheaderwithlinks>
+                     </div>
+                   <!-- <ul id="si_primaryMenu">              
+                         <div id="secNav" style="position:inherit;list-style-type: none; padding-top:68px; font-family:Arial; font-size:13px; font-color:#333333; margin-left:29px;">
+                             <div id="news" style="float:left;">
+                                   <apex:outputLink value="/apex/newsroomListView?bidID={!bidID}"> Newsroom 
+                                   </apex:outputLink> &nbsp;&nbsp;&nbsp;&nbsp;    
+                             </div>
+                             <div id="events" style="float:left;">
+                                   <apex:outputLink value="/apex/EventsAndSponsorships?bidID={!bidID}">Events and Sponsorships
+                                   </apex:outputLink> &nbsp;&nbsp;&nbsp;&nbsp;                       
+                             </div>
+                             <div id="provider" style="float:left;">
+                                   <apex:outputLink value="/apex/ConnectNew?bidID={!bidID}">Provider Directory 
+                                   </apex:outputLink> 
+                             </div>
+                         </div>                                              
+                    </ul>-->
+               
+         <!--- END OF LOGO HEADER -->
+         <!-- start provider Directory Pagination --  -->
+         <div style="margin:25px 20px 20px 10px;">
+            <apex:outputLink value="/apex/Connect/Connect?bidID={!bidID}"  target="_self">
+                <apex:outputLabel value="Connect" styleClass="breadcomActive "/>
+            </apex:outputLink>
+            <apex:outputLabel value="/" styleClass="deActive"/>
+            <apex:outputLink value="/apex/SI_ProviderDirectory?bidID={!bidID}"  target="_self">
+                 <apex:outputLabel value="Provider Directory" styleClass="breadcomActive "/>
+            </apex:outputLink>
+            <apex:outputLabel value="/" styleClass="deActive"/>
+             <apex:outputLabel value="{!directory.Company_Display_Name__c} " styleClass="deActive"/>
+        </div>
+         <!-- end provider Directory Pagination --  -->     
+            <div class="provider_details" style="height:70px;"> 
+                <div style="padding-top:3px; height:70px; margin-left:20px;"> 
+                    <div style="float:left; margin-right:30px; margin-top:15px; width:33px; height:66px;">                   
+                        <apex:image value="{!directory.Logo_Link__c}" rendered="{!directory.Logo_Link__c !=null}" style="width:45px; height:45px; margin-left: 6px; -webkit-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); -moz-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); box-shadow: 0px 0px 5px rgba(36,36,36,0.8);"/>                    
+                        <apex:image value="{!URLFOR($Resource.ListImage)}" rendered="{!directory.Logo_Link__c ==null}" style="width:45px; height:45px; margin-left: 6px; -webkit-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); -moz-box-shadow: 0px 0px 5px rgba(36,36,36,0.8); box-shadow: 0px 0px 5px rgba(36,36,36,0.8);"/>
+                    </div>
+                    <p style= "margin-left:93px; margin-top:7px; font: 26px Arial; color: #333333;"> {!directory.Company_Display_Name__c} </p>    
+                    <p style="margin-left:93px; margin-top:5px; font:16px Arial; color: #333333;"> {!directory.Tagline__c} </p>
+                </div> 
+            </div>
+            <div style="padding-top:20px;"></div>
+                <div class="menu" id="hovermenu" onclick="toggleMenu()">
+                    <ul id="nav" style="width:935px;">
+                        <!-- Active Overview -->
+                        <apex:outputText rendered="{!if(Flag='O', true ,false)}">
+                            <li class='active'>
+                                <apex:outputLink value="/apex/SI_ProviderDetailsPage?id={!Id}&Flag=O&bidID={!bidID}" target="_self" styleClass="marginNavs">
+                                    Overview
+                                </apex:outputLink>
+                            </li>
+                        </apex:outputText>
+                        <!-- InActive Overview -->
+                        <apex:outputText rendered="{!if(Flag!='O', true ,false)}" >
+                         
+                            <li >
+                                <apex:outputLink value="/apex/SI_ProviderDetailsPage?id={!Id}&Flag=O&bidID={!bidID}" target="_self" styleClass="marginNavs">
+                                    Overview
+                                </apex:outputLink>
+                            </li>
+                        </apex:outputText>
+                     
+                        <!-- Active Details-->
+                     
+                         <apex:outputText rendered="{!if(Flag='D', true ,false)}" >
+                            <li class='active'>
+                                <apex:outputLink value="/apex/SI_ProviderDetailsPage?id={!Id}&Flag=D&bidID={!bidID}" target="_self" styleclass="marginMidNavs">
+                                    Details
+                                </apex:outputLink>
+                            </li>
+                        </apex:outputText>
+                        
+                        <!-- InActive Details-->
+                        <apex:outputText rendered="{!if(Flag!='D', true ,false)}" >
+                            <li >
+                                <apex:outputLink value="/apex/SI_ProviderDetailsPage?id={!Id}&Flag=D&bidID={!bidID}" target="_self" styleclass="marginMidNavs">
+                                    Details
+                                </apex:outputLink>
+                            </li>
+                        </apex:outputText>
+                  
+                       <!-- Active Contact-->
+                     
+                         <apex:outputText rendered="{!if(Flag='C', true ,false)}" >
+                            <li class='active'>
+                                <apex:outputLink value="/apex/SI_ProviderDetailsPage?id={!Id}&Flag=C&bidID={!bidID}" target="_self" styleclass="marginMidNavs">
+                                    Contact
+                                </apex:outputLink>
+                            </li>
+                        </apex:outputText>
+                        <!-- InActive Contact -->
+                        <apex:outputText rendered="{!if(Flag!='C', true ,false)}" >
+                        <li>
+                            <apex:outPutLink value="/apex/SI_ProviderDetailsPage?id={!Id}&Flag=C&bidID={!bidID}" target="_self" styleclass="marginMidNavs">
+                                Contact
+                            </apex:outPutLink>
+                        </li>
+                        </apex:outputText>
+                 
+                </ul>
+                <br class="CL" />
+            </div>
+           
+<!-- Start of Overview page descriptions -->
+        <apex:outputPanel rendered="{!Flag='O'}">
+
+        </apex:outputPanel>
+<!-- end of overview page --> 
+<!-- start of Details page -->            
+        <apex:outputPanel rendered="{!Flag='D'}">
+
+        </apex:outputPanel>
+<!--end of details page-->       
+
+<!-- start of contact page -->
+    
+    <div style="margin:25px 0px -10px 20px;">
+        <apex:image value="{!URLFOR($Resource.ProviderDirectoryArrow)}"  style="margin:0px 10px 20px 0px; float:left; height:30px;"/>
+        <apex:outputPanel >
+            <apex:outputLabel value="Thank you for your interest. Your message has been sent." style="font-family: Arial; font-size:18px; line-height:30px; color:#6EBB1F;"></apex:outputLabel>
+        </apex:outputPanel>
+    </div>
+        <div>
+        <apex:outputPanel >   
+            <div class="contactMain" style="padding-bottom:40px; padding-top:25px">
+             <div>
+                <div class="details_container">
+                    <div class="cont_info gray_background" style="margin-left:-28px;"> 
+                        <p style="float:left; margin:20px; color: #333333; font-family: Arial; font-size: 20px; line-height: 24px;">Contact Information</p>                               
+                             <apex:outputPanel rendered="{!directory.Secondary_Email_Address__c !=null}" style="margin-left:125px;">
+                                 <apex:outputLink value="mailto:{!directory.Primary_Email_Address__c}?cc={!directory.Secondary_Email_Address__c}&Subject=AT%26T%20Partner%20Exchange%20Inquiry&apex/SI_ProviderDetailsPage?id={!Id}&bidID={!bidID}" style="padding-left:15px;">
+                                    <apex:actionFunction name="countEmail" oncomplete="location.reload()"/>
+                                    <apex:image value="{!URLFOR($Resource.ProviderDirectoryEmail)}" title="Email" onclick="countEmail();" style="margin-top:15px;"/>
+                                </apex:outputLink>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!directory.Secondary_Email_Address__c ==null}" style="margin-left:125px;">
+                                <apex:outputLink value="mailto:{!directory.Primary_Email_Address__c}&Subject=AT%26T%20Partner%20Exchange%20Inquiry&apex/SI_ProviderDetailsPage?id={!Id}&bidID={!bidID}" style="padding-left:15px;">
+                                    <apex:actionFunction name="countEmail" oncomplete="location.reload()"/>
+                                    <apex:image value="{!URLFOR($Resource.ProviderDirectoryEmail)}" title="Email" onclick="countEmail();" style="margin-top:15px;"/>
+                                </apex:outputLink>
+                            </apex:outputPanel>                               
+                    </div>
+                    <div class="addContact " style="margin-right:45px;">
+                        <p style= "margin-left:20px; margin-top:20px" class="fontStyle">{!directory.Phone_Number__c}</p> 
+                        <p class="secPhMarStyle fontStyle ">{!directory.Phone_Number_Secondary__c}</p>                      
+                            <apex:outputLink value="{!$Label.EventURL}{!directory.Website__c}" target="_blank" id="theLink" style="color:#067ab4;  text-decoration: none; margin-left:20px;">{!directory.Website__c}<br/>
+                            </apex:outputLink>                                     
+                        <p style="color: #ABABAB; font:14px Arial, line-height:17px; font-weight:bold; margin-top:20px; margin-left:20px;"> Headquarters</p>
+                            <p style= " margin-left:20px;">
+                                <apex:outputLabel value="{!directory.City__c}"/>
+                                <apex:outputText value=", " rendered="{!directory.State__c !=null}"/>
+                                <apex:outputLabel value="{!directory.State__c}"/>
+                                <apex:outputText value=" " rendered="{!directory.State__c !=null}"/>
+                                <apex:outputLabel value="{!directory.Country__c}"/>
+                            </p><br />
+                    </div>
+                    <div class="spcBetDivs" style="margin-top:20px;">
+                    </div>
+                </div>                            
+                    <div class="cont_info gray_background" style="">
+                        <p style="margin:20px; color: #333333; font-family: Arial; font-size: 20px; line-height: 24px;">Specialties</p>
+                    </div>
+                    <div class="addContact " style="margin-right:45px;">
+                        <div class="links">
+                            <ul>
+                                <li>
+                                    <span style="color: #ABABAB; font-weight:bold; ">Industries</span>
+                                </li>
+                                <apex:repeat value="{!industries}" var="ins">
+                                    <li>
+                                    <apex:outputLink value="/apex/SI_ProviderDirectory?PName={!SUBSTITUTE(ins,'&','^')}&bidID={!bidID}&type=Industry" style="text-decoration:none;" >
+                                         <apex:outputText value="{!ins}"></apex:outputText>
+                                     </apex:outputLink>
+                                    </li>                              
+                                </apex:repeat>
+                            </ul>
+                        </div>
+                        <div class="links PL20">
+                            <ul>  
+                                <li>
+                                    <span style="color: #ABABAB; font-weight:bold; ">Solutions</span>
+                                </li>
+                                    <apex:repeat value="{!solutions}" var="sol">
+                                        <li>
+                                        <apex:outputLink value="/apex/SI_ProviderDirectory?PName={!SUBSTITUTE(sol,'&','^')}&bidID={!bidID}&type=Solution" style="text-decoration:none;" >
+                                            <apex:outputText value="{!sol}"></apex:outputText>
+                                        </apex:outputLink>
+                                        </li>
+                                    </apex:repeat>
+                             </ul>
+                        </div>
+                   </div>
+                 </div>                
+            </div>
+    </apex:outputPanel>
+    </div>
+<!-- end of contact page-->            
+                <!--- START OF Footer--->                   
+      <c:providerdirectoryfooter ></c:providerdirectoryfooter>    
+                    
+                  
+                <!--- END OF Footer--->
+            
+            <!-- END OF BODY -->
+            
+        </div>
+     <apex:actionFunction name="ViewUpdate" action="{!updateView}">        
+        </apex:actionFunction>
+        <apex:inputhidden value="{!strArticleId}" id="ArticleId"/>
+        <script>
+        vrArticleId=document.getElementById('{!$Component.ArticleId}');
+        </script>       
+    
+    </apex:form>
+    </body>
+</apex:page>

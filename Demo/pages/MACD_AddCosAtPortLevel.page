@@ -1,0 +1,1308 @@
+<apex:page id="AddCOSId" controller="MACD_AddCosAtPortLevelController" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0" title="Add COS At PortLevel" cache="false" >
+<apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+<apex:includeScript value="{!URLFOR($Resource.PortalDesignJS,'vendors/modernizr.js')}" />
+<apex:includeScript value="{!$Resource.atomjqueryjs}" />
+<apex:stylesheet value="{!$Resource.PortalDesignCSS}" />
+<apex:stylesheet value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.css')}" />
+<apex:includeScript value="{!URLFOR($Resource.jQueryUIMin1111, 'jquery-ui.min.js')}" />
+<apex:stylesheet value="{!$Resource.App_CSS}" />
+<apex:stylesheet value="{!$Resource.TextStylesCSS}"/>
+<apex:stylesheet value="{!$Resource.sitedetailsCos_StyleSheet}"/>
+  
+    <style>
+    .mainnav li span {
+        font-size: 16px;
+        float:left;
+    }
+    .mainnav li div .glyphicon {
+        margin-top: 5px;
+        margin-left: 5px;
+        font-size: 10px;
+    }
+    
+
+        .styled-select-small {
+              background-size: 35px 38px;
+         }
+         
+        .ui-widget-header {
+            background: #4ca90c !important;
+        }
+        
+        .ui-slider {
+            height: 1.6em;
+        }
+        
+        .ui-slider .ui-slider-handle {
+            height: 2.2em;
+            width: 0.75em;
+        }
+        
+        .ui-slider-range {
+            background: #99C800;
+        }
+        
+        .greenText {
+            color: green !important;
+            padding: 10px 15px 15px 0px;
+            font-size:0.96em;
+        }
+        #contentWrapper {
+        min-width: 1024px !important;
+        }
+        button.close {
+        font-size: 200%;
+        }
+        .active > a,
+        .active_tab > a {
+        color: #fff;
+        }
+        .active > a,
+        .active_tab > a, .tabbed_menu .mainnav li.active::after {
+        cursor: default; /* Added to ensure the cursor is default for the active tab */
+        }
+        .tabbed_menu .active {
+        background: #056fab;
+        }
+        .tabbed_menu li {
+        padding: 0;
+        min-width: 25%;
+        height: 90px;
+        }
+        
+        .tabbed_menu li a {
+        padding: 20px;
+        display: block;
+        text-align: center;
+        }
+        .tabbed_menu_disabled .circlenum{
+            color: #494E53;
+            border: 1px solid #494E53;
+            background: #C9C9C9;
+            font-weight:bold;
+        }
+        .dataTables_length {
+        display: none;
+        }
+        .dataTables_info {
+        bottom: 22px;
+        position: absolute;
+        right: 180px;
+        }
+        .manage_user_name {
+        width: 17% !important;
+        }
+        .manage_user_contact_name {
+        width: 10% !important;
+        }
+        .manage_user_address {
+        width: 10% !important;
+        }
+        .manage_user_city {
+        width: 10% !important;
+        }
+        .manage_user_state {
+        width: 10% !important;
+        }
+        .manage_user_zip {
+        width: 10% !important;
+        }
+        #manage_content .pagination > a {
+        padding: 5px 10px;
+        font-family: omnes_att_iimedium;
+        line-height: 1.125em;
+        color: #056fab;
+        margin-left: 5px;
+        background: #fff;
+        border: 1px solid #ccc;
+        }
+        #manage_content {
+        width:1100px;
+        }
+        .paginate_enabled_previous,
+        .paginate_enabled_next {
+        cursor: pointer;
+        }
+        .paginate_disabled_previous,
+        .paginate_disabled_next {
+        cursor: no-drop;
+        }
+        .btn {
+        padding: 10px 20px !important;
+        }
+         .buckinputNew{
+        margin-top: -15px;
+        height: 29px !important;
+        margin-bottom: 20px;
+        width: 300px !important;
+        }
+        .btn:hover {
+        background: #fff !important;
+        color: #333;
+        }
+        h1 {
+        font-family: omnesatt_iiregular;
+        margin: 40px 0 20px 0;
+        }
+        .disabled{background-color:white}
+        .mainnav a:hover { color: #428bca !important; }
+        .mainnav .active a { color: #fff !important;cursor: default !important; }
+        tabbed_menu .mainnav li.active::after {
+          text-align: center;
+          content: ' ';
+          display: none;
+          width: 0;
+          height: 0;
+          border-left: 20px solid transparent;
+          border-right: 20px solid transparent;
+          position: absolute;
+          border-top: 14px solid #056fab;
+          bottom: -12px;
+          margin-left: -15% !important;
+          z-index: 99999;
+        }
+        .att_partner_exchange_logo, .begin_quote_icon, .search_button, .reorder_btn, .td_dropdown_arrow, .td_down_arrow, .upload_photo, .left_wedge {
+        background-size: 900px 900px !important;
+        }
+
+        .manage_content-header {
+        font-family: omnes_light; padding:10px 0 10px 5px; font-size:18px; font-weight:bold;
+        }
+        
+        ul.mainnav li.disabled a, ul.mainnav li.disabled a:hover
+        {
+        cursor: default !important;
+        color: #356fab !important;
+        }
+        li.ng-isolate-scope.active::after
+        {
+        cursor: default;
+        }
+        
+        .nscustomer_details{
+        margin-top: 50px;
+        
+        }
+        .ordernum{font-size: 15px;color: #010101;font-family: omnes_att_iimedium;}
+        .ConfigLabelMainHeading{margin-left: 4px ;margin-top:15px;line-height: 1.71em; font-size: 2em;font-family:omnes_att_iilight ;color:#040404 !important;}
+        .ConfigHeadingLabel{margin-left: 30px ;margin-top:5px;line-height: 1.71em; font-size: 2em;color:#000000 !important;}
+        .SitePricingStyle{margin-left: 30px ;line-height: 1.18em; font-size: 1.38em;font-family:omnes_att_iimedium !important;color:#000;}
+        .ConfigLabels{margin-left: 30px ;line-height: 1.07em; font-size: 1.13em;font-family:omnes_att_iimedium !important;color:#000;font-style:bold;}
+        .ConfigDesc{margin-left: 30px ;line-height: 1.21em; font-size: 18px;color:#000;}
+        .fonttxtSty{line-height: 0.36em; font-size: 1.10em;font-family:omnes_att_iimedium !important;font-weight:500 !important;color:#000000}
+        .fonttxtStyLabel{line-height: 1.71em; font-size: 1.10em;font-family:omnes_att_iimedium !important;font-weight:500 !important;color:#000000}
+        .ConfigLabelsVal{line-height: 1.3em; font-size: 1.13em;font-family:omnes_att_iimedium !important; font-weight:normal;color: #ff8d00;}
+        .ConfigData {font-family: omnesatt_iiregular !important;font-size: 17px;color:#000000;font-style:bold;text-align:left;line-height :1.71em;letter-spacing:0 em; effect:none;}
+
+        #manage_content label, .manage_content label {
+          margin-left: 0px !important;
+          margin-bottom: 10 px;
+        }
+        .nscustomer_details li{
+        display:inline;
+        }
+         hr { 
+        display: block;
+        margin-top: 26px;
+        margin-bottom: 0.5em;
+        margin-left: auto;
+        margin-right: auto;
+        border-width: 1px;
+        margin-top: 13px;
+        margin-bottom: 20px;
+         } 
+        .circlenumConfirm {
+        float: left;
+        margin: 4px 7px 0 0;
+        width: 25px;
+        height: 25px;
+        border-radius: 15px;
+        font-size: 10px;
+        color: #428bca;
+        line-height: 25px;
+        text-align: center;
+        border: 1px solid #428bca;
+        }
+        .currPortSpeedCss {color:#2E9AFE;}
+        .tabbed_menu li { background-color:#d7d7d7;}
+        tabbed_menu .mainnav li.Pric::after { margin-left: -40% !important; 
+        }
+        tabbed_menu .mainnav li.confId::after {margin-left: -27% !important; }
+        .ConfigTableHeaders{height:25px; width:230px; background-color: white;}
+        .ConfigLabelsHeading{line-height: 0.96em; font-size: 1.17em;font-family:omnes_att_iimedium !important;color: black !important;font-weight: bold;margin-top:10px;}
+        .ReviewLabelsHeading{line-height: 1.18em; font-size: 22px;font-family:omnes_att_iimedium !important;font-weight:bold;}
+        .ReviewLabelsText{line-height: 1.3em;font-family:omnes_att_iimedium !important;font-weight:bold;}
+         .glyphicon1 {background: url('{!$Resource.questionMarkInfo}') no-repeat scroll 5px -40px; cursor:pointer;}
+        .tabbed_menu li:hover {
+          color: #505050;
+          cursor: default;
+        }
+        ul li, ol li {
+          margin-left: 0em;
+          padding-left: 0;
+        }
+        .ml20{margin-left:20px;}
+        
+       .greentxtThankYouSty{
+        font-family: omnesatt_iiregular;
+        font-size: 2em;
+        line-height: 1.71em;
+        color: rgb(60, 171, 0);
+        margin-top: -10px !important;
+        margin-bottom: 16px !important;
+        }
+        .mainnav a:hover {
+          color: #FFF !important;
+        }
+        .gray_hr_line {
+            height: 1px;
+            background: none repeat scroll 0% 0% #B0A9A9;
+        }
+        .styled-select-small select {
+            padding: 3px;
+            -moz-appearance:none;
+        }
+        .cosSliderLabelsProgress {
+            position: absolute;
+            top: 8px;
+            left: 40px;
+            z-index: 2;
+            color: Black;
+            font-family: omnes_light;
+            font-size: 15px;
+            font-weight:bold;
+        }
+        
+        .cosSliderLabelsMax {
+            position: absolute;
+            top: 8px;
+            right: 20px;
+            z-index: 2;
+            color: #4ca90c;
+            font-family: omnes_light;
+            font-size: 15px;
+            font-weight:bold;
+        } 
+        .tabbed_menu .mainnav li{
+         padding: 21px 0px 0px !important;
+         height: 61px !important;
+         font-size: 18px;
+        }
+         .reviewLabels{
+        margin-top: 10px !important;
+        font-family: omnesatt_iiregular !important;
+        font-size:17px;
+        }
+        .reviewLabelsOrange{
+        margin-top: 10px !important;
+        font-family: omnes_att_iimedium !important
+        font-size:18px;
+        color:#ef6f00;
+        }
+    </style>
+    <div class="content_container subpage_main-container">      
+        <div id="manage_content" style="padding: 0; margin-left:0; margin-right:0; background-color: #F0F0F0;" class="page ng-scope" ng-controller="QuoteController as beginQuote">
+            <apex:outputPanel id="configload" >  
+                <div class="" style="margin-top: 30px;   background-color: #F0F0F0; height:26px">                
+                    <h4 class="manage_content-header"><p class="ordernum" style="margin-top: 0px;margin-left: 24px;font-weight:normal;">Order Number : {!orderNumber}</p></h4>                
+                </div>
+            </apex:outputPanel>   
+            
+            <div id="main" class="row tabbed_menu" style="margin-top: 24px;">
+                <div class="col-xs-12 col-md-12">
+                    
+                    <ul class="mainnav" role="tablist">
+
+                        <li class="active whiteBack" style="min-width:25%;">
+                            <a href="#selectCust" data-name="selectCust" data-tabName="Select Customer" role="tab" data-toggle="tab" ><div class="circlenum" style="margin-left: 76px;" id="circlenumconfRem">1</div> <span>Configure</span> </a>
+                        </li>
+                        <li class="revReq" style="min-width:25%;">
+                            <a href="#selectProd" data-name="selectProd" data-tabName="Review Request" role="tab" data-toggle="tab" ><div class="circlenum" style="margin-left: 70px;">2</div> <span>Review Request</span> </a>
+                        </li>
+                        <li class="Pric" id="priceSchd" style="min-width:25%;">
+                            <a href="#enterAddress" data-name="enterAddress" data-tabName="Review Pricing Schedule" role="tab" data-toggle="tab" ><div class="circlenum" id="cirId" style="margin-left: 40px;">3</div><apex:image id="tabActiveIconId" value="{!$Resource.tickMarkBlueIcon}" style="display:none;float: left;  margin-left: 10px;  margin-top: -8px;"/><span>Review Pricing Schedule</span></a>
+                        </li>
+                        <li id="confId" style="min-width:25%;">
+                            <a href="#configSites" data-name="configSites" data-tabName="View Confirmation Information" role="tab" data-toggle="tab" id="circlenumconfText"><div class="circlenum" style="margin-left: 10px;" id="circlenumconf">4</div> <span>View Confirmation Information</span> </a>
+                        </li>
+                    </ul>
+                </div>
+                <apex:image styleClass="caretIconConfig" value="{!$Resource.caretIcon}" style="margin-left: 122px; height: 20px; width: 56px;  margin-top: -8px;"/>
+                <apex:image styleClass="caretIconReview" value="{!$Resource.caretIcon}" style="display:none;margin-left: 386px; height: 20px; width: 56px;   margin-top: -8px;"/>
+                <apex:image styleClass="caretIconPricing" value="{!$Resource.caretIcon}" style="display:none;margin-left: 653px; height: 20px; width: 56px;   margin-top: -8px;"/>
+                <apex:image styleClass="caretIconConfirm" value="{!$Resource.caretIcon}" style="display:none;margin-left: 945px; height: 20px; width: 56px;   margin-top: -8px;"/>
+            </div>
+            <apex:form id="addCosFormId">
+                <apex:outputPanel id="addCosTabContent" rendered="{!!isDocusignFlag}" >  
+                    <div class="tab-content">
+                        <div class="tab-pane fade in active" id="selectCust">
+                            <apex:outputPanel id="addCosConfigPanelId">
+                                <div>
+                                   <div class="col-xs-12 col-md-12 ConfigHeadingLabel" style="margin-left: 35px;font-family: omnes_light;">
+                                        Configure Class of Service Profile ID 
+                                    </div>  
+                                    <div class="row m0" ></div>
+                                   
+                                    <P class="ConfigDesc" style="margin-left:50px;margin-top: 19px;margin-right:25px;font-family: omnes_light;">Add Class of Service (CoS) and configure your Profile ID by moving  the Real-Time Percentage slider bar.  Then select the value in the Profile ID dropdown menu. Click <Strong>Apply &amp; Continue</Strong>. Click <Strong>Cancel</Strong> if you want to cancel without adding Class of Service.</P> <br/> 
+                                </div>
+                                 <div class="col-xs-7 col-md-7" style="margin-left: 131px; margin-top:  -13px;">
+
+                                                <div class="m-t-20">
+                                                <p style="margin-bottom: 10px;font-weight:bold;margin-left: -35px;font-family: omnes_att_iimedium !important;"> <b> Step 1:Real-Time Percentage:</b></p> 
+                                                </div>
+                                                <div class="col-xs-12 col-md-12" id="cosSlider" style="width: 800px;height: 31px !important;">
+                                                     <div class="cosSliderLabelsProgress">
+                                                        <span id="cosSliderPrgs" style="font-family: omnes_att_iimedium !important;"><apex:outputLabel rendered="true"/>0%</span>
+                                                    </div>
+                                                    <div class="cosSliderLabelsMax">
+                                                        <span id="cosSliderMax">100 %</span>
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="width:828px">
+                                                <span class="col-xs-1" style="width: 8%;">|</span>
+                                                <span class="col-xs-10" style="text-align:center; ">|</span>
+                                                <span class="col-xs-1" style="padding-left:52px;">|</span>
+                                                </div>
+                                                <div class="row" style="width:840px;font-weight:bold;font-family: omnes_att_iimedium !important;">
+                                                <span class="col-xs-1" style="margin-left: -2px;">0</span>
+                                                <span style="margin-left: 333px;">50</span>
+                                                <span style="margin-left: 367px;">100</span>
+                                                </div>     
+                                                </div>
+
+                                             
+
+                                             <div class="col-xs-7 col-md-7">
+                                                <div class="m-t-20">
+                                                    <p style="margin-bottom: 6px; margin-top: 35px; margin-left: 96px;font-weight:bold;font-family: omnes_att_iimedium !important;"><b>Step 2:Profile ID:</b></p>
+                                               </div>
+                                                <div>
+                                                    <apex:outputPanel id="misprofileSelect">
+                                                        <apex:selectList id="slCosProfile" rendered="true" value="{!selectedIngressProfileId}"  styleclass="form-control requiredSelectField styled-select-small select slCosProfileClass" style="width: 652px;padding-left: 0px;-moz-appearance:none;-webkit-appearance: none;font-size:16px;height: 38px;margin-left: 96px;width:875px !important;font-family: omnes_att_iimedium !important;"  multiselect="false" size="1">
+                                                             <apex:selectOptions value="{!listOptionsCosProfileId}" />
+                                                             <apex:actionSupport event="onchange" action="{!validateAndEnableApplyAndSave}" reRender="cosConfigContinueBtn" oncomplete="enableApply(this.value);validatePage3Submit();" />
+                                                        </apex:selectList>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </div>
+
+                                            
+                                            <apex:actionFunction name="getCosprofiles" action="{!initConfigPanel}" reRender="slCosProfile,cosConfigContinueBtn,misprofileSelect" status="loading">
+                                                <apex:param name="slidervalue" value="" assignTo="{!SelectedSliderValue}" />
+                                            </apex:actionFunction>
+                                    
+                                    <apex:outputPanel id="updatecoschart">
+                                                                
+                                                                <div class="m-t-20">
+                                                                
+                                                                
+                                                                <div class="col-xs-7 col-md-7" style="margin-top: -143px;">
+                                                            
+                                                                </div>
+                                                                
+                                                                 <div class="row">
+                                                               <div class="col-xs-12" style="margin-top: 27px;margin-bottom: 34px;">
+                                                                <hr class="gray_hr" style="margin-bottom: 22px;" />
+                                                                </div>
+                                                                
+                                                                 <div class="col-xs-2 p0" style="margin-left: 44%;text-align: center;margin-top:-8px;">
+                                                               <apex:commandLink value="Cancel Request" action="{!Cancelrequest}" status="loading" immediate="true" /> 
+                                                              <apex:actionFunction name="doCOSAddContentRefreshAJAX" action="{!getPremiseDetails}" reRender="addCosConfigPanelId,configload"  status="loading" />
+                                                             </div>
+
+                                                              
+                                                             <div class="pull-right text-right" style="margin-right: 71px;margin-top: -18px;margin-bottom: 43px;font-family:omnes_light">
+                                                               
+                                                                <apex:commandButton id="cosConfigResetBtn" status="loading" value="Reset"  onClick="resetAll();" rerender="addCosTabContent"  style="font-size: 16px; margin-left: 10px !important; padding: 0px 10px !important; width:150px !important; height:35px !important;margin-right: 105px !important;" />
+                                                                <apex:commandButton id="cosConfigContinueBtn" status="loading" value="Apply & Save" action="{!initReviewPanel}" disabled="{!enableDisableApplyContinue}" rerender="addCosReviewPanel" oncomplete="toggleToReviewPanel();" styleClass="btn secondary pull-right" style="font-size: 16px;margin-left: -80px !important;padding: 0px 10px !important;width: 172px !important;height: 35px !important; font-family:omnes_light;" />  
+                                                      
+                                                            </div>
+                                                            </div>
+                                                      </div>
+
+                                                      </apex:outputPanel>
+
+                                                           <script type="text/javascript">
+                                                                function updateSliderAVPN() {
+                                                               
+                                                                    $("#cosSlider").slider({
+                                                                        value: 0,
+                                                                        range: "min",
+                                                                        animate: false,
+                                                                        step: 5,
+                                                                        change: function (event, ui) { 
+                                                                       getCosprofiles(ui.value);  
+                                                                         $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                         setTimeout(function () {
+                                                                        setIntervalForSpin();
+                                                                        }, 10);
+                                                                       if(ui.value == 55){
+                                                                       ui.value = ui.value -5;
+                                                                        
+                                                                        getCosprofiles(ui.value); 
+                                                                        $("#cosSlider").slider({
+                                                                        value: 50
+                                                                         }); 
+                                                                         $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                         setTimeout(function () {
+                                                                        setIntervalForSpin();
+                                                                        }, 10);
+                                                                      } 
+                                                                     else if(ui.value == 65){
+                                                                      ui.value = ui.value -5;
+                                                                     getCosprofiles(ui.value);  
+                                                                      $("#cosSlider").slider({
+                                                                      value: 60
+                                                                         });    
+                                                                      $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                      setTimeout(function () {
+                                                                        setIntervalForSpin();
+                                                                        }, 10);
+                                                                       }
+                                                                    else if(ui.value == 75){
+                                           
+                                                                     ui.value = ui.value -5;
+                                                                     
+                                              
+                                                                     getCosprofiles(ui.value);  
+                                                                     $("#cosSlider").slider({
+                                                                       value: 70
+                                                                       });
+                                                                       $("#cosSliderPrgs").text(ui.value + ' %'); 
+                                                                       setTimeout(function () {
+                                                                        setIntervalForSpin();
+                                                                        }, 10); 
+                                            
+                                                                      }
+                                                                   
+                                                                   else if(ui.value ==85){
+                                          
+                                                                    ui.value = ui.value -5;
+                                            
+                                                                     getCosprofiles(ui.value);  
+                                                                       $("#cosSlider").slider({
+                                                                       value: 80
+                                                                      });
+                                                                      $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                      setTimeout(function () {
+                                                                        setIntervalForSpin();
+                                                                        }, 10);  
+                                            
+                                                                      }
+                                                                      else if(ui.value ==95){
+                                          
+                                                                      ui.value = ui.value -5;
+                                            
+                                                                      getCosprofiles(ui.value);  
+                                                                      $("#cosSlider").slider({
+                                                                        value: 90
+                                                                      });  
+                                                                       $("#cosSliderPrgs").text(ui.value + ' %');    
+                                                                       setTimeout(function () {
+                                                                        setIntervalForSpin();
+                                                                        }, 10);
+                                            
+                                                                      }
+                                                                      else if(ui.value ==100){
+                                          
+                                                                      ui.value = ui.value -10;
+                                            
+                                                                      getCosprofiles(ui.value);  
+                                                                      $("#cosSlider").slider({
+                                                                        value: 90
+                                                                      });
+                                                                       $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                       setTimeout(function () {
+                                                                        setIntervalForSpin();
+                                                                        }, 10);    
+                                                                       
+                                                                       }      
+                                                                   
+                                                                        }
+                                                                    });
+                                                                }
+                                                                
+                                                                function updateSliderMIS() {
+                                                              
+                                                                    $("#cosSlider").slider({
+                                                                        value: 0,
+                                                                        range: "min",
+                                                                        animate: false,
+                                                                        step: 10,
+                                                                        change: function (event, ui) { 
+                                                                       
+                                                                       getCosprofiles(ui.value);  
+                                                                      $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                      setTimeout(function () {
+                                                                        setIntervalForSpin();
+                                                                        }, 10);   
+                                                                       if(ui.value == 30){
+                                                                       ui.value = ui.value -10;
+                                                                        
+                                                                        getCosprofiles(ui.value);  
+                                                                        $("#cosSlider").slider({
+                                                                        value: 20
+                                                                         });     
+                                                                        $("#cosSliderPrgs").text(ui.value + ' %');
+                                                                        setTimeout(function () {
+                                                                        setIntervalForSpin();
+                                                                        }, 10);      
+                                                                      } 
+                                                                     else if(ui.value == 70){
+                                                                      ui.value = ui.value -10;
+                                                                     getCosprofiles(ui.value);  
+                                                                      $("#cosSlider").slider({
+                                                                      value: 60
+                                                                         });
+                                                                       $("#cosSliderPrgs").text(ui.value + ' %'); 
+                                                                       setTimeout(function () {
+                                                                        setIntervalForSpin();
+                                                                        }, 10);          
+                                                                       }
+                                                                   
+                                                                      else if(ui.value ==100){
+                                          
+                                                                      ui.value = ui.value -10;
+                                            
+                                                                      getCosprofiles(ui.value);  
+                                                                      $("#cosSlider").slider({
+                                                                        value: 90
+                                                                      });
+                                                                      $("#cosSliderPrgs").text(ui.value + ' %'); 
+                                                                      setTimeout(function () {
+                                                                        setIntervalForSpin();
+                                                                        }, 10);   
+                                                                       }      
+                                                                      
+                                                                        
+                                                                        }
+                                                                    });
+                                                                }
+                                                                 var productTypeVal= '{!cosProductName}';
+                                                               if(productTypeVal == 'AVPN'){
+                                                                updateSliderAVPN();
+                                                                }else
+                                                                {
+                                                                updateSliderMIS();
+                                                                }
+                                                            
+                                                            </script>  
+                                
+                                                             
+                            </apex:outputPanel>       
+                        </div>
+                        
+                        
+                              <!-- Review Page Content -->
+                    <div class="tab-pane fade" id="selectProd" style="height:auto;margin-top:18px;">
+                        <apex:outputPanel id="addCosReviewPanel">
+                            <div class="ConfigLabels" style="margin-left:25px;margin-top:-20px;margin-bottom:-20px;font-size:2.7em !important;font-family: omnes_light !important;font-weight:bold;line-height:1.71em;color:#040404 !important">Review Request</div>
+                            <hr style="margin-top:65px;margin-top:40px"/>
+                            <div class="ConfigData" style="margin-left:25px;margin-right:25px;font-family: omnes_light !important; font-size:18px;font-style:bold;line-height :1.17em;margin-top: 32px;">To configure your proposed Class of Service (CoS) Profile ID before getting a pricing schedule addendum, click <strong style="font-family: omnes_light !important;font-weight:bold">Reconfigure CoS</strong>. To continue with the proposed addition of CoS using the configured Profile ID, click <strong style="font-family: omnes_light !important;font-weight:bold">Apply &#38; Continue.</strong></div>.
+                            <div id="addOptions">
+                                <div class="row m0" style="margin-top: -7px;">
+                                     <div class="col-xs-4 col-md-4 border-right border-height" style="width:510px; margin-top:31px;margin-left:12px;">                                
+                                        
+                                        <div class="ReviewLabelsHeading" style="margin-left:2px">Current</div>
+                                        <div class="ConfigData" style="margin-bottom: -16px;">Site Pricing Summary:</div>
+                                        <br/>                                
+                                     
+                                      <table>
+                                       <tr style="{!IF(displayVlanLogicalFee == true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels" value="VLANs/Logical Channels:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="${!currentVlanLogicalFee}/mo}" /> 
+                                        </td>
+                                        </tr>
+                                        
+                                        <tr style="{!IF(displayClasOfService== true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="Class of Service :" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px; ">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="${!currentClassOfServiceFee}/mo" /> 
+                                        </td>
+                                        </tr>
+                                        
+                                        <tr style="{!IF(displayPortSpeedFee== true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="Port Speed @{!currentPortSpeed}:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px; ">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="${!CurrentPortSpeedFee}/mo" />
+                                        </td>
+                                        </tr>
+                                        
+                                        <tr style="{!IF(displayMBCFee== true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="Minimum Bandwidth Commitment @ {!mbc}" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px; ">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="${!CurrentMBCSpeedFee}/mo*" />
+                                        </td>
+                                        </tr>
+                                        
+                                        <tr style="{!IF(displayAccessSpeedFee== true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels" value="Access speed @{!currentAccessSpeed}:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px; ">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="${!CurrentAccessSpeedFee}/mo" /> 
+                                        </td>
+                                        </tr>
+                                        
+                                        
+                                        <tr style="{!IF(displayAdditionalDNSFee== true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels" value="Additional DNS:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels" value="${!CurrentAdditionalDNSFee}/mo" /> 
+                                        </td>
+                                        </tr>
+                                        
+                                          <tr style="{!IF(displayOnetimeFee== true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="One-Time Charges Total:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right; margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels" value="${!CurrentOneTimeFee}" />
+                                        </td>
+                                        </tr>
+                                       
+                                        
+                                        <br/> 
+                                        
+                                        <tr style="width: 483px;">
+                                        <td style="float:left;width:350px;margin-top:15px;margin-top: 40px;margin-bottom: 40px;font-weight: bold;">
+                                        <apex:outputLabel styleclass="reviewLabels" value="Total Before Discount:" />
+                                        </td> 
+                                        <td style="float:right;width:130px;text-align: right; margin-top:15px;margin-top: 36px;margin-bottom: 40px;font-weight: bold;">
+                                        <apex:outputText styleClass="reviewLabels" value="${0, number, ###,###,##0.00}/mo"><apex:param value="{!currrentSiteTotalPrice}"/></apex:outputText>
+                                        </td>
+                                        </tr>
+                                        
+                                         
+                                        <br/>
+                                        
+                                         <tr style="{!IF(displayCurrentSpDisc == true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabelsOrange"  value="Additional Discount:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right; margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabelsOrange"  value="-${!currentSpDiscount}/mo" />
+                                        </td>
+                                        </tr>
+                                        
+                                        
+                                        <tr style="{!IF(displayCurrentDealRegDisc == true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;margin-bottom: 25px !important;">
+                                        <apex:outputLabel styleclass="reviewLabelsOrange"  value="Deal Registration Discount:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right; margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabelsOrange"  value="-${!currentDealRegDiscount}/mo" />
+                                        </td>
+                                        </tr>
+                                        
+                                          <br/> 
+                                          <br/> 
+                                          <br/> 
+                                           <br/> 
+                                        
+                                         <tr style="width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;margin-bottom: 8px;font-weight:bold;">
+                                        <apex:outputLabel styleclass="reviewLabels" value="Current Site Total:" />                                        
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right; margin-top:15px;margin-bottom: 8px;font-weight:bold;">
+                                        <!--<apex:outputLabel styleclass="reviewLabels"  value="${!currentTotalAfterDiscount}/mo" />-->
+                                        <apex:outputText styleclass="reviewLabels" value="${0, number, ###,##0.00}">
+                                        <apex:param value="{!currentTotalAfterDiscount}"/>
+                                        </apex:outputText>
+                                        </td>
+                                        </tr>
+                                         </table>
+                                       
+   
+                                      </div>
+                                    <div style="border-left: 1px solid gray; height: 325px; position: absolute; margin-left: 530px;margin-top: 39px;"></div>
+                                    
+                                    <div style="height: 230px; position: absolute; margin-left: 500px;"></div>
+                                    <div class="col-xs-4 col-md-4" style="width:480px;margin-top:16px;margin-left:24px">                         
+                                        <br/>
+                                        <div class="ReviewLabelsHeading" style="margin-left:2px">Proposed</div>
+                                        <div class="ConfigData" style="margin-bottom: -18px;">Site Pricing Summary:</div>
+                                        <br/>
+                                          <table>
+                                        <tr style="{!IF(displayProposedVlanLogicalFee== true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="VLANs/Logical Channels:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="${!proposedVlanLogicalFee}/mo" /> 
+                                        </td>
+                                        </tr>
+                                        
+                                        <tr style="{!IF(displayProposedCosFee== true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="Class of Service:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px; ">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="${!proposedClassOfServiceFee}/mo" /> 
+                                        </td>
+                                        </tr>
+                                        
+                                        <tr style="{!IF(displayProposedPortSpeedFee== true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="Port Speed @{!currentPortSpeed}:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px; ">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="${!ProposedPortSpeedFee}/mo" />
+                                        </td>
+                                        </tr>
+                                         
+                                         
+                                        <tr style="{!IF(displayProposedMBCFee== true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="Minimum Bandwidth Commitment @ {!mbc}" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px; ">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="${!proposedMBCPortSpeedFee}/mo*" />
+                                        </td>
+                                        </tr>
+                                        
+                                        <tr style="{!IF(displayProposedAccessSpeedFee== true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="Access speed @{!currentAccessSpeed}:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px; ">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="${!ProposedAccessSpeedFee}/mo" /> 
+                                        </td>
+                                        </tr>
+                                        
+                                        <tr style="{!IF(displayProposedAdditionalDNSFee== true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="Additional DNS:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px; ">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="${!proposedAdditionalDNSFee}/mo" /> 
+                                        </td>
+                                        </tr>
+                                        
+                                        <tr style="width: 483px;">
+                                        <td style="float:left;width:350px;margin-top:15px;margin-top: 40px;margin-bottom: 40px;font-weight: bold;">
+                                        <apex:outputLabel styleclass="reviewLabels" value="Total Before Discount:" />
+                                        </td> 
+                                        <td style="float:right;width:130px;text-align: right;margin-top:15px;margin-top: 36px;margin-bottom: 40px;font-weight: bold; ">
+                                        <apex:outputText styleClass="reviewLabels" value="${0, number, ###,###,##0.00}/mo"><apex:param value="{!ProposedSiteTotalPrice}"/></apex:outputText>
+                                        </td>
+                                        </tr>
+                                        
+                                        
+                                        <tr style="{!IF(displayPropSpDisc == true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabelsOrange"  value="Additional Discount:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px; ">
+                                        <apex:outputLabel styleclass="reviewLabelsOrange" value="-${!proposedSpDiscount}/mo" /> 
+                                        </td>
+                                        </tr>
+                                        
+                                        <tr style="{!IF(displayPropDealRegDisc == true, 'display:block;', 'display:none;')}width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;margin-bottom: 25px !important;">
+                                        <apex:outputLabel styleclass="reviewLabelsOrange"  value="Deal Registration Discount:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;text-align: right;margin-top:15px;">
+                                        <apex:outputLabel styleclass="reviewLabelsOrange"  value="-${!proposedDealRegDiscount}/mo" /> 
+                                        </td>
+                                        </tr>
+                                        
+                                        <tr style="width: 483px;">
+                                        <td style="float:left;width:359px;margin-top:15px;margin-bottom: 8px;font-weight:bold;">
+                                        <apex:outputLabel styleclass="reviewLabels"  value="Proposed Site Total:" />
+                                        </td> 
+                                        <td style="float:right;width:123px;margin-top:15px;text-align: right;margin-bottom: 8px;font-weight:bold; ">
+
+                                        <apex:outputText styleclass="reviewLabels" value="${0, number, ###,##0.00}">
+                                        <apex:param value="{!proposedTotalAfterDiscount}"/>
+                                        </apex:outputText> 
+                                        </td>
+                                        </tr>
+                                        
+                                        </table>
+                                         </div>                      
+                                </div>
+                                
+                                 <hr style="margin-top:30px;margin-bottom:40px;" />
+                            <div style="margin-top: -26px;font-size: 14px;margin-left: 33px;font-weight: bold;"> <apex:outputText rendered="{!overMBCMsgFlag}" value="*Overage billing may apply."></apex:outputText></div>
+                            
+                            <div class="col-xs-12" style="margin-left: 33px;">                                                       
+                                 <p class="fine-print">All prices shown are pre-tax.</p>
+                            </div>                           
+                            
+                             <div style="margin-right: 60px;margin-left: 18px;margin-top: 22px;font-size: 16px; padding-bottom: 55px !important;">
+                                <apex:commandlink value="Cancel" action="{!CancelRequest}" style="  padding-left: 15px; margin-left: 520px;color:#056fab; padding: 0px 0px !important;color: #2E9AFE;border:none;" /> 
+                                <apex:commandButton status="loading" value="Apply & Continue" action="{!finalizeAndSubmit}" reRender="" styleClass="btn secondary pull-right" style="padding: 0px 20px !important;margin-left: 15px;width: 172px !important;height: 40px; margin-top: -10px;" oncomplete="toggleToReviewPricingPanel();scrolltomacd();" disabled="false"/>
+                                <input type="Button" value="Reconfigure CoS" onclick="goBackToFirstStep();"  Class="btn secondary pull-right" style="padding: 0px 20px !important;width: 172px !important;height: 40px;margin-top: -10px;color: #666;background: #FFFFFF;border: 1px solid #666 !important;" />
+                            </div>
+                            </div>
+                                                           
+                        </apex:outputPanel>
+                          </div>                        
+                                    <div class="tab-pane fade" id="enterAddress">
+                                       <apex:outputPanel rendered="{!pricingScheduleFlag}" >
+                                <style>
+                                     ul.mainnav li.disabled a. {
+                                      cursor: default !important;
+                                      color: #fff !important;
+                                    }
+                                    
+                                </style>
+                                <script>
+                                      $("#revReqPriSchd").css("color","#fff");      
+                                </script>
+                                </apex:outputPanel>
+                                <!-- Radhika update cos vlan pricing -->
+                                        <div class="row m0 m-t-20" style="margin-top: 10px;height:auto;">
+                                            <div class="p0" id="isTermsOpen" style="margin:0px;">
+                                               
+                                                <!-- radhika changes start -->
+                                                <h3 class="section_headerfont_light section_headerPositionAC" id="header_3Page">{!$Label.MACD_Review_Pricing_Label}</h3>
+                                                <hr class="BlackHrAC lineAdjust" />
+                                   
+                                   <!-- Non-approver -->
+                                           <apex:outputPanel rendered="{!!isApprover}">
+                                               <p class="param1_position param1_font">{!$Label.MACD_Non_Approver_Param1}</p>
+                                               <div class="param2_positionRCLink_NONAPP" > 
+                                                <apex:commandLink value="{!$Label.Pricing_Schedule_Addendum_Label}" action="{!contractSign}" immediate="true" styleClass="attLinkBlue attLinkBlueLineHeight" style="line-height:0px !important;font-size: 18px;" reRender="addCosFormId,pricingScheduleSectionID" status="loading" oncomplete="scrolltomacd();"></apex:commandLink>
+                                                </div>
+                                           </apex:outputPanel>
+                                           <!-- Approver --> 
+                                           <apex:outputPanel rendered="{!contractSigned && !signingStatus && !contractRead && isApprover}">
+                                              <div class="errorMsg m-b-20" style="margin-left: 50px;margin-top:38px;">
+                                                  {!$Label.MACD_Flow_DocSign_ErrorMsg}
+                                              </div>
+                                           </apex:outputPanel>
+                                           <apex:outputPanel rendered="{!!contractRead && isApprover}">
+                                              <p class="param1_position param1_font">Click on<strong> Go to Pricing Schedule Addendum </strong>link to view and electronically sign.</p>
+                                           </apex:outputPanel> 
+                                           <apex:outputPanel rendered="{!contractRead && isApprover}">
+                                                <div id="waitingDiv" class="param1_position param1_font" style="display:none; margin-top:40px;margin-left:50px;">Please wait while we submit your order.
+                                                </div>
+                                            </apex:outputPanel>
+                
+                                           <apex:outputPanel rendered="{!contractRead && isApprover}">
+                                               <p id='approverTerm1' class="param1_positionRC param1_font">To review click &nbsp; <apex:commandLink value="{!$Label.Pricing_Schedule_Addendum_Label}" action="{!contractSign}" immediate="true" styleClass="attLinkBlue_18PX"  reRender="addCosFormId,pricingScheduleSectionID" status="loading" oncomplete="scrolltomacd();"></apex:commandLink></p>
+                                               <p id='approverTerm2' class="param2_positionRC  param1_font" style="margin-left:50px;">Please click <strong>Submit Order</strong> to continue.</p>
+                                           </apex:outputPanel> 
+                                           
+                                           <!-- radhika condtion changes end -->
+
+                                 <!-- Add cos Submit Button -->
+                                        <apex:outputPanel id="SpeedChangeSubmitButtonSection">
+                                            <hr class="{!IF(contractRead ==false && isApprover,'hrMTB','hrMTBRC')}" />
+                                             <div class="row m0" style="margin:0px; {!IF((isApprover == true && contractRead == false) ,'height:53px;margin-top:-4px;','height:72px')}">
+                                                 <div class="col-xs-6" style="float:right;margin-top: 1px;">
+                                                     <apex:outputPanel id="SubmitForApprovalButtonSection" rendered="{!!isApprover}">
+                                                         <apex:commandButton value="{!submitLabel}" action="{!redirectToThank}"  styleClass="btn secondary pull-right submitbutton_position" style="padding: 0px 20px !important; " status="loading" />
+                                                     </apex:outputPanel>
+                                                     <apex:outputPanel id="SubmitButtonSectionApprover" rendered="{!(contractRead && isApprover)}">
+                                                         <apex:commandButton value="{!submitLabel}" action="{!redirectToThank}"  styleClass="btn secondary pull-right submitbutton_position" style="padding: 0px 20px !important;" status="loading" onclick="showWaitingDiv();showProcessingLabel(this);" reRender="loading"/>
+                                                     </apex:outputPanel>
+                                                     <apex:outputPanel rendered="{!!contractRead && isApprover}">
+                                                            <apex:commandLink id="pricingschedule" value="{!$Label.Go_To_Pricing_Schedule_Addendum_Label}" rendered="{!!contractRead && isApprover}" action="{!contractSign}" status="loading" reRender="addCosFormId,pricingScheduleSectionID" oncomplete="scrolltomacd();" immediate="true" styleClass="attLinkBlue attLinkBlueLineHeight pull-right pslink_position"></apex:commandLink>
+                                                     </apex:outputPanel>
+                                                    <apex:commandLink value="Cancel Request" Styleclass="{!IF(isApprover == true && contractRead == false,'pull-left cancelLink_AppPS','pull-right cancelLink_nonApp')} attLinkBlueLineHeight "  action="{!cancelRequest}" />
+                                                  </div>
+                                             </div>
+                                        </apex:outputPanel> 
+                                  
+                               <!--    </apex:pageBlock>  -->
+                                    
+                                </div>
+                                
+                            </div>                 
+                             
+
+                        </div>
+
+                        <!------------------ Thank you panel ---------------------------- -->                                
+                         <div class="tab-pane fade" id="configSites" style="{!IF((isApprover == true && showDenialReason==false) ,'height:368px;','height:346px;')}">                            
+                            <div class="row m0">
+                                <apex:outputPanel rendered="{!!showDenialReason}" >
+                                    <div class="thankyoulabelFont thankyoulabelPositionRC" >Thank you!</div>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!showDenialReason}" >
+                                     <div class="thankyoulabelFont thankyoulabelPositionRC" >Submission received.</div>
+                                </apex:outputPanel> 
+                            </div>  
+                            
+                           <hr class="hrColor lineAdjust m0" />
+                            <!------------------ Thank you panel ---------------------------- -->                                
+                            
+                            
+                            <div style="margin: 37px 0px 39px 50px;">     
+                                <apex:outputPanel rendered="{!isApprover && !showDenialReason}">                  
+                                    <div>
+                                        <p class="param1_font m0" style="padding-bottom:5px;">{!$Label.MACD_PS_Thank_Param1}&nbsp;{!orderNumber}.</p>
+                                         <p class="param1_font m0">{!$Label.MACD_PS_Thank_Param2}</p>
+                                             
+                                    </div>
+                               </apex:outputPanel>
+                                <apex:outputPanel rendered="{!!isApprover && !showDenialReason}">                    
+                                                    <div>
+                                                        <p class="param1_font m0">{!$Label.Non_Approver_Confirmation}</p>
+                                                    </div>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!showDenialReason}">                    
+                                    <div>
+                                         <p class="param1_font m0">We received your denial decision of the Pricing Schedule Addendum for Order Number {!orderNumber}.</p>
+                                     </div>
+                                 </apex:outputPanel>
+                                <br />
+                                <br />
+                                <div class="param1_font m0" style="margin-top:34px;">To view the status of your order, check <strong>Manage Quotes &amp; Orders</strong> on <strong>My Dashboard.</strong></div>   
+                                                   
+                            </div>    
+                            <!------------------End Thank you panel ---------------------------- -->  
+
+                            <hr class="hrMTB" />
+                             <div class="col-xs-6 p0" style="float:right;">                        
+                            <div style="float:left;margin-left:23%;padding-top:5px;">
+                                <a href="/apex/PortalDashboard_UI" class="attLinkBlue" style="line-height:0px !important;">{!$Label.Dashboard}</a>
+                            </div>
+                            <div style="float:right;margin-right:50px;">                                                            
+                                    <apex:commandButton action="{!closeCosAddPanel}" value="Close" id="closeBtn" styleClass="btn secondary pull-right" style="padding: 0px 70px !important;margin:0px;" />
+                            </div>
+                        </div>
+                        </div>
+                        
+                        <!------------------End Thank you panel ---------------------------- -->  
+                    </div>
+                </apex:outputPanel>
+
+            </apex:form> 
+            <apex:outputPanel id="pricingScheduleSectionID">
+                <apex:include pageName="MACD_AddCosPricingScheduleLaunch" rendered="{!ESignFlag}" />
+            </apex:outputPanel>
+        </div>       
+    </div>
+    
+    <script>           
+	    $('.disabled a').removeAttr('data-toggle href');
+	    activeTabIcon();
+    </script>
+    
+    <script>
+	    function ToggleSubmitButton(boolVal){    
+		    document.getElementById('{!$Component.addCosFormId.Submit2}').disabled = !(boolVal);
+		}    
+	</script>    
+    
+<script>        
+    $('.disabled a').removeAttr('data-toggle href');
+    activeTabIcon();
+    </script>
+    
+    <script>
+    //Global Variables: RK
+    customerId = '';
+    generatedQuoteId = '';
+    function GetURLParameter(sParam) {
+        var sPageURL = window.location.search.substring(1);
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) {
+                return sParameterName[1];
+            }
+        }
+    }
+    $("a[data-name='selectProd'], a[data-name='enterAddress'], a[data-name='configSites']").parent('li').addClass("tabbed_menu_disabled");
+    mode = GetURLParameter('mode');
+    
+    if(mode=="contract" || mode=="TNC" )
+    {
+        $("a[data-name='selectCust']").parent('li').removeClass("active");  
+        /*$("a[data-name='configSites']").parent('li').addClass("disabled");*/
+        $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='configSites']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='selectProd']").parent('li').removeClass("disabled tabbed_menu_disabled");
+        $("a[data-name='enterAddress']").parent('li').removeClass("disabled tabbed_menu_disabled");
+        $("a[data-name='enterAddress']").parent('li').addClass("active");
+        $("a[data-name='enterAddress']").removeAttr("href","#selectProd");
+        $("a[data-name='enterAddress']").attr("href","#enterAddress");
+        $("a[data-name='enterAddress']").attr("data-tabname", "Review Pricing Schedule");
+        $("a[data-name='enterAddress']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#selectCust").removeClass("tab-pane fade in active");
+        $("#selectCust").addClass("tab-pane fade");
+        $("#selectProd").removeClass("tab-pane fade in active");
+        $("#selectProd").addClass("tab-pane fade");
+        $("#enterAddress").removeClass("tab-pane fade");
+        $("#enterAddress").addClass("tab-pane fade in active");
+        $(".whiteBack ").css("background","#fff").css("color","#000"); 
+        $("#revreId").css("background","#fff");
+        $(".revReq").css("background","#fff");
+        $(".revReq").addClass("disabled");
+        $("#revReqRem").css("background","#fff");
+        $("#enterAddress").addClass("tabafter");
+        $(".caretIconPricing").show(); 
+        //$("#circlenumconfText").css("color","#505050 !important");
+        $('#circlenumconfText').attr('style', 'color: #505050 !important');
+        $(".caretIconReview").hide();
+        $(".caretIconConfig").hide();
+         //$("#circlenumconfText").css("color","#505050"); 
+        $(".caretIconPricing").css("margin-left","669px");  
+        //    scrolltomacd();
+        scrollToDiv("#cirId");
+       // ToggleSubmitButton(false);
+        var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+        document.getElementById("confId").disabled = true;
+        $("a[data-name='enterAddress']").parent('li').removeClass("disabled");
+     }
+    
+    else if (mode == 'conf'){
+        $("a[data-name='selectCust'], a[data-name='selectProd'],a[data-name='enterAddress'],a[data-name='configSites']").parent('li').removeClass("active tabbed_menu_disabled");  
+        $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='enterAddress']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='configSites']").parent('li').removeClass("disabled");
+        $("#confId").addClass("active");
+        $("a[data-name='configSites']").removeAttr("href","#selectProd");
+        $("a[data-name='configSites']").attr("href","#configSites");
+        $("a[data-name='configSites']").attr("data-tabname", "View Pricing Confirmation");
+        $("a[data-name='configSites']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#selectCust").removeClass("tab-pane fade in active");
+        $("#selectCust").addClass("tab-pane fade");
+        $("#configSites").removeClass("tab-pane fade");
+        $(".whiteBack ").css("background","#fff");
+        $(".revReq").css("background","#fff");
+        $("#revReqRem").css("background","#fff");
+        $(".Pric").css("background","#fff");
+        $(".caretIconConfirm").show();
+        $(".caretIconPricing").hide(); 
+        $(".caretIconConfig").hide();
+        $('#circlenumconfText').attr('style', 'color: #fff !important');
+        $(".caretIconReview").hide();
+        $("#confId").css("background-color","#056fab").css("color","#fff");
+        //scrolltomacd();
+        scrollToDiv("#circlenumconfText");
+        var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+        $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);
+        $("#").show();  
+        document.getElementById("j_id0:j_id101:j_id102:tabActiveIconRemId").style.display="block";  
+       
+    }   
+    
+    if(mode!="contract") 
+        $("a[data-name='selectCust']").trigger("click");
+
+      function resetAll()
+     {
+
+          // $('{!$Component.AddCOSId.addCosFormId.slCosProfile}').value('-None-');
+            $('.slCosProfileClass').val('-None-');
+       }
+       
+    function toggleToReviewPanel(){              
+        $("a[data-name='selectCust']").parent('li').removeClass("active");  
+        $("a[data-name='enterAddress'], a[data-name='selectCust'], a[data-name='configSites']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='selectProd']").parent('li').removeClass("disabled tabbed_menu_disabled");
+        $("a[data-name='selectProd']").parent('li').addClass("active");
+        $("a[data-name='selectProd']").removeAttr("href","#selectCust");
+        $("a[data-name='selectProd']").attr("href","#selectProd");
+        $("a[data-name='selectProd']").attr("data-tabname", "Review Request");
+        $("a[data-name='selectProd']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#selectCust").removeClass("tab-pane fade in active");
+        $("#selectCust").addClass("tab-pane fade");
+        $("#selectProd").removeClass("tab-pane fade");
+        $("#selectProd").addClass("tab-pane fade in active"); 
+        $(".whiteBack ").css("background","#fff").css("color","#428bca"); 
+        $(".caretIconConfig").hide();
+        $(".caretIconReview").show(); 
+        $(".caretIconPricing").hide(); 
+        $("#configTxtColr ").css("color","rgb(80, 80, 80)");
+    }
+    
+    
+    function toggleToReviewPricingPanel(){
+   
+        
+        $("a[data-name='selectProd']").parent('li').removeClass("active");  
+        $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='configSites']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='enterAddress']").parent('li').removeClass("disabled tabbed_menu_disabled");
+        $("a[data-name='enterAddress']").parent('li').addClass("active");
+        $("a[data-name='enterAddress']").removeAttr("href","#selectProd");
+        $("a[data-name='enterAddress']").attr("href","#enterAddress");
+        $("a[data-name='enterAddress']").attr("data-tabname", "Review Pricing Schedule");
+        $("a[data-name='enterAddress']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#selectProd").removeClass("tab-pane fade in active");
+        $("#selectProd").addClass("tab-pane fade");
+        $("#enterAddress").removeClass("tab-pane fade");
+        $("#enterAddress").addClass("tab-pane fade in active");
+        $("#revreId").css("background","#fff");
+        $(".revReq").css("background","#fff").css("color","#428bca");
+        $("#revReqRem").css("background","#fff");
+        $("#enterAddress").addClass("tabafter");
+        $(".caretIconReview").hide();
+        $(".caretIconPricing").show(); 
+        $("#circlenumconfText").css("color","#505050"); 
+        $(".caretIconPricing").css("margin-left","669px");     
+        
+        scrolltomacd();
+    }
+    
+    function toggleToConfirmationPanel(){
+        $("a[data-name='enterAddress']").parent('li').removeClass("active");        
+        $("a[data-name='selectCust'], a[data-name='selectProd'], a[data-name='enterAddress']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='configSites']").parent('li').removeClass("disabled tabbed_menu_disabled");
+        $("a[data-name='configSites']").parent('li').addClass("active");
+        $("a[data-name='configSites']").removeAttr("href","#enterAddress");
+        $("a[data-name='configSites']").attr("href","#configSites");
+        $("a[data-name='configSites']").attr("data-tabname", "View Confirmation Information");
+        $("a[data-name='configSites']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#enterAddress").removeClass("tab-pane fade in active");
+        $("#enterAddress").addClass("tab-pane fade");
+        $("#configSites").removeClass("tab-pane fade");
+        $("#configSites").addClass("tab-pane fade in active");
+        $("#confId").css("background-color","#056fab").css("color","#fff");
+        $("#circlenumconfText").css("color","#fff");
+        $("#circlenumconf").css("color","#fff").css("border" , "1px solid #fff");
+        $(".Pric").css("background","#fff");        
+        $("a[data-name='enterAddress']").parent('li').find('.circlenum').text('').append('<span class="glyphicon glyphicon-ok"></span>'); 
+        $("#PricRem").css("background","#fff");
+        $("#configSites").addClass("active");
+        $(".caretIconConfig").hide();
+        $(".caretIconConfirm").show(); 
+        $(".caretIconPricing").hide(); 
+        $(".caretIconReview").hide();
+        $("#revReqPriSchd").css("color","#356fab")
+        $("#caretConfirmi").hide();
+        document.getElementById('{!$Component.addCosPageId.tabActiveIconId}').style.display="block";
+        document.getElementById("cirId").style.display="none";
+        document.getElementById("caretConfirmi").style.display="block";
+        document.getElementById("caretIconPricingi").style.display="none";      
+        $("#confId").off("click");
+    }       
+
+    function goBackToFirstStep(){
+   
+        $("a[data-name='selectProd']").parent('li').removeClass("active");  
+        $("a[data-name='selectProd'], a[data-name='enterAddress'], a[data-name='configSites']").parent('li').addClass("disabled");
+        $('.disabled a').removeAttr('data-toggle href');
+        $("a[data-name='selectCust']").parent('li').removeClass("disabled");
+        $("a[data-name='selectCust']").parent('li').addClass("active");
+        $("a[data-name='selectCust']").removeAttr("href","#selectProd");
+        $("a[data-name='selectCust']").attr("href","#selectCust");
+        $("a[data-name='selectCust']").attr("data-tabname", "Select Customer");
+        $("a[data-name='selectCust']").attr("data-toggle","tab");
+        $('.disabled a').removeAttr('data-toggle href');
+        activeTabIcon(); //Function for adding tick mark in active tab
+        $("#selectProd").removeClass("tab-pane fade in active");
+        $("#selectProd").addClass("tab-pane fade");
+        $("#selectCust").removeClass("tab-pane fade");
+        $("#selectCust").addClass("tab-pane fade in active");
+        $(".whiteBack ").css("background","#056fab").css("color","#fff"); 
+        $(".caretIconReview").hide();
+        $(".caretIconPricing").hide();
+        $(".caretIconConfig").show();          
+        $(".caretIconPricing").css("margin-left","139px");  
+        $("#configTxtColr ").css("color","#fff");          
+    }
+    
+    function activeTabIcon() {
+
+        var okIcon = '<span class="glyphicon glyphicon-ok"></span>';
+        $('.tabbed_menu li.active').prevAll('li').find('.circlenum').text('').append(okIcon);            
+
+    }
+    
+    $(document).ready(function(){
+
+        document.getElementById("j_id0:productInfoId:j_id134:j_id194:applyContinueID").disabled = false;
+        $('j_id0:productInfoId:j_id134:j_id194:applyContinueID').removeAttr('disabled');      
+       
+        if( pricingSchDocSrc != null ) {
+            scrolltomacd();
+        }
+    });
+
+    </script>    
+    <script>
+        $(document).ready(function(){
+             $("#cosSliderPrgs").text('0' + ' %');              
+             var confMode=GetURLParameter('mode');
+            var mode = "";
+            $("a[data-name='selectCust']").trigger("click");
+            $("a[data-name='selectProd'], a[data-name='enterAddress'], a[data-name='configSites']").parent('li').addClass("disabled");
+            $('.disabled a').removeAttr('data-toggle href');
+            
+            /*if( confMode != 'conf' ){*/
+            
+            $('html, body').animate({
+                scrollTop: $('#cosAddPortdiv').offset().top-100
+            },1000);
+           /*}*/
+        });
+
+ 
+    function doContinue(){
+        doContinueAJAX();        
+    }              
+    
+    </script>
+    <script>
+        $(document).ready(function(){
+            $("#descriptionCloseCos").tooltip({
+                title : '{!$Label.CoSInfo}'
+            });
+            
+            $("#descriptionCloseVlan").tooltip({
+                title : '{!$Label.VLAN_info}'
+            });
+            
+        });
+        
+        function showProcessingLabel(inpObj){
+            inpObj.value = 'Processing....'; 
+            inpObj.style.color = '#fff'; 
+        }
+        
+         function showWaitingDiv() {
+           var text = "Please wait while we submit your order.";
+           var approverTerm1 = document.getElementById('approverTerm1');
+           var approverTerm2 = document.getElementById('approverTerm2');
+           var approverTerm3 = document.getElementById('approverTerm3');
+           var approverTerm4 = document.getElementById('approverTerm4');
+           var approverTerm5 = document.getElementById('approverTerm5');
+           var approverTerm6 = document.getElementById('approverTerm6');    
+           
+           if(approverTerm1 && approverTerm1.style.display != "none")
+               approverTerm1.style.display = "none";
+           if(approverTerm2 && approverTerm2.style.display != "none")
+               approverTerm2.innerHTML = text;
+           if(approverTerm3 && approverTerm3.style.display != "none")
+               approverTerm3.style.display = "none";     
+           if(approverTerm4 && approverTerm4.style.display != "none")
+               approverTerm4.innerHTML = text;
+           if(approverTerm5 && approverTerm5.style.display != "none")
+               approverTerm5.style.display = "none";
+           if(approverTerm6 && approverTerm6.style.display != "none")
+               approverTerm6.innerHTML = text;
+         }
+    </script>
+    
+</apex:page>

@@ -1,0 +1,142 @@
+<apex:page docType="html-5.0" standardStylesheets="false" sidebar="false" showHeader="false">
+    <apex:include pageName="PortalDesignHeader_UIUX" id="PortalDesignHeader" /> 
+    
+    <style>
+        /*DEC 12 - for leon*/
+        .tableHeaderRow td{
+            cursor: pointer;
+        }/*End DEC 12*/
+        
+    
+        /* Added style for correct alignment of add sites button */
+        .manageServiceInventoryPage .searchField {
+            float: left;    
+        }
+        
+        .create_users_button {
+            width: auto;
+            position: relative;
+            padding: 6px 20px !important;
+            top: 10px;
+        }
+        .check-label {
+        margin: auto;
+        }
+        #manage_content input[type="checkbox"] {
+        width: 20px;
+        margin-top: 1px;
+        }
+        .dataTables_length {
+        display: none;
+        }
+        /* Added style for correct alignment of pagination */
+        .dataTables_info { 
+            bottom: 5px !important;
+            position: absolute;
+            left: 15px !important;
+            width: 50%;
+         }
+        .pagination { float: left; margin: 0; }
+        .manage_customer_name {
+        width: 17% !important;
+        }
+        .manage_subaccount_number{
+        width: 10% !important;
+        }
+        .manage_product_name {
+        width: 10% !important;
+        }
+        .manage_number_of_sites {
+        width: 10% !important;
+        }
+        .manage_contract_end_date {
+        width: 10% !important;
+        }
+       
+        #manage_content .pagination a {
+            padding: 5px 10px;
+            font-family: omnes_att_iimedium;
+            line-height: 1.125em;
+            color: #056fab;
+            margin-left: 0;
+            background: #fff;
+            border: 1px solid #ccc;
+        }
+
+        .paginate_enabled_previous, .paginate_enabled_next {
+        cursor: pointer;        
+        padding: 5px 10px;
+        font-family: omnes_att_iimedium;
+        line-height: 1.125em;
+        color: #056fab;
+        margin-left: 5px;
+        background: #fff;
+        border: 1px solid #ccc;
+        float: left;        
+        }
+        
+        .paginate_disabled_previous, .paginate_disabled_next {
+        cursor: no-drop;
+        padding: 5px 10px;
+        font-family: omnes_att_iimedium;
+        line-height: 1.125em;
+        color: #056fab;
+        margin-left: 5px;
+        background: #fff;
+        border: 1px solid #ccc;  
+        float: left;      
+        }
+        
+        .modal-footer input {
+        
+        width: auto !important;
+        }
+        h1 { font-family: omnesatt_iiregular; }
+        .table-bordered>thead>tr>th, .table-bordered>thead>tr>td { border-top: none; border-bottom: none; }  
+        .table-bordered>tbody>tr:first-child td { border-top: none !important; }  
+        table thead tr { background: #fff; border-bottom: 1px dashed #ddd !important; cursor: pointer; }
+        table thead td { border: none; }
+        
+
+        /*** added by Vndhya to solve UI issues ***/
+        #manage_content .messageText{
+        color: #47D510;
+        }
+        .reorder_btn { margin-top: -4px; }
+        
+        .btn_deactivate_user {
+            position: absolute;
+            margin: 20px 5px 0 !important;
+            padding: 10px 20px !important;
+            font-family: clearviewattregular;
+            color: #fff;
+            background: #056fab;
+            border: 0 !important;
+            height: 36px !important;
+            -webkit-border-radius: 4px;
+            width: auto !important;
+            bottom: -40px;
+        }
+        #manage_content .pagination span, .manage_content .pagination span {
+            margin-right: 0;
+        }
+    </style>
+    <div class="content_container manageServiceInventoryPage">
+        <!-- HERO MODULE -->
+        <div id="hero_banner">
+         <img src="{!$Resource.HeroSmall}" style="width:100%;height:50%;"/>   
+        </div>
+         
+        <div id="managecustomerscontainer">
+            <apex:include pageName="Dashboard_SiteInventory" />
+        </div>
+      
+    </div>
+    
+    <script>
+       
+        targetPlace = $('.manageServiceInventoryPage .searchField').parent('div');
+        $('.manageServiceInventoryPage .create_users_button').appendTo(targetPlace);
+    </script>
+    <apex:include pageName="PortalDesignFooter" id="PortalDesignFooter" /> 
+</apex:page>

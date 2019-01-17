@@ -1,0 +1,378 @@
+<apex:page standardController="Opportunity"  extensions="SI_specialProductPricing" id="pageId" sidebar="false" showHeader="true" tabStyle="Account">  
+   
+    <script type="text/javascript">
+       
+        function getFamilyActive(selectedValue) {  
+             if( selectedValue == '--None--' ) {
+                    var ele=document.getElementById('pageId:formId:pblockId:pgblksectionId:pBlockTableId:0:productType');
+                    ele.disabled =false;
+              }
+              else if(selectedValue != '--None--'){
+                  var ele=document.getElementById('pageId:formId:pblockId:pgblksectionId:pBlockTableId:0:productType');
+                  var disType=document.getElementById('pageId:formId:pblockId:pgblksectionId:pBlockTableId:0:discount');
+                  ele.disabled =true;
+                  disType.disabled=true;
+              }
+            } 
+        function getProductActive(selectedValue) {  
+             if( selectedValue == '--None--'){
+                   var ele=document.getElementById('pageId:formId:pblockId:pgblksectionId:pBlockTableId:0:productFamily');
+                   ele.disabled =false;
+                   rerenderProducttype(selectedValue);         
+
+             }else if(selectedValue != '--None--') {
+                    var ele=document.getElementById('pageId:formId:pblockId:pgblksectionId:pBlockTableId:0:productFamily');
+                    ele.disabled =true;
+                    rerenderProducttype(selectedValue);         
+             }
+         }         
+        </script>
+    <script type="text/javascript">
+        function Clear(){
+            alert('All applied discounts have been removed');
+            window.location.href= window.location.href;
+          
+        }
+    
+        function savePortPage(){
+            var mesg = document.getElementById('{!$Component.pageId.port.errorPort}').value;
+            alert(mesg);
+        }
+        function saveAccessPage(){
+            var mesg = document.getElementById('{!$Component.pageId.Access.errorAccess}').value;
+            alert(mesg);
+        }
+        function saveFamilyPage(){
+            var mesg = document.getElementById('{!$Component.pageId.allProductFamily.errorFamily}').value;
+            alert(mesg);
+        }
+       function Confirmfirst(){
+            
+            if(confirm('Are you sure you want to clear all the Special Pricing changes?')){
+                ClearRecord();
+            }else{
+            }
+       }
+
+  </script>
+    <apex:sectionHeader title="Special Pricing" subtitle="{!Opportunity.Name}"/> 
+
+    <apex:form id="formId">
+        <apex:actionstatus id="statusLoader">
+            <apex:facet name="start">
+                <div class="waitingSearchDiv" id="loading" style="background-color: #fbfbfb;  height: 100%;opacity:0.65;width:100%;position: fixed;"> 
+                    <div class="waitingHolder" style="top: 200px; left:600px; width: 91px; position: fixed;"> 
+                    <img class="waitingImage" src="{!$Resource.LoadingGif}" title="Please Wait..." />
+                    <span class="waitingDescription">Please wait...</span> 
+                   </div> 
+                </div>
+            </apex:facet> 
+         </apex:actionstatus>
+           <apex:pageBlock >
+           <apex:pageBlockSection title="Instructions:" columns="1">
+             <h3><p><font face="Arial" style="color:#585858 ; font-weight:bold">
+                1. Select a Discount Method.<br/>
+                2. Select a Discount Type (if Applicable).<br/>
+                3. Enter a discount percent or Amount.<br/>
+                4. Click Calculate to see updated values then click Save to apply the changes.<br/>
+                5. Click Confirm once all discounts have been applied.
+                </font></p>
+             <!--<apex:outputLabel value="Discounts applied and saved are NOT Final until Confirmed button is clicked" style="Black font-weight:bold"/>-->
+             </h3>
+              </apex:pageBlockSection>
+       </apex:pageBlock>
+        <apex:pageBlock id="pblockId">
+            <apex:pageBlockButtons location="bottom">   
+                <apex:commandButton action="{!searchResult}" id="exname" value="GO"  reRender="hybridPriBlck,pBlockTableId,Access,allAccess,port,allProductFamily,disType" STatus="statusLoader"/>
+                <apex:commandButton value="Clear" onclick="return confirm('Are you sure you want to clear all the Special Pricing changes?')"  action="{!ClearButtonClick}"  />
+                <apex:commandButton value="Confirm"  action="{!ConfirmButtonclick}"/>
+                <apex:commandButton value="Close" action="{!Cancel}" /> 
+            
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection id="pgblksectionId" columns="2">
+                <apex:pageBlockTable value="{!spProductDisply}" var="q" id="pBlockTableId">
+                    <apex:column >
+                        <apex:facet name="header"> Product Family</apex:facet>
+                           <apex:outputPanel styleClass="requiredInput" id="pnlid1" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock" id="pnlid2" layout="block"/>
+                            <apex:selectList styleClass="productFamilyDropDown" onchange="getFamilyActive(this.value);"  id="productFamily" value="{!spFamily}" size="1">
+                                <apex:selectOptions value="{!FamilyOptions}"></apex:selectOptions>
+                             </apex:selectList>
+                        </apex:outputPanel>
+                    </apex:column>
+                    <apex:column >
+                        <h3>-OR-</h3>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"> Product Type</apex:facet>
+                           <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                            <apex:selectList styleClass="productTypeDropDown" id="productType"  value="{!product}" size="1" onchange="getProductActive(this.value)">
+                                <apex:selectOptions value="{!ProductOptions}"></apex:selectOptions>
+                             </apex:selectList>
+                        </apex:outputPanel>
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header"> Discount Type</apex:facet>
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                            <apex:selectRadio value="{!discount}"  id="discount">
+                                <apex:selectOptions value="{!Items}"/>
+                            </apex:selectRadio>
+                            </apex:outputPanel>
+                    </apex:column>
+                </apex:pageBlockTable>
+                <apex:pageBlock rendered="{!isMsg}" >
+                <apex:pageMessages ></apex:pageMessages> 
+                                
+                </apex:pageBlock>
+
+                <!-- Display Deal Details---------------------------------------- -->       
+             
+
+                <apex:pageBlockTable value="{!spProductDisply}" var="q" id="deal">
+                    <apex:column >
+                        <apex:facet name="header"> Cumulative List Price</apex:facet>
+                            <!--{!q.Deal__r.Cumulative_List_Price__c}  -->
+                            <apex:outputText value="{0, number,00.00}">
+                            <apex:param value="{!q.Deal__r.Cumulative_List_Price__c}" />
+                       </apex:outputText>
+                    </apex:column>  
+                    <apex:column >
+                        <apex:facet name="header"> Cumulative OTC Price</apex:facet>
+                            <!--{!q.Deal__r.Cumulative_List_Price__c}  -->
+                            <apex:outputText value="{0, number,00.00}">
+                            <apex:param value="{!q.Deal__r.Cumulative_OTC_Price__c}" />
+                       </apex:outputText>
+                    </apex:column> 
+                    <apex:column >
+                        <apex:facet name="header"> Deal Discounted Price</apex:facet>  
+                        <apex:outputText value="{0, number,00.00}">
+                            <apex:param value="{!dealUpdatedPrice }" />
+                       </apex:outputText>
+                    </apex:column>
+                        <apex:column >
+                        <apex:facet name="header"> Cumulative OTC Discount Price</apex:facet>  
+                        <apex:outputText value="{0, number,00.00}">
+                            <apex:param value="{!dealOTCDiscount }" />
+                       </apex:outputText>
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:actionFunction name="rerenderProducttype" rerender="discount" action="{!setProductList}">
+             <apex:param name="firstParam" assignTo="{!typeSelected}" value="" />
+         </apex:actionFunction>  
+    </apex:form>
+    
+     
+        <apex:form id="port">
+            <apex:inputHidden value="{!Error}" id="errorPort" />
+        <apex:pageBlock title="Product search Result by {!discount}" tabStyle="Account" id="hybridPriBlck" rendered="{!(IF(isProductView,true,false))}">
+            <apex:pageMessages ></apex:pageMessages> 
+             <apex:pageBlockButtons location="both">
+                <apex:commandButton value="Calculate" action="{!doCalculatePrice}" reRender="deal,pBlockTableId,port" />
+                <apex:commandButton value="Save" action="{!doPortSave}" reRender="errorPort" onComplete="savePortPage()"/>
+                <apex:commandButton value="Close" action="{!Cancel}" />
+             </apex:pageBlockButtons>
+            <apex:pageBlockTable value="{!pricingWrapperList}" var="pricingWrap" style="background-color:#A9BCF5;" id="pBlockTableId">
+                <apex:column value="{!pricingWrap.productName}" headerValue="Product Name"/>
+                 <apex:column >
+                    <apex:facet name="header">Product</apex:facet>
+                        {!product}
+               </apex:column>
+               <apex:column >
+                    <apex:facet name="header">Discount Type</apex:facet>
+                        {!discount}
+               </apex:column>
+                <!--<apex:column value="{!pricingWrap.cummuListPrice }" headerValue="List Price"/>-->
+                <!--<apex:column value="{!pricingWrap.cummDiscountedPrice }" headerValue="Discounted Price"/>-->
+                <apex:column headerValue="List Price">
+                    <apex:outputText value="{0, number,00.00}">
+                      <apex:param value="{!pricingWrap.cummuListPrice}" />
+                    </apex:outputText>
+                </apex:column>
+                
+                <apex:column headerValue="Discounted Price">
+                    <apex:outputText value="{0, number,00.00}">
+                      <apex:param value="{!pricingWrap.cummDiscountedPrice }" />
+                    </apex:outputText>
+                </apex:column>
+               
+                <apex:column >
+                    <apex:facet name="header">Discount(%)</apex:facet> 
+                    <apex:inputText value="{!pricingWrap.discount}" id="discountPer"/>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Discount Amount</apex:facet>
+                  <apex:outputText value="{0, number,00.00}">
+                      <apex:param value="{!pricingWrap.discountAmount}" />
+                 </apex:outputText>
+
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Special Discount %</apex:facet>
+                    <apex:outputText value="{0, number,00.00}">
+                      <apex:param value="{!pricingWrap.specialDiscount}" />
+                 </apex:outputText>
+                </apex:column> 
+                <apex:column >
+                    <apex:facet name="header">Final Price</apex:facet>
+                  <!--<apex:outPutText value="{!pricingWrap.finalPrice}"/>-->
+                  <apex:outputText value="{0, number,00.00}">
+                      <apex:param value="{!pricingWrap.finalPrice}" />
+                 </apex:outputText>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+    
+    <!------************************* display Access Product *********************************** -->
+    <apex:form id="Access">
+        <apex:inputHidden value="{!Error}" id="errorAccess" />
+        <apex:pageBlock title="Product search Result by {!discount}" tabStyle="Account" rendered="{!(IF(isAccessView,true,false))}">  
+        <apex:pageMessages ></apex:pageMessages>  
+        <apex:pageBlockButtons location="both">
+             <apex:commandButton action="{!calculateAccess}"  value="Calculate"  reRender="Access,allAccess,deal" status="statusLoader" />
+                 <apex:commandButton value="Save" action="{!saveAccess}" reRender="errorAccess" onComplete="saveAccessPage()" status="statusLoader" />
+                <apex:commandButton value="Close" action="{!Cancel}" />
+            </apex:pageBlockButtons>
+            <apex:pageBlockTable value="{!AccessProductList}" var="q" style="background-color:#A9BCF5;" id="allAccess">   
+                <apex:column > 
+                    <apex:facet name="header">Product Pricing</apex:facet>
+                        {!q.acc.Name}
+                </apex:column> 
+                <apex:column >
+                    <apex:facet name="header">Product Name</apex:facet>
+                        {!q.acc.product_name__c}
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Product</apex:facet>
+                        {!q.acc.Product_Record_Type__c}
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Product Discount</apex:facet>
+                        {!q.acc.Record_Type__c}
+                </apex:column>   
+                <apex:column >
+                    <apex:facet name="header">List Price</apex:facet>
+                       <apex:outputText value="{0, number,00.00}">
+                        <apex:param value="{!q.acc.list_price__c}" />
+                        </apex:outputText>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Discounted Price</apex:facet>
+                        <apex:outputText value="{0, number,00.00}">
+                        <apex:param value="{!q.acc.discounted_price__c}" />
+                        </apex:outputText>
+                </apex:column>
+                <apex:column > 
+                    <apex:facet name="header">Flat Price</apex:facet> 
+                    <apex:inputField value="{!q.acc.Flat_Price__c}" id="flatVal"/>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Discount Amount</apex:facet>
+                  <apex:outputText value="{0, number,00.00}">
+                        <apex:param value="{!q.acc.discount_price__c}" />
+                    </apex:outputText>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Special Discount %</apex:facet>
+                   <apex:outputText value="{0, number,00.00}">
+                        <apex:param value="{!q.acc.SP_Discount_Percentage__c}" />
+                    </apex:outputText>
+                </apex:column> 
+                <apex:column >
+                    <apex:facet name="header">Final Price</apex:facet>
+                  <apex:outputText value="{0, number,00.00}">
+                        <apex:param value="{!q.acc.Final_Price__c}" />
+                    </apex:outputText>
+                </apex:column> 
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+    
+    <!-- ********************************************** Display Family products ******************-->   
+    <apex:form id="allProductFamily">
+    <apex:inputHidden value="{!Error}" id="errorFamily" />
+        <apex:pageBlock title="Product search Result by Family" tabStyle="Account" id="pblockId" rendered="{!(IF(isFamily,true,false))}">
+         <apex:pageMessages />
+            <apex:pageBlockButtons location="bottom">
+                 <apex:commandButton value="Calculate" action="{!calculateFamily}" reRender="allProductFamily,pBlockTableId,deal" status="statusLoader" />
+                <apex:commandButton value="Save" action="{!saveFamily}" reRender="errorFamily" onComplete="saveFamilyPage()" status="statusLoader" />
+                <apex:commandButton value="Close" action="{!Cancel}" />   
+             </apex:pageBlockButtons>
+             <apex:pageBlockTable value="{!familyOne}" var="q" style="background-color:#CCCCCC;"  Id="pBlockTableId">       
+                 <apex:column >
+                    <apex:facet name="header">Product</apex:facet>
+                    {!spFamily}
+                 </apex:column>
+                 <apex:column >
+                    <apex:facet name="header">Cumulative  List Price</apex:facet>
+                    <apex:outputText value="{0, number,00.00}">
+                      <apex:param value="{!famListPrice}" />
+                 </apex:outputText>
+                   <!-- {!famListPrice}-->
+                 </apex:column>
+                 <apex:column >
+                    <apex:facet name="header">Cumulative  Discounted Price</apex:facet>
+                     <!-- {!famDisPrice} -->
+                     <apex:outputText value="{0, number,00.00}">
+                      <apex:param value="{!famDisPrice}" />
+                     </apex:outputText>
+                 </apex:column>
+
+                 <apex:column >
+                        <apex:facet name="header">Discount(%)</apex:facet> 
+                       <apex:inputText value="{!famDisPer}" id="discountPer"/>
+                 </apex:column>
+                 
+               
+                
+                <apex:column >
+                    <apex:facet name="header">Discount Amount</apex:facet>
+                    
+                    <apex:outputText value="{0, number,00.00}" id="discountedPrice"> 
+                        <apex:param value="{!famDisAmount}"  />
+                    <!-- <apex:outPutText value="{!dealUpdatedPrice}" id="discountedPrice"/> -->
+                     </apex:outputText>
+                       
+               </apex:column>  
+                              
+                 
+                 <apex:column >
+                    <apex:facet name="header">Discounted(%)</apex:facet>
+                    <!--<apex:outputText value="{!familyDiscountPer}"/>-->
+                    <apex:outputText value="{0, number,00.00}"> 
+                        <apex:param value="{!familyDiscountPer}"/>
+                     </apex:outputText>
+                 </apex:column>
+                 <apex:column >
+                    <apex:facet name="header">Final Price</apex:facet>
+                    <!--<apex:outputText value="{!famfinalPrice}"/>-->
+                    <apex:outputText value="{0, number,00.00}"> 
+                        <apex:param value="{!famfinalPrice}"/>
+                     </apex:outputText>
+                 </apex:column>
+               
+                 <apex:column headerValue="Approve / Reject" >
+                     <apex:outputPanel styleClass="requiredInput" layout="block">
+                     <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                     <apex:selectRadio value="{!famopt}">
+                           <apex:selectOptions value="{!items1}" />
+                       </apex:selectRadio>
+                    </apex:outputPanel>  
+                 </apex:column>
+                 <apex:column headerValue="Comments">
+                    
+                    <apex:selectList styleClass="productTypeDropDown" value="{!Rejectreason}" multiselect="false" size="1">
+                                    <apex:selectOptions value="{!Scoretype}"/>
+                     </apex:selectList>                
+                 </apex:column>  
+            </apex:pageBlockTable>
+        </apex:pageBlock>  
+    </apex:form> 
+    <apex:pageBlock id="disType">
+        <apex:pageMessages />
+    </apex:pageBlock>
+</apex:page>

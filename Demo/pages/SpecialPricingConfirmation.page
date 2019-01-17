@@ -1,0 +1,70 @@
+<apex:page controller="ReviewDealRegController" action="{!handleQuoteReview}" standardStylesheets="false" sidebar="false" showHeader="false" tabStyle="Apttus_Proposal__Proposal__c" docType="html-5.0" applyHtmlTag="false" applyBodyTag="false">
+<!--<apex:stylesheet value="{!URLFOR($Resource.bootstrapMin, 'css/bootstrap.min.css')}" />
+    <apex:includeScript value="{!$Resource.atomjqueryjs}" />
+    <apex:includeScript value="{!URLFOR($Resource.bootstrapMin, 'js/bootstrap.min.js')}" />
+    <apex:stylesheet value="{!$Resource.PortalDesignBootCSS}" />
+    <apex:stylesheet value="{!$Resource.PortalDesignLayoutCSS}" />
+    <apex:stylesheet value="{!$Resource.atomsoulcss}" />
+    <apex:stylesheet value="{!$Resource.PortalDesignCSS}" />-->
+    <style>
+        ul.discList {
+            list-style-type: disc;
+            padding: 15px 0px;
+        }
+        .hoverOn:hover {
+             background-color: #70c4e8!important;
+             border-color: #70c4e8 !important; 
+             color: #ffffff !important;
+        }
+    </style>
+
+    <div class="row m0 m-t-20" style="margin-top: 20px;">
+                    <div class="col-xs-12 col-md-12 p0"> 
+                        <h3 class="m-b-10">
+                            <apex:outputText id="cnameheader" value="{!quoteObj.End_Customer__r.Name}" />
+                        </h3>             
+                        <div class="row p0" style="margin-bottom: 20px; margin-top: 10px;">
+                            <div class="col-xs-3 p0">
+                                <label style="margin-right: 10px !important;"><apex:outputText value="Quote Name" /></label>
+                                <apex:outputText value="{!quoteObj.Apttus_Proposal__Proposal_Name__c}" />
+                            </div>
+                            <div class="col-xs-3 p0">
+                                <label style="margin-right: 10px !important;"><apex:outputText value="Quote Id" /></label>
+                                <apex:outputText value="{!quoteObj.Name}" />
+                            </div>
+                            <div class="col-xs-4 p0">
+                                <label style="margin-right: 10px !important;"><apex:outputText value="Product" /></label>
+                                <apex:outputText value="{!quoteObj.Product_New_Name__c}" />
+                            </div>
+                            <div class="col-xs-2 p0" style="text-align:end;">
+                                <label style="margin-right: 10px !important;"><apex:outputText value="Term" /></label>
+                                <apex:outputText value="{!quoteObj.Apttus_Proposal__Payment_Term__c}" />
+                            </div>
+                        </div>
+                    </div>
+                </div>     
+    <div class="p20" id="isConfirmationOpen">
+        <hr class="dividerHr" />
+        <h3 class="f-s-xl">{!$Label.Special_Pricing}</h3>
+        
+        <br />
+        <p class="greenText">{!$Label.SpclPricing_Label2}</p>
+        <br />{!$Label.Order_Number} <a href="#" class="blueText"><apex:outputText value="{!quoteObj.Name}"/></a>
+        <br />
+        <div>
+            <p>
+                <strong>{!$Label.SpclPricing_Label3}</strong>
+            </p>
+            <ul class="discList">
+                <li>{!$Label.SpclPricing_Label4}</li>
+                <li>{!$Label.SpclPricing_Label5}</li>
+            </ul>
+        </div>
+        <br />
+        <!--<a href="index.html" class="btn btn-primary">{!$Label.Dashboard}</a> -->
+        <apex:form >
+            <apex:commandLink value="{!$Label.Dashboard}" action="{!GoToDashboard}" styleClass="btn btn-primary hoverOn" /> 
+        </apex:form>
+    </div>
+  
+</apex:page>

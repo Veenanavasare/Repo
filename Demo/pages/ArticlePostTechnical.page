@@ -1,0 +1,38 @@
+<apex:page sidebar="false" showHeader="false" cache="true" controller="ChatterPostTechnical">
+    <apex:form >             
+        <apex:pageBlock >
+        <apex:pageBlockButtons location="Bottom" >
+            <apex:commandButton value="Post" action="{!doPost}" style="margin-left:150px"/>
+            <apex:commandButton value="Cancel" action="{!Cancel}" style="margin-left:150px"/>
+        </apex:pageBlockButtons>
+            <apex:pageBlockSection columns="1">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Article Name :" for="account__name"/>
+                        <apex:outPutText value="{!Tilte }" style="margin-left:20px"/>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Title :" for="account__name"/>
+                    <apex:outPutText value="{!linkUrl}" style="margin-left:20px"/>
+                </apex:pageBlockSectionItem>
+                
+                 <apex:pageBlockSectionItem >
+                 <apex:outputLabel value="Comments:" for="account__name"/>
+                 <apex:inputText value="{!Comment}"/>
+                      
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="To Assign Chatter Group :" for="gm" />
+                            <apex:outputPanel styleClass="requiredInput" layout="block">
+                            <apex:outputPanel styleClass="requiredBlock" layout="block"/>
+                            <apex:selectList value="{!groupChaterId}" size="1">
+                                <apex:selectOptions value="{!group}"/>
+                                <!--<apex:actionSupport event="onchange" action="{!check}"/>-->
+                            </apex:selectList>
+                            </apex:outputPanel>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>  
+        </apex:pageBlock> 
+    </apex:form>
+</apex:page>

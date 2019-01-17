@@ -1,0 +1,77 @@
+<apex:page StandardController="Opportunity" extensions="SIDealRegistrationApproval" Id="page1" showHeader="true" sidebar="true" tabStyle="Opportunity">   
+    <apex:sectionHeader title="Deal Registration at Opportunity Level" subtitle="{!Opportunity.Name}"/>    
+  <apex:form id="form1" >  
+      <apex:pageMessage severity="error"  rendered="{IF(!Opty.Deal_Registration_status__c!='Deal registration Requested',true,false}"/>            
+      <apex:pageMessages ></apex:pageMessages>     
+          <apex:pageBlock id="pageblock1" title="Deal Registration Discount %">
+              <apex:pageBlockSection >                  
+                  <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="inputtext1" value="Discounted Percentage(%)" />
+                    <apex:OutputField value="{!Opty.Discounted_Percentage__c}" id="inputtext1"/>
+                </apex:pageBlockSectionItem>                                           
+              </apex:pageBlockSection>
+          </apex:pageBlock>
+          <apex:pageBlock title="Discount Price">
+              <apex:pageBlockSection > 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="outputText2" value="Discountable List Price" />
+                    <!--<apex:OutputText value="{!discountableListPrice}"  id="outputText2"/>-->
+                     <apex:outputText value="{0, number,00.00}">
+                            <apex:param value="{!discountableListPrice}" />
+                       </apex:outputText>  
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="outputText3" value="Discount Amount" />
+                    <apex:OutputField value="{!Opty.Discount_Amount__c}" id="outputText3" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="outputText4" value="Non-Discountable List Price" />
+                    <!--<apex:OutputText value="{!nonDiscountableListPrice}"  id="outputText4" /> -->
+                     <apex:outputText value="{0, number,00.00}">
+                            <apex:param value="{!nonDiscountableListPrice}" />
+                       </apex:outputText>
+                </apex:pageBlockSectionItem> 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="outputText3" value="Discount Price" />
+                    <apex:OutputField value="{!Opty.Discounted_Price__c}" id="outputText3" />
+                </apex:pageBlockSectionItem>              
+             </apex:pageBlockSection>
+          </apex:pageBlock>
+          <apex:pageBlock title="OTC Discount Price">
+              <apex:pageBlockSection >
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="outputText5" value="Discountable OTC Price" />
+                    <!--<apex:OutputText value="{!discountableOTCPrice}"   id="outputText5" /> --> 
+                    <apex:outputText value="{0, number,00.00}">
+                            <apex:param value="{!discountableOTCPrice}" />
+                    </apex:outputText>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="outputText6" value="OTC Discount Amount" />
+                    <apex:OutputField value="{!Opty.OTC_Discount_Amount__c}" id="outputText6"   />  
+                </apex:pageBlockSectionItem>
+               <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="outputText7" value="Non-Discountable OTC Price" />
+                    <!--<apex:OutputText value="{!nonDiscountableOTCPrice}"   id="outputText7" /> -->
+                     <apex:outputText value="{0, number,00.00}">
+                            <apex:param value="{!nonDiscountableOTCPrice}" />
+                    </apex:outputText>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="outputText6" value="Cumulative OTC Discount Price" />
+                    <apex:OutputField value="{!Opty.Cumulative_OTC_Discount_Price__c}" id="outputText6"   />  
+                </apex:pageBlockSectionItem>                                    
+              </apex:pageBlockSection>
+          </apex:pageBlock>
+          <apex:pageBlock >
+            <apex:pageBlockButtons location="bottom">
+                  <apex:commandButton value="Calculate"  action="{!calculateDiscounts}" />
+                  <apex:commandButton value="Approve with Discount" action="{!dealApproveWithDiscount}" onclick="validateData()"/>
+                  <apex:commandButton value="Approve without Discount"  action="{!dealApproveWithoutDiscount}"/>         
+                  <apex:commandButton value="Deny" action="{!dealDenied}" />
+                  <apex:commandButton value="Close"  action="{!closeDealRegistrationPage}"  />
+            </apex:pageBlockButtons>
+              
+          </apex:pageBlock>    
+  </apex:form>
+</apex:page>

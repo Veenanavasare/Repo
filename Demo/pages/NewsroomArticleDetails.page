@@ -1,0 +1,102 @@
+<apex:page showHeader="false"  Controller="articleDetailsController" sidebar="false" applyBodyTag="false" action="{!verifyAuthentication}" cache="false">
+  <div  style="margin-top: 58px;">
+            <table style="width:98%; margin-left:1%; margin-right:1%; padding-top: 10px;" >
+                <td class="articleDetail" >
+                    
+                        <div style="border:2px; margin-left:-15px;">
+                        <div class="headlineDetailPage" style="width: 400px; padding-left: 15px;" id="headline">
+                            {!Tilte}                     
+                        </div>
+
+                        <div style="padding-top:30px; padding-left:15px;" class="publishDateArticleDetail">
+                            <apex:OutputText value="{0,date,MMMMM' 'd', 'yyyy}">
+                                 <apex:param value="{!Newsrooms.PublishedDate__c}"/>
+                            </apex:OutputText>
+                            
+                            <apex:outputLink value="/apex/NewsroomBlogArticleTrayView?Id={!newsrooms.Author__c}&bidID={!bidID}&type=Author&TName={!newsrooms.Author__r.Name}" style="text-decoration:none;">  
+                                <apex:outputText value=" {!newsrooms.Author__r.Name}" styleClass="articleAuthor"/>
+                            </apex:outputLink>
+                        </div>
+                        
+                        <div style="padding-top:30px; padding-left: 15px;">
+                            <apex:image value="{!URLFOR($Resource.articledetailicons, 'icon-topics.png')}" title="List View" style="padding-right:5px;"/>
+                                <span style="color:#000; font-weight: bold; font-size:13px; font-family:Arial;">
+                                Topics:
+                                </span> 
+                                <apex:variable value="{!0}" var="rowNum"/>  
+                                 <apex:repeat value="{!topicList}" var="str">
+                                  <apex:outputLink value="/apex/newsroomBlogArticleTrayView?TName={!SUBSTITUTE(str,'&','^')}&type=Topic&bidID={!BidID}" style="Text-decoration:none;color:#067ab4;font-family:Arial;font-size:13px;">{!str}</apex:outputLink>
+                                  <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                                  <apex:outputText value=", " style="color:#067ab4" rendered="{!FLOOR(rowNum)< topicListSize}"></apex:outputText>
+                              </apex:repeat> 
+                                <!--<apex:outputText escape="false" value="{!SUBSTITUTE(topic,';',', ')}" styleClass="topicsDetailPage"/>-->
+                        </div>
+                        
+                        <div style="padding-top:30px;">
+                            <table>
+                                <td  class="storyStandArt" style="vertical-align:top; padding-right:25px;">
+                                    <apex:outputPanel rendered="{!newsrooms.HDS_Video_URL__c!= null}"> 
+                                        <div style="padding-bottom:30px;">
+                                            <body onload="vidPlayer('{!JSINHTMLENCODE(newsrooms.Title)}','{!newsrooms.HLS_Video_URL__c}','{!newsrooms.HDS_Video_URL__c}')">
+                                                <div class="articleDetailPlayer">
+                                                    <div id="akvideo"></div>
+                                                </div>
+                                            </body>
+                                         </div>
+                                    </apex:outputPanel>
+                                    <div >
+                                        <apex:outputPanel rendered="{!Newsrooms.Article_Image__c != null && Newsrooms.Tile_Template__c!='Video Articles'}" >
+                                            <div style="max-width:250px; float:right; padding-left:10px; padding-bottom:10px;">
+                                                <div id="articleDiv">
+                                                 <apex:outputText escape="false" value="{!NewsRooms.Article_Image__c}" />
+                                                 </div>
+                                             </div>
+                                        </apex:outputPanel>
+                                        <apex:outputText value="{!NewsRooms.story__c }" escape="false" id="text"/>
+                                     </div>
+                                </td>                               
+                                <td style="width:30%; vertical-align:top;">
+                                    <apex:outputPanel rendered="{!relatedContent}">
+                                        <div style="border: 1px solid #e5e5e5; border-radius: 7px; margin-right:-17px;">
+                                            <div class="rounded">
+                                             <div class="fontHeader">
+                                    
+                                                <apex:outputText value="Related Content" escape="false"/>                                 
+                                    
+                                               </div>
+                                                
+                                            </div> 
+                                            
+                                            <apex:repeat value="{!SearchNews}" var="rec">
+                                                <div style="border-top:1px solid #e5e5e5; padding-top:15px; padding-bottom:15px; padding-left:20px; padding-right:25px; ">
+                                                    <apex:outputLink target="_self"  value="/apex/articleDetails?blogId={!blogId}&TName={!SUBSTITUTE(TName,'&','^')}&type={!type}&articletitle={!rec.urlName}&id={!rec.Id}&bidID={!bidID}" style="text-decoration:none;">
+                                                        <apex:outPutText value="{!rec.Title}" styleClass="relContentListTitle"/>
+                                                    </apex:outputLink>
+                                                    <br/> <br/>
+                                                    
+                                                    <apex:OutputText value="{0,date,MMMMM' 'd', 'yyyy}" style="font-size: 12px; font-family:Arial; color:#333333; line-height:16px;">
+                                                        <apex:param value="{!rec.PublishedDate__c}"/>
+                                                    </apex:OutputText>
+                                                    /
+                                                   <span style="font-size: 12px; font-family:Arial; color:#333;">
+                                                   <apex:variable value="{!0}" var="rowNum"/>  
+                                         <apex:repeat value="{!newsTopicMap[rec.Id]}" var="str">
+                                                      <apex:outputLink value="/apex/newsroomBlogArticleTrayView?TName={!SUBSTITUTE(str,'&','^')}&type=Topic&bidID={!BidID}" style="Text-decoration:none;color:#0c2577;font-size: 12px;font-family:Arial; ">{!str}</apex:outputLink>
+                                                          <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                                                          <apex:outputText value=", " style="color:#0c2577" rendered="{!FLOOR(rowNum)< topicCountMap[rec.Id]}"></apex:outputText>
+                                                  </apex:repeat> 
+                                                    <!--{!SUBSTITUTE(rec.Topics__c,';',', ')}-->
+                                                    </span>
+                                                </div>
+                                            </apex:repeat>
+                                        </div>
+                                    </apex:outputPanel>
+                               </td>
+                            </table>
+                        </div> 
+            
+                    </div>            
+                </td>
+            </table>
+        </div>
+</apex:page>

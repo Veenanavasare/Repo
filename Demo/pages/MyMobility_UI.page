@@ -1,0 +1,330 @@
+<apex:page controller="MyMobilityController"  sidebar="false" standardStylesheets="false" showHeader="false">
+
+    <style>
+    table a {
+        cursor: pointer;
+    }
+    .dataTables_length {
+        display: none;
+    }
+    .dataTables_info {
+        bottom: 22px;
+        position: absolute;
+        right: 180px;
+    }
+    .manage_user_name {
+        width: 17% !important;
+    }
+    #manage_content .pagination > a {
+        padding: 5px 10px;
+        font-family: omnes_att_iimedium;
+        line-height: 1.125em;
+        color: #056fab;
+        margin-left: 5px;
+        background: #fff;
+        border: 1px solid #ccc;
+    }
+    .paginate_enabled_previous, .paginate_enabled_next {
+        cursor: pointer;
+    }
+    .paginate_disabled_previous, .paginate_disabled_next {
+        cursor: no-drop;
+    }
+    .adjust-select-small{
+        width:230px;
+    }
+    .adjust-select-small select{
+        padding: 0 5px;
+        line-height: 17px;
+    }
+   h1 { font-family: omnesatt_iiregular; }   
+    #headerNav3,#headerNav4,#headerNav5 { background: #edf8fd; }
+    
+    .tHeadNavType ul {        
+        padding-left: 10px;
+        min-width: 300px;
+    }
+    .tHeadNavStatus ul {
+        /*-webkit-column-count: 2;*/
+        padding-left: 10px;
+        min-width: 300px;
+    }
+    .tHeadNavProduct ul {
+        /*-webkit-column-count: 2;*/
+        padding-left: 10px;
+        min-width: 300px;
+    }
+    </style>
+    <!--<script>
+     function redirectToArticle()
+     {
+     
+     }
+    </script>-->
+ 
+ <apex:form >
+ 
+ <!--<div id="hero_banner" class="hero_manage jumbotronContainer">
+        <div class="row">
+            <div class="col-sm-12"></div>
+        </div>
+    </div>-->
+ <div ng-show="widget_latest_news" class="manage_content dash_widget reveal-animation">
+            <div class="row">
+                <div class="col-xs-12 col-md-12">
+                    <h1>My Mobility</h1>
+                </div>
+            </div>
+
+            <hr class="blue_hr"></hr>
+
+            <div class="row">
+                
+            </div>
+            
+      
+ 
+    
+ <div class="manage_my_mobile_row">
+                        <ul>
+                            <li>
+                                <apex:commandLink value="Manage Mobile Services"  action="{!showPopup}" rerender="tstpopup"  />
+                            </li>
+                            <li>
+                                 <apex:commandLink value="Sponsorship Program"  action="{!showPopup}" rerender="tstpopup"  />
+                            </li>
+                            <li>
+                                <apex:commandLink value="Mobility Reporting Tool"  action="{!showPopup}" rerender="tstpopup"  />
+                            </li>
+                        </ul>
+                    </div>
+      </div>
+      
+       <apex:outputPanel id="tstpopup">
+        <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
+            <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+                This is where I would put whatever information I needed to show to my end user.<br/><br/><br/>
+                <apex:commandButton value="Hide Pop up" action="{!closePopup}" rerender="tstpopup"/>
+            </apex:outputPanel>
+        </apex:outputPanel>
+     
+ </apex:form>
+    
+                 
+ <style type="text/css">
+        .custPopup{
+            background-color: white;
+            z-index: 9999;
+            left: 50%;
+            padding:10px;
+            position: absolute;
+            /* These are the 3 css properties you will need to change so the popup 
+            displays in the center of the screen. First set the width. Then set 
+            margin-left to negative half of what the width is. You can add 
+            the height property for a fixed size pop up if you want.*/
+            width: 300px;
+            margin-left: -250px;
+            top:100px;
+        }
+        .popupBackground{
+            background-color:black;
+            opacity: 0.20;
+            filter: alpha(opacity = 20);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 9998;
+        }
+
+    </style>
+ <script>
+ /*global angular */
+
+/* =========================================
+   DASHBOARD Module
+   ========================================= */
+
+(function() {
+
+    // App
+    var app = angular.module('app-dashboard', ['ngRoute', 'ngAnimate', 'ngCookies']);
+
+    // Controller for Dashboard
+    app.controller('DashboardController', ['$scope', '$location', '$cookies', '$cookieStore', function ($scope, $location, $cookies, $cookieStore) {
+        $scope.widget_options = false;
+        $scope.widget_manage_quotes = true;
+        $scope.widget_manage_customer = true;
+        $scope.widget_my_mobility = true;
+        $scope.widget_latest_news = true;
+
+        function setCookie(cname, cvalue, exdays) {
+            var d = new Date();
+            d.setTime(d.getTime() + (exdays*24*60*60*1000));
+            var expires = "expires="+d.toUTCString();
+            document.cookie = cname + "=" + cvalue + "; " + expires;
+        }
+
+        function getCookie(cname) {
+            var name = cname + "=";
+            var ca = document.cookie.split(';');
+            for(var i=0; i<ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0)==' ') c = c.substring(1);
+                if (c.indexOf(name) != -1) return c.substring(name.length,c.length);
+            }
+            return "";
+        }
+
+        function checkCookie() {
+
+            var firstTime = getCookie("welcome-cookie1");
+
+            if (firstTime != "") {
+                $location.path('/dashboard');
+            } else {
+                setCookie("welcome-cookie1", 'welcomed1', 365);
+                $location.path('/dashboard-welcome');
+            }
+        }
+
+        checkCookie();
+    }]);
+
+    // Controller for Welcome
+    app.controller('WelcomeController', ['$scope', '$location', function ($scope, $location) {
+        windowWidth = $(".main-container").width();
+        slideWidth = windowWidth;
+        sliderContainerWidth = (slideWidth ) * ($(".slide").length) ;
+        activeSlide = 1;
+        slideIndex = 0;
+        slideCount = $(".slide").length;
+        closedCircle = "ionicons ion-record";
+        openCircle = "ionicons ion-ios7-circle-outline";
+        hoverCircle = "ionicons ion-ios7-circle-filled";
+        slideSpeed = 200;
+
+        // SET CONTAINER WIDTHS 
+        $(".slide").css({"width": slideWidth});
+        $(".slider-container").css({"width" : sliderContainerWidth });
+
+        //   CREATE PLACEMENT DOTS 
+        $(".slide").each(function(){
+            $(this).attr("data-status", "inactive");
+            $(".pd-outliner").append("<span style='margin-right: 20px;' class='"+closedCircle+"'></span>");
+        });
+        $(".slide:eq(0)").attr("data-status", "active"); 
+        $(".pd-outliner span:eq("+slideIndex+ ")").attr("class", openCircle);
+
+        // PLACEMENT DOTS 
+        $(".pd-outliner span").each(function(index){
+            var slideTitle = $(".slide-title:eq("+index+")").text();
+            var slideTitleLength = slideTitle.length + 24;
+            
+            $(this).mouseover(function(){
+                savedDot = $(this).attr("class");
+                $(this).attr("class", hoverCircle);  
+                $(this).append("<div class='pd-outliner-label' style='display:none;  font-size: 13px; font-family:arial; margin-left: -"+slideTitleLength+"px;  background-color: #fff;border-radius: 4px; position: absolute; top: -15px; font-size:14px;'>"+slideTitle+"</div>");
+                $(".pd-outliner-label").fadeIn(150);
+            });
+            $(this).mouseout(function(){
+                $(this).attr("class", savedDot);  
+                $(".pd-outliner-label").delay(200).remove(); 
+            });
+
+        });
+
+        // LEFT CONTROL 
+        $(".left-control").click(function(){
+            if (activeSlide > 1){
+                $(".right-control").fadeIn();
+                $(".slider-container").animate({
+                    left: "+="+slideWidth+""
+                }, slideSpeed); 
+                activeSlide --;
+                slideIndex --;
+                $(".pd-outliner span:eq("+slideIndex+ ")").attr("class", openCircle);
+                $(".pd-outliner span:eq("+slideIndex+")").siblings('span').attr("class",  closedCircle);
+                
+                if (activeSlide == 1){
+                    $(".left-control").fadeOut(100);
+                }
+            }
+        });
+
+        // RIGHT CONTROL 
+        $(".right-control").click(function(){
+            if( activeSlide < slideCount){
+                $(".left-control").fadeIn();
+                $(".slider-container").animate({
+                    left: "-="+slideWidth+""
+                }, slideSpeed);
+                activeSlide ++;
+                slideIndex ++;
+                $(".pd-outliner span:eq("+slideIndex+ ")").attr("class", openCircle);   
+                $(".pd-outliner span:eq("+slideIndex+")").siblings('span').attr("class",  closedCircle);
+                
+                if( activeSlide == slideCount){
+                    $(".right-control").fadeOut(100);
+                }
+            } 
+        });
+
+        //  RESIZE WINDOW 
+        $(window).resize(function(){
+            windowWidth = $(".main-container").width();
+            slideWidth = windowWidth;
+            sliderContainerWidth = (slideWidth ) * ($(".slide").length) ;
+            $(".slide").css({"width": slideWidth});
+            $(".slider-container").css({"width" : sliderContainerWidth }).animate({
+                left: "0px"
+            }, 20);
+            activeSlide = 1;
+            slideIndex = 0;
+            $(".pd-outliner span:eq("+slideIndex+ ")").attr("class", openCircle);
+            $(".pd-outliner span:eq("+slideIndex+")").siblings('span').attr("class", closedCircle);
+        }); 
+
+
+        // MAIN CONTAINER ANIMATION
+        $(".logo").click(function(){
+            $(".help-container-blur").transition({
+                opacity: "0"
+            }, 700);
+            $(".main-container").transition({scale: .7}).css({"border-radius":"20px"});
+            $(".close-help").fadeIn();
+        });
+
+        $(".close-help").click(function(){
+            $(".main-container").transition({scale: 1 }).css({"border-radius":"0px"});
+            $(".close-help").fadeOut(); 
+            $(".help-container-blur").transition({
+                opacity: "1"
+            });
+        });     
+    }]);
+
+    // configure our routes
+    app.config(['$routeProvider', function($routeProvider) {
+        $routeProvider
+
+            .when('/', {
+                title : 'My Dashboard',
+                templateUrl : 'components/dashboard/dashboard.html'
+            })
+
+            .when('/dashboard', {
+                title : 'My Dashboard',
+                templateUrl : 'components/dashboard/dashboard.html'
+            })
+
+            .when('/dashboard-welcome', {
+                title : 'My Dashboard',
+                templateUrl : 'components/dashboard/welcome.html'
+            });
+    }]);
+
+})();
+ </script>
+</apex:page>

@@ -1,0 +1,28 @@
+<apex:page controller="SearchOpportunityController" standardStylesheets="false" sidebar="false" showHeader="false" docType="html-5.0"  cache="false">
+ <apex:form >
+     <apex:pageBlock >
+        <apex:pageBlockSection >
+          Enter Opportunity Name 
+            <apex:inputText value="{!inputText1}" required="true"/>
+            <apex:commandButton value="Seacrh" action="{!Search}" reRender="abc,SearchTable"/><br></br>
+      </apex:pageBlockSection>
+     </apex:pageBlock>
+     <apex:pageBlock id="abc">
+     <br></br>
+     <apex:outputPanel rendered="true">
+             <apex:outputText value="{!inputText1}" >
+             </apex:outputText> 
+            </apex:outputPanel>
+        <apex:pageBlockSection columns="1" collapsible="false" >
+          <apex:pageBlockTable id="SearchTable" value="{!quoteDetails}" var="opp" rendered="{!Tabu}" style="grid" >
+            
+             <apex:column headerValue="Opoortunity Name " ><apex:outputLink value="{!opp.Name}" onclick="{!infomethod}" >{!opp.Name}</apex:outputLink> </apex:column>&nbsp;&nbsp;
+             <apex:column headerValue="Stage"  >{!opp.OpportunityStage__c} &nbsp;&nbsp;</apex:column>
+             <apex:column headerValue="Owner" >{!opp.OpportunityOwner__c}&nbsp;&nbsp;</apex:column>
+             <apex:column headerValue="Account" value="{!opp.Apttus_Proposal__Account__c}"/>
+             
+          </apex:pageBlockTable>
+        </apex:pageBlockSection>
+        </apex:pageBlock>
+ </apex:form>
+</apex:page>

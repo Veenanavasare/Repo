@@ -1,0 +1,887 @@
+<apex:page controller="newsroomBlogViews" sidebar="false" showHeader="false" applyBodyTag="false" cache="true" tabStyle="Account" standardStylesheets="true" >   
+<script src="{!$Label.DTMHeader}"></script>
+<!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script> -->
+<apex:includeScript value="{!URLFOR($Resource.jQueryForPopup, 'jQuery/jquery-1.8.2.min.js')}"/>
+<style>
+    #nav{
+         margin-left: 0px;
+     }
+     #nav > li{
+         margin-left: 0px;
+     }   
+    .inpuTypeField{
+            background-image: url({!($Resource.Search_bar_middle_img)});    
+            background-repeat:repeat; 
+            border:none; 
+            height:18px;
+    }            
+    .inputTextArea{
+            width: 237px; padding: 5px; height:18px; margin-left:-4px; border-radius:3px 0 0 3px; border-left:1px solid #CACAC4;
+    }
+</style>
+<style>
+    #footpara {
+        margin-left: 6%;
+        
+    }
+
+    .footer_logo{
+        margin-left: 15px;
+    }
+    .begin_quote_btn{
+        left: -5px !important;
+    }
+</style>
+<style type="text/css">
+    .highlightWord { background-color: #ff2; }
+    
+    .hero_badge {
+        max-width: 45%;
+        position: relative;
+        top: 150px;
+        
+        width: 100%;
+        padding: 16px;
+        background-color: rgba(255, 255, 255, 0.7);
+        z-index: 3;
+    
+    }
+    .avpn
+    {
+    background-image:url("/resource/1444292635000/NewsRoom_Hero") !important;
+    }
+    div.dropdown-link-container>ul>form>li{margin-left:0px;}
+    li.nav_quote_li>span>a>button {width: auto !important;}
+    div.Newshead {
+        margin-left: 44px;
+        margin-top: 15px;
+    }
+    #slice_footer {
+        margin: 31px auto auto;
+    }
+    #newDivForm {
+        background: #f7f7f7;
+        display: block;
+    }
+</style>
+<script type="text/javascript">
+    jQuery.fn.highlight = function (str, className) {
+        var regex = new RegExp(str, "gi");
+        return this.each(function () {
+            $(this).contents().filter(function() {
+                return this.nodeType == 3;
+            }).replaceWith(function() {
+                return (this.nodeValue || "").replace(regex, function(match) {
+                    return "<span class=\"" + className + "\">" + match + "</span>";
+                });
+            });
+        });
+    };
+    $j = jQuery.noConflict();
+    $j(document).ready(function() {
+        $j("#body *").highlight("{!strValue}", "highlightWord");
+        $j('#hl').click(function(e) {
+            e.preventDefault();
+            $j("#body *").highlight("{!strValue}", "highlightWord");
+        });
+
+       $j('#unhl').click(function(e) {
+            e.preventDefault();
+            $j(".highlightWord").replaceWith(function() { return $j(this).contents(); });
+        }); 
+    }); 
+</script>
+<script type='text/javascript'>
+    function noenter(ev) {
+        if (window.event && window.event.keyCode == 13 || ev.which == 13) {
+            doSearchAF();
+            return false;
+         } else {
+              return true;
+         }
+     }
+</script>
+<style>
+    div#si_primaryMenu ul, div#si_primaryMenu ul li {margin:0; padding:0; list-style-type: none}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}}') no-repeat scroll 5px -40px; width: 982px; height: 40px;}
+    div#menuContainer ul#si_primaryMenu {background: url('{!$Resource.NavConnect}') no-repeat scroll -5px -150px transparent; width: 982px; height: 92px;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem {display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem a.primaryMenuItemLink{display:block; float:left;}
+    div#menuContainer ul#si_primaryMenu li.si_primaryMenuItem:hover,
+    li#programOverviewTab.programOverviewTabActive,
+    li#Connect.programOverviewTabActive,
+    li#productsTab.productsTabActive,
+    li#newsTab.newsTabActive
+    {
+       // background-image: url('{!$Resource.NavConnect}'); 
+       background-image: url('{!$Resource.ConnectHeader_top_Img}'); 
+       
+        background-repeat:no-repeat;
+        background-attachment:scroll;
+        background-color:transparent;
+        height:63px;
+        position:relative; 
+        top:0px; 
+        left:-70px;
+    }
+    
+    </style>
+
+    <apex:stylesheet value="{!$Resource.newsroomStyleSheet}"/>
+    <apex:stylesheet value="{!$Resource.Newsroom_hover}"/>
+    <apex:stylesheet value="{!$Resource.ProviderDirectory}"/>
+
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-1.9.1.js')}"/>
+
+    <apex:includeScript value="{!URLFOR($Resource.masonry, 'masonry-site/jquery.masonry.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquerysmoothness, 'jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js')}"  />
+
+   
+    
+    <script>
+       $q = jQuery.noConflict();
+       $q(window).load(function() {
+               $q('#wrapper').masonry({
+              itemSelector: '.pinTable'
+            });
+
+            
+        $q("#videoArticlePopUp").dialog({ 
+            autoOpen: false,
+            width: 506,
+            modal:true
+            
+        });
+
+            
+            
+
+        });
+        
+
+    </script>
+    
+   <script type="text/javascript" src="/resource/jQuery"></script>
+ 
+  
+<script type="text/javascript" src="/resource/jQuery"></script>
+<script type="text/javascript">  
+
+   $(window).ready(function() {
+   $("#provider >a ").addClass("linkInActive");
+   $("#events >a ").addClass("linkInActive");
+   $("#news >a ").addClass("linkActive");
+        $('.blogs_hover').hover(
+             function () {
+              $('#blogsContainer').show()
+              $('.blogs_hover').css('background-color','white');
+              $('.blogs_hover').css('border-radius','2px;');
+             }, 
+             function () {
+              $('#blogsContainer').hide();
+              $('.blogs_hover').css('border-radius','2px;'); 
+              $('.blogs_hover').css('background-color','#EDF5F8');
+              $('#oldImage').attr('url','/img/arrowDown.gif');
+              
+             }  
+         );
+        $('#blogsContainer').hover(
+             function () {
+               $('.blogs_hover').css('border-radius','2px;');
+               $('.blogs_hover').css('background-color','white');
+                          
+               
+             }, 
+             function () {
+              $('.blogs_hover').css('border-radius','2px;'); 
+              $('.blogs_hover').css('background-color','#EDF5F8');
+             }
+         );
+         
+         $("menuId").hover(function(){
+            
+            alert("The paragraph is now hidden");
+          });
+          
+           // topics hover
+         $('.topics_heading').hover(
+             function () {
+              $('#topicsContainer').show();
+              $('.topics_hover').css('background-color','white');
+              $('.topics_hover').css('border-radius','2px;');
+               $('#topic_bText').css('color','#EF6F00'); 
+              $('#topic_orange').show();
+              $('#topic_blue').hide();
+             }, 
+             function () {
+              $('#topicsContainer').hide();
+              $('.topics_hover').css('border-radius','2px;'); 
+             $('.topics_hover').css('background-color','#EDF5F8');
+             $('#topic_bText').css('color','#0C2577');
+             $('#topic_blue').show();
+             $('#topic_orange').hide();
+             }  
+         );
+        $('#topicsContainer').hover(
+             function () {
+             $(this).show();
+               $('.topics_heading').css('border-radius','2px;');
+               $('.topics_heading').css('background-color','white');
+               $('.topics_hover').css('background-color','white');
+               $('#topic_bText').css('color','#EF6F00');
+               $('#topic_orange').show();
+               $('#topic_blue').hide();
+               
+             }, 
+             function () {
+              $('.topics_hover').css('border-radius','2px;'); 
+              $('.topics_heading').css('background-color','#EDF5F8');
+              $('#topic_bText').css('color','#0C2577');
+              $(this).hide();
+              $('#topic_blue').show();
+              $('#topic_orange').hide();
+             }  
+         );
+         
+         
+        
+    });
+   
+</script>  
+
+<!-- css for topics -->
+<style>
+.TopicPin 
+    {
+        display:inline-block;
+        border: 2px solid #3380af;
+        border-radius: 8px;
+        width:205px;
+        //height: 60px;
+        margin:-5px 10px 10px;
+        padding:5px 5px 5px 5px;
+        vertical-align: top;
+        cursor:pointer;
+     } 
+     div#FeatureTopicImage img{
+        max-width:100%;
+        //height:50px;
+        //width:50px;
+    } 
+    .TopicHeadline
+        {
+           font-family: Arial;
+           font-size: 20px ;
+           //font-weight:bold;
+           line-height: 25px;
+           color: #ef6f00;
+           width:120px;
+           word-break:keep-all;
+           margin-left:5px
+        } 
+        
+    .ActiveTopic 
+    {
+        display:inline-block;
+        font-family: Arial;
+        font-size: 14px ;
+        line-height: 20px;
+        color: #067ab4;
+        //margin:-5px 10px 10px;
+        //padding:5px 5px 5px 5px;
+        vertical-align: top;
+       // font-weight:bold;
+     }
+ .activeDropDown{
+
+        display: inline;
+        height: 4px; 
+        margin-left: 3px;
+
+        width: 9px;
+        vertical-align: middle;
+}
+.inactiveDropDown{
+
+        display: inline;
+        height: 4px; 
+        margin-left: 3px;
+
+        width: 9px;
+        vertical-align: middle;
+}  
+.activeDropblog{
+        margin-top:3px;
+        display: inline;
+        height: 4px; 
+        margin-left: 4px;
+        margin-bottom: 3px;
+        width: 9px;
+}  
+</style>
+ 
+<html>
+
+<style>
+
+
+
+.pinTable 
+    {
+    display: inline-block;
+    border: 1px solid #c4c4c4;
+     border-radius: 5px 5px 5px 5px;
+     margin:5px 5px 5px 5px;    
+    width:443px;
+    min-height:290px;
+    padding-left:0px;
+    vertical-align: top;                    
+    }
+    
+    div.rounded {
+        background-image: url({!($Resource.GrayGradient)});" 
+         border-top-left-radius:5px;
+        border-top-right-radius:5px;
+        border-bottom-right-radius:0px;
+        border-bottom-left-radius:0px;   
+        background-repeat:repeat; 
+        border-bottom: 1px solid #c4c4c4;            
+        height: 57px;
+        width: 443px;  
+        border-top-left-radius: 7px;      
+    }
+    
+    .fontHeader{
+        font-family:Arial;
+        font-size:20px;
+        color:#333;
+        padding: 15px 0 0 25px;
+        line-height:24px;
+    
+    }
+    .arrowHeader{
+        font-family:Arial;
+        font-size:25px;
+        color:#067ab4;
+        line-height:24px;
+        font-weight:bold;
+        margin: -18px 25px 0px 0px; 
+        float:right;      
+    }
+    .blogSummary{        
+        font-family:Arial;
+        font-size:12px;
+        color:#000;
+        line-height:16px;
+    }
+    
+    div#TitleImageBlogNew img
+    {
+        max-width:100%;
+        max-height:110px;
+        height:auto;        
+    }
+    .linkActive
+     {
+        color:#369;
+        text-decoration:underline;
+        font-size: 13px ;
+    }
+    
+    .linkInActive
+     {
+        text-decoration:none;
+        font-size: 13px ;
+    }
+    .nav>li{margin-left: 0px;}
+    
+#slice_hero {
+    height: 388px !important;
+    background-size: cover !important;
+    background-position: right !important;
+    padding: 0 0 0 !important;
+}
+       
+#slice_hero h1 {
+    font-size: 2em !important;
+    font-family: omnes_light !important;
+    color: #666 !important;}
+  #slice_hero h2 {
+    font-size: 1em; !important}
+    
+.hero-container {
+    position: relative !important;
+    width: 86% !important;
+    margin: auto !important;
+}
+.hero-container .hero_badge_bg {
+    top:-120px !important;
+    background:#fff !important;
+    opacity:.75 !important;
+    z-index:2
+}
+.container {
+    padding-bottom: 2% !important;
+    padding: 0px 10px !important;
+}    
+.headerMainDiv{
+    width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+} 
+#atntHeaderSty{
+    margin-bottom: 6px;
+    display: block;
+}
+.ML10{
+    margin-left:15px;
+}
+.pageHeaderMargin{
+   padding-top:35px;
+}
+.news_container{width:100%;}
+
+</style>
+        <apex:include pageName="PortalDesignHeaderUnAuth" id="PortalDesignHeaderUnAuth" rendered="{!(Contains($CurrentPage.URL, 'partnerexchange')) && (Contains($CurrentPage.URL, 'Connect')) && (isCommunityUser || isInternalUser)}"/>
+        <apex:include pageName="PortalDesignHeader" id="PortalDesignHeader" rendered="{!(Contains($CurrentPage.URL, 'partnerexchange')) && (!Contains($CurrentPage.URL, 'Connect')) && (isPartnerUser || isInternalUser)}"/>
+        <apex:include pageName="PortalDesignHomeUnauth" id="PortalDesignHomeUnauth" rendered="{!(Contains($CurrentPage.URL, 'partnerexchange')) && (Contains($User.LastName, 'Guest'))}"/> 
+<style>        
+body {
+            background: #f7f7f7;
+        }
+</style>
+<!-- NewsRoom Image DIV -->
+<div class="pageHeaderMargin"></div>        
+<div id="newsDiv" style="display:block;"> 
+    <div class="headerMainDiv">
+       <div class="ML10">
+           <h1 style="font-style: italic;" id="atntHeaderSty">AT&amp;T Newsroom</h1>
+           <h2>The latest news on AT&amp;T's products and services impact on the community</h2>
+       </div>
+       <hr class="blue_hr" style="width:1200px;"></hr> 
+   </div>
+<!--<div id="slice_hero" class="avpn jumbotronContainer col-sm-12" style="">
+        <div class="row">
+            <div class="hero-container">
+                <div class="hero_badge">
+                    <h1 class="hero_badge_1" style="font-style:italic;">Newsroom</h1><br></br>
+                    <h2 class="hero_badge_2">Channel insights for business growth and transformation</h2>
+                </div>
+            </div>
+
+            <div class="col-sm-2"></div>
+        </div>
+        </div>-->
+</div>   <!-- End of NewsRoom Image DIV -->        
+   <body>
+<!-- News DIV Form-->   
+<div id="newDivForm">   
+    <apex:form >
+    
+<!-- MAIN DIV -->
+<!-- START PAGE -->
+
+        <div class="mainDiv">
+         <!-- <c:LoggedInUser ></c:LoggedInUser>  -->
+        <!--
+            <div  class="pName">
+                <apex:outPutText value="{!hi}"/>
+                <apex:outPutText value=" "/>
+                <apex:outPutText value="{!lastName}"/>
+            </div>
+            -->
+            <!-- 
+             <div id="menuContainer" style="padding-top:11px;">
+              <c:navconnectheaderwithlinks ></c:navconnectheaderwithlinks>
+             <!-- <div id="banner" style="width:950px;">
+                          <apex:image value="{!$Resource.Main_NavigationImg}" alt="Connect" usemap="#connectMap" style="width:980px;"/> 
+                           <map name="connectMap">
+                              <apex:outputLink value="/apex/Connect" id="connectHover" shape="rect" coords="289,3,379,57"></apex:outputLink>
+                           </map>
+                              <div id="secNav" style="position: relative; list-style-type:none; margin-top:-28px; margin-left:40px; font-family:Arial; font-size:13px; font-color:#333333;">
+                                 <div id="news" style="float:left;">
+                                     <apex:outputLink value="/apex/newsroomTrayView" > Newsroom
+                                     </apex:outputLink> &nbsp;&nbsp;&nbsp;&nbsp;    
+                                 </div>
+                                 <div id="events" style="float:left;">
+                                       <apex:outputLink value="/apex/EventsAndSponsorships">Events and Sponsorships
+                                       </apex:outputLink> &nbsp;&nbsp;&nbsp;&nbsp;  
+                                 </div>   
+                                 <div id="provider">
+                                       <apex:outputLink value="/apex/SI_ProviderDirectory">Provider Directory
+                                       </apex:outputLink> 
+                                 </div>
+                              </div>
+                     </div>-->
+    <!--    <ul id="si_primaryMenu">            
+                 <div id="secNav" style="position:inherit;list-style-type: none; padding-top:68px; font-family:Arial; font-size:13px; font-color:#333333;">
+                     <div id="news" style="float:left;">
+                         <apex:outputLink value="/apex/newsroomTrayView?bidID={!bidID}"> Newsroom 
+                         </apex:outputLink> &nbsp;&nbsp;&nbsp;&nbsp;
+                     </div>
+                     <div id="events" style="float:left;">
+                           <apex:outputLink value="/apex/EventsAndSponsorships?bidID={!bidID}">Events and Sponsorships
+                           </apex:outputLink> &nbsp;&nbsp;&nbsp;&nbsp;
+                     </div>
+                     <div id="provider" style="float:left;">
+                           <apex:outputLink value="/apex/SI_ProviderDirectory?bidID={!bidID}">Provider Directory
+                           </apex:outputLink> 
+                     </div>
+                  </div> 
+                                      
+           
+        </ul>-->
+    <!--</div> -->       
+    <!-- start pagination -- -->
+  <!--   <div style="margin:25px 20px -20px 20px;">
+        <apex:outputLink value="/apex/Connect/Connect?bidID={!bidID}"  target="_self" style="text-decoration:none;">
+           <apex:outputLabel value="Connect" styleClass="breadcomActive"/>
+        </apex:outputLink>
+        <apex:outputLabel value="/" styleClass="deActive"/>
+        <apex:outputLink value="/apex/newsroomTrayView?bidID={!bidID}"  target="_self" style="text-decoration:none;">
+        <apex:outputLabel value="Newsroom" styleClass="breadcomActive"/>
+        </apex:outputLink>
+        <apex:outputLabel value="/" styleClass="deActive"/>
+        <apex:outputLabel value="Blogs" styleClass="deActive"/>
+         -->
+        <!-- ------------Search button div----------------------------------- -->
+         <!--    <apex:outputPanel style="float:right;margin-top:-2px;">
+                <apex:inputText value="{!strValue}" styleClass="inpuTypeField inputTextArea" onkeypress="return noenter(event);" id="pgblcktbl"/>
+                <apex:actionFunction name="doSearchAF" action="{!searchFound}"/> 
+                <apex:commandLink action="{!searchFound}" id="h1">
+                    <apex:image value="{!URLFOR($Resource.searchButton)}" style="margin-bottom:-8.8px; margin-left: -4px;"/>
+                </apex:commandLink>
+            </apex:outputPanel>   -->
+<!-- ----------End--Search button div----------------------------------- --> 
+   <!--   </div>  -->
+    <!-- end pagination -- -->      
+            
+            <!--- END OF LOGO HEADER -->
+            
+            <div class="newsroomDiv"> 
+            <!-- NEWSROOM HEADLINE-->
+               <!-- <c:newsroomHeadlineBanner ></c:newsroomHeadlineBanner> -->
+            <!-- END OF NEWSROOM HEADLINE --> 
+            <!-- START OF BODY HERE -->
+                <div class="container news_container">
+                    <ul id="nav">              
+                   
+                         <!-- InActive Featured -->
+                   <apex:outputText rendered="{!if(Flag!='F', true ,false) && (isCommunityUser || (Contains($User.LastName, 'Guest')))}" >
+                        <li >
+                            <apex:outputLink value="/apex/newsroomTrayView?Flag=F&bidID={!bidID}" target="_self">
+                                Featured
+                            </apex:outputLink>
+                        </li>
+                    </apex:outputText>     
+                    
+                        <!-- InActive Most Recent-->
+                        <apex:outputText rendered="{!if(Flag!='R', true ,false)}">
+                            <li >
+                                <apex:outputLink value="/apex/newsroomTrayView?Flag=R&bidID={!bidID}" target="_self">
+                                    Most Recent
+                                </apex:outputLink>
+                            </li>
+                        </apex:outputText>
+                        
+                        
+                        <!-- InActive Most Viewed -->
+                        <apex:outputText rendered="{!if(Flag!='V', true ,false)}" >
+                            <li >
+                                <apex:outputLink value="/apex/newsroomTrayView?Flag=V&bidID={!bidID}" target="_self"    >
+                                    Most Viewed
+                                </apex:outputLink>
+                            </li>
+                        </apex:outputText>
+                        
+                         <apex:outputText >
+                           <ul id="menu">
+                               <li class="topics_heading topics_hover" id="topics_hover" style="margin:5px 0px 0px 0px; padding-left:17px;">
+                                <apex:outputLink styleClass="drop" value="/apex/NewsroomBlogArticleTrayView?TName=ALL&bidID={!bidID}&type=Topic" target="_self" style="text-decoration:none;" >
+                                    <div id="topic_bText" style="float:left;  margin-left:-31px;">
+                                      <apex:outputText value="Topics" />&nbsp;
+                                   </div>
+                                   <img width="9px" id="topic_blue" src=" {!URLFOR($Resource.bluearrow)}" Class="activeDropDown"></img>
+                                   <img src="{!URLFOR($Resource.orangearrow)}" id="topic_orange" Class="inactiveDropDown" style="display:none" /> 
+                               </apex:outputLink>
+                             </li>  
+                            </ul>
+                         </apex:outputText>
+                        
+                        <apex:outputText >
+                           <ul id="menu">
+                                <li class="blogs_hover" id="blogs_hover" style="margin:5px 0px 0px 0px; padding-left:17px;">
+                                <apex:outputLink styleClass="drop" value="/apex/NewsroomBlogTrayView?bidID={!bidID}" target="_self" style="text-decoration:none;" >
+                                    <apex:outputLabel value="Blogs&nbsp;" escape="false" style="color:#ef6f00;  margin-left:-38px;" />&nbsp;
+                                   <img width="9px" id="blue" src="{!URLFOR($Resource.orangearrow)}" style="margin-left:8px; margin-bottom: 2px;" styleclass="activeDropblog"></img>                                 
+                                </apex:outputLink>
+                                </li>  
+                            </ul>
+                        </apex:outputText>
+                      
+                        <div class="switchView">
+                            <apex:outputLink value="/apex/NewsroomBlogTrayView?bidID={!bidID}&Flag={!Flag}" target="_self" style="text-decoration:none;" >
+                                 <apex:image url="{!URLFOR($Resource.newsroombanners, '32066-Slices-and-Guide/Slices/icon-grid-view-active.png')}" title="Tray View" style="padding-right:5px;" />
+                            </apex:outputLink>
+                    
+                            <apex:outputLink value="/apex/Newsroom_BlogListView?bidID={!bidID}&Flag={!Flag}" target="_self"  style="text-decoration:none;">
+                                <apex:image url="{!URLFOR($Resource.newsroombanners, '32066-Slices-and-Guide/Slices/icon-list-view.png')}" title="List View" style="padding-right:5px;"/>
+                            </apex:outputLink>
+                        </div>  
+                    </ul>
+                </div>
+                
+                <!-- start topics hover -->
+                        <div id="topicsContainer" class="topics_hover" style="z-index:1;position:absolute;min-width:50%;max-width:870px;display:none; margin:-5px 5px 20px 90px;border-radius:6px;box-shadow:0px 2px 5px 0px #d3d3d3;">
+                             <div style="width:auto; float:left;">
+                                 <div style="padding: 30px 0 50px 25px;">
+                                     <apex:outPutLabel value="Featured" styleClass="featuredBlogHeadLine" rendered="{!isFeatureTopics && (isCommunityUser || (Contains($User.LastName, 'Guest')))}"/>
+                                </div>
+                            </div>
+                           
+                           <div style="padding:25px 25px 0px 100px;">
+                                <apex:repeat value="{!FeatureTopics}" var="rec">
+                                    <apex:outputPanel >
+                                        <div class="TopicPin" id="TopicPin">
+                                        <!-- start hiperlink on featured Topic -->
+                                          <div style="display:block;cursor:pointer;">
+                                            <apex:outputLink value="/apex/NewsroomBlogArticleTrayView?TName={!SUBSTITUTE(rec.Name,'&','^')}&bidID={!bidID}&Flag={!Flag}&type=Topic" style="display:block;cursor:pointer;">                                               
+                                             <span id="FeatureTopicImage" style="float:left;margin:5px 5px 0px 5px;">
+                                                    <apex:image value="{!rec.Topic_Image_Link__c }"/>
+                                              </span>
+                                            
+                                                <span class="TopicHeadline" style="float:right;min-height:40px; margin-top:5px;"> 
+                                                    <apex:outPutText value="{!rec.Name}" style="color:#ef6f00;"/>
+                                                </span>
+                                            </apex:outputLink>
+                                            </div>
+                                         <!-- End hiperlink on featured Topic -->
+                                        </div>
+                                  
+                                    </apex:outputPanel>
+                                </apex:repeat>
+                            </div>
+                           
+                            <!-- start active topics -->
+                            <div style="float:left;padding: 5px 0px 0px 70px;">
+                                 <apex:outPutLabel value="All" styleClass="featuredBlogHeadLine"/>
+                            </div>
+                           <div style="max-width:95%;width:auto"> 
+                               <table>
+                               <tr>
+                               <td style="padding-left:15px;padding-bottom:20px;">
+                                <apex:repeat value="{!ActiveTopics}" var="rec">
+                                    <apex:outputPanel >
+                                        <div class="ActiveTopic" style="padding-left:8px;">
+                                            <apex:outputLink value="/apex/NewsroomBlogArticleTrayView?TName={!SUBSTITUTE(rec.Name,'&','^')}&bidID={!bidID}&Flag={!Flag}&type=Topic" style="text-decoration:none;" >
+                                                <apex:outPutText value="{!rec.Name}" style="color:#067ab4;"/>
+                                            </apex:outputLink>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:repeat>
+                                    
+                                    <div style="padding-left:8px;" class="ActiveTopic"> 
+                                    <apex:outputLink value="/apex/NewsroomBlogArticleTrayView?TName=ALL&bidID={!bidID}&Flag={!Flag}&type=Topic" style="text-decoration:none;" >
+                                        <apex:outputText value="[All Topics]" style="color:#067ab4;">
+                                        </apex:outputText>
+                                    </apex:outputLink>
+                                    </div>
+                                </td>
+                                </tr>
+                                </table>
+                           </div> 
+                       </div>  
+                            <!-- end active topics -->
+                       
+                <!-- end topics hove -->
+                
+           <!-- start blogs hover -->
+            <div id="blogsContainer" class="blogs_hover" style="z-index:1;position:absolute;min-width:50%;width:auto;display:none; margin:-4px 5px 20px 200px; border-style:none;border-radius:6px;box-shadow: 0px 2px 5px 0px #d3d3d3;">
+             <div style="width:auto; float:left;">
+                 <div style="padding: 50px 0 50px 25px;">
+                     <apex:outPutLabel value="Featured" styleClass="featuredBlogHeadLine" rendered="{!isFeatured && (isCommunityUser || (Contains($User.LastName, 'Guest')))}"/>
+                     <div style="padding-top:20px;">
+                         <apex:outputLink value="/apex/NewsroomBlogTrayView?bidID={!bidID}" target="_self" style="text-decoration:none;" >
+                            <apex:outputText value="See All" styleClass="seeAllBlogHeadLine" />
+                         </apex:outputLink>
+                     </div>
+                </div>
+            </div>
+            <div class="blogDiv" style="padding:25px 25px 25px 100px;">
+                <apex:repeat value="{!BlogsHover}" var="rec">
+                    <apex:outputPanel >
+                        <div class="BlogPin" id="BlogPin">
+                            <p style="margin-left:10px;margin-top:0px;">
+                                 <div id="TitleImageBlog" style="max-height: 110px; height:110px;">
+                                     <apex:outputLink target="_self" value="/apex/NewsroomBlogArticleTrayView?id={!rec.Id}&bidID={!bidID}&type=Blog" style="text-decoration:none;">
+                                    <apex:image value="{!rec.Blog_Image_Link__c}"/>
+                                        
+                                       
+                                    </apex:outputLink>  
+                                 </div>
+                                   <div class="blogheadlineStandArt" style="min-height:40px; padding-top:10px;" >
+                                    <apex:outputLink target="_self" value="/apex/NewsroomBlogArticleTrayView?id={!rec.Id}&bidID={!bidID}&type=Blog" style="text-decoration:none;">
+                                            <apex:outPutText value="{!rec.Name}" style="color:#067ab4;"/>
+                                    </apex:outputLink>
+                                 </div>
+                            </p>
+                        </div>
+                    </apex:outputPanel>
+                </apex:repeat> 
+            </div>
+        </div>
+            <!-- end blogs hove -->
+           <!-- 
+            <div style="padding-top:20px;padding-bottom:20px;margin-left:-4px;">
+                <c:newsroomSurvey ></c:newsroomSurvey>
+            </div>
+            -->         
+            <div style="padding-bottom:25px;margin-left:42px; margin-top:20px;">
+                <c:newsroomBlogHeader ></c:newsroomBlogHeader>
+            </div> 
+        </div>
+        
+        <!-- start body -->
+        <div style="margin-left:38px;">       
+        <div id="wrapper">        
+            <apex:repeat value="{!Blogs}" var="news" > 
+                <apex:outputPanel >
+                    <div class="pinTable">
+                    <apex:outputLink target="_self" value="/apex/NewsroomBlogArticleTrayView?id={!news.Id}&bidID={!bidID}&type=Blog" style="text-decoration:none;">
+                        <div class="rounded">                            
+                                <div class="fontHeader">
+                                    
+                                      <apex:outputText value="{!news.Name}" escape="false"/>                                 
+                                    
+                                </div>
+                                <div class="arrowHeader">
+                                      <apex:image value="{!URLFOR($Resource.Image,'Image/arrow.PNG')}" />
+                                       <!--<apex:outputText value=">" escape="false"  style="color:#067ab4;"/>-->
+                                   
+                                </div>
+                          
+                        </div>
+                       </apex:outputLink> 
+                        <apex:outputPanel rendered="{!news.Blog_Image_Link__c != null}">
+                        <div style="margin-left:25px;padding-right:5px;padding-top:25px;">
+                            <div style="float:left;width:62%;padding-left5px;">
+                                <apex:outputText rendered="{!IF(LEN(news.Blog_Summary_Short__c)<151, true, false)}">
+                                   <apex:outPutField value="{!news.Blog_Summary_Short__c}"/>
+                                </apex:outputText>
+                    
+                                <apex:outputText rendered="{!IF(LEN(news.Blog_Summary_Short__c)>150, true, false)}">
+                                   <apex:variable value="{!FIND(" ", MID(news.Blog_Summary_Short__c, 151, 200))}" var="trim"/>
+                                   <apex:outPutText value="{!Left(news.Blog_Summary_Short__c,150+trim-1)}..."  escape="false"/>
+                                </apex:outputText>
+                            </div>
+                             <apex:outputPanel rendered="{!news.Blog_Image_Link__c!= null}">
+                            <div id="TitleImageBlogNew"> 
+                                    <apex:outputLink target="_self" value="/apex/NewsroomBlogArticleTrayView?Id={!news.Id}&bidID={!bidID}&type=Blog"  style="padding-right:2px;">
+                                            <apex:image value="{!news.Blog_Image_Link__c }" style="padding-right:-5px;"/>
+                                    </apex:outputLink>
+                                
+                            </div> 
+                            </apex:outputPanel> 
+                        </div>
+                       </apex:outputPanel> 
+                        
+                        <apex:outputPanel rendered="{!news.Blog_Image_Link__c == null}">
+                            <div style="margin-left:25px;margin-right:25px;padding-top:25px;">
+                                <apex:outputText rendered="{!IF(LEN(news.Blog_Summary_Short__c)<151, true, false)}">
+                                   <apex:outPutField value="{!news.Blog_Summary_Short__c}"/>
+                                </apex:outputText>
+                    
+                                <apex:outputText rendered="{!IF(LEN(news.Blog_Summary_Short__c)>150, true, false)}">
+                                   <apex:variable value="{!FIND(" ", MID(news.Blog_Summary_Short__c, 151, 200))}" var="trim"/>
+                                   <apex:outPutText value="{!Left(news.Blog_Summary_Short__c,150+trim-1)}..."  escape="false"/>
+                                </apex:outputText>
+                            </div>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel rendered="{!news.Blog_Image_Link__c!= null}">
+                            <apex:outputPanel rendered="{!ArticleAvailMap[news.Id]}" >
+                                <div  style="margin:-20px 0px 25px 25px;width:60%;">
+                                    <apex:outputLabel value="Latest Post:" style="line-height:17px;color:#555;font-size:14px;"></apex:outputLabel> 
+                                    <br/>
+                                    <apex:outputLink target="_self" value="/apex/articleDetails?articletitle={!BlogArticlesMap[news.Id].urlName}"  style="color:#067ab4; font-size:18px; text-decoration:none;">
+                                        <apex:outputText value="{!BlogArticlesMap[news.ID].Title}" style="line-height:22px;color:#067ab4;font-size:18px;"/>
+                                    </apex:outputLink>
+                                </div>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel rendered="{!news.Blog_Image_Link__c == null}">
+                            <apex:outputPanel rendered="{!ArticleAvailMap[news.Id]}" >
+                                <div  style="margin:20px 0px 25px 25px;width:60%;">
+                                    <apex:outputLabel value="Latest Post:" style="line-height:17px;color:#555;font-size:14px;"></apex:outputLabel> 
+                                    <br/>
+                                    <apex:outputLink target="_self" value="/apex/articleDetails?articletitle={!BlogArticlesMap[news.ID].urlName}"  style="color:#067ab4; font-size:18px; text-decoration:none;">
+                                        <apex:outputText value="{!BlogArticlesMap[news.ID].Title}" style="line-height:22px;color:#067ab4;font-size:18px;"/>
+                                    </apex:outputLink>
+                                </div>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel rendered="{!ArticleAvailMap[news.Id]}">
+                            <div style="margin: 0px 0px 25px 25px;vertical-align:bottom;min-height:50px;">
+                                <!-- rendered image-->
+                                <apex:outputPanel rendered="{!BlogArticlesMap[news.ID].Author__r.Author_Link__c!= null}">
+                                   <div id="AuthorBlogImage" style="width:50px;  float: left; padding-right:20px;padding-bottom:20px;" > 
+                                       <apex:outputLink value="/apex/NewsroomBlogArticleTrayView?Id={!BlogArticlesMap[news.ID].Author__c}&bidID={!bidID}&type=Author" >  
+                                         <apex:image value="{!BlogArticlesMap[news.ID].Author__r.Author_Link__c}"/>
+                                       </apex:outputLink>
+                                   </div>
+    
+                                   <div>                               
+                                        <div style="padding-left:20px;padding-top:10px">
+                                           <apex:outputLink value="/apex/NewsroomBlogArticleTrayView?Id={!BlogArticlesMap[news.ID].Author__c}&bidID={!bidID}&type=Author" style="text-decoration:none;color:#067ab4;">
+                                                {!BlogArticlesMap[news.ID].Author__r.Name}
+                                            </apex:outputLink>
+                                        </div>
+                                        <div style="margin-top:5px;padding-left:20px">
+                                            {!BlogArticlesMap[news.ID].Author__r.Company__c}
+                                        </div>                               
+                                   </div>
+                               </apex:outputPanel>  
+                               <apex:outputPanel rendered="{!BlogArticlesMap[news.ID].Author__r.Author_Link__c == null}">
+                                   <div style="padding:-0px;">                               
+                                        <div style="color:#067ab4;">
+                                            <apex:outputLink value="/apex/NewsroomBlogArticleTrayView?Id={!BlogArticlesMap[news.ID].Author__c}&bidID={!bidID}&type=Author" style="text-decoration:none;color:#067ab4;">
+                                                {!BlogArticlesMap[news.ID].Author__r.Name}
+                                            </apex:outputLink>
+                                        </div>
+                                        <div style="margin-top:5px;">
+                                            {!BlogArticlesMap[news.ID].Author__r.Company__c}
+                                        </div>                               
+                                   </div>
+                               </apex:outputPanel>
+                                                    
+                            </div>
+                        </apex:outputPanel>  
+                    
+                    </div>
+                </apex:outputPanel> 
+                        
+                         
+            </apex:repeat>   
+                    
+                </div>          
+            </div>
+        
+        
+        
+        <!-- end bod-- >       
+     
+   
+    <!--- START OF Footer--->
+  <!--   <c:newsroomFooter ></c:newsroomFooter>  -->
+    <apex:include pageName="NewsRoomFooter" id="NewsRoomFooter"/>
+    <!--- END OF Footer--->
+    </div>    
+    </apex:form>
+</div><!-- End of NewsDivform-->    
+    </body>
+    </html>
+</apex:page>

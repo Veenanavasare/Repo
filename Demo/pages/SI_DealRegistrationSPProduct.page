@@ -1,0 +1,66 @@
+<apex:page standardController="Opportunity" extensions="SI_DealRegistrationSPProduct" tabStyle="SPProduct__c">
+    <apex:sectionHeader title="Deal Registration at Product Family Level"/>
+        <apex:form rendered="{!IF((isProduct==true),false,true)}">
+            <Center><apex:outputLabel >
+            <font size="4" color="Gray"><p> No Product has been Deal Registration Requested.</p></font>
+            </apex:outputLabel></Center>
+            <Center><apex:commandButton value="Back" action="{!cancel}"/></Center>
+        </apex:form>
+        <apex:form id="formId" rendered="{!IF((isProduct==true),true,false)}">  
+            <apex:pageMessages ></apex:pageMessages>
+            <apex:pageBlock title="All Products">
+            <apex:pageBlockButtons > 
+                <apex:commandButton value="Calculate" action="{!calculateCheck}"/>
+                <apex:commandButton value="Submit" action="{!saveProduct}"/>
+                <apex:commandButton value="Close" action="{!Cancel}" />    
+            </apex:pageBlockButtons> 
+                <apex:pageBlockTable value="{!DealRegProducts}" var="fm" id="pBlockTableId"> 
+                       <apex:column >
+                            <apex:facet name="header">Product Family</apex:facet>
+                                {!fm.Record_Type_Name__c}
+                        </apex:column>  
+                        <apex:column >
+                            <apex:facet name="header">List Price</apex:facet>
+                               {!fm.List_Price__c}
+                        </apex:column> 
+                        
+                        <apex:column >
+                            <apex:facet name="header">Deal Reg Discount</apex:facet>
+                            <apex:variable var="checkDiscountedPercentage" value="{!fm}"/>
+                               {!checkDiscountedPercentage.Discount_Percentage__c}                  
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">Discounted Price</apex:facet>
+                                <apex:OutPutField value="{!fm.Discounted_Price__c}"/>    
+                        </apex:column> 
+                        <apex:column >
+                            <apex:facet name="header">Discount Amount</apex:facet>
+                                <apex:outputField value="{!fm.Discount_Amount__c}"/>    
+                        </apex:column>  
+                        <apex:column >
+                            <apex:facet name="header">OTC Price</apex:facet>
+                               {!fm.one_time_revenue__c}
+                        </apex:column>
+                        <apex:column >   
+                            <apex:facet name="header">OTC Discounted Price</apex:facet>
+                                <apex:OutPutField value="{!fm.One_Time_Revenue_Discount_Price__c}"/>    
+                        </apex:column>  
+                        <apex:column >
+                            <apex:facet name="header">OTC Discount Amount</apex:facet>
+                                <apex:outputField value="{!fm.OTC_Discount_Amount__c}"/>    
+                        </apex:column>  
+                        <apex:column >
+                            <apex:facet name="header">Current Deal Status</apex:facet> 
+                                <apex:outPutField value="{!fm.Current_Deal_Status__c}"/>
+                        </apex:column>  
+                        <apex:column >
+                            <apex:facet name="header">Select Deal Status</apex:facet> 
+                            <apex:selectList multiselect="false" size="1" id="selectList" value="{!fm.Deal_Status__c}">
+                           
+                               <apex:selectOptions value="{!DealStatus}" />
+                           </apex:selectList>
+                        </apex:column>  
+                    </apex:pageBlockTable>
+            </apex:pageBlock>
+    </apex:form>
+</apex:page>
